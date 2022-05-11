@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "deathgames-server-mod",
+  "version": "${version}",
+  "name": "DeathGames Server Mod",
+  "description": "Server Mod for DeathGames",
+  "authors": [
+    "Jagenka"
+  ],
+  "contact": {
+    "homepage": "",
+    "issues": "",
+    "sources": ""
+  },
+  "license": "GNU Lesser General Public License version 3 (LGPLv3)",
+  "icon": "assets/deathgames-server-mod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "server": [
+      {
+        "adapter": "kotlin",
+        "value": "de.jagenka.DeathGames"
+      }
+    ]
+  },
+  "mixins": [
+    "deathgames-server-mod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.7.4+kotlin.1.6.21",
+    "minecraft": ">=1.18.2",
+    "java": ">=17"
+  }
+}
