@@ -1,18 +1,22 @@
 package de.jagenka
 
+import de.jagenka.Util.ifServerLoaded
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.loader.api.FabricLoader
-import org.spongepowered.configurate.CommentedConfigurationNode
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.server.network.ServerPlayerEntity
 import org.spongepowered.configurate.ConfigurationOptions
-import org.spongepowered.configurate.kotlin.objectMapper
 import org.spongepowered.configurate.kotlin.objectMapperFactory
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 
 private const val CONF_FILE = "deathgames_conf.yaml"
 
 object DeathGames : DedicatedServerModInitializer
 {
+    val spawnPoints = ArrayList<Coords>()
+    val kills = ArrayList<Kill>()
+    val players = HashMap<String, ServerPlayerEntity>()
+
     override fun onInitializeServer()
     {
         loadConfig()
@@ -34,19 +38,26 @@ object DeathGames : DedicatedServerModInitializer
                 }
         )
 
-        val list = listOf(Coords(1, 2, 3), Coords(1, 2, 3), Coords(1, 2, 3), Coords(1, 2, 3))
+        spawnPoints.clear()
+        spawnPoints.addAll(root.node("spawns").getList(Coords::class.java) ?: error("Error loading DeathGames config for spawns"))
+    }
 
-        root.node("coords").setList(Coords::class.java, list)
-        confLoader.save(root)
+    fun getPlayer(name: String): ServerPlayerEntity?
+    {
+        if (players.containsKey(name)) return players[name]
+        ifServerLoaded { minecraftServer ->
+            minecraftServer.playerManager.playerList.forEach { player ->
+                players[player.name.asString()] = player
+            }
+        }
+        if (players.containsKey(name)) return players[name]
+        return null
+    }
 
-//        println(objectMapper<List<Coords>>().load(root.node("coords")))
-
-        println(root.node("coords").getList(Coords::class.java))
-
-//        objectMapper<Coords>().save(list, root.node("coords"))
-//        objectMapper<Coords>().load(root.node("coords"))
+    @JvmStatic
+    fun registerKill(kill: Kill)
+    {
+        kills.add(kill)
+        println("${kill.attacker.name.asString()} killed ${kill.deceased.name.asString()}")
     }
 }
-
-@ConfigSerializable
-data class Coords(val x: Int, val y: Int, val z: Int)
