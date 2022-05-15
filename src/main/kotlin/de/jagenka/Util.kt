@@ -22,6 +22,8 @@ object Util
     fun onServerLoaded(minecraftServer: MinecraftServer)
     {
         this.minecraftServer = minecraftServer
+
+        DGPlayerManager.reset()
     }
 
     fun ifServerLoaded(lambda: (MinecraftServer) -> Unit)
