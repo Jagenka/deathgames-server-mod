@@ -1,10 +1,9 @@
 package de.jagenka
 
-import de.jagenka.Util.ifServerLoaded
+import de.jagenka.commands.JayCommand
 import net.fabricmc.api.DedicatedServerModInitializer
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.server.network.ServerPlayerEntity
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
@@ -15,13 +14,21 @@ object DeathGames : DedicatedServerModInitializer
 {
     val spawnPoints = ArrayList<Coords>()
     val kills = ArrayList<Kill>()
-    val players = HashMap<String, ServerPlayerEntity>()
 
     override fun onInitializeServer()
     {
         loadConfig()
 
+        registerCommands()
+
         println("DeathGames Mod initialized!")
+    }
+
+    private fun registerCommands()
+    {
+        CommandRegistrationCallback.EVENT.register { dispatcher, _ ->
+            JayCommand.register(dispatcher)
+        }
     }
 
     private fun loadConfig()
@@ -40,18 +47,6 @@ object DeathGames : DedicatedServerModInitializer
 
         spawnPoints.clear()
         spawnPoints.addAll(root.node("spawns").getList(Coords::class.java) ?: error("Error loading DeathGames config for spawns"))
-    }
-
-    fun getPlayer(name: String): ServerPlayerEntity?
-    {
-        if (players.containsKey(name)) return players[name]
-        ifServerLoaded { minecraftServer ->
-            minecraftServer.playerManager.playerList.forEach { player ->
-                players[player.name.asString()] = player
-            }
-        }
-        if (players.containsKey(name)) return players[name]
-        return null
     }
 
     @JvmStatic
