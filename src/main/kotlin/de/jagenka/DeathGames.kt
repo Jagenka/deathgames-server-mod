@@ -12,7 +12,6 @@ private const val CONF_FILE = "deathgames_conf.yaml"
 
 object DeathGames : DedicatedServerModInitializer
 {
-    val spawnPoints = ArrayList<Coords>()
     val kills = ArrayList<Kill>()
 
     override fun onInitializeServer()
@@ -45,8 +44,7 @@ object DeathGames : DedicatedServerModInitializer
                 }
         )
 
-        spawnPoints.clear()
-        spawnPoints.addAll(root.node("spawns").getList(Coords::class.java) ?: error("Error loading DeathGames config for spawns"))
+        DGSpawnManager.setSpawns(root.node("spawns").getList(Coords::class.java) ?: error("Error loading DeathGames config for spawns"))
     }
 
     @JvmStatic
