@@ -3,9 +3,7 @@ package de.jagenka.mixin;
 import de.jagenka.DGKillManager;
 import de.jagenka.Testing;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,8 +26,8 @@ public abstract class ServerPlayerEntityMixin
     }
 
     // I use this for testing
-    @Inject(method = "dropItem", at = @At("HEAD"))
-    private void dropItem(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir)
+    @Inject(method = "dropSelectedItem", at = @At("HEAD"))
+    private void dropItem(boolean entireStack, CallbackInfoReturnable<Boolean> cir)
     {
         Testing.dropTest();
     }

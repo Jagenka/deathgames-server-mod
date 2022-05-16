@@ -24,7 +24,7 @@ object Testing
 //                }
 //            }
 //        }
-        Timer.toggle()
+//        Timer.toggle()
 
         ifServerLoaded {
 //            it.scoreboard.teams.clear()
