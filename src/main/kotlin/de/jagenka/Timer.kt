@@ -26,12 +26,12 @@ object Timer
 
     private fun onFullSecond()
     {
-        println("${currentTime(DGUnit.SECONDS)}s")
+//        println("${currentTime(DGUnit.SECONDS)}s")
     }
 
     private fun onFullMinute()
     {
-        println("${currentTime(DGUnit.MINUTES)}min")
+//        println("${currentTime(DGUnit.MINUTES)}min")
     }
 
     private fun onFullHour()
