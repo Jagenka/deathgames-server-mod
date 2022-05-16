@@ -1,6 +1,7 @@
 package de.jagenka
 
 import net.minecraft.server.network.ServerPlayerEntity
+import org.spongepowered.configurate.CommentedConfigurationNode
 
 object DGSpawnManager
 {
@@ -32,5 +33,10 @@ object DGSpawnManager
         val shuffledSpawns = spawns.shuffled()
         teamSpawns.clear()
         teams.forEachIndexed { index, team -> teamSpawns[team] = shuffledSpawns[index] }
+    }
+
+    fun loadConfig(root: CommentedConfigurationNode)
+    {
+        setSpawns(root.node("spawns").getList(Coords::class.java) ?: error("Error loading DeathGames spawns from config"))
     }
 }

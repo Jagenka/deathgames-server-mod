@@ -8,11 +8,9 @@ import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 
-private const val CONF_FILE = "deathgames_conf.yaml"
-
 object DeathGames : DedicatedServerModInitializer
 {
-    val kills = ArrayList<Kill>()
+    const val CONF_FILE = "deathgames_conf.yaml"
 
     override fun onInitializeServer()
     {
@@ -32,7 +30,7 @@ object DeathGames : DedicatedServerModInitializer
 
     private fun loadConfig()
     {
-        val path = FabricLoader.getInstance().configDir.resolve(CONF_FILE)
+        val path = FabricLoader.getInstance().configDir.resolve(DeathGames.CONF_FILE)
         val confLoader = YamlConfigurationLoader.builder().path(path).build()
         val root = confLoader.load(
             ConfigurationOptions.defaults()
@@ -44,13 +42,7 @@ object DeathGames : DedicatedServerModInitializer
                 }
         )
 
-        DGSpawnManager.setSpawns(root.node("spawns").getList(Coords::class.java) ?: error("Error loading DeathGames config for spawns"))
-    }
-
-    @JvmStatic
-    fun registerKill(kill: Kill)
-    {
-        kills.add(kill)
-        println("${kill.attacker.name.asString()} killed ${kill.deceased.name.asString()}")
+        DGSpawnManager.loadConfig(root)
+        DGKillManager.loadConfig(root)
     }
 }
