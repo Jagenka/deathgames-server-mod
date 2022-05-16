@@ -4,6 +4,7 @@ import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.util.UUID
@@ -42,5 +43,10 @@ object Util
     {
         val text = LiteralText(message).formatted(formatting)
         ifServerLoaded { it.playerManager.broadcast(text, MessageType.CHAT, sender) }
+    }
+
+    fun ServerPlayerEntity.sendPrivateMessage(text: String)
+    {
+        this.sendMessage(Text.of(text), MessageType.CHAT, modUUID)
     }
 }
