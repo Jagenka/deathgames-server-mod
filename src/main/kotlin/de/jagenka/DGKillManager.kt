@@ -1,5 +1,6 @@
 package de.jagenka
 
+import de.jagenka.DGPlayerManager.eliminate
 import de.jagenka.DGPlayerManager.getDGTeam
 import de.jagenka.Util.sendPrivateMessage
 import net.minecraft.server.network.ServerPlayerEntity
@@ -7,14 +8,15 @@ import org.spongepowered.configurate.CommentedConfigurationNode
 
 object DGKillManager
 {
-    val playerMoney = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
-    val teamMoney = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
+    private val playerMoney = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
+    private val teamMoney = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
-    val playerLives = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
-    val teamLives = mutableMapOf<DGTeam, Int>().withDefault { 0 }
+    //TODO: display somehow
+    private val playerLives = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
+    private val teamLives = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
-    val playerKillStreak = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
-    val teamKillStreak = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
+    private val playerKillStreak = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
+    private val teamKillStreak = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
     var moneyMode = Mode.PLAYER
     var livesMode = Mode.TEAM
@@ -27,6 +29,16 @@ object DGKillManager
 
     @JvmStatic
     fun registerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    {
+        handleMoney(attacker, deceased)
+
+        // TODO?: reset shop teleport after kill
+        // TODO: reset time since last kill
+
+        handleLives(attacker, deceased)
+    }
+
+    private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
     {
         when (moneyMode)
         {
@@ -45,9 +57,6 @@ object DGKillManager
                 attacker.getDGTeam()?.getPlayers()?.forEach { it.sendPrivateMessage("Your team received ${moneyPerKill + killStreakBonus * killStreakAmount}") }
             }
         }
-
-        // TODO?: reset shop teleport after kill
-        // TODO: reset time since last kill
     }
 
     private fun getKillStreak(deceased: ServerPlayerEntity): Int
@@ -57,6 +66,25 @@ object DGKillManager
             Mode.PLAYER -> playerKillStreak.getValue(deceased).also { playerKillStreak[deceased] = 0 }
             Mode.TEAM -> teamKillStreak.getValue(deceased.getDGTeam()).also { teamKillStreak[deceased.getDGTeam()] = 0 }
 
+        }
+    }
+
+    private fun handleLives(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    {
+        when (livesMode)
+        {
+            Mode.PLAYER ->
+            {
+                val livesAmount = playerLives.getValue(deceased)
+                if (livesAmount > 0) playerLives[deceased] = livesAmount - 1
+                else deceased.eliminate()
+            }
+            Mode.TEAM ->
+            {
+                val livesAmount = teamLives.getValue(deceased.getDGTeam())
+                if (livesAmount > 0) teamLives[deceased.getDGTeam()] = livesAmount - 1
+                else deceased.eliminate()
+            }
         }
     }
 

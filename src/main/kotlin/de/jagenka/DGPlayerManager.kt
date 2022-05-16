@@ -6,8 +6,9 @@ import net.minecraft.util.Formatting
 
 object DGPlayerManager
 {
-    private val players = HashSet<ServerPlayerEntity>()
-    private val teamRegistry = HashMap<ServerPlayerEntity, DGTeam>()
+    private val players = mutableSetOf<ServerPlayerEntity>()
+    private val teamRegistry = mutableMapOf<ServerPlayerEntity, DGTeam>()
+    private val inGame = mutableListOf<ServerPlayerEntity>()
 
     fun getPlayer(name: String): ServerPlayerEntity?
     {
@@ -58,13 +59,33 @@ object DGPlayerManager
     {
         return teamRegistry.keys.filter { teamRegistry[it] == team }
     }
+
+    fun getInGamePlayers(): List<ServerPlayerEntity> = inGame
+
+    fun getInGamePlayersInTeam(team: DGTeam): List<ServerPlayerEntity> = inGame.filter { teamRegistry[it] == team }
+
+    fun ServerPlayerEntity.isInGame() = inGame.contains(this)
+
+    fun eliminatePlayer(player: ServerPlayerEntity)
+    {
+        inGame.remove(player)
+    }
+
+    fun ServerPlayerEntity.eliminate()
+    {
+        eliminatePlayer(this)
+    }
+
+    fun getInGameTeams() = DGTeam.values().filter { it.getInGamePlayers().isNotEmpty() }
 }
 
 enum class DGTeam
 {
-    BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE;
+    BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
 
-    fun getPlayers(): List<ServerPlayerEntity> = DGPlayerManager.getPlayersInTeam(this)
+    fun getPlayers() = DGPlayerManager.getPlayersInTeam(this)
+
+    fun getInGamePlayers() = DGPlayerManager.getInGamePlayersInTeam(this)
 }
 
 data class PlayerTeamEntry(val player: ServerPlayerEntity, val team: DGTeam)
