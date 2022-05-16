@@ -1,7 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.DeathGames;
-import de.jagenka.Kill;
+import de.jagenka.DGKillManager;
 import de.jagenka.Testing;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -23,7 +22,7 @@ public abstract class ServerPlayerEntityMixin
         Entity attacker = damageSource.getAttacker();
         if (attacker != null)
         {
-            if (attacker instanceof ServerPlayerEntity) DeathGames.registerKill(new Kill((ServerPlayerEntity) attacker, (ServerPlayerEntity) (Object) this));
+            if (attacker instanceof ServerPlayerEntity) DGKillManager.registerKill((ServerPlayerEntity) attacker, (ServerPlayerEntity) (Object) this);
             else System.out.println("attacker is not a ServerPlayerEntity");
         }
     }
