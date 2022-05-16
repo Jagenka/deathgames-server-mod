@@ -21,6 +21,8 @@ object DGPlayerManager
 
     fun getTeam(player: ServerPlayerEntity) = teamRegistry[player]
 
+    fun ServerPlayerEntity.getDGTeam() = getTeam(this)
+
     fun registerPlayerToTeam(player: ServerPlayerEntity, team: DGTeam)
     {
         teamRegistry[player] = team
@@ -51,11 +53,18 @@ object DGPlayerManager
             server.scoreboard.teams.forEach { it.color = Formatting.byName(it.name.lowercase()) }
         }
     }
+
+    fun getPlayersInTeam(team: DGTeam): List<ServerPlayerEntity>
+    {
+        return teamRegistry.keys.filter { teamRegistry[it] == team }
+    }
 }
 
 enum class DGTeam
 {
     BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE;
+
+    fun getPlayers(): List<ServerPlayerEntity> = DGPlayerManager.getPlayersInTeam(this)
 }
 
 data class PlayerTeamEntry(val player: ServerPlayerEntity, val team: DGTeam)
