@@ -1,9 +1,16 @@
 spawns:
-- {x: -37.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f}
-- {x: 38.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f}
-- {x: 91.5, y: 63, z: -37.5, yaw: 90f, pitch: 0f}
-- {x: 91.5, y: 72, z: 38.5, yaw: 90f, pitch: 0f}
-- {x: 38.5, y: 72, z: 91.5, yaw: 180f, pitch: 0f}
-- {x: -37.5, y: 72, z: 91.5, yaw: 180f, pitch: 0f}
-- {x: -90.5, y: 70, z: 38.5, yaw: 270f, pitch: 0f}
-- {x: -90.5, y: 63, z: -37.5, yaw: 270f, pitch: 0f}
+  - {x: -37.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f}
+  - {x: 38.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f}
+  - {x: 91.5, y: 63, z: -37.5, yaw: 90f, pitch: 0f}
+  - {x: 91.5, y: 72, z: 38.5, yaw: 90f, pitch: 0f}
+  - {x: 38.5, y: 72, z: 91.5, yaw: 180f, pitch: 0f}
+  - {x: -37.5, y: 72, z: 91.5, yaw: 180f, pitch: 0f}
+  - {x: -90.5, y: 70, z: 38.5, yaw: 270f, pitch: 0f}
+  - {x: -90.5, y: 63, z: -37.5, yaw: 270f, pitch: 0f}
+
+moneyPerKill: 20
+
+livesPerPlayer: 5
+livesPerTeam: 10
+
+killStreakBonus: 10
