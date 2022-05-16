@@ -1,7 +1,11 @@
 package de.jagenka
 
+import net.minecraft.server.network.ServerPlayerEntity
+
 object Timer
 {
+    private val inactiveTimer = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 } //TODO: highlight inactive players
+
     private var ticks = 0
     private var running = false
 
@@ -21,7 +25,9 @@ object Timer
 
     private fun onFullTick()
     {
+        DGPlayerManager.getInGamePlayers().forEach { inactiveTimer[it] = inactiveTimer.getValue(it) + 1 }
 
+        if (DGPlayerManager.getInGameTeams().size <= 1) TODO("game end not implemented")
     }
 
     private fun onFullSecond()
@@ -48,9 +54,15 @@ object Timer
         running = true
     }
 
-    fun stop()
+    fun pause()
     {
         running = false
+    }
+
+    fun reset()
+    {
+        running = false
+        ticks = 0
     }
 
     fun toggle()
