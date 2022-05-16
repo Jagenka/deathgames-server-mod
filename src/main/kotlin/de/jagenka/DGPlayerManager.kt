@@ -19,6 +19,8 @@ object DGPlayerManager
         return result
     }
 
+    fun getTeam(player: ServerPlayerEntity) = teamRegistry[player]
+
     fun registerPlayerToTeam(player: ServerPlayerEntity, team: DGTeam)
     {
         teamRegistry[player] = team

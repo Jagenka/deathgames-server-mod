@@ -1,5 +1,7 @@
 package de.jagenka
 
+import net.minecraft.server.network.ServerPlayerEntity
+
 object DGSpawnManager
 {
     private val spawns = ArrayList<Coords>()
@@ -14,6 +16,15 @@ object DGSpawnManager
     {
         this.spawns.clear()
         addSpawns(spawns)
+    }
+
+    fun getSpawn(team: DGTeam) = teamSpawns[team]
+
+    fun getSpawn(player: ServerPlayerEntity) = DGPlayerManager.getTeam(player)?.let { getSpawn(it) }
+
+    fun shuffleSpawns()
+    {
+        shuffleSpawns(DGPlayerManager.getNonEmptyTeams())
     }
 
     fun shuffleSpawns(teams: Collection<DGTeam>)
