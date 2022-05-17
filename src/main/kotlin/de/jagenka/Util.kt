@@ -38,7 +38,7 @@ object Util
     {
         this.minecraftServer = minecraftServer
 
-        DGPlayerManager.reset()
+        DGPlayerManager.prepareTeams()
     }
 
     fun ifServerLoaded(lambda: (MinecraftServer) -> Unit)

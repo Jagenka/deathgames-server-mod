@@ -59,6 +59,7 @@ object DeathGames : DedicatedServerModInitializer
 
         DGKillManager.reset()
         Timer.reset()
+        DGPlayerManager.reset()
 
         //TODO: reset HUD
         //TODO: reset shop

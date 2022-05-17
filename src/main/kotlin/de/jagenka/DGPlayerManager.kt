@@ -51,7 +51,6 @@ object DGPlayerManager
 
     fun reset()
     {
-        prepareTeams()
         players.clear()
     }
 
