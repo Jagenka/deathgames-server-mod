@@ -31,7 +31,7 @@ object DGKillManager
     var killStreakBonus = 10
 
     @JvmStatic
-    fun registerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    fun registerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity) //TODO: handle deceased on every death
     {
         totalKills[attacker] = totalKills.getValue(attacker) + 1
         totalDeaths[deceased] = totalDeaths.getValue(deceased) + 1
