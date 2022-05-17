@@ -8,7 +8,10 @@ spawns:
   - {x: -90.5, y: 70, z: 38.5, yaw: 270f, pitch: 0f}
   - {x: -90.5, y: 63, z: -37.5, yaw: 270f, pitch: 0f}
 
+defaultSpawn: {x: 0.5, y: 80, z: 0.5, yaw: 0f, pitch: 0f}
+
 moneyPerKill: 20
+startMoneyPerPlayer: 100
 
 livesPerPlayer: 5
 livesPerTeam: 10
