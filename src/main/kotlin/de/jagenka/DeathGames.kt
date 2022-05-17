@@ -1,15 +1,22 @@
 package de.jagenka
 
+import de.jagenka.DGPlayerManager.getDGTeam
+import de.jagenka.DGPlayerManager.makeInGame
+import de.jagenka.Util.ifServerLoaded
+import de.jagenka.Util.teleport
 import de.jagenka.commands.JayCommand
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.world.GameMode
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 
 object DeathGames : DedicatedServerModInitializer
 {
+    var running = false
+
     const val CONF_FILE = "deathgames_conf.yaml"
 
     override fun onInitializeServer()
@@ -44,5 +51,42 @@ object DeathGames : DedicatedServerModInitializer
 
         DGSpawnManager.loadConfig(root)
         DGKillManager.loadConfig(root)
+    }
+
+    fun startGame()
+    {
+        val teamPlayers = DGPlayerManager.getTeamPlayers()
+
+        DGKillManager.reset()
+        Timer.reset()
+
+        //TODO: reset HUD
+        //TODO: reset shop
+        //TODO: reset corner platforms
+
+        DGKillManager.initLives(teamPlayers)
+        DGKillManager.initMoney(teamPlayers)
+
+        teamPlayers.forEach {
+            it.health = 20f //set max hearts
+            it.hungerManager.add(20, 1f) //set max food and saturation
+            it.makeInGame()
+            it.changeGameMode(GameMode.ADVENTURE)
+        }
+
+        DGPlayerManager.getPlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
+
+        ifServerLoaded { it.overworld.setWeather(Int.MAX_VALUE, 0, false, false) }
+
+        DGSpawnManager.shuffleSpawns()
+
+        DGPlayerManager.getPlayers().forEach { it.teleport(DGSpawnManager.getSpawn(it)) }
+
+        //TODO: remove arrows / items from map / gino's traps
+
+        //TODO: show begin message
+
+        Timer.start()
+        running = true
     }
 }
