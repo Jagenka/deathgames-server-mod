@@ -11,7 +11,6 @@ object DGKillManager
     private val playerMoney = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
     private val teamMoney = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
-    //TODO: display somehow
     private val playerLives = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
     private val teamLives = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
@@ -37,12 +36,20 @@ object DGKillManager
         totalKills[attacker] = totalKills.getValue(attacker) + 1
         totalDeaths[deceased] = totalDeaths.getValue(deceased) + 1
 
+        when (killStreakMode)
+        {
+            Mode.PLAYER -> playerKillStreak[attacker] = playerKillStreak.getValue(attacker) + 1
+            Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
+        }
+
         handleMoney(attacker, deceased)
 
         // TODO?: reset shop teleport after kill
         // TODO: reset time since last kill
 
         handleLives(attacker, deceased)
+
+        DGDisplayManager.updateSidebar()
     }
 
     private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
@@ -121,6 +128,16 @@ object DGKillManager
             Mode.TEAM -> players.forEach { teamMoney[it.getDGTeam()] = teamMoney.getValue(it.getDGTeam()) + startMoneyPerPlayer }
         }
     }
+
+    fun getPlayerLives() = playerLives
+    fun getTeamLives() = teamLives
+
+    fun getLives(player: ServerPlayerEntity) = playerLives[player]
+    fun getLives(team: DGTeam) = teamLives[team]
+
+    fun getNonZeroLifePlayers() = playerLives.filter { it.value > 0 }
+
+    fun getNonZeroLifeTeams() = teamLives.filter { it.value > 0 }
 
     fun reset()
     {
