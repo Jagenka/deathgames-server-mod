@@ -58,8 +58,10 @@ object DGPlayerManager
     {
         ifServerLoaded { server ->
             server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
-            DGTeam.values().forEach { color -> server.scoreboard.addTeam(color.name) }
-            server.scoreboard.teams.forEach { it.color = Formatting.byName(it.name.lowercase()) }
+            DGTeam.values().forEach { color ->
+                server.scoreboard.addTeam(color.name)
+                server.scoreboard.getTeam(color.name)?.color = Formatting.byName(color.name.lowercase())
+            }
         }
     }
 
