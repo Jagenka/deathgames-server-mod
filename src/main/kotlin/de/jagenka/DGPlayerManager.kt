@@ -89,6 +89,10 @@ object DGPlayerManager
     }
 
     fun getInGameTeams() = DGTeam.values().filter { it.getInGamePlayers().isNotEmpty() }
+
+    fun Coords.getInGamePlayersInRange(range: Double) = getInGamePlayers().filter { player ->
+        Coords(player.x, player.y, player.z) distanceTo this <= range
+    }
 }
 
 enum class DGTeam
