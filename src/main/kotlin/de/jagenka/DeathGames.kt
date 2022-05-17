@@ -61,12 +61,14 @@ object DeathGames : DedicatedServerModInitializer
         Timer.reset()
         DGPlayerManager.reset()
 
-        //TODO: reset HUD
+        DGDisplayManager.reset()
         //TODO: reset shop
         //TODO: reset corner platforms
 
         DGKillManager.initLives(teamPlayers)
         DGKillManager.initMoney(teamPlayers)
+
+        DGDisplayManager.showSidebar()
 
         teamPlayers.forEach {
             it.health = 20f //set max hearts
