@@ -18,11 +18,15 @@ object DGKillManager
     private val playerKillStreak = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
     private val teamKillStreak = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
+    private val totalKills = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
+    private val totalDeaths = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 }
+
     var moneyMode = Mode.PLAYER
     var livesMode = Mode.TEAM
     var killStreakMode = Mode.PLAYER
 
     var moneyPerKill = 20
+    var startMoneyPerPlayer = 100
     var livesPerPlayer = 5
     var livesPerTeam = 10
     var killStreakBonus = 10
@@ -30,6 +34,9 @@ object DGKillManager
     @JvmStatic
     fun registerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
     {
+        totalKills[attacker] = totalKills.getValue(attacker) + 1
+        totalDeaths[deceased] = totalDeaths.getValue(deceased) + 1
+
         handleMoney(attacker, deceased)
 
         // TODO?: reset shop teleport after kill
@@ -94,6 +101,37 @@ object DGKillManager
         livesPerPlayer = root.node("livesPerPlayer").int
         livesPerTeam = root.node("livesPerTeam").int
         killStreakBonus = root.node("killStreakBonus").int
+        startMoneyPerPlayer = root.node("startMoneyPerPlayer").int
+    }
+
+    fun initLives(players: Collection<ServerPlayerEntity>)
+    {
+        when (livesMode)
+        {
+            Mode.PLAYER -> players.forEach { playerLives[it] = livesPerPlayer }
+            Mode.TEAM -> players.forEach { teamLives[it.getDGTeam()] = livesPerTeam }
+        }
+    }
+
+    fun initMoney(players: Collection<ServerPlayerEntity>)
+    {
+        when (moneyMode)
+        {
+            Mode.PLAYER -> players.forEach { playerMoney[it] = startMoneyPerPlayer }
+            Mode.TEAM -> players.forEach { teamMoney[it.getDGTeam()] = teamMoney.getValue(it.getDGTeam()) + startMoneyPerPlayer }
+        }
+    }
+
+    fun reset()
+    {
+        playerMoney.clear()
+        teamMoney.clear()
+        playerLives.clear()
+        teamLives.clear()
+        playerKillStreak.clear()
+        teamKillStreak.clear()
+        totalKills.clear()
+        totalDeaths.clear()
     }
 }
 
