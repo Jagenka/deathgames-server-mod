@@ -49,4 +49,10 @@ object Util
     {
         this.sendMessage(Text.of(text), MessageType.CHAT, modUUID)
     }
+
+    fun ServerPlayerEntity.teleport(coords: Coords)
+    {
+        val (x, y, z, yaw, pitch) = coords
+        this.teleport(server.overworld, x, y, z, yaw, pitch)
+    }
 }
