@@ -12,7 +12,7 @@ object Timer
     @JvmStatic
     fun tick()
     {
-        if (running)
+        if (this.running && DeathGames.running)
         {
             ticks++
 
@@ -25,14 +25,21 @@ object Timer
 
     private fun onFullTick()
     {
+        //increment inactive timer for all in game players
         DGPlayerManager.getInGamePlayers().forEach { inactiveTimer[it] = inactiveTimer.getValue(it) + 1 }
 
-        if (DGPlayerManager.getInGameTeams().size <= 1) TODO("game end not implemented")
+        //check if game is over (only one team remaining)
+        if (DGPlayerManager.getInGameTeams().size <= 1)
+        {
+            pause()
+            DeathGames.running = false
+        }
     }
 
     private fun onFullSecond()
     {
 //        println("${currentTime(DGUnit.SECONDS)}s")
+        Util.sendChatMessage("${currentTime(DGUnit.SECONDS)}s")
     }
 
     private fun onFullMinute()
@@ -63,6 +70,7 @@ object Timer
     {
         running = false
         ticks = 0
+        inactiveTimer.clear()
     }
 
     fun toggle()
