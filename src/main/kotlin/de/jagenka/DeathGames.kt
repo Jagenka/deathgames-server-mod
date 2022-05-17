@@ -8,6 +8,7 @@ import de.jagenka.commands.JayCommand
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.kotlin.objectMapperFactory
@@ -61,12 +62,14 @@ object DeathGames : DedicatedServerModInitializer
         Timer.reset()
         DGPlayerManager.reset()
 
-        //TODO: reset HUD
+        DGDisplayManager.reset()
         //TODO: reset shop
         //TODO: reset corner platforms
 
         DGKillManager.initLives(teamPlayers)
         DGKillManager.initMoney(teamPlayers)
+
+        DGDisplayManager.showSidebar()
 
         teamPlayers.forEach {
             it.health = 20f //set max hearts
@@ -81,7 +84,10 @@ object DeathGames : DedicatedServerModInitializer
 
         DGSpawnManager.shuffleSpawns()
 
-        DGPlayerManager.getPlayers().forEach { it.teleport(DGSpawnManager.getSpawn(it)) }
+        DGPlayerManager.getPlayers().forEach {
+            it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(0, 51, 0), 0f, true, false) //TODO: read from config -> blackbox
+            it.teleport(DGSpawnManager.getSpawn(it))
+        }
 
         //TODO: remove arrows / items from map / gino's traps
 
