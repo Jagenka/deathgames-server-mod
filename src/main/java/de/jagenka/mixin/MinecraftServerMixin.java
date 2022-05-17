@@ -1,6 +1,7 @@
 package de.jagenka.mixin;
 
 import de.jagenka.Timer;
+import de.jagenka.TrapsAreNotGay;
 import de.jagenka.Util;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,5 +24,6 @@ public class MinecraftServerMixin
     private void tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci)
     {
         Timer.tick();
+        TrapsAreNotGay.tick();
     }
 }

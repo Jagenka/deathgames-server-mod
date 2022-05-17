@@ -8,9 +8,17 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.util.UUID
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 @ConfigSerializable
-data class Coords(val x: Double, val y: Double, val z: Double, val yaw: Float, val pitch: Float)
+data class Coords(val x: Double, val y: Double, val z: Double, val yaw: Float = 0f, val pitch: Float = 0f)
+{
+    operator fun Coords.plus(other: Coords) = Coords(this.x + other.x, this.y + other.y, this.z + other.z, this.yaw, this.pitch)
+    operator fun Coords.minus(other: Coords) = Coords(this.x - other.x, this.y - other.y, this.z - other.z, this.yaw, this.pitch)
+    infix fun distanceTo(other: Coords) = (other - this).length()
+    private fun length() = sqrt(this.x.pow(2) + this.y.pow(2) + this.z.pow(2))
+}
 
 data class Kill(val attacker: ServerPlayerEntity, val deceased: ServerPlayerEntity)
 
