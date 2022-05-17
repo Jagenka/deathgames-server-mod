@@ -3,12 +3,12 @@ package de.jagenka
 import de.jagenka.Util.ifServerLoaded
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
+import net.minecraft.world.GameMode
 
 object DGPlayerManager
 {
-    private val players = mutableSetOf<ServerPlayerEntity>()
+    private val players = mutableSetOf<DGPlayer>()
     private val teamRegistry = mutableMapOf<ServerPlayerEntity, DGTeam>()
-    private val inGame = mutableSetOf<ServerPlayerEntity>()
 
     fun getPlayer(name: String): ServerPlayerEntity?
     {
@@ -19,7 +19,7 @@ object DGPlayerManager
     fun getPlayers(): Set<ServerPlayerEntity>
     {
         val allPlayers = mutableSetOf<ServerPlayerEntity>()
-        allPlayers.addAll(players)
+        players.forEach { allPlayers.add(it.playerEntity) }
         ifServerLoaded { allPlayers.addAll(it.playerManager.playerList) }
         return allPlayers
     }
@@ -72,26 +72,67 @@ object DGPlayerManager
         return teamRegistry.keys.filter { teamRegistry[it] == team }
     }
 
-    fun getInGamePlayers() = inGame
+    fun getInGamePlayers(): List<ServerPlayerEntity>
+    {
+        val result = mutableListOf<ServerPlayerEntity>()
+        players.filter { it.inGame }.forEach { result.add(it.playerEntity) }
+        return result.toList()
+    }
 
-    fun getInGamePlayersInTeam(team: DGTeam): List<ServerPlayerEntity> = inGame.filter { teamRegistry[it] == team }
+    fun getInGamePlayersInTeam(team: DGTeam): List<ServerPlayerEntity> = getInGamePlayers().filter { teamRegistry[it] == team }
 
-    fun ServerPlayerEntity.isInGame() = inGame.contains(this)
+    fun ServerPlayerEntity.isInGame() = getInGamePlayers().contains(this)
+
 
     fun ServerPlayerEntity.makeInGame()
     {
-        inGame.add(this)
+        players.add(DGPlayer(this, true))
     }
 
     fun ServerPlayerEntity.eliminate()
     {
-        inGame.remove(this)
+        players.add(DGPlayer(this, true))
+        this.changeGameMode(GameMode.SPECTATOR)
     }
 
     fun getInGameTeams() = DGTeam.values().filter { it.getInGamePlayers().isNotEmpty() }
 
     fun Coords.getInGamePlayersInRange(range: Double) = getInGamePlayers().filter { player ->
         Coords(player.x, player.y, player.z) distanceTo this <= range
+    }
+
+    @JvmStatic
+    fun replaceDeadPlayer(old: ServerPlayerEntity, new: ServerPlayerEntity)
+    {
+        val oldEntry = players.find { it.playerEntity == old }
+        if(oldEntry != null)
+        {
+            players.remove(oldEntry)
+            players.add(DGPlayer(new, oldEntry.inGame))
+        }
+
+        val oldTeam = teamRegistry.remove(old)
+        if (oldTeam != null) teamRegistry[new] = oldTeam
+    }
+}
+
+data class DGPlayer(var playerEntity: ServerPlayerEntity, var inGame: Boolean)
+{
+    override fun equals(other: Any?): Boolean
+    {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as DGPlayer
+
+        if (playerEntity != other.playerEntity) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int
+    {
+        return playerEntity.hashCode()
     }
 }
 

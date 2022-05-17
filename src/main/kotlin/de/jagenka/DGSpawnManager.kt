@@ -1,5 +1,6 @@
 package de.jagenka
 
+import de.jagenka.Util.teleport
 import net.minecraft.server.network.ServerPlayerEntity
 import org.spongepowered.configurate.CommentedConfigurationNode
 
@@ -24,6 +25,14 @@ object DGSpawnManager //TODO: lobby spawn, spectator spawn, dead players spawn? 
     fun getSpawn(team: DGTeam?) = teamSpawns.getValue(team)
 
     fun getSpawn(player: ServerPlayerEntity) = getSpawn(DGPlayerManager.getTeam(player))
+
+    @JvmStatic
+    fun handleRespawn(player: ServerPlayerEntity)
+    {
+        val spawn = getSpawn(player)
+        player.teleport(spawn)
+        player.yaw = spawn.yaw
+    }
 
     fun shuffleSpawns()
     {
