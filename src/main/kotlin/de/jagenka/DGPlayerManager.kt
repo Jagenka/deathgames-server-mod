@@ -8,31 +8,40 @@ object DGPlayerManager
 {
     private val players = mutableSetOf<ServerPlayerEntity>()
     private val teamRegistry = mutableMapOf<ServerPlayerEntity, DGTeam>()
-    private val inGame = mutableListOf<ServerPlayerEntity>()
+    private val inGame = mutableSetOf<ServerPlayerEntity>()
 
     fun getPlayer(name: String): ServerPlayerEntity?
     {
-        players.forEach { player -> if (player.name.asString() == name) return player }
+        getPlayers().forEach { if (it.name.asString() == name) return it }
+        return null
+    }
 
-        var result: ServerPlayerEntity? = null
-        ifServerLoaded { server -> server.playerManager.playerList.forEach { player -> if (player.name.asString() == name) result = player } }
-        if (result != null) players.add(result!!)
-        return result
+    fun getPlayers(): Set<ServerPlayerEntity>
+    {
+        val allPlayers = mutableSetOf<ServerPlayerEntity>()
+        allPlayers.addAll(players)
+        ifServerLoaded { allPlayers.addAll(it.playerManager.playerList) }
+        return allPlayers
     }
 
     fun getTeam(player: ServerPlayerEntity) = teamRegistry[player]
 
     fun ServerPlayerEntity.getDGTeam() = getTeam(this)
 
-    fun registerPlayerToTeam(player: ServerPlayerEntity, team: DGTeam)
-    {
-        teamRegistry[player] = team
-        ifServerLoaded { it.scoreboard.addPlayerToTeam(player.name.asString(), it.scoreboard.getTeam(team.name)) }
-    }
-
     fun ServerPlayerEntity.registerToTeam(team: DGTeam)
     {
-        registerPlayerToTeam(this, team)
+        ifServerLoaded {
+            it.scoreboard.addPlayerToTeam(this.name.asString(), it.scoreboard.getTeam(team.name))
+            teamRegistry[this] = team
+        }
+    }
+
+    fun ServerPlayerEntity.clearTeam()
+    {
+        ifServerLoaded {
+            it.scoreboard.clearPlayerTeam(this.name.asString())
+            teamRegistry.remove(this)
+        }
     }
 
     fun getNonEmptyTeams(): Set<DGTeam>
@@ -55,25 +64,27 @@ object DGPlayerManager
         }
     }
 
+    fun getTeamPlayers() = getPlayers().filter { teamRegistry[it] != null }
+
     fun getPlayersInTeam(team: DGTeam): List<ServerPlayerEntity>
     {
         return teamRegistry.keys.filter { teamRegistry[it] == team }
     }
 
-    fun getInGamePlayers(): List<ServerPlayerEntity> = inGame
+    fun getInGamePlayers() = inGame
 
     fun getInGamePlayersInTeam(team: DGTeam): List<ServerPlayerEntity> = inGame.filter { teamRegistry[it] == team }
 
     fun ServerPlayerEntity.isInGame() = inGame.contains(this)
 
-    fun eliminatePlayer(player: ServerPlayerEntity)
+    fun ServerPlayerEntity.makeInGame()
     {
-        inGame.remove(player)
+        inGame.add(this)
     }
 
     fun ServerPlayerEntity.eliminate()
     {
-        eliminatePlayer(this)
+        inGame.remove(this)
     }
 
     fun getInGameTeams() = DGTeam.values().filter { it.getInGamePlayers().isNotEmpty() }
@@ -86,6 +97,11 @@ enum class DGTeam
     fun getPlayers() = DGPlayerManager.getPlayersInTeam(this)
 
     fun getInGamePlayers() = DGPlayerManager.getInGamePlayersInTeam(this)
+
+    companion object
+    {
+        fun random() = values().random()
+    }
 }
 
 data class PlayerTeamEntry(val player: ServerPlayerEntity, val team: DGTeam)
