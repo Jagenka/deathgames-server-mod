@@ -2,6 +2,7 @@ package de.jagenka
 
 import de.jagenka.Util.teleport
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.world.GameMode
 import org.spongepowered.configurate.CommentedConfigurationNode
 
 object DGSpawnManager //TODO: lobby spawn, spectator spawn, dead players spawn? -> maybe just their platform
@@ -32,6 +33,7 @@ object DGSpawnManager //TODO: lobby spawn, spectator spawn, dead players spawn? 
         val spawn = getSpawn(player)
         player.teleport(spawn)
         player.yaw = spawn.yaw
+        if(spawn == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
     }
 
     fun shuffleSpawns()
