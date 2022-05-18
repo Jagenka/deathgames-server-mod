@@ -18,11 +18,7 @@ public abstract class ServerPlayerEntityMixin
     private void onDeath(DamageSource damageSource, CallbackInfo ci)
     {
         Entity attacker = damageSource.getAttacker();
-        if (attacker != null)
-        {
-            if (attacker instanceof ServerPlayerEntity) DGKillManager.registerKill((ServerPlayerEntity) attacker, (ServerPlayerEntity) (Object) this);
-            else System.out.println("attacker is not a ServerPlayerEntity");
-        }
+        DGKillManager.handleDeath(attacker, (ServerPlayerEntity) (Object) this);
     }
 
     // I use this for testing
