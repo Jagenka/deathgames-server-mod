@@ -8,6 +8,7 @@ import net.minecraft.network.packet.s2c.play.PlaySoundIdS2CPacket
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.sound.SoundCategory
+import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Vec3d
 
@@ -45,6 +46,12 @@ object TrapsAreNotGay
                         {
                             player.addStatusEffect(StatusEffectInstance(StatusEffects.SLOWNESS, 6, 100, false, false, false))
                             player.addStatusEffect(StatusEffectInstance(StatusEffects.BLINDNESS, 7, 5, false, false, false))
+                            /*player.playSound(
+                                SoundEvent(Identifier("entity.iron_golem.damage")),
+                                SoundCategory.MASTER,
+                                1f,
+                                1f
+                            )*/
                             player.networkHandler.sendPacket(
                                 PlaySoundIdS2CPacket(
                                     Identifier("entity.iron_golem.damage"),
@@ -65,7 +72,7 @@ object TrapsAreNotGay
     @JvmStatic
     fun tick()
     {
-        notGayness.forEach {notGay ->
+        notGayness.forEach { notGay ->
             notGay.age++
             val relevantPlayers = notGay.pos.getInGamePlayersInRange(1.5)
             relevantPlayers.forEach {
