@@ -91,7 +91,8 @@ object DGPlayerManager
 
     fun ServerPlayerEntity.eliminate()
     {
-        players.add(DGPlayer(this, true))
+        players.removeIf { it.playerEntity == this }
+        players.add(DGPlayer(this, false))
         this.changeGameMode(GameMode.SPECTATOR)
     }
 
@@ -105,7 +106,7 @@ object DGPlayerManager
     fun replaceDeadPlayer(old: ServerPlayerEntity, new: ServerPlayerEntity)
     {
         val oldEntry = players.find { it.playerEntity == old }
-        if(oldEntry != null)
+        if (oldEntry != null)
         {
             players.remove(oldEntry)
             players.add(DGPlayer(new, oldEntry.inGame))
