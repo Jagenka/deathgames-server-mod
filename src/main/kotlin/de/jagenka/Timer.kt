@@ -1,6 +1,7 @@
 package de.jagenka
 
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.world.GameMode
 
 object Timer
 {
@@ -31,15 +32,18 @@ object Timer
         //check if game is over (only one team remaining)
         if (DGPlayerManager.getInGameTeams().size <= 1)
         {
+            Util.sendChatMessage("GAME OVER")
             pause()
             DeathGames.running = false
+            DGPlayerManager.getPlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
+            //TODO: timer, back to lobby, etc
         }
     }
 
     private fun onFullSecond()
     {
 //        println("${currentTime(DGUnit.SECONDS)}s")
-        Util.sendChatMessage("${currentTime(DGUnit.SECONDS)}s")
+//        Util.sendChatMessage("${currentTime(DGUnit.SECONDS)}s")
     }
 
     private fun onFullMinute()
