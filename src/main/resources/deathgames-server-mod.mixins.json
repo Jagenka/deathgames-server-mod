@@ -6,9 +6,10 @@
   "mixins": [],
   "client": [],
   "server": [
-    "ServerPlayerEntityMixin",
     "MinecraftServerMixin",
-    "PlayerManagerMixin"
+    "PlayerManagerMixin",
+    "ServerPlayerEntityMixin",
+    "PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
