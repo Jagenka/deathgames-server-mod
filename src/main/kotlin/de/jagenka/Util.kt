@@ -1,11 +1,14 @@
 package de.jagenka
 
+import net.minecraft.block.Block
+import net.minecraft.block.Blocks
 import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import net.minecraft.util.math.BlockPos
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.util.UUID
 import kotlin.math.pow
@@ -63,4 +66,31 @@ object Util
         val (x, y, z, yaw, pitch) = coords
         this.teleport(server.overworld, x, y, z, yaw, pitch)
     }
+
+    fun setBlockAt(coords: Coords, block: Block)
+    {
+        val (x, y, z) = coords
+        ifServerLoaded { it.overworld.setBlockState(BlockPos(x, y, z), block.defaultState) }
+    }
+
+    fun setBlockAt(x: Double, y: Double, z: Double, block: Block)
+    {
+        setBlockAt(Coords(x, y, z), block)
+    }
+
+    fun setBlockAt(x: Int, y: Int, z: Int, block: Block)
+    {
+        setBlockAt(x.toDouble(), y.toDouble(), z.toDouble(), block)
+    }
+
+    fun getBlockAt(coords: Coords): Block
+    {
+        val (x, y, z) = coords
+        var block = Blocks.AIR // default
+        ifServerLoaded { block = it.overworld.getBlockState(BlockPos(x, y, z)).block }
+        return block
+    }
+
+    fun getBlockAt(x: Double, y: Double, z: Double) = getBlockAt(Coords(x, y, z))
+    fun getBlockAt(x: Int, y: Int, z: Int) = getBlockAt(x.toDouble(), y.toDouble(), z.toDouble())
 }

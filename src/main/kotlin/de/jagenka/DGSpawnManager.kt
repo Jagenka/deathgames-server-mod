@@ -1,11 +1,12 @@
 package de.jagenka
 
+import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 import org.spongepowered.configurate.CommentedConfigurationNode
 
-object DGSpawnManager //TODO: lobby spawn, spectator spawn, dead players spawn? -> maybe just their platform
+object DGSpawnManager //TODO: lobby spawn
 {
     private val spawns = ArrayList<Coords>()
     private val teamSpawns = mutableMapOf<DGTeam?, Coords>().withDefault { defaultSpawn }
@@ -23,17 +24,17 @@ object DGSpawnManager //TODO: lobby spawn, spectator spawn, dead players spawn? 
         addSpawns(spawns)
     }
 
-    fun getSpawn(team: DGTeam?) = teamSpawns.getValue(team)
+    private fun getSpawn(team: DGTeam?) = teamSpawns.getValue(team)
 
-    fun getSpawn(player: ServerPlayerEntity) = getSpawn(DGPlayerManager.getTeam(player))
+    fun ServerPlayerEntity.getSpawn() = getSpawn(DGPlayerManager.getTeam(this))
 
     @JvmStatic
     fun handleRespawn(player: ServerPlayerEntity)
     {
-        val spawn = getSpawn(player)
+        val spawn = player.getSpawn()
         player.teleport(spawn)
         player.yaw = spawn.yaw
-        if(spawn == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
+        if (spawn == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
     }
 
     fun shuffleSpawns()
@@ -41,11 +42,16 @@ object DGSpawnManager //TODO: lobby spawn, spectator spawn, dead players spawn? 
         shuffleSpawns(DGPlayerManager.getNonEmptyTeams())
     }
 
-    fun shuffleSpawns(teams: Collection<DGTeam>)
+    private fun shuffleSpawns(teams: Collection<DGTeam>)
     {
         val shuffledSpawns = spawns.shuffled()
         teamSpawns.clear()
-        teams.forEachIndexed { index, team -> teamSpawns[team] = shuffledSpawns[index] }
+        teams.forEachIndexed { index, team ->
+            if (index >= shuffledSpawns.size) return
+            teamSpawns[team] = shuffledSpawns[index]
+        }
+
+        ifServerLoaded { DGTeam.BLUE.getColoredBlock().defaultState }
         //TODO: color spawn platforms
         //TODO: print message if game is running, not at the beginning
     }
