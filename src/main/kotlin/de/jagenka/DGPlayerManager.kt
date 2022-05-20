@@ -1,6 +1,9 @@
 package de.jagenka
 
 import de.jagenka.Util.ifServerLoaded
+import net.minecraft.block.Block
+import net.minecraft.block.BlockState
+import net.minecraft.block.Blocks
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
 import net.minecraft.world.GameMode
@@ -140,6 +143,28 @@ data class DGPlayer(var playerEntity: ServerPlayerEntity, var inGame: Boolean)
 enum class DGTeam
 {
     BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
+
+    fun getColoredBlock(): Block
+    {
+        return when(this)
+        {
+            BLACK -> Blocks.BLACK_CONCRETE
+            DARK_BLUE -> Blocks.BLUE_CONCRETE
+            DARK_GREEN -> TODO()
+            DARK_AQUA -> TODO()
+            DARK_RED -> TODO()
+            DARK_PURPLE -> TODO()
+            GOLD -> TODO()
+            GRAY -> TODO()
+            DARK_GRAY -> TODO()
+            BLUE -> TODO()
+            GREEN -> TODO()
+            AQUA -> TODO()
+            RED -> TODO()
+            LIGHT_PURPLE -> TODO()
+            YELLOW -> TODO()
+        }
+    }
 
     fun getPlayers() = DGPlayerManager.getPlayersInTeam(this)
 
