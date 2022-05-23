@@ -8,8 +8,7 @@
   "server": [
     "MinecraftServerMixin",
     "PlayerManagerMixin",
-    "ServerPlayerEntityMixin",
-    "PlayerEntityMixin"
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

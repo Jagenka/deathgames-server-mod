@@ -86,7 +86,7 @@ object DeathGames : DedicatedServerModInitializer
 
         DGPlayerManager.getPlayers().forEach {
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(0, 51, 0), 0f, true, false) //TODO: read from config -> blackbox
-            it.teleport(DGSpawnManager.getSpawn(it))
+            // it.teleport(DGSpawnManager.getSpawn(it))
         }
 
         //TODO: remove arrows / items from map / gino's traps
