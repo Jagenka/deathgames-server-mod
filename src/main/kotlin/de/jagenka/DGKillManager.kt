@@ -1,5 +1,10 @@
 package de.jagenka
 
+import de.jagenka.Config.killStreakBonus
+import de.jagenka.Config.livesPerPlayer
+import de.jagenka.Config.livesPerTeam
+import de.jagenka.Config.moneyPerKill
+import de.jagenka.Config.startMoneyPerPlayer
 import de.jagenka.DGPlayerManager.eliminate
 import de.jagenka.DGPlayerManager.getDGTeam
 import de.jagenka.Util.sendChatMessage
@@ -26,11 +31,6 @@ object DGKillManager
     var livesMode = Mode.TEAM
     var killStreakMode = Mode.PLAYER
 
-    var moneyPerKill = 20
-    var startMoneyPerPlayer = 100
-    var livesPerPlayer = 5
-    var livesPerTeam = 10
-    var killStreakBonus = 10
 
     @JvmStatic
     fun handleDeath(attacker: Entity?, deceased: ServerPlayerEntity)
@@ -115,15 +115,6 @@ object DGKillManager
                 if (livesAmount - 1 < 1) deceased.eliminate()
             }
         }
-    }
-
-    fun loadConfig(root: CommentedConfigurationNode)
-    {
-        moneyPerKill = root.node("moneyPerKill").int
-        livesPerPlayer = root.node("livesPerPlayer").int
-        livesPerTeam = root.node("livesPerTeam").int
-        killStreakBonus = root.node("killStreakBonus").int
-        startMoneyPerPlayer = root.node("startMoneyPerPlayer").int
     }
 
     fun initLives(players: Collection<ServerPlayerEntity>)

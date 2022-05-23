@@ -1,6 +1,6 @@
 package de.jagenka
 
-import de.jagenka.Util.ifServerLoaded
+import de.jagenka.Config.defaultSpawn
 import de.jagenka.Util.teleport
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
@@ -11,14 +11,12 @@ object DGSpawnManager //TODO: lobby spawn
     private val spawns = ArrayList<Coordinates>()
     private val teamSpawns = mutableMapOf<DGTeam?, Coordinates>().withDefault { defaultSpawn }
 
-    private var defaultSpawn = Coordinates(0.5, 80.0, 0.5, 0f, 0f)
-
     private fun addSpawns(spawns: Collection<Coordinates>)
     {
         this.spawns.addAll(spawns)
     }
 
-    private fun setSpawns(spawns: Collection<Coordinates>)
+    internal fun setSpawns(spawns: Collection<Coordinates>)
     {
         this.spawns.clear()
         addSpawns(spawns)
@@ -75,7 +73,6 @@ object DGSpawnManager //TODO: lobby spawn
 
     fun loadConfig(root: CommentedConfigurationNode)
     {
-        setSpawns(root.node("spawns").getList(Coordinates::class.java) ?: error("Error loading DeathGames spawns from config"))
-        defaultSpawn = root.node("defaultSpawn").get(Coordinates::class.java) ?: error("Error loading DeathGames defaultSpawn from config")
+
     }
 }
