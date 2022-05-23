@@ -14,10 +14,10 @@ livesPerPlayer: 5
 livesPerTeam: 10
 
 
-shuffleSpawnsInterval: 2400 # 2min
-shuffleDelayAfterKill: 200 # 10s
+shuffleSpawnsInterval: 2400 # 2min = 2400
+shuffleDelayAfterKill: 200 # 10s = 200
 
-moneyInterval: 600 # 30s
+moneyInterval: 600 # 30s = 600
 moneyPerInterval: 5
 moneyPerKill: 20
 moneyBonusPerKillStreakKill: 10
