@@ -9,6 +9,7 @@ import kotlin.math.sqrt
 data class Coordinates(val x: Double, val y: Double, val z: Double, val yaw: Float = 0f, val pitch: Float = 0f)
 {
     constructor(pos: Vec3d) : this(pos.x, pos.y, pos.z)
+    constructor(x: Int, y: Int, z: Int) : this(x.toDouble(), y.toDouble(), z.toDouble())
 
     operator fun Coordinates.plus(other: Coordinates) = Coordinates(this.x + other.x, this.y + other.y, this.z + other.z, this.yaw, this.pitch)
     operator fun Coordinates.minus(other: Coordinates) = Coordinates(this.x - other.x, this.y - other.y, this.z - other.z, this.yaw, this.pitch)
