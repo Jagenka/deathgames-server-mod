@@ -9,7 +9,7 @@ enum class DGTeam
 {
     BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
 
-    fun getColoredBlock(): Block
+    fun getColorBlock(): Block
     {
         return when (this)
         {
@@ -38,7 +38,7 @@ enum class DGTeam
     {
         fun random() = values().random()
 
-        fun isColorBlock(block: Block) = block == defaultColorBlock || values().any { block == it.getColoredBlock() }
+        fun isColorBlock(block: Block) = block == defaultColorBlock || values().any { block == it.getColorBlock() }
     }
 
 }

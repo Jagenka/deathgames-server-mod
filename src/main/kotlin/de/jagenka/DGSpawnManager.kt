@@ -51,7 +51,6 @@ object DGSpawnManager //TODO: lobby spawn
             teamSpawns[team] = shuffledSpawns[index]
         }
 
-        ifServerLoaded { DGTeam.BLUE.getColoredBlock().defaultState }
         //TODO: color spawn platforms
         //TODO: print message if game is running, not at the beginning
     }
