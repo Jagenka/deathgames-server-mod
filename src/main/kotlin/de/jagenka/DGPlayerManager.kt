@@ -142,27 +142,26 @@ data class DGPlayer(var playerEntity: ServerPlayerEntity, var inGame: Boolean)
 
 enum class DGTeam
 {
-    BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
+    BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
 
     fun getColoredBlock(): Block
     {
-        return when(this)
+        return when (this)
         {
             BLACK -> Blocks.BLACK_CONCRETE
-            DARK_BLUE -> Blocks.BLUE_CONCRETE
-            DARK_GREEN -> TODO()
-            DARK_AQUA -> TODO()
-            DARK_RED -> TODO()
-            DARK_PURPLE -> TODO()
-            GOLD -> TODO()
-            GRAY -> TODO()
-            DARK_GRAY -> TODO()
-            BLUE -> TODO()
-            GREEN -> TODO()
-            AQUA -> TODO()
-            RED -> TODO()
-            LIGHT_PURPLE -> TODO()
-            YELLOW -> TODO()
+            DARK_GREEN -> Blocks.GREEN_TERRACOTTA
+            DARK_AQUA -> Blocks.CYAN_CONCRETE
+            DARK_RED -> Blocks.RED_CONCRETE
+            DARK_PURPLE -> Blocks.PURPLE_CONCRETE
+            GOLD -> Blocks.ORANGE_CONCRETE
+            GRAY -> Blocks.LIGHT_GRAY_CONCRETE
+            DARK_GRAY -> Blocks.GRAY_CONCRETE
+            BLUE -> Blocks.BLUE_CONCRETE
+            GREEN -> Blocks.LIME_CONCRETE
+            AQUA -> Blocks.LIGHT_BLUE_CONCRETE
+            RED -> Blocks.RED_TERRACOTTA
+            LIGHT_PURPLE -> Blocks.MAGENTA_CONCRETE
+            YELLOW -> Blocks.YELLOW_CONCRETE
         }
     }
 
