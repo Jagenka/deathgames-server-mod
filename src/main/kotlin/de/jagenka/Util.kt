@@ -10,6 +10,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import java.util.UUID
+import kotlin.math.floor
 
 data class Kill(val attacker: ServerPlayerEntity, val deceased: ServerPlayerEntity)
 
@@ -81,4 +82,38 @@ object Util
 
     fun getBlockAt(x: Double, y: Double, z: Double) = getBlockAt(Coordinates(x, y, z))
     fun getBlockAt(x: Int, y: Int, z: Int) = getBlockAt(x.toDouble(), y.toDouble(), z.toDouble())
+
+    fun getBlocksInCubeRadius(coordinates: Coordinates, radius: Int): List<BlockAtCoordinates>
+    {
+        val result = mutableListOf<BlockAtCoordinates>()
+
+        for (dy in -radius..radius)
+        {
+            result.addAll(getBlocksInSquareRadiusAtFixY(coordinates.relative(0, dy, 0), radius))
+        }
+
+
+        return result.toList()
+    }
+
+    fun getBlocksInSquareRadiusAtFixY(coordinates: Coordinates, radius: Int): List<BlockAtCoordinates>
+    {
+        val result = mutableListOf<BlockAtCoordinates>()
+
+        val (centerX, centerY, centerZ) = coordinates
+
+        for (x in centerX.floor() - radius..centerX.floor() + radius)
+        {
+            for (z in centerZ.floor() - radius..centerZ.floor() + radius)
+            {
+                result.add(BlockAtCoordinates(getBlockAt(x, centerY.floor(), z), Coordinates(x, centerY.floor(), z)))
+            }
+        }
+
+        return result.toList()
+    }
 }
+
+data class BlockAtCoordinates(val block: Block, val coordinates: Coordinates)
+
+fun Double.floor() = floor(this).toInt()

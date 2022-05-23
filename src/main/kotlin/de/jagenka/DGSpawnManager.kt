@@ -26,6 +26,8 @@ object DGSpawnManager //TODO: lobby spawn
 
     private fun getSpawn(team: DGTeam?) = teamSpawns.getValue(team)
 
+    fun getSpawns() = spawns.toList()
+
     fun ServerPlayerEntity.getSpawn() = getSpawn(DGPlayerManager.getTeam(this))
 
     @JvmStatic
@@ -42,6 +44,12 @@ object DGSpawnManager //TODO: lobby spawn
         shuffleSpawns(DGPlayerManager.getNonEmptyTeams())
     }
 
+    // this is for testing only
+    fun shuffleAllSpawns()
+    {
+        shuffleSpawns(DGTeam.values().asList())
+    }
+
     private fun shuffleSpawns(teams: Collection<DGTeam>)
     {
         val shuffledSpawns = spawns.shuffled()
@@ -49,10 +57,20 @@ object DGSpawnManager //TODO: lobby spawn
         teams.forEachIndexed { index, team ->
             if (index >= shuffledSpawns.size) return
             teamSpawns[team] = shuffledSpawns[index]
+            colorTeamSpawn(team)
         }
 
-        //TODO: color spawn platforms
-        //TODO: print message if game is running, not at the beginning
+        //TODO: test
+        if (DeathGames.running) Util.sendChatMessage("Spawns shuffled!")
+    }
+
+    fun colorTeamSpawn(team: DGTeam)
+    {
+        teamSpawns[team]?.let { coordinates ->
+            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), 5).forEach { (block, coordinates) ->
+                if (block.isDGColorBlock()) Util.setBlockAt(coordinates, team.getColorBlock())
+            }
+        }
     }
 
     fun loadConfig(root: CommentedConfigurationNode)
