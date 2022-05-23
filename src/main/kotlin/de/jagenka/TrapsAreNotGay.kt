@@ -2,6 +2,8 @@ package de.jagenka
 
 import de.jagenka.DGPlayerManager.getInGamePlayersInRange
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.timer.seconds
+import de.jagenka.timer.ticks
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.network.packet.s2c.play.PlaySoundIdS2CPacket

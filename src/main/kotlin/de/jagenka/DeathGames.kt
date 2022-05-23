@@ -6,6 +6,7 @@ import de.jagenka.DGSpawnManager.getSpawn
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.commands.JayCommand
+import de.jagenka.timer.Timer
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.loader.api.FabricLoader
@@ -80,6 +81,7 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         DGPlayerManager.getPlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
+        //TODO: clear inventory
 
         ifServerLoaded { it.overworld.setWeather(Int.MAX_VALUE, 0, false, false) }
 
