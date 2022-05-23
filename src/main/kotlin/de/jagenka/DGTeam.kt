@@ -3,8 +3,6 @@ package de.jagenka
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 
-val defaultColorBlock = Blocks.WHITE_CONCRETE
-
 enum class DGTeam
 {
     BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
@@ -36,6 +34,8 @@ enum class DGTeam
 
     companion object
     {
+        val defaultColorBlock = Blocks.WHITE_CONCRETE
+
         fun random() = values().random()
 
         fun isColorBlock(block: Block) = block isSame defaultColorBlock || values().any { block isSame it.getColorBlock() }
