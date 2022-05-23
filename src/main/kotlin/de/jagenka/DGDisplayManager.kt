@@ -79,11 +79,17 @@ object DGDisplayManager
 
     private fun resetLevelDisplay()
     {
-        DGPlayerManager.getPlayers().forEach { it.setExperienceLevel(0) }
+        DGPlayerManager.getPlayers().forEach { player ->
+            player.setExperiencePoints(0)
+            player.setExperienceLevel(0)
+        }
     }
 
     fun updateLevelDisplay()
     {
-        DGPlayerManager.getPlayers().forEach { player -> player.setExperienceLevel(player.getDGMoney()) }
+        DGPlayerManager.getPlayers().forEach { player ->
+            player.setExperiencePoints(0)
+            player.setExperienceLevel(player.getDGMoney())
+        }
     }
 }
