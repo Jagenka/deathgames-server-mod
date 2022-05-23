@@ -4,7 +4,6 @@ import de.jagenka.Config.defaultSpawn
 import de.jagenka.Util.teleport
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
-import org.spongepowered.configurate.CommentedConfigurationNode
 
 object DGSpawnManager //TODO: lobby spawn
 {
@@ -68,10 +67,5 @@ object DGSpawnManager //TODO: lobby spawn
                 if (block.isDGColorBlock()) Util.setBlockAt(coordinates, team.getColorBlock())
             }
         }
-    }
-
-    fun loadConfig(root: CommentedConfigurationNode)
-    {
-
     }
 }

@@ -12,8 +12,6 @@ import net.minecraft.util.math.BlockPos
 import java.util.UUID
 import kotlin.math.floor
 
-data class Kill(val attacker: ServerPlayerEntity, val deceased: ServerPlayerEntity)
-
 fun log(message: String)
 {
     println(message)
