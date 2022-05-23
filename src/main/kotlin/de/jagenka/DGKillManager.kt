@@ -35,7 +35,7 @@ object DGKillManager
     @JvmStatic
     fun handleDeath(attacker: Entity?, deceased: ServerPlayerEntity)
     {
-        if (attacker is ServerPlayerEntity) //TODO: seems to not work
+        if (attacker is ServerPlayerEntity)
         {
             sendChatMessage("${attacker.name.asString()} killed ${deceased.name.asString()}")
             totalKills[attacker] = totalKills.getValue(attacker) + 1

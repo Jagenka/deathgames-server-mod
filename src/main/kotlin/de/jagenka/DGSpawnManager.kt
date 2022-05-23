@@ -58,7 +58,6 @@ object DGSpawnManager //TODO: lobby spawn
             colorTeamSpawn(team)
         }
 
-        //TODO: test
         if (DeathGames.running) Util.sendChatMessage("Spawns shuffled!")
     }
 
