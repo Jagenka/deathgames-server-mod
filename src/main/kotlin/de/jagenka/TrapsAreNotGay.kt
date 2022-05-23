@@ -6,12 +6,13 @@ import de.jagenka.Util.teleport
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
 import net.fabricmc.fabric.api.event.Event
+import de.jagenka.timer.seconds
+import de.jagenka.timer.ticks
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
 import kotlin.concurrent.thread
 import java.time.LocalDateTime
@@ -27,7 +28,7 @@ object TrapsAreNotGay
 
     fun addLessGay(x: Int, y: Int, z: Int)
     {
-        val notGay = NotGay(Coords(x.toDouble() + 0.5, y.toDouble(), z.toDouble() + 0.5), 0.ticks())
+        val notGay = NotGay(Coordinates(x.toDouble() + 0.5, y.toDouble(), z.toDouble() + 0.5), 0.ticks())
         ifServerLoaded {
             if (!notGayness.contains(notGay)) notGayness.add(notGay)
             else println("already a not gay here") //TODO: give back item

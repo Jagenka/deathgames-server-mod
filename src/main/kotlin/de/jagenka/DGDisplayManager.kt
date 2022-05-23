@@ -28,6 +28,8 @@ object DGDisplayManager
         }
 
         prepareTeams()
+
+        resetLevelDisplay()
     }
 
     private fun prepareTeams()
@@ -72,6 +74,22 @@ object DGDisplayManager
         ifServerLoaded { server ->
             updateSidebar()
             server.scoreboard.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, sidebarObjective)
+        }
+    }
+
+    private fun resetLevelDisplay()
+    {
+        DGPlayerManager.getPlayers().forEach { player ->
+            player.setExperiencePoints(0)
+            player.setExperienceLevel(0)
+        }
+    }
+
+    fun updateLevelDisplay()
+    {
+        DGPlayerManager.getPlayers().forEach { player ->
+            player.setExperiencePoints(0)
+            player.setExperienceLevel(player.getDGMoney())
         }
     }
 }

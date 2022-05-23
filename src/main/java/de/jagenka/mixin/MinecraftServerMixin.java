@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.Timer;
+import de.jagenka.timer.Timer;
 import de.jagenka.TrapsAreNotGay;
 import de.jagenka.Util;
 import net.minecraft.server.MinecraftServer;

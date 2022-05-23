@@ -98,8 +98,8 @@ object DGPlayerManager
 
     fun getInGameTeams() = DGTeam.values().filter { it.getInGamePlayers().isNotEmpty() }
 
-    fun Coords.getInGamePlayersInRange(range: Double) = getInGamePlayers().filter { player ->
-        Coords(player.x, player.y, player.z) distanceTo this <= range
+    fun Coordinates.getInGamePlayersInRange(range: Double) = getInGamePlayers().filter { player ->
+        Coordinates(player.x, player.y, player.z) distanceTo this <= range
     }
 
     @JvmStatic
@@ -134,20 +134,6 @@ data class DGPlayer(var playerEntity: ServerPlayerEntity, var inGame: Boolean)
     override fun hashCode(): Int
     {
         return playerEntity.hashCode()
-    }
-}
-
-enum class DGTeam
-{
-    BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
-
-    fun getPlayers() = DGPlayerManager.getPlayersInTeam(this)
-
-    fun getInGamePlayers() = DGPlayerManager.getInGamePlayersInTeam(this)
-
-    companion object
-    {
-        fun random() = values().random()
     }
 }
 

@@ -1,12 +1,17 @@
 package de.jagenka
 
+import de.jagenka.Config.moneyBonusPerKillStreakKill
+import de.jagenka.Config.livesPerPlayer
+import de.jagenka.Config.livesPerTeam
+import de.jagenka.Config.moneyPerKill
+import de.jagenka.Config.startMoneyPerPlayer
 import de.jagenka.DGPlayerManager.eliminate
 import de.jagenka.DGPlayerManager.getDGTeam
 import de.jagenka.Util.sendChatMessage
 import de.jagenka.Util.sendPrivateMessage
+import de.jagenka.timer.ShuffleSpawnsTask
 import net.minecraft.entity.Entity
 import net.minecraft.server.network.ServerPlayerEntity
-import org.spongepowered.configurate.CommentedConfigurationNode
 
 object DGKillManager
 {
@@ -26,16 +31,11 @@ object DGKillManager
     var livesMode = Mode.TEAM
     var killStreakMode = Mode.PLAYER
 
-    var moneyPerKill = 20
-    var startMoneyPerPlayer = 100
-    var livesPerPlayer = 5
-    var livesPerTeam = 10
-    var killStreakBonus = 10
 
     @JvmStatic
     fun handleDeath(attacker: Entity?, deceased: ServerPlayerEntity)
     {
-        if (attacker is ServerPlayerEntity) //TODO: seems to not work
+        if (attacker is ServerPlayerEntity)
         {
             sendChatMessage("${attacker.name.asString()} killed ${deceased.name.asString()}")
             totalKills[attacker] = totalKills.getValue(attacker) + 1
@@ -54,7 +54,7 @@ object DGKillManager
         DGDisplayManager.updateSidebar()
 
         // TODO?: reset shop teleport after kill
-        // TODO: reset time since last kill
+        ShuffleSpawnsTask.updateLastKillTime()
     }
 
     private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
@@ -64,18 +64,20 @@ object DGKillManager
             Mode.PLAYER ->
             {
                 val killStreakAmount = getKillStreak(deceased)
-                playerMoney[attacker] = playerMoney.getValue(attacker) + moneyPerKill + killStreakBonus * killStreakAmount
+                addMoney(attacker, moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.sendPrivateMessage("You received ${moneyPerKill + killStreakBonus * killStreakAmount}")
+                attacker.sendPrivateMessage("You received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}")
             }
             Mode.TEAM ->
             {
                 val killStreakAmount = getKillStreak(deceased)
-                teamMoney[attacker.getDGTeam()] = teamMoney.getValue(attacker.getDGTeam()) + moneyPerKill + killStreakAmount
+                addMoney(attacker.getDGTeam(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.getDGTeam()?.getPlayers()?.forEach { it.sendPrivateMessage("Your team received ${moneyPerKill + killStreakBonus * killStreakAmount}") }
+                attacker.getDGTeam()?.getPlayers()?.forEach { it.sendPrivateMessage("Your team received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}") }
             }
         }
+
+        DGDisplayManager.updateLevelDisplay()
     }
 
     private fun getKillStreak(deceased: ServerPlayerEntity): Int
@@ -115,15 +117,6 @@ object DGKillManager
         }
     }
 
-    fun loadConfig(root: CommentedConfigurationNode)
-    {
-        moneyPerKill = root.node("moneyPerKill").int
-        livesPerPlayer = root.node("livesPerPlayer").int
-        livesPerTeam = root.node("livesPerTeam").int
-        killStreakBonus = root.node("killStreakBonus").int
-        startMoneyPerPlayer = root.node("startMoneyPerPlayer").int
-    }
-
     fun initLives(players: Collection<ServerPlayerEntity>)
     {
         when (livesMode)
@@ -137,13 +130,45 @@ object DGKillManager
     {
         when (moneyMode)
         {
-            Mode.PLAYER -> players.forEach { playerMoney[it] = startMoneyPerPlayer }
-            Mode.TEAM -> players.forEach { teamMoney[it.getDGTeam()] = teamMoney.getValue(it.getDGTeam()) + startMoneyPerPlayer }
+            Mode.PLAYER -> players.forEach { setMoney(it, startMoneyPerPlayer) }
+            Mode.TEAM ->
+            {
+                DGPlayerManager.getInGameTeams().forEach { inGameTeam ->
+                    setMoney(inGameTeam, players.filter { player -> player.getDGTeam() == inGameTeam }.size * startMoneyPerPlayer)
+                }
+            }
         }
     }
 
     fun getPlayerLives() = playerLives
     fun getTeamLives() = teamLives
+
+    fun getMoney(player: ServerPlayerEntity) = playerMoney.getValue(player)
+    fun getMoney(team: DGTeam?) = teamMoney.getValue(team)
+
+    fun setMoney(player: ServerPlayerEntity, amount: Int)
+    {
+        playerMoney[player] = amount
+        DGDisplayManager.updateLevelDisplay()
+    }
+
+    fun setMoney(team: DGTeam?, amount: Int)
+    {
+        if (team == null) return
+        teamMoney[team] = amount
+        DGDisplayManager.updateLevelDisplay()
+    }
+
+    fun addMoney(player: ServerPlayerEntity, amount: Int)
+    {
+        setMoney(player, getMoney(player) + amount)
+    }
+
+    fun addMoney(team: DGTeam?, amount: Int)
+    {
+        if (team == null) return
+        setMoney(team, getMoney(team) + amount)
+    }
 
     fun getLives(player: ServerPlayerEntity) = playerLives[player]
     fun getLives(team: DGTeam) = teamLives[team]
@@ -168,4 +193,19 @@ object DGKillManager
 enum class Mode
 {
     PLAYER, TEAM
+}
+
+fun ServerPlayerEntity.getDGMoney(): Int
+{
+    return when (DGKillManager.moneyMode)
+    {
+        Mode.PLAYER -> DGKillManager.getMoney(this)
+        Mode.TEAM -> this.getDGTeam()?.let { DGKillManager.getMoney(it) } ?: 0
+    }
+}
+
+fun ServerPlayerEntity.addDGMoney(amount: Int)
+{
+    if (DGKillManager.moneyMode != Mode.PLAYER) return
+    DGKillManager.addMoney(this, amount)
 }
