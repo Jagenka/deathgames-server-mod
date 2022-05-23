@@ -1,22 +1,24 @@
 spawns:
-  - {x: -37.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f}
-  - {x: 38.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f}
-  - {x: 91.5, y: 63, z: -37.5, yaw: 90f, pitch: 0f}
-  - {x: 91.5, y: 72, z: 38.5, yaw: 90f, pitch: 0f}
-  - {x: 38.5, y: 72, z: 91.5, yaw: 180f, pitch: 0f}
-  - {x: -37.5, y: 72, z: 91.5, yaw: 180f, pitch: 0f}
-  - {x: -90.5, y: 70, z: 38.5, yaw: 270f, pitch: 0f}
-  - {x: -90.5, y: 63, z: -37.5, yaw: 270f, pitch: 0f}
+  - { x: -37.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f }
+  - { x: 38.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f }
+  - { x: 91.5, y: 63, z: -37.5, yaw: 90f, pitch: 0f }
+  - { x: 91.5, y: 72, z: 38.5, yaw: 90f, pitch: 0f }
+  - { x: 38.5, y: 72, z: 91.5, yaw: 180f, pitch: 0f }
+  - { x: -37.5, y: 72, z: 91.5, yaw: 180f, pitch: 0f }
+  - { x: -90.5, y: 70, z: 38.5, yaw: 270f, pitch: 0f }
+  - { x: -90.5, y: 63, z: -37.5, yaw: 270f, pitch: 0f }
 
-defaultSpawn: {x: 0.5, y: 80, z: 0.5, yaw: 0f, pitch: 0f}
-
-moneyPerKill: 20
-startMoneyPerPlayer: 100
+defaultSpawn: { x: 0.5, y: 80, z: 0.5, yaw: 0f, pitch: 0f }
 
 livesPerPlayer: 5
 livesPerTeam: 10
 
-killStreakBonus: 10
 
-shuffleSpawnsInterval: {amount: 2, unit: !!DGUnit 'MINUTES'}
-shuffleDelayAfterKill: {amount: 10, unit: !!DGUnit 'SECONDS'}
+shuffleSpawnsInterval: { amount: 2, unit: !!DGUnit 'MINUTES' }
+shuffleDelayAfterKill: { amount: 10, unit: !!DGUnit 'SECONDS' }
+
+moneyInterval: { amount: 30, unit: !!DGUnit 'SECONDS' }
+moneyPerInterval: 5
+moneyPerKill: 20
+moneyBonusPerKillStreakKill: 10
+startMoneyPerPlayer: 100

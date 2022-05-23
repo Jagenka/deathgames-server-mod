@@ -12,20 +12,25 @@ object Config
     var defaultSpawn = Coordinates(0.5, 80.0, 0.5, 0f, 0f)
         private set
 
-    var moneyPerKill = 1
-        private set
-    var startMoneyPerPlayer = 1
-        private set
     var livesPerPlayer = 1
         private set
     var livesPerTeam = 1
-        private set
-    var killStreakBonus = 1
         private set
 
     var shuffleSpawnsInterval = DGTime(1, SECONDS)
         private set
     var shuffleDelayAfterKill = DGTime(1, SECONDS)
+        private set
+
+    var moneyInterval = DGTime(1, SECONDS)
+        private set
+    var moneyPerInterval = 1
+        private set
+    var moneyPerKill = 1
+        private set
+    var moneyBonusPerKillStreakKill = 1
+        private set
+    var startMoneyPerPlayer = 1
         private set
 
     init
@@ -48,10 +53,14 @@ object Config
         moneyPerKill = root.node("moneyPerKill").int
         livesPerPlayer = root.node("livesPerPlayer").int
         livesPerTeam = root.node("livesPerTeam").int
-        killStreakBonus = root.node("killStreakBonus").int
+        moneyBonusPerKillStreakKill = root.node("moneyBonusPerKillStreakKill").int
         startMoneyPerPlayer = root.node("startMoneyPerPlayer").int
 
         shuffleSpawnsInterval = root.node("shuffleSpawnsInterval").get(DGTime::class.java) ?: error("Error loading DeathGames shuffleSpawnsInterval from config")
         shuffleDelayAfterKill = root.node("shuffleDelayAfterKill").get(DGTime::class.java) ?: error("Error loading DeathGames shuffleDelayAfterKill from config")
+
+
+        moneyInterval = root.node("moneyInterval").get(DGTime::class.java) ?: error("Error loading DeathGames moneyInterval from config")
+        moneyPerInterval = root.node("moneyPerInterval").int
     }
 }

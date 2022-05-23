@@ -1,6 +1,6 @@
 package de.jagenka
 
-import de.jagenka.Config.killStreakBonus
+import de.jagenka.Config.moneyBonusPerKillStreakKill
 import de.jagenka.Config.livesPerPlayer
 import de.jagenka.Config.livesPerTeam
 import de.jagenka.Config.moneyPerKill
@@ -12,7 +12,6 @@ import de.jagenka.Util.sendPrivateMessage
 import de.jagenka.timer.ShuffleSpawnsTask
 import net.minecraft.entity.Entity
 import net.minecraft.server.network.ServerPlayerEntity
-import org.spongepowered.configurate.CommentedConfigurationNode
 
 object DGKillManager
 {
@@ -65,16 +64,16 @@ object DGKillManager
             Mode.PLAYER ->
             {
                 val killStreakAmount = getKillStreak(deceased)
-                addMoney(attacker, moneyPerKill + killStreakBonus * killStreakAmount)
+                addMoney(attacker, moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.sendPrivateMessage("You received ${moneyPerKill + killStreakBonus * killStreakAmount}")
+                attacker.sendPrivateMessage("You received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}")
             }
             Mode.TEAM ->
             {
                 val killStreakAmount = getKillStreak(deceased)
-                addMoney(attacker.getDGTeam(), moneyPerKill + killStreakBonus * killStreakAmount)
+                addMoney(attacker.getDGTeam(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.getDGTeam()?.getPlayers()?.forEach { it.sendPrivateMessage("Your team received ${moneyPerKill + killStreakBonus * killStreakAmount}") }
+                attacker.getDGTeam()?.getPlayers()?.forEach { it.sendPrivateMessage("Your team received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}") }
             }
         }
 
