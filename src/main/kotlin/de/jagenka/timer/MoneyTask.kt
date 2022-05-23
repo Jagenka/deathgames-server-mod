@@ -9,7 +9,7 @@ object MoneyTask : TimerTask
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
-        get() = Config.moneyInterval.toTicks()
+        get() = Config.moneyInterval
 
     override fun run()
     {

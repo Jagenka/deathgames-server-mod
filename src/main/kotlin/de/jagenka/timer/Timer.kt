@@ -78,16 +78,9 @@ fun Int.seconds() = this * DGUnit.SECONDS.factor
 fun Int.minutes() = this * DGUnit.MINUTES.factor
 fun Int.hours() = this * DGUnit.HOURS.factor
 
-
-@ConfigSerializable
-data class DGTime(val amount: Int, val unit: DGUnit)
-{
-    fun toTicks() = amount * unit.factor
-}
-
 enum class DGUnit(val factor: Int)
 {
-    TICKS(1), SECONDS(20), MINUTES(1200), HOURS(72000)
+    TICKS(1), SECONDS(20), MINUTES(1200), HOURS(72000);
 }
 
 data class ScheduledTask(val task: () -> Unit, val time: Int)

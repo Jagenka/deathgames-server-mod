@@ -8,9 +8,9 @@ object ShuffleSpawnsTask : TimerTask
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
-        get() = Config.shuffleSpawnsInterval.toTicks()
+        get() = Config.shuffleSpawnsInterval
 
-    private val shuffleKillDelay = Config.shuffleDelayAfterKill.toTicks()
+    private val shuffleKillDelay = Config.shuffleDelayAfterKill
 
     private var lastKillTime = 0
 

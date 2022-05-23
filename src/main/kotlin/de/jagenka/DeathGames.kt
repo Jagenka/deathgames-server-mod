@@ -20,6 +20,8 @@ object DeathGames : DedicatedServerModInitializer
 
     override fun onInitializeServer()
     {
+        Config.load()
+
         registerCommands()
 
         println("DeathGames Mod initialized!")

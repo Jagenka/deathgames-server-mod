@@ -1,7 +1,5 @@
 package de.jagenka
 
-import de.jagenka.timer.DGTime
-import de.jagenka.timer.DGUnit.SECONDS
 import net.fabricmc.loader.api.FabricLoader
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.kotlin.objectMapperFactory
@@ -17,12 +15,12 @@ object Config
     var livesPerTeam = 1
         private set
 
-    var shuffleSpawnsInterval = DGTime(1, SECONDS)
+    var shuffleSpawnsInterval = 1
         private set
-    var shuffleDelayAfterKill = DGTime(1, SECONDS)
+    var shuffleDelayAfterKill = 1
         private set
 
-    var moneyInterval = DGTime(1, SECONDS)
+    var moneyInterval = 1
         private set
     var moneyPerInterval = 1
         private set
@@ -33,7 +31,7 @@ object Config
     var startMoneyPerPlayer = 1
         private set
 
-    init
+    fun load()
     {
         val path = FabricLoader.getInstance().configDir.resolve(DeathGames.CONF_FILE)
         val confLoader = YamlConfigurationLoader.builder().path(path).build()
@@ -56,11 +54,10 @@ object Config
         moneyBonusPerKillStreakKill = root.node("moneyBonusPerKillStreakKill").int
         startMoneyPerPlayer = root.node("startMoneyPerPlayer").int
 
-        shuffleSpawnsInterval = root.node("shuffleSpawnsInterval").get(DGTime::class.java) ?: error("Error loading DeathGames shuffleSpawnsInterval from config")
-        shuffleDelayAfterKill = root.node("shuffleDelayAfterKill").get(DGTime::class.java) ?: error("Error loading DeathGames shuffleDelayAfterKill from config")
+        shuffleSpawnsInterval = root.node("shuffleSpawnsInterval").int
+        shuffleDelayAfterKill = root.node("shuffleDelayAfterKill").int
 
-
-        moneyInterval = root.node("moneyInterval").get(DGTime::class.java) ?: error("Error loading DeathGames moneyInterval from config")
+        moneyInterval = root.node("moneyInterval").int
         moneyPerInterval = root.node("moneyPerInterval").int
     }
 }
