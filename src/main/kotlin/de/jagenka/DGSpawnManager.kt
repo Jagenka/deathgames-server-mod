@@ -34,10 +34,16 @@ object DGSpawnManager //TODO: lobby spawn
         player.teleport(spawn)
         player.yaw = spawn.yaw
         if (spawn == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
+        //TODO: invulnerability after respawn
     }
 
     fun shuffleSpawns()
     {
+        spawns.forEach { coordinates ->
+            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), 5).forEach { (block, coordinates) ->
+                if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
+            }
+        }
         shuffleSpawns(DGPlayerManager.getNonEmptyTeams())
     }
 
