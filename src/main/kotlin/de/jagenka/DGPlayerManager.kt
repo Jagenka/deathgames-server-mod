@@ -98,8 +98,8 @@ object DGPlayerManager
 
     fun getInGameTeams() = DGTeam.values().filter { it.getInGamePlayers().isNotEmpty() }
 
-    fun Coords.getInGamePlayersInRange(range: Double) = getInGamePlayers().filter { player ->
-        Coords(player.x, player.y, player.z) distanceTo this <= range
+    fun Coordinates.getInGamePlayersInRange(range: Double) = getInGamePlayers().filter { player ->
+        Coordinates(player.x, player.y, player.z) distanceTo this <= range
     }
 
     @JvmStatic

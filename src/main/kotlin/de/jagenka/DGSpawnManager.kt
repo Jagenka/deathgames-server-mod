@@ -8,17 +8,17 @@ import org.spongepowered.configurate.CommentedConfigurationNode
 
 object DGSpawnManager //TODO: lobby spawn
 {
-    private val spawns = ArrayList<Coords>()
-    private val teamSpawns = mutableMapOf<DGTeam?, Coords>().withDefault { defaultSpawn }
+    private val spawns = ArrayList<Coordinates>()
+    private val teamSpawns = mutableMapOf<DGTeam?, Coordinates>().withDefault { defaultSpawn }
 
-    private var defaultSpawn = Coords(0.5, 80.0, 0.5, 0f, 0f)
+    private var defaultSpawn = Coordinates(0.5, 80.0, 0.5, 0f, 0f)
 
-    private fun addSpawns(spawns: Collection<Coords>)
+    private fun addSpawns(spawns: Collection<Coordinates>)
     {
         this.spawns.addAll(spawns)
     }
 
-    private fun setSpawns(spawns: Collection<Coords>)
+    private fun setSpawns(spawns: Collection<Coordinates>)
     {
         this.spawns.clear()
         addSpawns(spawns)
@@ -58,7 +58,7 @@ object DGSpawnManager //TODO: lobby spawn
 
     fun loadConfig(root: CommentedConfigurationNode)
     {
-        setSpawns(root.node("spawns").getList(Coords::class.java) ?: error("Error loading DeathGames spawns from config"))
-        defaultSpawn = root.node("defaultSpawn").get(Coords::class.java) ?: error("Error loading DeathGames defaultSpawn from config")
+        setSpawns(root.node("spawns").getList(Coordinates::class.java) ?: error("Error loading DeathGames spawns from config"))
+        defaultSpawn = root.node("defaultSpawn").get(Coordinates::class.java) ?: error("Error loading DeathGames defaultSpawn from config")
     }
 }

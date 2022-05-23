@@ -9,19 +9,7 @@ import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.util.UUID
-import kotlin.math.pow
-import kotlin.math.sqrt
-
-@ConfigSerializable
-data class Coords(val x: Double, val y: Double, val z: Double, val yaw: Float = 0f, val pitch: Float = 0f)
-{
-    operator fun Coords.plus(other: Coords) = Coords(this.x + other.x, this.y + other.y, this.z + other.z, this.yaw, this.pitch)
-    operator fun Coords.minus(other: Coords) = Coords(this.x - other.x, this.y - other.y, this.z - other.z, this.yaw, this.pitch)
-    infix fun distanceTo(other: Coords) = (other - this).length()
-    private fun length() = sqrt(this.x.pow(2) + this.y.pow(2) + this.z.pow(2))
-}
 
 data class Kill(val attacker: ServerPlayerEntity, val deceased: ServerPlayerEntity)
 
@@ -61,21 +49,21 @@ object Util
         this.sendMessage(Text.of(text), MessageType.CHAT, modUUID)
     }
 
-    fun ServerPlayerEntity.teleport(coords: Coords)
+    fun ServerPlayerEntity.teleport(coordinates: Coordinates)
     {
-        val (x, y, z, yaw, pitch) = coords
+        val (x, y, z, yaw, pitch) = coordinates
         this.teleport(server.overworld, x, y, z, yaw, pitch)
     }
 
-    fun setBlockAt(coords: Coords, block: Block)
+    fun setBlockAt(coordinates: Coordinates, block: Block)
     {
-        val (x, y, z) = coords
+        val (x, y, z) = coordinates
         ifServerLoaded { it.overworld.setBlockState(BlockPos(x, y, z), block.defaultState) }
     }
 
     fun setBlockAt(x: Double, y: Double, z: Double, block: Block)
     {
-        setBlockAt(Coords(x, y, z), block)
+        setBlockAt(Coordinates(x, y, z), block)
     }
 
     fun setBlockAt(x: Int, y: Int, z: Int, block: Block)
@@ -83,14 +71,14 @@ object Util
         setBlockAt(x.toDouble(), y.toDouble(), z.toDouble(), block)
     }
 
-    fun getBlockAt(coords: Coords): Block
+    fun getBlockAt(coordinates: Coordinates): Block
     {
-        val (x, y, z) = coords
+        val (x, y, z) = coordinates
         var block = Blocks.AIR // default
         ifServerLoaded { block = it.overworld.getBlockState(BlockPos(x, y, z)).block }
         return block
     }
 
-    fun getBlockAt(x: Double, y: Double, z: Double) = getBlockAt(Coords(x, y, z))
+    fun getBlockAt(x: Double, y: Double, z: Double) = getBlockAt(Coordinates(x, y, z))
     fun getBlockAt(x: Int, y: Int, z: Int) = getBlockAt(x.toDouble(), y.toDouble(), z.toDouble())
 }

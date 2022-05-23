@@ -8,7 +8,6 @@ import net.minecraft.network.packet.s2c.play.PlaySoundIdS2CPacket
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Vec3d
 
@@ -20,7 +19,7 @@ object TrapsAreNotGay
 
     fun addLessGay(x: Int, y: Int, z: Int)
     {
-        val notGay = NotGay(Coords(x.toDouble() + 0.5, y.toDouble(), z.toDouble() + 0.5), 0.ticks())
+        val notGay = NotGay(Coordinates(x.toDouble() + 0.5, y.toDouble(), z.toDouble() + 0.5), 0.ticks())
         ifServerLoaded {
             if (!notGayness.contains(notGay)) notGayness.add(notGay)
             else println("already a not gay here") //TODO: give back item
@@ -30,7 +29,7 @@ object TrapsAreNotGay
     private fun handleNotGay(player: ServerPlayerEntity)
     {
         notGayness.toList().forEach {
-            val playerDistance = Coords(player.x, player.y, player.z) distanceTo it.pos
+            val playerDistance = Coordinates(player.x, player.y, player.z) distanceTo it.pos
             ifServerLoaded { server ->
                 // Manage particles
                 if (playerDistance <= gaynessVisibilityRange)
@@ -86,7 +85,7 @@ object TrapsAreNotGay
     }
 }
 
-data class NotGay(val pos: Coords, var age: Int)
+data class NotGay(val pos: Coordinates, var age: Int)
 {
     private val gaynessRange = 0.5  // half a block radius
     override fun equals(other: Any?): Boolean
@@ -103,7 +102,7 @@ data class NotGay(val pos: Coords, var age: Int)
 
     fun triggersNotGay(player: ServerPlayerEntity): Boolean
     {
-        return (Coords(player.pos.x, player.pos.y, player.pos.z) distanceTo this.pos) <= gaynessRange
+        return (Coordinates(player.pos.x, player.pos.y, player.pos.z) distanceTo this.pos) <= gaynessRange
     }
 
     override fun hashCode(): Int
