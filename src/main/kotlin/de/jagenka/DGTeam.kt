@@ -38,9 +38,11 @@ enum class DGTeam
     {
         fun random() = values().random()
 
-        fun isColorBlock(block: Block) = block == defaultColorBlock || values().any { block == it.getColorBlock() }
+        fun isColorBlock(block: Block) = block isSame defaultColorBlock || values().any { block isSame it.getColorBlock() }
     }
 
 }
 
 fun Block.isDGColorBlock() = DGTeam.isColorBlock(this)
+
+infix fun Block.isSame(block: Block) = this.lootTableId == block.lootTableId
