@@ -1,5 +1,7 @@
 package de.jagenka
 
+import de.jagenka.timer.DGTime
+import de.jagenka.timer.DGUnit.SECONDS
 import net.fabricmc.loader.api.FabricLoader
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.kotlin.objectMapperFactory
@@ -19,6 +21,11 @@ object Config
     var livesPerTeam = 1
         private set
     var killStreakBonus = 1
+        private set
+
+    var shuffleSpawnsInterval = DGTime(1, SECONDS)
+        private set
+    var shuffleDelayAfterKill = DGTime(1, SECONDS)
         private set
 
     init
@@ -43,5 +50,8 @@ object Config
         livesPerTeam = root.node("livesPerTeam").int
         killStreakBonus = root.node("killStreakBonus").int
         startMoneyPerPlayer = root.node("startMoneyPerPlayer").int
+
+        shuffleSpawnsInterval = root.node("shuffleSpawnsInterval").get(DGTime::class.java) ?: error("Error loading DeathGames shuffleSpawnsInterval from config")
+        shuffleDelayAfterKill = root.node("shuffleDelayAfterKill").get(DGTime::class.java) ?: error("Error loading DeathGames shuffleDelayAfterKill from config")
     }
 }

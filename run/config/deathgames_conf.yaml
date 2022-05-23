@@ -17,3 +17,6 @@ livesPerPlayer: 5
 livesPerTeam: 10
 
 killStreakBonus: 10
+
+shuffleSpawnsInterval: {amount: 2, unit: !!DGUnit 'MINUTES'}
+shuffleDelayAfterKill: {amount: 10, unit: !!DGUnit 'SECONDS'}

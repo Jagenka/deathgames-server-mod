@@ -9,6 +9,7 @@ import de.jagenka.DGPlayerManager.eliminate
 import de.jagenka.DGPlayerManager.getDGTeam
 import de.jagenka.Util.sendChatMessage
 import de.jagenka.Util.sendPrivateMessage
+import de.jagenka.timer.ShuffleSpawnsTask
 import net.minecraft.entity.Entity
 import net.minecraft.server.network.ServerPlayerEntity
 import org.spongepowered.configurate.CommentedConfigurationNode
@@ -54,7 +55,7 @@ object DGKillManager
         DGDisplayManager.updateSidebar()
 
         // TODO?: reset shop teleport after kill
-        // TODO: reset time since last kill
+        ShuffleSpawnsTask.updateLastKillTime()
     }
 
     private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
