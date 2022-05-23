@@ -1,7 +1,6 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 object Timer
 {
