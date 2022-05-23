@@ -35,7 +35,13 @@ object Timer
             if (ticks % it.runEvery == 0) it.run()
         }
 
-        scheduledTasks.forEach { if (now() >= it.time) it.task() }
+        scheduledTasks.toList().forEach {
+            if (now() >= it.time)
+            {
+                it.task()
+                scheduledTasks.remove(it)
+            }
+        }
     }
 
     fun schedule(task: () -> Unit, `in`: Int)
