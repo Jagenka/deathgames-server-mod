@@ -3,9 +3,6 @@ package de.jagenka
 import de.jagenka.DGPlayerManager.getInGamePlayersInRange
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.yield
-import net.fabricmc.fabric.api.event.Event
 import de.jagenka.timer.seconds
 import de.jagenka.timer.ticks
 import net.minecraft.entity.effect.StatusEffectInstance
@@ -13,8 +10,8 @@ import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.sound.SoundCategory
+import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
-import kotlin.concurrent.thread
 import java.time.LocalDateTime
 
 object TrapsAreNotGay
@@ -98,9 +95,9 @@ object TrapsAreNotGay
     }
 }
 
-data class NotGay(val pos: Coords, var age: Int, val gr: Double = 0.5)
+data class NotGay(val pos: Coordinates, var age: Int, val gr: Double = 0.5)
 {
-    private val disabledJumpPlayers = mutableMapOf<ServerPlayerEntity, Coords>()
+    private val disabledJumpPlayers = mutableMapOf<ServerPlayerEntity, Coordinates>()
     private val gaynessRange = gr
     private var triggered = false
     private var triggerDuration = 6.seconds()
@@ -118,7 +115,7 @@ data class NotGay(val pos: Coords, var age: Int, val gr: Double = 0.5)
 
     fun addDisabledPlayer(player: ServerPlayerEntity)
     {
-        disabledJumpPlayers[player] = Coords(player.pos.x, player.pos.y, player.pos.z, player.yaw, player.pitch)
+        disabledJumpPlayers[player] = Coordinates(player.pos.x, player.pos.y, player.pos.z, player.yaw, player.pitch)
         val currentTime = LocalDateTime.now()
         while (!player.isOnGround)
         {
@@ -129,7 +126,7 @@ data class NotGay(val pos: Coords, var age: Int, val gr: Double = 0.5)
         }
     }
 
-    fun getDisabledPlayers(): Map<ServerPlayerEntity, Coords>
+    fun getDisabledPlayers(): Map<ServerPlayerEntity, Coordinates>
     {
         return disabledJumpPlayers
     }
