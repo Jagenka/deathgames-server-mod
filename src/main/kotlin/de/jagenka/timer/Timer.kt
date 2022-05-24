@@ -19,6 +19,7 @@ object Timer
             add(InactivePlayersTask)
             add(ShuffleSpawnsTask)
             add(BonusMoneyTask)
+            add(TrapTask)
         }
     }
 
@@ -30,8 +31,7 @@ object Timer
         ticks++
 
         tasks.forEach {
-            if (it.onlyInGame && !DeathGames.running) return
-
+            if (it.onlyInGame && !DeathGames.running) return@forEach
             if (ticks % it.runEvery == 0) it.run()
         }
 

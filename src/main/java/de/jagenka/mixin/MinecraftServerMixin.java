@@ -24,6 +24,5 @@ public class MinecraftServerMixin
     private void tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci)
     {
         Timer.tick();
-        TrapsAreNotGay.tick();
     }
 }
