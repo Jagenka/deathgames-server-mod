@@ -52,6 +52,8 @@ object DeathGames : DedicatedServerModInitializer
         DGDisplayManager.showSidebar()
 
         teamPlayers.forEach {
+            it.clearStatusEffects()
+            it.inventory.clear()
             it.health = 20f //set max hearts
             it.hungerManager.add(20, 1f) //set max food and saturation
             it.makeInGame()
@@ -59,14 +61,14 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         DGPlayerManager.getPlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
-        //TODO: clear inventory
 
         ifServerLoaded { it.overworld.setWeather(Int.MAX_VALUE, 0, false, false) }
 
         DGSpawnManager.shuffleSpawns()
 
         DGPlayerManager.getPlayers().forEach {
-            it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(0, 51, 0), 0f, true, false) //TODO: read from config -> blackbox
+            val (x, y, z) = Config.worldSpawn
+            it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
             it.teleport(it.getSpawn())
         }
 

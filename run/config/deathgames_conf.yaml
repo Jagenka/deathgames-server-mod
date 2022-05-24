@@ -1,3 +1,5 @@
+worldSpawn: { x: 0.5, y: 51, z: 0.5, yaw: 0f, pitch: 0f } # blackbox
+
 spawns:
   - { x: -37.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f }
   - { x: 38.5, y: 63, z: -90.5, yaw: 0f, pitch: 0f }
