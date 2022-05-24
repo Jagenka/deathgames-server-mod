@@ -44,7 +44,7 @@ object DeathGames : DedicatedServerModInitializer
 
         DGDisplayManager.reset()
         //TODO: reset shop
-        //TODO: reset corner platforms
+        DGBonusManager.init()
 
         DGKillManager.initLives(teamPlayers)
         DGKillManager.initMoney(teamPlayers)
@@ -63,7 +63,7 @@ object DeathGames : DedicatedServerModInitializer
 
         ifServerLoaded { it.overworld.setWeather(Int.MAX_VALUE, 0, false, false) }
 
-        DGSpawnManager.shuffleSpawns() //TODO?: reset spawn platform colors
+        DGSpawnManager.shuffleSpawns()
 
         DGPlayerManager.getPlayers().forEach {
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(0, 51, 0), 0f, true, false) //TODO: read from config -> blackbox

@@ -71,7 +71,7 @@ object Config
 
         defaultSpawn = root.node("defaultSpawn").get(Coordinates::class.java) ?: error("Error loading DeathGames defaultSpawn from config")
 
-        DGBonusManager.setPlatforms(root.node("bonusPlatforms").getList(Coordinates::class.java) ?: error("Error loading DeathGames bonusPlatforms from config"))
+        DGBonusManager.setPlatforms(root.node("bonusPlatforms").getList(Platform::class.java) ?: error("Error loading DeathGames bonusPlatforms from config"))
         bonusPlatformRadius = root.node("bonusPlatformRadius").int
 
         moneyPerKill = root.node("moneyPerKill").int
