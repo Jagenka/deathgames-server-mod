@@ -13,7 +13,7 @@ object MoneyTask : TimerTask
 
     override fun run()
     {
-        DGPlayerManager.getPlayers().forEach { it.addDGMoney(Config.moneyPerKill) }
+        DGPlayerManager.getPlayers().forEach { it.addDGMoney(Config.moneyPerInterval) }
     }
 
     override fun reset()
