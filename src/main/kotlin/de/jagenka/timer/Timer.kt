@@ -18,6 +18,7 @@ object Timer
             add(GameOverTask)
             add(InactivePlayersTask)
             add(ShuffleSpawnsTask)
+            add(BonusMoneyTask)
         }
     }
 

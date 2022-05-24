@@ -8,11 +8,25 @@ spawns:
   - { x: -90.5, y: 70, z: 38.5, yaw: 270f, pitch: 0f }
   - { x: -90.5, y: 63, z: -37.5, yaw: 270f, pitch: 0f }
 
+spawnPlatformRadius: 5
+
 defaultSpawn: { x: 0.5, y: 80, z: 0.5, yaw: 0f, pitch: 0f }
+
+bonusPlatforms:
+  - { x: 119.5, y: 70, z: 119.5, yaw: 0f, pitch: 0f }
+  - { x: -119.5, y: 68, z: 119.5, yaw: 0f, pitch: 0f }
+  - { x: -119.5, y: 62, z: -119.5, yaw: 0f, pitch: 0f }
+  - { x: 119.5, y: 63, z: -119.5, yaw: 0f, pitch: 0f }
+
+bonusPlatformRadius: 2
+bonusPlatformSpawnInterval: 3600 # 3min = 3600
+bonusPlatformStayTime: 2400 # 2min = 2400
+bonusPlatformInitialSpawn: 1800 # 1:30min = 1800
+bonusMoneyAmount: 5
+bonusMoneyInterval: 200 # 10s = 200
 
 livesPerPlayer: 5
 livesPerTeam: 10
-
 
 shuffleSpawnsInterval: 2400 # 2min = 2400
 shuffleDelayAfterKill: 200 # 10s = 200

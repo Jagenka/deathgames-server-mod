@@ -40,7 +40,7 @@ object DGSpawnManager //TODO: lobby spawn
     fun shuffleSpawns()
     {
         spawns.forEach { coordinates ->
-            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), 5).forEach { (block, coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), Config.spawnPlatformRadius).forEach { (block, coordinates) ->
                 if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
             }
         }
@@ -69,7 +69,7 @@ object DGSpawnManager //TODO: lobby spawn
     fun colorTeamSpawn(team: DGTeam)
     {
         teamSpawns[team]?.let { coordinates ->
-            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), 5).forEach { (block, coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), Config.spawnPlatformRadius).forEach { (block, coordinates) ->
                 if (block.isDGColorBlock()) Util.setBlockAt(coordinates, team.getColorBlock())
             }
         }

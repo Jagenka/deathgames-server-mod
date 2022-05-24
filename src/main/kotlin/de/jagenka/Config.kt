@@ -7,7 +7,23 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 
 object Config
 {
+    var spawnPlatformRadius = 1
+        private set
+
     var defaultSpawn = Coordinates(0.5, 80.0, 0.5, 0f, 0f)
+        private set
+
+    var bonusPlatformRadius = 1
+        private set
+    var bonusPlatformSpawnInterval = 1
+        private set
+    var bonusPlatformStayTime = 1
+        private set
+    var bonusPlatformInitialSpawn = 1
+        private set
+    var bonusMoneyAmount = 1
+        private set
+    var bonusMoneyInterval = 1
         private set
 
     var livesPerPlayer = 1
@@ -46,7 +62,17 @@ object Config
         )
 
         DGSpawnManager.setSpawns(root.node("spawns").getList(Coordinates::class.java) ?: error("Error loading DeathGames spawns from config"))
+        spawnPlatformRadius = root.node("spawnPlatformRadius").int
+        bonusPlatformSpawnInterval = root.node("bonusPlatformSpawnInterval").int
+        bonusPlatformStayTime = root.node("bonusPlatformStayTime").int
+        bonusPlatformInitialSpawn = root.node("bonusPlatformInitialSpawn").int
+        bonusMoneyAmount = root.node("bonusMoneyAmount").int
+        bonusMoneyInterval = root.node("bonusMoneyInterval").int
+
         defaultSpawn = root.node("defaultSpawn").get(Coordinates::class.java) ?: error("Error loading DeathGames defaultSpawn from config")
+
+        DGBonusManager.setPlatforms(root.node("bonusPlatforms").getList(Coordinates::class.java) ?: error("Error loading DeathGames bonusPlatforms from config"))
+        bonusPlatformRadius = root.node("bonusPlatformRadius").int
 
         moneyPerKill = root.node("moneyPerKill").int
         livesPerPlayer = root.node("livesPerPlayer").int
