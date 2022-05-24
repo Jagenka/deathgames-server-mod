@@ -44,9 +44,16 @@ object Timer
         }
     }
 
-    fun schedule(task: () -> Unit, `in`: Int)
+    fun schedule(task: () -> Unit, `in`: Int): ScheduledTask
     {
-        scheduledTasks.add(ScheduledTask(task, now() + `in`))
+        val scheduledTask = ScheduledTask(task, now() + `in`)
+        scheduledTasks.add(scheduledTask)
+        return scheduledTask
+    }
+
+    fun unscheduleTask(task: ScheduledTask)
+    {
+        scheduledTasks.remove(task)
     }
 
     fun now() = ticks
