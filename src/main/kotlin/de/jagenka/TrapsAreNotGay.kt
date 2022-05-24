@@ -11,8 +11,8 @@ import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvent
+import net.minecraft.sound.SoundEvents
 import net.minecraft.util.Identifier
-import java.time.LocalDateTime
 
 object TrapsAreNotGay
 {
@@ -48,17 +48,16 @@ object TrapsAreNotGay
             {
                 server.overworld.spawnParticles(ParticleTypes.NAUTILUS, it.pos.x, it.pos.y - 0.015, it.pos.z, 0, 0.0, 0.0, 0.0, 0.0)
                 // Manage ethan
-                if (triggered)
+                if (triggered && !it.isTriggered())
                 {
                     it.trigger()
                     gayTriggerSpectator.forEach { player ->
-                        server.overworld.spawnParticles(player, ParticleTypes.LARGE_SMOKE, true, it.pos.x, it.pos.y, it.pos.z, 50, 0.0, 0.0, 0.0, 0.005)
+                        server.overworld.spawnParticles(player, ParticleTypes.LARGE_SMOKE, true, it.pos.x, it.pos.y, it.pos.z, 500, 0.0, 0.0, 0.0, 0.5)
                     }
                     affectedPlayers.forEach { player ->
-                        player.addStatusEffect(StatusEffectInstance(StatusEffects.SLOWNESS, 6.seconds(), 100, false, false, false))
-                        player.addStatusEffect(StatusEffectInstance(StatusEffects.BLINDNESS, 7.seconds(), 5, false, false, false))
-                        player.playSound(SoundEvent(Identifier("entity.iron_golem.damage")), SoundCategory.MASTER, 1f, 1f)
+                        player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 1f, 1f)
                         it.addDisabledPlayer(player)
+                        // TODO: Fix sound effects
                     }
                 }
             }
@@ -82,8 +81,16 @@ object TrapsAreNotGay
             // Handles snaring player
             if (notGay.isTriggered() && notGay.getRemainingDuration() > 0)
             {
-                notGay.getDisabledPlayers().forEach {
-                    it.key.teleport(it.value)
+                notGay.getDisabledPlayers().forEach { (player, coordinatesMaybe) ->
+                    if (coordinatesMaybe.flag && player.isOnGround)
+                    {
+                        coordinatesMaybe.coordinates = Coordinates(player.pos.x, player.pos.y, player.pos.z, player.yaw, player.pitch)
+                        coordinatesMaybe.flag = false
+                    }
+                    coordinatesMaybe.coordinates?.let {coordinates ->
+                        player.teleport(coordinates)
+                    }
+                    player.addStatusEffect(StatusEffectInstance(StatusEffects.BLINDNESS, 2.seconds(), 100, false, false, false))
                 }
                 notGay.decrementDuration()
             }
@@ -95,9 +102,11 @@ object TrapsAreNotGay
     }
 }
 
+data class DisabledPlayerCoordinateFetch(var flag: Boolean, var coordinates: Coordinates? = null)
+
 data class NotGay(val pos: Coordinates, var age: Int, val gr: Double = 0.5)
 {
-    private val disabledJumpPlayers = mutableMapOf<ServerPlayerEntity, Coordinates>()
+    private val disabledJumpPlayers = mutableMapOf<ServerPlayerEntity, DisabledPlayerCoordinateFetch>()
     private val gaynessRange = gr
     private var triggered = false
     private var triggerDuration = 6.seconds()
@@ -115,18 +124,10 @@ data class NotGay(val pos: Coordinates, var age: Int, val gr: Double = 0.5)
 
     fun addDisabledPlayer(player: ServerPlayerEntity)
     {
-        disabledJumpPlayers[player] = Coordinates(player.pos.x, player.pos.y, player.pos.z, player.yaw, player.pitch)
-        val currentTime = LocalDateTime.now()
-        while (!player.isOnGround)
-        {
-            if (LocalDateTime.now().isAfter(currentTime.plusMinutes(1)))
-            {
-                return
-            }
-        }
+        disabledJumpPlayers[player] = DisabledPlayerCoordinateFetch(true)
     }
 
-    fun getDisabledPlayers(): Map<ServerPlayerEntity, Coordinates>
+    fun getDisabledPlayers(): Map<ServerPlayerEntity, DisabledPlayerCoordinateFetch>
     {
         return disabledJumpPlayers
     }
