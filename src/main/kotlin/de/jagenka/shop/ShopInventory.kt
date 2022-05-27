@@ -9,11 +9,13 @@ import net.minecraft.text.Text
 
 class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 {
-    private val items = ArrayList<ItemStack>()
+    private val items = mutableMapOf<Int, ItemStack>()
 
     init
     {
-        repeat(25) { items.add(ItemStack(Items.COMPASS).setCustomName(Text.of(it.toString()))) }
+        repeat(25) {
+            items[it] = ItemStack(Items.COMPASS).setCustomName(Text.of(it.toString()))
+        }
     }
 
     override fun clear()
@@ -27,7 +29,7 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
     override fun getStack(slot: Int): ItemStack
     {
         if (slot >= items.size) return ItemStack.EMPTY
-        return items[slot]
+        return items[slot] ?: ItemStack.EMPTY
     }
 
     override fun removeStack(slot: Int, amount: Int): ItemStack
@@ -60,5 +62,12 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
     fun onClick(slotIndex: Int)
     {
         println("${player.name.asString()} clicked slot $slotIndex")
+        if (isNonEmptySlot(slotIndex))
+        {
+            player.closeHandledScreen()
+            Shop.showInterface(player)
+        }
     }
+
+    fun isNonEmptySlot(slotIndex: Int) = items[slotIndex] != null
 }

@@ -1,5 +1,6 @@
 package de.jagenka.shop
 
+import de.jagenka.getDGMoney
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -10,6 +11,7 @@ import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import kotlin.random.Random
 
 object Shop
 {
@@ -35,7 +37,9 @@ object Shop
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of("GIN-O")
-        }.let { serverPlayerEntity.openHandledScreen(it) }
+            override fun getDisplayName(): Text = Text.of("You have ${serverPlayerEntity.getDGMoney()} to spend.")
+        }.let {
+            serverPlayerEntity.openHandledScreen(it)
+        }
     }
 }
