@@ -90,15 +90,10 @@ object Timer
 
     fun newCustomTimer(): CustomTimer = newCustomTimer()
 
-    fun newCustomTimer(name: String): CustomTimer?
+    fun newCustomTimer(name: String): CustomTimer
     {
-        if (!customTimers.contains(CustomTimer(name)))
-        {
-            val customTimer = CustomTimer(name)
-            customTimers.add(customTimer)
-            return customTimer
-        }
-        return null
+        val customTimer = CustomTimer(name)
+        return customTimers.find { it.name == name } ?: customTimers.add(customTimer).let { customTimer }
     }
 
     fun removeCustomTimer(customTimer: CustomTimer)
