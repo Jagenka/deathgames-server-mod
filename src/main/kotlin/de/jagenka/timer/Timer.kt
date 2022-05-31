@@ -9,6 +9,7 @@ object Timer
 
     private val tasks = mutableListOf<TimerTask>()
     private val scheduledTasks = mutableListOf<ScheduledTask>()
+    private val scheduledIntervalTasks = mutableListOf<ScheduledIntervalTask>()
 
     init
     {
@@ -42,11 +43,18 @@ object Timer
                 scheduledTasks.remove(it)
             }
         }
+
+        scheduledIntervalTasks.toList().forEach {
+            if ((now() - it.start) % it.interval == 0)
+            {
+                it.task()
+            }
+        }
     }
 
-    fun schedule(task: () -> Unit, `in`: Int): ScheduledTask
+    fun schedule(task: () -> Unit, offset: Int): ScheduledTask
     {
-        val scheduledTask = ScheduledTask(task, now() + `in`)
+        val scheduledTask = ScheduledTask(task, now() + offset)
         scheduledTasks.add(scheduledTask)
         return scheduledTask
     }
@@ -54,6 +62,18 @@ object Timer
     fun unscheduleTask(task: ScheduledTask)
     {
         scheduledTasks.remove(task)
+    }
+
+    fun scheduleWithInterval(task: () -> Unit, offset: Int, interval: Int): ScheduledIntervalTask
+    {
+        val scheduledIntervalTask = ScheduledIntervalTask(task, now() + offset, interval)
+        scheduledIntervalTasks.add(scheduledIntervalTask)
+        return scheduledIntervalTask
+    }
+
+    fun unscheduleIntervalTask(task: ScheduledIntervalTask)
+    {
+        scheduledIntervalTasks.remove(task)
     }
 
     fun now() = ticks
@@ -76,6 +96,7 @@ object Timer
         ticks = 0
         tasks.forEach { it.reset() }
         scheduledTasks.clear()
+        scheduledIntervalTasks.clear()
     }
 
     fun toggle()
@@ -97,3 +118,4 @@ enum class DGUnit(val factor: Int)
 }
 
 data class ScheduledTask(val task: () -> Unit, val time: Int)
+data class ScheduledIntervalTask(val task: () -> Unit, val start: Int, val interval: Int)
