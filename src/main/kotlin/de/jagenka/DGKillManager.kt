@@ -5,6 +5,7 @@ import de.jagenka.Config.livesPerPlayer
 import de.jagenka.Config.livesPerTeam
 import de.jagenka.Config.moneyPerKill
 import de.jagenka.Config.startMoneyPerPlayer
+import de.jagenka.DGKillManager.moneyMode
 import de.jagenka.DGPlayerManager.eliminate
 import de.jagenka.DGPlayerManager.getDGTeam
 import de.jagenka.Util.sendChatMessage
@@ -197,7 +198,7 @@ enum class Mode
 
 fun ServerPlayerEntity.getDGMoney(): Int
 {
-    return when (DGKillManager.moneyMode)
+    return when (moneyMode)
     {
         Mode.PLAYER -> DGKillManager.getMoney(this)
         Mode.TEAM -> this.getDGTeam()?.let { DGKillManager.getMoney(it) } ?: 0
@@ -206,6 +207,15 @@ fun ServerPlayerEntity.getDGMoney(): Int
 
 fun ServerPlayerEntity.addDGMoney(amount: Int)
 {
-    if (DGKillManager.moneyMode != Mode.PLAYER) return
+    if (moneyMode != Mode.PLAYER) return
     DGKillManager.addMoney(this, amount)
+}
+
+fun ServerPlayerEntity.deductDGMoney(amount: Int)
+{
+    when (moneyMode)
+    {
+        Mode.PLAYER -> DGKillManager.addMoney(this, -amount)
+        Mode.TEAM -> DGKillManager.addMoney(this.getDGTeam(), -amount)
+    }
 }

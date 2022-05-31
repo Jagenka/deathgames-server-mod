@@ -23,24 +23,28 @@ object Shop
             override fun createMenu(syncId: Int, inv: PlayerInventory?, player: PlayerEntity?): ScreenHandler
             {
                 val inventory = ShopInventory(serverPlayerEntity)
-                val screenHandler = object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X3, 69, serverPlayerEntity.inventory, inventory, 3)
-                {
-                    override fun transferSlot(player: PlayerEntity?, index: Int): ItemStack
+                val screenHandler =
+                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X4, 69, serverPlayerEntity.inventory, inventory, 4)
                     {
-                        return ItemStack.EMPTY
-                    }
+                        override fun transferSlot(player: PlayerEntity?, index: Int): ItemStack
+                        {
+                            return ItemStack.EMPTY
+                        }
 
-                    override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
-                    {
-                        inventory.onClick(slotIndex)
+                        override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
+                        {
+                            inventory.onClick(slotIndex)
+                        }
                     }
-                }
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of("You have $SHOP_UNIT${serverPlayerEntity.getDGMoney()} to spend.")
-        }.let {
-            serverPlayerEntity.openHandledScreen(it)
+            override fun getDisplayName(): Text = Text.of("SHOP")
         }
+            .let {
+                serverPlayerEntity.openHandledScreen(it)
+            }
     }
+
+    fun getBalanceString(player: ServerPlayerEntity) = "You have $SHOP_UNIT${player.getDGMoney()} to spend."
 }
