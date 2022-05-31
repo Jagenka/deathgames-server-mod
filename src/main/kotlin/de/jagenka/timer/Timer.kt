@@ -1,6 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames
+import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents.Custom
 
 object Timer
 {
@@ -10,6 +11,8 @@ object Timer
     private val tasks = mutableListOf<TimerTask>()
     private val scheduledTasks = mutableListOf<ScheduledTask>()
     private val scheduledIntervalTasks = mutableListOf<ScheduledIntervalTask>()
+
+    private val customTimers = mutableListOf<CustomTimer>()
 
     init
     {
@@ -50,6 +53,10 @@ object Timer
                 it.task()
             }
         }
+
+        customTimers.toList().forEach {
+            it.time++
+        }
     }
 
     fun schedule(task: () -> Unit, offset: Int): ScheduledTask
@@ -81,6 +88,24 @@ object Timer
         scheduledIntervalTasks.remove(task)
     }
 
+    fun newCustomTimer(): CustomTimer = newCustomTimer()
+
+    fun newCustomTimer(name: String): CustomTimer?
+    {
+        if (!customTimers.contains(CustomTimer(name)))
+        {
+            val customTimer = CustomTimer(name)
+            customTimers.add(customTimer)
+            return customTimer
+        }
+        return null
+    }
+
+    fun removeCustomTimer(customTimer: CustomTimer)
+    {
+        customTimers.remove(customTimer)
+    }
+
     fun now() = ticks
 
     fun isRunning() = running
@@ -102,6 +127,7 @@ object Timer
         tasks.forEach { it.reset() }
         scheduledTasks.clear()
         scheduledIntervalTasks.clear()
+        customTimers.clear()
     }
 
     fun toggle()
@@ -129,4 +155,9 @@ data class ScheduledIntervalTask(val task: () -> Unit, val start: Int, val inter
     {
         fun getFor(task: () -> Unit, offset: Int, interval: Int) = ScheduledIntervalTask(task, Timer.now() + offset, interval)
     }
+}
+
+data class CustomTimer(val name: String = System.currentTimeMillis().toString())
+{
+    var time: Int = 0
 }
