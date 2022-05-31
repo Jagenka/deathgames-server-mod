@@ -153,7 +153,7 @@ object TrapsAreNotGay
                     effectsString = listOf(DGStatusEffect.BLIND)) },
                 "Void Trap" to { addLessGay(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
                     snares = false,
-                    effectsString = listOf(DGStatusEffect.BLIND, DGStatusEffect.LEVITATION)) },
+                    effectsString = listOf(DGStatusEffect.BLIND, DGStatusEffect.LEVITATION, DGStatusEffect.SLOWNESS)) },
                 "Exhaustion Trap" to { addLessGay(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
                     triggerDuration = 10.seconds(),
                     snares = false,
