@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import java.util.UUID
@@ -110,6 +111,9 @@ object Util
 
         return result.toList()
     }
+
+    fun getIntTextColor(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
+    fun getTextColor(r: Int, g: Int, b: Int) = TextColor.fromRgb(getIntTextColor(r, g, b))
 }
 
 data class BlockAtCoordinates(val block: Block, val coordinates: Coordinates)
