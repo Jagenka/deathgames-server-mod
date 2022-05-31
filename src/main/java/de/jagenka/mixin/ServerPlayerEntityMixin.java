@@ -22,10 +22,11 @@ public class ServerPlayerEntityMixin
     }
 
     // I use this for testing
-    @Inject(method = "dropSelectedItem", at = @At("HEAD"))
+    @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
     private void dropItem(boolean entireStack, CallbackInfoReturnable<Boolean> cir)
     {
         Testing.dropTest();
-        //TODO: prevent drop
+        cir.setReturnValue(false);
+        cir.cancel();
     }
 }
