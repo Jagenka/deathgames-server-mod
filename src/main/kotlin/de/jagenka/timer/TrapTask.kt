@@ -17,7 +17,6 @@ object TrapTask: TimerTask
 
     override fun reset()
     {
-
+        TrapsAreNotGay.becomeGay()
     }
-
 }

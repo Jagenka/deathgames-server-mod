@@ -7,12 +7,12 @@ import de.jagenka.timer.seconds
 import de.jagenka.timer.ticks
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
+import net.minecraft.item.ItemUsageContext
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
-import net.minecraft.util.Identifier
+import net.minecraft.util.math.Direction
 
 object TrapsAreNotGay
 {
@@ -23,6 +23,7 @@ object TrapsAreNotGay
     private const val gaynessVisibilityRange = 10.0     // in blocks
     private const val affectedGayRange = 1.5            // in blocks
 
+    @JvmStatic
     fun addLessGay(x: Int, y: Int, z: Int)
     {
         val notGay = NotGay(Coordinates(x.toDouble() + 0.5, y.toDouble(), z.toDouble() + 0.5), 0.ticks())
@@ -57,17 +58,15 @@ object TrapsAreNotGay
                     affectedPlayers.forEach { player ->
                         player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 1f, 1f)
                         it.addDisabledPlayer(player)
-                        // TODO: Fix sound effects
                     }
                 }
             }
         }
     }
 
-    @JvmStatic
-    fun noJump()
+    fun becomeGay()
     {
-        println("No bitches?")
+        notGayness.clear()
     }
 
     @JvmStatic
@@ -99,6 +98,21 @@ object TrapsAreNotGay
                 notGayness.remove(notGay)
             }
         }
+    }
+
+    @JvmStatic
+    fun handleTrapPlacement(ctx: ItemUsageContext): Boolean
+    {
+        if (ctx.stack.name.asString() == "Snare Trap")
+        {
+            if (ctx.side == Direction.UP)
+            {
+                addLessGay(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z)
+                ctx.player?.inventory?.selectedSlot?.let { ctx.player?.inventory?.removeStack(it, 1) }
+            }
+            return true
+        }
+        return false
     }
 }
 
