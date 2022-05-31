@@ -12,7 +12,7 @@ import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 
-object Shop
+object Shop //TODO: scale shop with time
 {
     const val SHOP_UNIT = "$"
 
@@ -51,7 +51,9 @@ object Shop
     fun getUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType) = upgrades.getValue(player).getValue(upgradeType)
     fun setUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType, level: Int)
     {
-        upgrades.getValue(player)[upgradeType] = level
+        val upgradeTypeIntMutableMap = upgrades.getValue(player)
+        upgradeTypeIntMutableMap[upgradeType] = level
+        upgrades[player] = upgradeTypeIntMutableMap
     }
 
     fun increaseUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType)
@@ -60,6 +62,11 @@ object Shop
     }
 
     fun getBalanceString(player: ServerPlayerEntity) = "You have $SHOP_UNIT${player.getDGMoney()} to spend."
+
+    fun reset()
+    {
+        this.upgrades.clear()
+    }
 }
 
 enum class UpgradeType

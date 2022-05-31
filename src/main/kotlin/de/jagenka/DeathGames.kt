@@ -6,6 +6,7 @@ import de.jagenka.DGSpawnManager.getSpawn
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.commands.JayCommand
+import de.jagenka.shop.Shop
 import de.jagenka.timer.Timer
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
@@ -43,7 +44,7 @@ object DeathGames : DedicatedServerModInitializer
         DGPlayerManager.reset()
 
         DGDisplayManager.reset()
-        //TODO: reset shop
+        Shop.reset()
         DGBonusManager.init()
 
         DGKillManager.initLives(teamPlayers)

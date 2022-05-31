@@ -37,6 +37,20 @@ object ShopEntries
         22 to ItemShopEntry(ItemStack(Items.SHIELD), 50, "Shield"),
 //            23 to ShopEntry(ItemStack(TURTLE_EGG), 100, "Extra Life"),
         24 to ItemShopEntry(ItemStack(Items.TRIDENT), 69_420, "Trident"),
-        25 to ItemShopEntry(ItemStack(Items.MILK_BUCKET), 5, "An Lüter Mülsch")
+        25 to ItemShopEntry(ItemStack(Items.MILK_BUCKET), 5, "An Lüter Mülsch"),
+
+        30 to UpgradeableShopEntry(
+            UpgradeType.ARMOR,
+            mutableListOf(
+                mutableListOf(Items.LEATHER_CHESTPLATE.defaultStack),
+                mutableListOf(Items.IRON_CHESTPLATE.defaultStack),
+                mutableListOf(Items.LEATHER_HELMET.defaultStack),
+                mutableListOf(Items.IRON_HELMET.defaultStack),
+                mutableListOf(Items.NETHERITE_BOOTS.defaultStack)
+            ),
+            mutableListOf(5, 5, 5, 5, 5),
+            "Armor Upgrade"
+        )
     )
+    //TODO: dolphin's grace
 }
