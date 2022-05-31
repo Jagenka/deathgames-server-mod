@@ -16,6 +16,8 @@ object Shop
 {
     const val SHOP_UNIT = "$"
 
+    private val upgrades = mutableMapOf<ServerPlayerEntity, MutableMap<UpgradeType, Int>>().withDefault { mutableMapOf<UpgradeType, Int>().withDefault { 0 } }
+
     fun showInterface(serverPlayerEntity: ServerPlayerEntity)
     {
         object : NamedScreenHandlerFactory
@@ -46,5 +48,21 @@ object Shop
             }
     }
 
+    fun getUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType) = upgrades.getValue(player).getValue(upgradeType)
+    fun setUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType, level: Int)
+    {
+        upgrades.getValue(player)[upgradeType] = level
+    }
+
+    fun increaseUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType)
+    {
+        setUpgradeLevel(player, upgradeType, getUpgradeLevel(player, upgradeType) + 1)
+    }
+
     fun getBalanceString(player: ServerPlayerEntity) = "You have $SHOP_UNIT${player.getDGMoney()} to spend."
+}
+
+enum class UpgradeType
+{
+    SWORD, AXE, BOW, CROSSBOW, ARMOR
 }

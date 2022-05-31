@@ -1,9 +1,5 @@
 package de.jagenka.shop
 
-import de.jagenka.Util.sendPrivateMessage
-import de.jagenka.deductDGMoney
-import de.jagenka.getDGMoney
-import de.jagenka.shop.Shop.SHOP_UNIT
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
@@ -11,11 +7,11 @@ import net.minecraft.server.network.ServerPlayerEntity
 
 class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 {
-    private val items = mutableMapOf<Int, ShopEntry>().withDefault { ShopEntry.EMPTY }
+    private val items = mutableMapOf<Int, ShopEntry>().withDefault { ShopEntries.EMPTY }
 
     init
     {
-        items.putAll(ShopEntry.shopEntries)
+        items.putAll(ShopEntries.shopEntries)
     }
 
     override fun clear()
@@ -28,7 +24,7 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 
     override fun getStack(slot: Int): ItemStack
     {
-        return items.getValue(slot).getDisplayItemStackWithFormatting(player)
+        return items.getValue(slot).getDisplayItemStack(player)
     }
 
     override fun removeStack(slot: Int, amount: Int): ItemStack
@@ -61,16 +57,9 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
     fun onClick(slotIndex: Int)
     {
         val shopEntry = items.getValue(slotIndex)
-        if (isNonEmptySlot(slotIndex)) //TODO: money
+        if (isNonEmptySlot(slotIndex))
         {
-            if (player.getDGMoney() >= shopEntry.price)
-            {
-                player.giveItemStack(shopEntry.getItemStackToGive())
-                player.deductDGMoney(shopEntry.price)
-            } else
-            {
-                player.sendPrivateMessage("You do not have the required $SHOP_UNIT${shopEntry.price}")
-            }
+            shopEntry.buy(player)
         }
     }
 
