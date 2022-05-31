@@ -11,10 +11,11 @@ import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
-import kotlin.random.Random
 
 object Shop
 {
+    const val SHOP_UNIT = "$"
+
     fun showInterface(serverPlayerEntity: ServerPlayerEntity)
     {
         object : NamedScreenHandlerFactory
@@ -37,7 +38,7 @@ object Shop
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of("You have ${serverPlayerEntity.getDGMoney()} to spend.")
+            override fun getDisplayName(): Text = Text.of("You have $SHOP_UNIT${serverPlayerEntity.getDGMoney()} to spend.")
         }.let {
             serverPlayerEntity.openHandledScreen(it)
         }
