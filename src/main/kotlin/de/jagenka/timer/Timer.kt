@@ -73,7 +73,7 @@ object Timer
 
     fun scheduleWithInterval(task: ScheduledIntervalTask)
     {
-        scheduledIntervalTasks.add(task)
+        if (!scheduledIntervalTasks.contains(task)) scheduledIntervalTasks.add(task)
     }
 
     fun unscheduleIntervalTask(task: ScheduledIntervalTask)
