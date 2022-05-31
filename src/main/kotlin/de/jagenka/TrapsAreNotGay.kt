@@ -69,7 +69,6 @@ object TrapsAreNotGay
         val gayTriggerSpectator = it.pos.getInGamePlayersInRange(it.gaynessTriggerVisibleRange)
         val gayPrepareSpectator = it.pos.getInGamePlayersInRange(it.gaynessVisibilityRange)
         val affectedPlayers = it.pos.getInGamePlayersInRange(it.affectedGayRange)
-        println(it.gaynessRange)
         val triggered = it.pos.getInGamePlayersInRange(it.gaynessRange).isNotEmpty()
         ifServerLoaded { server ->
             if (it.getAge() < it.setupTime)
