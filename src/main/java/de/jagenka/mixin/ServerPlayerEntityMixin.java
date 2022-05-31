@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin
+public class ServerPlayerEntityMixin
 {
     @Inject(method = "onDeath", at = @At("HEAD"))
     private void onDeath(DamageSource damageSource, CallbackInfo ci)
@@ -26,5 +26,6 @@ public abstract class ServerPlayerEntityMixin
     private void dropItem(boolean entireStack, CallbackInfoReturnable<Boolean> cir)
     {
         Testing.dropTest();
+        //TODO: prevent drop
     }
 }
