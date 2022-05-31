@@ -66,9 +66,14 @@ object Timer
 
     fun scheduleWithInterval(task: () -> Unit, offset: Int, interval: Int): ScheduledIntervalTask
     {
-        val scheduledIntervalTask = ScheduledIntervalTask(task, now() + offset, interval)
-        scheduledIntervalTasks.add(scheduledIntervalTask)
+        val scheduledIntervalTask = ScheduledIntervalTask.getFor(task, offset, interval)
+        scheduleWithInterval(scheduledIntervalTask)
         return scheduledIntervalTask
+    }
+
+    fun scheduleWithInterval(task: ScheduledIntervalTask)
+    {
+        scheduledIntervalTasks.add(task)
     }
 
     fun unscheduleIntervalTask(task: ScheduledIntervalTask)
@@ -119,3 +124,9 @@ enum class DGUnit(val factor: Int)
 
 data class ScheduledTask(val task: () -> Unit, val time: Int)
 data class ScheduledIntervalTask(val task: () -> Unit, val start: Int, val interval: Int)
+{
+    companion object
+    {
+        fun getFor(task: () -> Unit, offset: Int, interval: Int) = ScheduledIntervalTask(task, Timer.now() + offset, interval)
+    }
+}
