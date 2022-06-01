@@ -67,6 +67,18 @@ object ShopEntries
             mutableListOf(50, 50, 50, 50, 50),
             "Sword Upgrade"
         ),
+        32 to UpgradeableShopEntry(
+            UpgradeType.AXE,
+            mutableListOf(
+                mutableListOf(WOODEN_AXE.unbreakable()),
+                mutableListOf(STONE_AXE.unbreakable()),
+                mutableListOf(IRON_AXE.unbreakable()),
+                mutableListOf(DIAMOND_AXE.unbreakable()),
+                mutableListOf(NETHERITE_AXE.unbreakable()),
+            ),
+            mutableListOf(120, 40, 40, 40, 40),
+            "Axe Upgrade"
+        ),
     )
 
     private fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()
