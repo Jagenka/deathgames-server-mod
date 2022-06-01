@@ -7,24 +7,36 @@ import net.minecraft.world.GameMode
 
 object DGPlayerManager
 {
-    private val players = mutableSetOf<DGPlayer>()
-    private val teamRegistry = mutableMapOf<ServerPlayerEntity, DGTeam>()
+    private val playerNames = mutableSetOf<String>()
+    private val inGameMap = mutableMapOf<String, Boolean>().withDefault { false }
+    private val teamRegistry = mutableMapOf<String, DGTeam>()
 
-    fun getPlayer(name: String): ServerPlayerEntity?
+    fun getOnlinePlayer(name: String): ServerPlayerEntity?
     {
-        getPlayers().forEach { if (it.name.asString() == name) return it }
+        getOnlinePlayers().forEach { if (it.name.asString() == name) return it }
         return null
     }
 
-    fun getPlayers(): Set<ServerPlayerEntity>
+    fun getOnlinePlayers(): Set<ServerPlayerEntity>
     {
         val allPlayers = mutableSetOf<ServerPlayerEntity>()
-        players.forEach { allPlayers.add(it.playerEntity) }
         ifServerLoaded { allPlayers.addAll(it.playerManager.playerList) }
-        return allPlayers
+        return allPlayers.toSet()
     }
 
-    fun getTeam(player: ServerPlayerEntity) = teamRegistry[player]
+    fun getPlayers(): Set<String>
+    {
+        ifServerLoaded { server ->
+            server.playerManager.playerList.forEach {
+                if (!playerNames.contains(it.name.asString())) playerNames.add(it.name.asString())
+            }
+        }
+
+        return playerNames.toSet()
+    }
+
+    fun getTeam(player: ServerPlayerEntity) = getTeam(player.name.asString())
+    fun getTeam(playerName: String) = teamRegistry[playerName]
 
     fun ServerPlayerEntity.getDGTeam() = getTeam(this)
 
@@ -32,7 +44,7 @@ object DGPlayerManager
     {
         ifServerLoaded {
             it.scoreboard.addPlayerToTeam(this.name.asString(), it.scoreboard.getTeam(team.name))
-            teamRegistry[this] = team
+            teamRegistry[this.name.asString()] = team
         }
     }
 
@@ -40,7 +52,7 @@ object DGPlayerManager
     {
         ifServerLoaded {
             it.scoreboard.clearPlayerTeam(this.name.asString())
-            teamRegistry.remove(this)
+            teamRegistry.remove(this.name.asString())
         }
     }
 
@@ -51,7 +63,7 @@ object DGPlayerManager
 
     fun reset()
     {
-        players.clear()
+        playerNames.clear()
     }
 
     fun prepareTeams()
@@ -65,76 +77,43 @@ object DGPlayerManager
         }
     }
 
-    fun getTeamPlayers() = getPlayers().filter { teamRegistry[it] != null }
+    fun getTeamPlayers() = getOnlinePlayers().filter { teamRegistry[it.name.asString()] != null }
 
-    fun getPlayersInTeam(team: DGTeam): List<ServerPlayerEntity>
+    fun getPlayersInTeam(team: DGTeam): List<String>
     {
         return teamRegistry.keys.filter { teamRegistry[it] == team }
     }
 
-    fun getInGamePlayers(): List<ServerPlayerEntity>
+    fun getOnlinePlayersInTeam(team: DGTeam): List<ServerPlayerEntity>
     {
-        val result = mutableListOf<ServerPlayerEntity>()
-        players.filter { it.inGame }.forEach { result.add(it.playerEntity) }
-        return result.toList()
+        return getOnlinePlayers().filter { it.getDGTeam() == team }
     }
 
-    fun getInGamePlayersInTeam(team: DGTeam): List<ServerPlayerEntity> = getInGamePlayers().filter { teamRegistry[it] == team }
+    fun getInGamePlayers(): List<String>
+    {
+        return playerNames.filter { inGameMap.getValue(it) }.toList()
+    }
 
-    fun ServerPlayerEntity.isInGame() = getInGamePlayers().contains(this)
+    fun getInGamePlayersInTeam(team: DGTeam): List<String> = getInGamePlayers().filter { teamRegistry[it] == team }
+
+    fun ServerPlayerEntity.isInGame() = getInGamePlayers().contains(this.name.asString())
 
 
     fun ServerPlayerEntity.makeInGame()
     {
-        players.add(DGPlayer(this, true))
+        inGameMap[this.name.asString()] = true
     }
 
     fun ServerPlayerEntity.eliminate()
     {
-        players.removeIf { it.playerEntity == this }
-        players.add(DGPlayer(this, false))
+        inGameMap[this.name.asString()] = false
         this.changeGameMode(GameMode.SPECTATOR)
     }
 
-    fun getInGameTeams() = DGTeam.values().filter { it.getInGamePlayers().isNotEmpty() }
+    fun getInGameTeams() = DGTeam.values().filter { getInGamePlayersInTeam(it).isNotEmpty() }
+    fun getOnlineInGameTeams() = DGTeam.values().filter { it.getOnlineInGamePlayers().isNotEmpty() }
 
-    fun Coordinates.getInGamePlayersInRange(range: Double) = getInGamePlayers().filter { player ->
-        Coordinates(player.x, player.y, player.z) distanceTo this <= range
-    }
-
-    @JvmStatic
-    fun replaceDeadPlayer(old: ServerPlayerEntity, new: ServerPlayerEntity)
-    {
-        val oldEntry = players.find { it.playerEntity == old }
-        if (oldEntry != null)
-        {
-            players.remove(oldEntry)
-            players.add(DGPlayer(new, oldEntry.inGame))
-        }
-
-        val oldTeam = teamRegistry.remove(old)
-        if (oldTeam != null) teamRegistry[new] = oldTeam
+    fun Coordinates.getInGamePlayersInRange(range: Double) = getOnlinePlayers().filter { player ->
+        (inGameMap.getValue(player.name.asString())) && (Coordinates(player.x, player.y, player.z) distanceTo this <= range)
     }
 }
-
-data class DGPlayer(var playerEntity: ServerPlayerEntity, var inGame: Boolean)
-{
-    override fun equals(other: Any?): Boolean
-    {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DGPlayer
-
-        if (playerEntity != other.playerEntity) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int
-    {
-        return playerEntity.hashCode()
-    }
-}
-
-data class PlayerTeamEntry(val player: ServerPlayerEntity, val team: DGTeam)

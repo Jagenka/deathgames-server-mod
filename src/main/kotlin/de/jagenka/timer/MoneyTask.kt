@@ -1,8 +1,8 @@
 package de.jagenka.timer
 
 import de.jagenka.Config
+import de.jagenka.DGKillManager
 import de.jagenka.DGPlayerManager
-import de.jagenka.addDGMoney
 
 object MoneyTask : TimerTask
 {
@@ -13,7 +13,7 @@ object MoneyTask : TimerTask
 
     override fun run()
     {
-        DGPlayerManager.getPlayers().forEach { it.addDGMoney(Config.moneyPerInterval) }
+        DGPlayerManager.getPlayers().forEach { DGKillManager.addMoney(it, Config.moneyPerInterval) }
     }
 
     override fun reset()

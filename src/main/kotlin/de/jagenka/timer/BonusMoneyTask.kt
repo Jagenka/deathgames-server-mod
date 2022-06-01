@@ -14,8 +14,8 @@ object BonusMoneyTask : TimerTask
 
     override fun run()
     {
-        DGPlayerManager.getPlayers().forEach {
-            if (ticks.getValue(it) % Config.bonusMoneyInterval == 0) it.addDGMoney(Config.bonusMoneyAmount)
+        DGPlayerManager.getOnlinePlayers().forEach {
+            if (ticks.getValue(it) % Config.bonusMoneyInterval == 0) DGKillManager.addLives(it.name.asString(), Config.bonusMoneyAmount)
             if (DGBonusManager.isOnActivePlatform(it)) ticks[it] = ticks.getValue(it) + 1
         }
     }

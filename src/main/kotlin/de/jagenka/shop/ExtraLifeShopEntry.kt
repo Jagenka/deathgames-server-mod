@@ -27,7 +27,7 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
     {
         if (player.getDGMoney() >= price)
         {
-            DGKillManager.addLives(player, 1)
+            DGKillManager.addLives(player.name.asString(), 1)
             player.deductDGMoney(price)
             return true
         } else

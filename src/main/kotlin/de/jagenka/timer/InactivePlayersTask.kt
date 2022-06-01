@@ -10,7 +10,7 @@ object InactivePlayersTask : TimerTask
     override val runEvery: Int
         get() = 1.ticks()
 
-    private val inactiveTimer = mutableMapOf<ServerPlayerEntity, Int>().withDefault { 0 } //TODO: highlight inactive players
+    private val inactiveTimer = mutableMapOf<String, Int>().withDefault { 0 } //TODO: highlight inactive players
 
     override fun run()
     {

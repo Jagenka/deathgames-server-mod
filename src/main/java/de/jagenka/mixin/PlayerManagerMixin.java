@@ -16,7 +16,6 @@ public class PlayerManagerMixin
     private void respawnPlayer(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir)
     {
         ServerPlayerEntity newPlayer = cir.getReturnValue();
-        DGPlayerManager.replaceDeadPlayer(player, newPlayer);
         DGSpawnManager.handleRespawn(newPlayer);
     }
 }

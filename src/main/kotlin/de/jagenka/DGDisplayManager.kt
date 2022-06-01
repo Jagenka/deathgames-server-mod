@@ -52,10 +52,10 @@ object DGDisplayManager
             {
                 Mode.PLAYER ->
                 {
-                    DGPlayerManager.getPlayers().forEach { player ->
-                        val lives = DGKillManager.getLives(player)
-                        if (lives != null && lives > 0) server.scoreboard.getPlayerScore(player.name.asString(), sidebarObjective).score = lives
-                        else server.scoreboard.resetPlayerScore(player.name.asString(), sidebarObjective)
+                    DGPlayerManager.getPlayers().forEach { playerName ->
+                        val lives = DGKillManager.getLives(playerName)
+                        if (lives != null && lives > 0) server.scoreboard.getPlayerScore(playerName, sidebarObjective).score = lives
+                        else server.scoreboard.resetPlayerScore(playerName, sidebarObjective)
                     }
                 }
                 Mode.TEAM ->
@@ -80,7 +80,7 @@ object DGDisplayManager
 
     private fun resetLevelDisplay()
     {
-        DGPlayerManager.getPlayers().forEach { player ->
+        DGPlayerManager.getOnlinePlayers().forEach { player ->
             player.setExperiencePoints(0)
             player.setExperienceLevel(0)
         }
@@ -88,7 +88,7 @@ object DGDisplayManager
 
     fun updateLevelDisplay()
     {
-        DGPlayerManager.getPlayers().forEach { player ->
+        DGPlayerManager.getOnlinePlayers().forEach { player ->
             player.setExperiencePoints(0)
             player.setExperienceLevel(player.getDGMoney())
         }
@@ -101,7 +101,7 @@ object DGDisplayManager
 
     private fun sendMessageToHotbar(text: Text)
     {
-        DGPlayerManager.getPlayers().forEach { player ->
+        DGPlayerManager.getOnlinePlayers().forEach { player ->
             player.networkHandler.sendPacket(OverlayMessageS2CPacket(text))
         }
     }

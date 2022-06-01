@@ -14,12 +14,12 @@ object GameOverTask : TimerTask
 
     override fun run()
     {
-        if (DGPlayerManager.getInGameTeams().size <= 1)
+        if (DGPlayerManager.getOnlineInGameTeams().size <= 1)
         {
-            Util.sendChatMessage("GAME OVER")
-            Timer.pause()
+            Util.sendChatMessage("GAME OVER") //TODO: change this
+            Timer.pause() //TODO: weg?
             DeathGames.running = false
-            DGPlayerManager.getPlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
+            DGPlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
             //TODO: timer, back to lobby, etc
         }
     }

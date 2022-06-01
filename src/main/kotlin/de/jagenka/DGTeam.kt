@@ -1,5 +1,6 @@
 package de.jagenka
 
+import de.jagenka.DGPlayerManager.isInGame
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 
@@ -28,9 +29,9 @@ enum class DGTeam
         }
     }
 
-    fun getPlayers() = DGPlayerManager.getPlayersInTeam(this)
+    fun getOnlinePlayers() = DGPlayerManager.getOnlinePlayersInTeam(this)
 
-    fun getInGamePlayers() = DGPlayerManager.getInGamePlayersInTeam(this)
+    fun getOnlineInGamePlayers() = getOnlinePlayers().filter { it.isInGame() }
 
     companion object
     {

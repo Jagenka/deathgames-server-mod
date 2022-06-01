@@ -47,8 +47,8 @@ object DeathGames : DedicatedServerModInitializer
         Shop.reset()
         DGBonusManager.init()
 
-        DGKillManager.initLives(teamPlayers)
-        DGKillManager.initMoney(teamPlayers)
+        DGKillManager.initLives()
+        DGKillManager.initMoney()
 
         DGDisplayManager.showSidebar()
 
@@ -61,13 +61,13 @@ object DeathGames : DedicatedServerModInitializer
             it.changeGameMode(GameMode.ADVENTURE)
         }
 
-        DGPlayerManager.getPlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
+        DGPlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
         ifServerLoaded { it.overworld.setWeather(Int.MAX_VALUE, 0, false, false) }
 
         DGSpawnManager.shuffleSpawns()
 
-        DGPlayerManager.getPlayers().forEach {
+        DGPlayerManager.getOnlinePlayers().forEach {
             val (x, y, z) = Config.worldSpawn
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
             it.teleport(it.getSpawn())
