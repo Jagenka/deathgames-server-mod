@@ -9,7 +9,8 @@
     "MinecraftServerMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
-    "ItemStackMixin"
+    "ItemStackMixin",
+    "PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

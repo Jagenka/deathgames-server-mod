@@ -21,11 +21,10 @@ public class ServerPlayerEntityMixin
         DGKillManager.handleDeath(attacker, (ServerPlayerEntity) (Object) this);
     }
 
-    // I use this for testing
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
     private void dropItem(boolean entireStack, CallbackInfoReturnable<Boolean> cir)
     {
-        Testing.dropTest();
+        Testing.dropTest(); // I use this for testing
         cir.setReturnValue(false);
         cir.cancel();
     }
