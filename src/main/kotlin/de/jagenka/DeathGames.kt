@@ -73,7 +73,7 @@ object DeathGames : DedicatedServerModInitializer
             it.teleport(it.getSpawn())
         }
 
-        //TODO: remove arrows / items from map / gino's traps
+        //TODO: remove arrows / items from map
 
         //TODO: show begin message
 

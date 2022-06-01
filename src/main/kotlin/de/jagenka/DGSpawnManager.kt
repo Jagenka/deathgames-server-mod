@@ -6,7 +6,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 
 object DGSpawnManager //TODO: lobby spawn
-{ //TODO: spawns einnehmen
+{
     private val spawns = ArrayList<Coordinates>()
     private val teamSpawns = mutableMapOf<DGTeam?, Coordinates>().withDefault { defaultSpawn }
 

@@ -12,7 +12,8 @@ import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 
-object Shop //TODO: scale shop with time
+object Shop
+//TODO: refund
 {
     const val SHOP_UNIT = "$"
 
