@@ -13,7 +13,8 @@ object ShopEntries
 {
     val EMPTY = ItemShopEntry(ItemStack.EMPTY, 0, "")
 
-    val shopEntries = mapOf( //TODO: load from config
+    val shopEntries = mapOf(
+        //TODO: load from config
         0 to ItemShopEntry(ItemStack(MELON_SLICE, 8), 5, "Melon"),
         1 to ItemShopEntry(ItemStack(ARROW, 4), 5, "Arrows"),
         2 to ItemShopEntry(ItemStack(ENDER_PEARL, 2), 10, "Ender Pearls"),
@@ -53,7 +54,19 @@ object ShopEntries
             ),
             mutableListOf(20, 40, 60, 80, 100, 120),
             "Armor Upgrade"
-        )
+        ),
+        31 to UpgradeableShopEntry(
+            UpgradeType.SWORD,
+            mutableListOf(
+                mutableListOf(WOODEN_SWORD.unbreakable()),
+                mutableListOf(STONE_SWORD.unbreakable()),
+                mutableListOf(IRON_SWORD.unbreakable()),
+                mutableListOf(DIAMOND_SWORD.unbreakable()),
+                mutableListOf(NETHERITE_SWORD.unbreakable()),
+            ),
+            mutableListOf(50, 50, 50, 50, 50),
+            "Sword Upgrade"
+        ),
     )
 
     private fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()

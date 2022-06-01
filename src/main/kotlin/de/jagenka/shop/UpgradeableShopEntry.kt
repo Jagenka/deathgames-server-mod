@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
+import net.minecraft.util.registry.Registry
 
 class UpgradeableShopEntry(
     private val type: UpgradeType,
@@ -55,24 +56,29 @@ class UpgradeableShopEntry(
 
         if (player.getDGMoney() >= prices[nextLevel])
         {
-            if (nextLevel > 0) boughtItemStacks[currentLevel].forEach {
-                player.inventory.remove({ oldItemStack ->
-                    (oldItemStack.item !is ArmorItem) && (oldItemStack.isOf(it.item))
+            if (currentLevel >= 0) boughtItemStacks[currentLevel].forEach { itemStackToRemove ->
+                player.inventory.remove({ itemStackInInventory ->
+                    ((itemStackInInventory.item !is ArmorItem) && (itemStackInInventory.item == itemStackToRemove.item))
                 }, -1, player.playerScreenHandler.craftingInput)
             }
+
             boughtItemStacks[nextLevel].forEach { itemStack ->
                 if (itemStack.item is ArmorItem)
                 {
                     listOf(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD).forEachIndexed { index, equipmentSlot ->
-                        if ((itemStack.item is ArmorItem) && (itemStack.item as ArmorItem).slotType == equipmentSlot)
+                        if ((itemStack.item as? ArmorItem)?.slotType == equipmentSlot)
                         {
-                            player.inventory.remove({ ((it.item as ArmorItem).slotType ?: false) == equipmentSlot }, -1, player.playerScreenHandler.craftingInput)
-                            player.inventory.armor[index] = itemStack
+                            player.inventory.remove(
+                                { ((it.item as? ArmorItem)?.slotType == equipmentSlot) },
+                                -1,
+                                player.playerScreenHandler.craftingInput
+                            )
+                            player.inventory.armor[index] = itemStack.copy()
                         }
                     }
                 } else
                 {
-                    player.giveItemStack(itemStack)
+                    player.giveItemStack(itemStack.copy()) // pls end me
                 }
             }
 
