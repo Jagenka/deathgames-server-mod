@@ -61,7 +61,12 @@ object Timer
 
     fun schedule(task: () -> Unit, offset: Int): ScheduledTask
     {
-        val scheduledTask = ScheduledTask(task, now() + offset)
+        return scheduleAt(task, now() + offset)
+    }
+
+    fun scheduleAt(task: () -> Unit, time: Int): ScheduledTask
+    {
+        val scheduledTask = ScheduledTask(task, time)
         scheduledTasks.add(scheduledTask)
         return scheduledTask
     }
