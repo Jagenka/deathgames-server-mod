@@ -1,5 +1,6 @@
 package de.jagenka
 
+import de.jagenka.managers.PlayerManager
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.network.MessageType
@@ -10,7 +11,7 @@ import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
-import java.util.UUID
+import java.util.*
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
@@ -31,7 +32,7 @@ object Util
     {
         this.minecraftServer = minecraftServer
 
-        DGPlayerManager.prepareTeams()
+        PlayerManager.prepareTeams()
     }
 
     fun ifServerLoaded(lambda: (MinecraftServer) -> Unit)

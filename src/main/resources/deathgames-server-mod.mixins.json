@@ -6,11 +6,11 @@
   "mixins": [],
   "client": [],
   "server": [
+    "ItemStackMixin",
     "MinecraftServerMixin",
+    "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
-    "ItemStackMixin",
-    "PlayerEntityMixin",
     "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {

@@ -1,5 +1,8 @@
 package de.jagenka
 
+import de.jagenka.managers.BonusManager
+import de.jagenka.managers.Platform
+import de.jagenka.managers.SpawnManager
 import net.fabricmc.loader.api.FabricLoader
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.kotlin.objectMapperFactory
@@ -66,7 +69,7 @@ object Config
 
         worldSpawn = root.node("worldSpawn").get(Coordinates::class.java) ?: configError("worldSpawn")
 
-        DGSpawnManager.setSpawns(root.node("spawns").getList(Coordinates::class.java) ?: configError("spawns"))
+        SpawnManager.setSpawns(root.node("spawns").getList(Coordinates::class.java) ?: configError("spawns"))
         spawnPlatformRadius = root.node("spawnPlatformRadius").int
         bonusPlatformSpawnInterval = root.node("bonusPlatformSpawnInterval").int
         bonusPlatformStayTime = root.node("bonusPlatformStayTime").int
@@ -76,7 +79,7 @@ object Config
 
         defaultSpawn = root.node("defaultSpawn").get(Coordinates::class.java) ?: configError("defaultSpawn")
 
-        DGBonusManager.setPlatforms(root.node("bonusPlatforms").getList(Platform::class.java) ?: configError("bonusPlatforms"))
+        BonusManager.setPlatforms(root.node("bonusPlatforms").getList(Platform::class.java) ?: configError("bonusPlatforms"))
         bonusPlatformRadius = root.node("bonusPlatformRadius").int
 
         moneyPerKill = root.node("moneyPerKill").int

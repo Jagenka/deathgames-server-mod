@@ -1,7 +1,7 @@
 package de.jagenka.mixin;
 
-import de.jagenka.DGKillManager;
 import de.jagenka.Testing;
+import de.jagenka.managers.KillManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,7 +18,7 @@ public class ServerPlayerEntityMixin
     private void onDeath(DamageSource damageSource, CallbackInfo ci)
     {
         Entity attacker = damageSource.getAttacker();
-        DGKillManager.handleDeath(attacker, (ServerPlayerEntity) (Object) this);
+        KillManager.handleDeath(attacker, (ServerPlayerEntity) (Object) this);
     }
 
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)

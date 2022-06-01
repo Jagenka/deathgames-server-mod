@@ -1,5 +1,6 @@
-package de.jagenka
+package de.jagenka.managers
 
+import de.jagenka.*
 import de.jagenka.Config.bonusPlatformRadius
 import de.jagenka.timer.ScheduledTask
 import de.jagenka.timer.Timer
@@ -8,7 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import kotlin.math.abs
 
-object DGBonusManager
+object BonusManager
 {
     private val platforms = mutableListOf<Platform>()
     private val selectedPlatforms = mutableListOf<Platform>()
@@ -21,8 +22,8 @@ object DGBonusManager
 
     fun setPlatforms(platforms: List<Platform>)
     {
-        this.platforms.clear()
-        this.platforms.addAll(platforms)
+        BonusManager.platforms.clear()
+        BonusManager.platforms.addAll(platforms)
     }
 
     fun queueRandomPlatforms(howMany: Int)

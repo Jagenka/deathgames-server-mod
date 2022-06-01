@@ -1,10 +1,10 @@
 package de.jagenka.shop
 
-import de.jagenka.DGKillManager
 import de.jagenka.Util
 import de.jagenka.Util.sendPrivateMessage
-import de.jagenka.deductDGMoney
-import de.jagenka.getDGMoney
+import de.jagenka.managers.KillManager
+import de.jagenka.managers.deductDGMoney
+import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
@@ -27,7 +27,7 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
     {
         if (player.getDGMoney() >= price)
         {
-            DGKillManager.addLives(player.name.asString(), 1)
+            KillManager.addLives(player.name.asString(), 1)
             player.deductDGMoney(price)
             return true
         } else

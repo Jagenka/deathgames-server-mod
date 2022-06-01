@@ -1,7 +1,6 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames
-import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents.Custom
 
 object Timer
 {

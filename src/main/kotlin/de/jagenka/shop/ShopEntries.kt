@@ -9,11 +9,9 @@ import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items.*
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.potion.PotionUtil
 import net.minecraft.potion.Potions
 import net.minecraft.text.Text
-import kotlin.time.Duration.Companion.minutes
 
 object ShopEntries
 {

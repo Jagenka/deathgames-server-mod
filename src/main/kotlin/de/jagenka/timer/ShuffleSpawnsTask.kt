@@ -1,7 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.Config
-import de.jagenka.DGSpawnManager
+import de.jagenka.managers.SpawnManager
 
 object ShuffleSpawnsTask : TimerTask
 {
@@ -16,7 +16,7 @@ object ShuffleSpawnsTask : TimerTask
 
     override fun run()
     {
-        Timer.schedule({ DGSpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
+        Timer.schedule({ SpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
     }
 
     override fun reset()

@@ -1,11 +1,12 @@
 package de.jagenka
 
-import de.jagenka.DGPlayerManager.getDGTeam
-import de.jagenka.DGPlayerManager.makeInGame
-import de.jagenka.DGSpawnManager.getSpawn
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.commands.JayCommand
+import de.jagenka.managers.*
+import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.managers.PlayerManager.makeInGame
+import de.jagenka.managers.SpawnManager.getSpawn
 import de.jagenka.shop.Shop
 import de.jagenka.timer.Timer
 import net.fabricmc.api.DedicatedServerModInitializer
@@ -37,20 +38,21 @@ object DeathGames : DedicatedServerModInitializer
 
     fun startGame()
     {
-        val teamPlayers = DGPlayerManager.getTeamPlayers()
+        val teamPlayers = PlayerManager.getTeamPlayers()
 
-        DGKillManager.reset()
+        KillManager.reset()
+        MoneyManager.reset()
         Timer.reset()
-        DGPlayerManager.reset()
+        PlayerManager.reset()
 
-        DGDisplayManager.reset()
+        DisplayManager.reset()
         Shop.reset()
-        DGBonusManager.init()
+        BonusManager.init()
 
-        DGKillManager.initLives()
-        DGKillManager.initMoney()
+        KillManager.initLives()
+        KillManager.initMoney()
 
-        DGDisplayManager.showSidebar()
+        DisplayManager.showSidebar()
 
         teamPlayers.forEach {
             it.clearStatusEffects()
@@ -61,13 +63,13 @@ object DeathGames : DedicatedServerModInitializer
             it.changeGameMode(GameMode.ADVENTURE)
         }
 
-        DGPlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
+        PlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
         ifServerLoaded { it.overworld.setWeather(Int.MAX_VALUE, 0, false, false) }
 
-        DGSpawnManager.shuffleSpawns()
+        SpawnManager.shuffleSpawns()
 
-        DGPlayerManager.getOnlinePlayers().forEach {
+        PlayerManager.getOnlinePlayers().forEach {
             val (x, y, z) = Config.worldSpawn
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
             it.teleport(it.getSpawn())

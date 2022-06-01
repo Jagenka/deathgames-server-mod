@@ -1,11 +1,9 @@
 package de.jagenka.mixin;
 
-import de.jagenka.Testing;
 import de.jagenka.TrapsAreNotGay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

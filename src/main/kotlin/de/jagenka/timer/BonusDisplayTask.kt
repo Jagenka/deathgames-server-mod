@@ -1,7 +1,7 @@
 package de.jagenka.timer
 
-import de.jagenka.DGBonusManager
-import de.jagenka.DGDisplayManager
+import de.jagenka.managers.BonusManager
+import de.jagenka.managers.DisplayManager
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
@@ -15,26 +15,26 @@ object BonusDisplayTask : TimerTask
 
     override fun run()
     {
-        val timeToSpawn = DGBonusManager.getTimeToSpawn()
-        val timeToDespawn = DGBonusManager.getTimeToDespawn()
+        val timeToSpawn = BonusManager.getTimeToSpawn()
+        val timeToDespawn = BonusManager.getTimeToDespawn()
 
         if (timeToSpawn != null)
         {
-            val selectedPlatforms = DGBonusManager.getSelectedPlatforms()
+            val selectedPlatforms = BonusManager.getSelectedPlatforms()
             if (selectedPlatforms.isNotEmpty())
             {
                 val (name) = selectedPlatforms[0]
-                DGDisplayManager.showTimeToBonusMessage(
+                DisplayManager.showTimeToBonusMessage(
                     Text.of("Bonus Money Platform: $name in ${timeToSpawn / DGUnit.SECONDS.factor}sec").getWithStyle(Style.EMPTY.withColor(Formatting.DARK_RED).withBold(true))[0]
                 )
             }
         } else if (timeToDespawn != null)
         {
-            val activePlatforms = DGBonusManager.getActivePlatforms()
+            val activePlatforms = BonusManager.getActivePlatforms()
             if (activePlatforms.isNotEmpty())
             {
                 val (name) = activePlatforms[0]
-                DGDisplayManager.showTimeToBonusMessage(
+                DisplayManager.showTimeToBonusMessage(
                     Text.of("Bonus Money Platform: $name for another ${timeToDespawn / DGUnit.SECONDS.factor}sec").getWithStyle(Style.EMPTY.withColor(Formatting.DARK_GREEN).withBold(true))[0]
                 )
             }

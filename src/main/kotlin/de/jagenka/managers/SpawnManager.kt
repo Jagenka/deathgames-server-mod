@@ -1,23 +1,24 @@
-package de.jagenka
+package de.jagenka.managers
 
+import de.jagenka.*
 import de.jagenka.Config.defaultSpawn
 import de.jagenka.Util.teleport
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 
-object DGSpawnManager //TODO: lobby spawn
+object SpawnManager //TODO: lobby spawn
 {
     private val spawns = ArrayList<Coordinates>()
     private val teamSpawns = mutableMapOf<DGTeam?, Coordinates>().withDefault { defaultSpawn }
 
     private fun addSpawns(spawns: Collection<Coordinates>)
     {
-        this.spawns.addAll(spawns)
+        SpawnManager.spawns.addAll(spawns)
     }
 
     internal fun setSpawns(spawns: Collection<Coordinates>)
     {
-        this.spawns.clear()
+        SpawnManager.spawns.clear()
         addSpawns(spawns)
     }
 
@@ -25,7 +26,7 @@ object DGSpawnManager //TODO: lobby spawn
 
     fun getSpawns() = spawns.toList()
 
-    fun ServerPlayerEntity.getSpawn() = getSpawn(DGPlayerManager.getTeam(this))
+    fun ServerPlayerEntity.getSpawn() = getSpawn(PlayerManager.getTeam(this))
 
     @JvmStatic
     fun handleRespawn(player: ServerPlayerEntity)
@@ -44,7 +45,7 @@ object DGSpawnManager //TODO: lobby spawn
                 if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
             }
         }
-        shuffleSpawns(DGPlayerManager.getNonEmptyTeams())
+        shuffleSpawns(PlayerManager.getNonEmptyTeams())
     }
 
     // this is for testing only

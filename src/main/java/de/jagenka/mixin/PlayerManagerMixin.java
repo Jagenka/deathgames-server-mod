@@ -1,7 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.DGPlayerManager;
-import de.jagenka.DGSpawnManager;
+import de.jagenka.managers.SpawnManager;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +15,6 @@ public class PlayerManagerMixin
     private void respawnPlayer(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir)
     {
         ServerPlayerEntity newPlayer = cir.getReturnValue();
-        DGSpawnManager.handleRespawn(newPlayer);
+        SpawnManager.handleRespawn(newPlayer);
     }
 }

@@ -2,14 +2,9 @@ package de.jagenka.shop
 
 import de.jagenka.Util
 import de.jagenka.Util.sendPrivateMessage
-import de.jagenka.deductDGMoney
-import de.jagenka.getDGMoney
-import de.jagenka.timer.seconds
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.entity.effect.StatusEffects
+import de.jagenka.managers.deductDGMoney
+import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.potion.PotionUtil
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text

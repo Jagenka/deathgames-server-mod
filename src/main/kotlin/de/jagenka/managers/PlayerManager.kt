@@ -1,11 +1,13 @@
-package de.jagenka
+package de.jagenka.managers
 
+import de.jagenka.Coordinates
+import de.jagenka.DGTeam
 import de.jagenka.Util.ifServerLoaded
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
 import net.minecraft.world.GameMode
 
-object DGPlayerManager
+object PlayerManager
 {
     private val playerNames = mutableSetOf<String>()
     private val inGameMap = mutableMapOf<String, Boolean>().withDefault { false }

@@ -2,7 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.BlockCuboid
 import de.jagenka.Coordinates
-import de.jagenka.getDGMoney
+import de.jagenka.managers.getDGMoney
 import de.jagenka.toDGCoordinates
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory

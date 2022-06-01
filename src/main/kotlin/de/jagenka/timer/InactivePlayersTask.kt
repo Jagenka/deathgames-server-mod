@@ -1,7 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DGPlayerManager
-import net.minecraft.server.network.ServerPlayerEntity
+import de.jagenka.managers.PlayerManager
 
 object InactivePlayersTask : TimerTask
 {
@@ -14,7 +13,7 @@ object InactivePlayersTask : TimerTask
 
     override fun run()
     {
-        DGPlayerManager.getInGamePlayers().forEach { inactiveTimer[it] = inactiveTimer.getValue(it) + 1 }
+        PlayerManager.getInGamePlayers().forEach { inactiveTimer[it] = inactiveTimer.getValue(it) + 1 }
     }
 
     override fun reset()

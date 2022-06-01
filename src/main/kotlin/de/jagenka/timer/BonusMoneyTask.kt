@@ -1,6 +1,9 @@
 package de.jagenka.timer
 
-import de.jagenka.*
+import de.jagenka.Config
+import de.jagenka.managers.BonusManager
+import de.jagenka.managers.MoneyManager.addMoney
+import de.jagenka.managers.PlayerManager
 import net.minecraft.server.network.ServerPlayerEntity
 
 object BonusMoneyTask : TimerTask
@@ -14,9 +17,9 @@ object BonusMoneyTask : TimerTask
 
     override fun run()
     {
-        DGPlayerManager.getOnlinePlayers().forEach {
-            if (ticks.getValue(it) % Config.bonusMoneyInterval == 0) DGKillManager.addLives(it.name.asString(), Config.bonusMoneyAmount)
-            if (DGBonusManager.isOnActivePlatform(it)) ticks[it] = ticks.getValue(it) + 1
+        PlayerManager.getOnlinePlayers().forEach {
+            if (ticks.getValue(it) % Config.bonusMoneyInterval == 0) addMoney(it.name.asString(), Config.bonusMoneyAmount)
+            if (BonusManager.isOnActivePlatform(it)) ticks[it] = ticks.getValue(it) + 1
         }
     }
 
