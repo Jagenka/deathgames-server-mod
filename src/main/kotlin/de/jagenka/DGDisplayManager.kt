@@ -2,6 +2,7 @@ package de.jagenka
 
 
 import de.jagenka.Util.ifServerLoaded
+import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
 import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
 import net.minecraft.scoreboard.ScoreboardObjective
@@ -17,11 +18,11 @@ object DGDisplayManager
     {
         ifServerLoaded { server ->
             if (!DGDisplayManager::sidebarObjective.isInitialized) sidebarObjective =
-                ScoreboardObjective(server.scoreboard, "sidebar", ScoreboardCriterion.DUMMY, Text.of("change this"), ScoreboardCriterion.RenderType.INTEGER)
+                ScoreboardObjective(server.scoreboard, "sidebar", ScoreboardCriterion.DUMMY, Text.of("change this"), ScoreboardCriterion.RenderType.INTEGER) //TODO: change this
             server.scoreboard.objectives.toList().forEach { server.scoreboard.removeObjective(it) }
             server.scoreboard.addScoreboardObjective(sidebarObjective)
 
-            if (!DGDisplayManager::tabListObjective.isInitialized) tabListObjective =
+            if (!DGDisplayManager::tabListObjective.isInitialized) tabListObjective = //TODO: implement
                 ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of("change this"), ScoreboardCriterion.RenderType.INTEGER)
             server.scoreboard.addScoreboardObjective(tabListObjective)
             server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, tabListObjective)
@@ -90,6 +91,18 @@ object DGDisplayManager
         DGPlayerManager.getPlayers().forEach { player ->
             player.setExperiencePoints(0)
             player.setExperienceLevel(player.getDGMoney())
+        }
+    }
+
+    fun showTimeToBonusMessage(text: Text)
+    {
+        sendMessageToHotbar(text)
+    }
+
+    private fun sendMessageToHotbar(text: Text)
+    {
+        DGPlayerManager.getPlayers().forEach { player ->
+            player.networkHandler.sendPacket(OverlayMessageS2CPacket(text))
         }
     }
 }

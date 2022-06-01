@@ -24,6 +24,7 @@ object Timer
             add(ShuffleSpawnsTask)
             add(BonusMoneyTask)
             add(TrapTask)
+            add(BonusDisplayTask)
         }
     }
 

@@ -11,6 +11,7 @@ import kotlin.math.abs
 object DGBonusManager
 {
     private val platforms = mutableListOf<Platform>()
+    private val selectedPlatforms = mutableListOf<Platform>()
 
     private val inactiveBlock = Blocks.RED_CONCRETE
     private val activeBlock = Blocks.LIME_CONCRETE
@@ -24,15 +25,28 @@ object DGBonusManager
         this.platforms.addAll(platforms)
     }
 
-    fun activateRandomPlatforms(howMany: Int)
+    fun queueRandomPlatforms(howMany: Int)
     {
-        platforms.forEach { it.active = false }
+        selectedPlatforms.clear()
         platforms.toList().shuffled().forEachIndexed { index, platform ->
             if (index >= howMany) return@forEachIndexed
-            platform.active = true
+            selectedPlatforms.add(platform)
         }
+    }
 
+    fun activateSelectedPlatforms()
+    {
+        selectedPlatforms.forEach { it.active = true }
         colorPlatforms()
+    }
+
+    fun getSelectedPlatforms() = selectedPlatforms.toList()
+
+    @Deprecated("use queueRandomPlatforms and activateSelectedPlatforms instead", ReplaceWith("", ""), DeprecationLevel.WARNING)
+    fun activateRandomPlatforms(howMany: Int)
+    {
+        queueRandomPlatforms(howMany)
+        activateSelectedPlatforms()
     }
 
     fun disableAllPlatforms()
@@ -48,7 +62,7 @@ object DGBonusManager
         y < 2 && abs(x) < bonusPlatformRadius && abs(z) < bonusPlatformRadius
     }
 
-    fun colorPlatforms()
+    private fun colorPlatforms()
     {
         platforms.forEach { platform ->
             Util.getBlocksInSquareRadiusAtFixY(platform.coordinates, bonusPlatformRadius).forEach { (block, coordinates) ->
@@ -71,32 +85,42 @@ object DGBonusManager
     fun init()
     {
         disableAllPlatforms()
+        queueRandomPlatforms(1)
         currentSpawnTask = Timer.schedule({
             spawnBonusPlatformTask()
         }, Config.bonusPlatformInitialSpawn)
         currentDespawnTask = null
     }
 
+    fun getTimeToSpawn(): Int?
+    {
+        currentSpawnTask?.let { return it.time - Timer.now() }
+        return null
+    }
+
+    fun getTimeToDespawn(): Int?
+    {
+        currentDespawnTask?.let { return it.time - Timer.now() }
+        return null
+    }
+
     private fun spawnBonusPlatformTask()
     {
-        activateRandomPlatforms(1)
+        activateSelectedPlatforms()
         currentDespawnTask = Timer.schedule({
             disableBonusPlatformTask()
         }, Config.bonusPlatformStayTime)
         currentSpawnTask = null
-
-        getActivePlatforms().forEach { platform -> Util.sendChatMessage("Bonus \"${platform.name}\" now active.") }
     }
 
     private fun disableBonusPlatformTask()
     {
         disableAllPlatforms()
+        queueRandomPlatforms(1)
         currentSpawnTask = Timer.schedule({
             spawnBonusPlatformTask()
-        }, Config.bonusPlatformSpawnInterval - Config.bonusPlatformStayTime)
+        }, Config.bonusPlatformSpawnInterval)
         currentDespawnTask = null
-
-        Util.sendChatMessage("All bonuses now inactive.")
     }
 }
 
