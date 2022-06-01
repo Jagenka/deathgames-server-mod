@@ -33,14 +33,9 @@ object ShopEntries
         13 to ItemShopEntry(ItemStack(GOLDEN_APPLE), 150, "Gold Apple"),
         14 to ItemShopEntry(ItemStack(TOTEM_OF_UNDYING), 150, "Totem"),
         15 to ItemShopEntry(ItemStack(TIPPED_ARROW, 4), 25, "Poison Arrow"), //TODO: add poison
-//            16 to ShopEntry(ItemStack(IRON_CHESTPLATE), 0, "Armor Upgrade"),
-//            17 to ShopEntry(ItemStack(BOW), 0, "Bow Upgrade"),
-//            18 to ShopEntry(ItemStack(CROSSBOW), 0, "Crossbow Upgrade"),
-//            19 to ShopEntry(ItemStack(IRON_SWORD), 0, "Sword Upgrade"),
-//            20 to ShopEntry(ItemStack(IRON_AXE), 0, "Axe Upgrade"),
         21 to ItemShopEntry(ItemStack(BAT_SPAWN_EGG, 1), 10, "Not Gay"),
         22 to ItemShopEntry(ItemStack(SHIELD), 50, "Shield"),
-//            23 to ShopEntry(ItemStack(TURTLE_EGG), 100, "Extra Life"),
+//            23 to ShopEntry(ItemStack(TURTLE_EGG), 100, "Extra Life"), //TODO: add extra lives
         24 to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
         25 to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
 
