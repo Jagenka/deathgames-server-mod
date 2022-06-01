@@ -52,7 +52,7 @@ object DGKillManager
         handleLives(deceased)
         resetKillStreak(deceased)
 
-        DGDisplayManager.updateSidebar()
+        DGDisplayManager.updateLivesDisplay()
 
         // TODO?: reset shop teleport after kill
         ShuffleSpawnsTask.updateLastKillTime()
@@ -173,6 +173,16 @@ object DGKillManager
 
     fun getLives(player: ServerPlayerEntity) = playerLives[player]
     fun getLives(team: DGTeam) = teamLives[team]
+
+    fun addLives(player: ServerPlayerEntity, amount: Int)
+    {
+        when (livesMode)
+        {
+            Mode.PLAYER -> playerLives[player] = playerLives.getValue(player) + amount
+            Mode.TEAM -> teamLives[player.getDGTeam()] = teamLives.getValue(player.getDGTeam()) + amount
+        }
+        DGDisplayManager.updateLivesDisplay()
+    }
 
     fun getNonZeroLifePlayers() = playerLives.filter { it.value > 0 }
 

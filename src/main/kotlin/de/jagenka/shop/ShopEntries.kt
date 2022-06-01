@@ -1,5 +1,6 @@
 package de.jagenka.shop
 
+import de.jagenka.timer.minutes
 import de.jagenka.timer.seconds
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.Enchantments
@@ -10,6 +11,9 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items.*
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.potion.PotionUtil
+import net.minecraft.potion.Potions
+import net.minecraft.text.Text
+import kotlin.time.Duration.Companion.minutes
 
 object ShopEntries
 {
@@ -22,20 +26,54 @@ object ShopEntries
         2 to ItemShopEntry(ItemStack(ENDER_PEARL, 2), 10, "Ender Pearls"),
         3 to ItemShopEntry(ItemStack(COOKED_BEEF, 1), 10, "Beef"),
         4 to ItemShopEntry(ItemStack(FISHING_ROD), 30, "Fishing Rod"),
-        5 to ItemShopEntry(ItemStack(BLAZE_ROD), 40, "420 Blaze it"), // TODO: add fire aspect
-        6 to ItemShopEntry(PotionUtil.setCustomPotionEffects(POTION.defaultStack, listOf(StatusEffectInstance(StatusEffects.INVISIBILITY, 5.seconds()))), 35, "Invis"),
-        7 to ItemShopEntry(ItemStack(POTION), 30, "Speed"),
-        8 to ItemShopEntry(ItemStack(POTION), 20, "Fire Res"),
-        9 to ItemShopEntry(ItemStack(POTION), 45, "Strength"),
-        10 to ItemShopEntry(ItemStack(POTION), 25, "Regen"),
-        11 to ItemShopEntry(ItemStack(POTION), 20, "Harming"), // lingering
-        12 to ItemShopEntry(ItemStack(POTION), 40, "Slowness"),
-        13 to ItemShopEntry(ItemStack(GOLDEN_APPLE), 150, "Gold Apple"),
+        5 to ItemShopEntry(ItemStack(BLAZE_ROD).withEnchantment(Enchantments.FIRE_ASPECT, 2), 40, "420 Blaze it"),
+        6 to ItemShopEntry(
+            PotionUtil.setCustomPotionEffects(
+                POTION.defaultStack.withName("Potion of Invisibility"),
+                listOf(StatusEffectInstance(StatusEffects.INVISIBILITY, 60.seconds()))
+            ), 35, "Invis"
+        ),
+        7 to ItemShopEntry(
+            PotionUtil.setCustomPotionEffects(POTION.defaultStack.withName("Potion of Speed"), listOf(StatusEffectInstance(StatusEffects.SPEED, 3.minutes()))),
+            30,
+            "Speed"
+        ),
+        8 to ItemShopEntry(
+            PotionUtil.setCustomPotionEffects(
+                POTION.defaultStack.withName("Potion of Fire Resistance"),
+                listOf(StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 3.minutes()))
+            ), 20, "Fire Res"
+        ),
+        9 to ItemShopEntry(
+            PotionUtil.setCustomPotionEffects(POTION.defaultStack.withName("Potion of Strength"), listOf(StatusEffectInstance(StatusEffects.STRENGTH, 3.minutes()))),
+            45,
+            "Strength"
+        ),
+        10 to ItemShopEntry(
+            PotionUtil.setCustomPotionEffects(
+                POTION.defaultStack.withName("Potion of Regeneration"),
+                listOf(StatusEffectInstance(StatusEffects.REGENERATION, 3.minutes()))
+            ), 25, "Regen"
+        ),
+        11 to ItemShopEntry(
+            PotionUtil.setCustomPotionEffects(LINGERING_POTION.defaultStack.withName("Lingering Potion of Harming"), listOf(StatusEffectInstance(StatusEffects.INSTANT_DAMAGE))),
+            20,
+            "Harming"
+        ), // lingering
+        12 to ItemShopEntry(
+            PotionUtil.setCustomPotionEffects(
+                SPLASH_POTION.defaultStack.withName("Splash Potion of Slowness"),
+                listOf(StatusEffectInstance(StatusEffects.SLOWNESS, 1.minutes() + 30.seconds()))
+            ),
+            40,
+            "Slowness"
+        ),
+        13 to ItemShopEntry(ItemStack(ENCHANTED_GOLDEN_APPLE), 150, "Gold Apple"),
         14 to ItemShopEntry(ItemStack(TOTEM_OF_UNDYING), 150, "Totem"),
-        15 to ItemShopEntry(ItemStack(TIPPED_ARROW, 4), 25, "Poison Arrow"), //TODO: add poison
+        15 to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
         21 to ItemShopEntry(ItemStack(BAT_SPAWN_EGG, 1), 10, "Not Gay"),
         22 to ItemShopEntry(ItemStack(SHIELD), 50, "Shield"),
-//            23 to ShopEntry(ItemStack(TURTLE_EGG), 100, "Extra Life"), //TODO: add extra lives
+        23 to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
         24 to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
         25 to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
 
@@ -115,6 +153,12 @@ object ShopEntries
     private fun ItemStack.withEnchantment(enchantment: Enchantment, level: Int): ItemStack
     {
         this.addEnchantment(enchantment, level)
+        return this
+    }
+
+    private fun ItemStack.withName(name: String): ItemStack
+    {
+        this.setCustomName(Text.of(name))
         return this
     }
 }

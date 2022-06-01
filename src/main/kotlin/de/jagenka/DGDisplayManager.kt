@@ -44,7 +44,7 @@ object DGDisplayManager
         }
     }
 
-    fun updateSidebar()
+    fun updateLivesDisplay()
     {
         ifServerLoaded { server ->
             when (DGKillManager.livesMode)
@@ -72,7 +72,7 @@ object DGDisplayManager
     fun showSidebar()
     {
         ifServerLoaded { server ->
-            updateSidebar()
+            updateLivesDisplay()
             server.scoreboard.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, sidebarObjective)
         }
     }
