@@ -1,6 +1,8 @@
 package de.jagenka.shop
 
 import de.jagenka.timer.seconds
+import net.minecraft.enchantment.Enchantment
+import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.Item
@@ -79,6 +81,19 @@ object ShopEntries
             mutableListOf(120, 40, 40, 40, 40),
             "Axe Upgrade"
         ),
+        33 to UpgradeableShopEntry(
+            UpgradeType.BOW,
+            mutableListOf(
+                mutableListOf(BOW.unbreakable()),
+                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 1)),
+                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 2)),
+                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 3)),
+                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 4)),
+                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 5)),
+            ),
+            mutableListOf(75, 100, 100, 100, 100, 100),
+            "Bow Upgrade"
+        ),
     )
 
     private fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()
@@ -86,6 +101,12 @@ object ShopEntries
     private fun ItemStack.makeUnbreakable(): ItemStack
     {
         this.orCreateNbt.putInt("Unbreakable", 1)
+        return this
+    }
+
+    private fun ItemStack.withEnchantment(enchantment: Enchantment, level: Int): ItemStack
+    {
+        this.addEnchantment(enchantment, level)
         return this
     }
 }
