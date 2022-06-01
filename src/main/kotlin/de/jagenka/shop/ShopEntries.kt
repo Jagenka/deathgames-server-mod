@@ -94,6 +94,19 @@ object ShopEntries
             mutableListOf(75, 100, 100, 100, 100, 100),
             "Bow Upgrade"
         ),
+        34 to UpgradeableShopEntry(
+            UpgradeType.CROSSBOW,
+            mutableListOf(
+                mutableListOf(CROSSBOW.unbreakable()),
+                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 1)),
+                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 2)),
+                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 3)),
+                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 4)),
+                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 5)),
+            ),
+            mutableListOf(75, 25, 50, 100, 150, 150),
+            "Crossbow Upgrade"
+        ),
     )
 
     private fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()
