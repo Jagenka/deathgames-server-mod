@@ -49,28 +49,27 @@ class UpgradeableShopEntry(
 
     override fun buy(player: ServerPlayerEntity): Boolean
     {
-        val upgradeLevel = getUpgradeLevel(player)
-        if (upgradeLevel !in -1 until prices.size - 1) return false
-        val nextLevel = upgradeLevel + 1
+        val currentLevel = getUpgradeLevel(player)
+        if (currentLevel !in -1 until prices.size - 1) return false
+        val nextLevel = currentLevel + 1
 
         if (player.getDGMoney() >= prices[nextLevel])
         {
-            if (nextLevel > 0) boughtItemStacks[nextLevel - 1].forEach {
+            if (nextLevel > 0) boughtItemStacks[currentLevel].forEach {
                 player.inventory.remove({ oldItemStack ->
-                    (oldItemStack.item !is ArmorItem) && (oldItemStack.item == it.item)
-                }, 0, player.inventory)
+                    (oldItemStack.item !is ArmorItem) && (oldItemStack.isOf(it.item))
+                }, -1, player.playerScreenHandler.craftingInput)
             }
             boughtItemStacks[nextLevel].forEach { itemStack ->
                 if (itemStack.item is ArmorItem)
                 {
-                    player.inventory.armor[when ((itemStack.item as ArmorItem).slotType)
-                    {
-                        EquipmentSlot.HEAD -> 3
-                        EquipmentSlot.CHEST -> 2
-                        EquipmentSlot.LEGS -> 1
-                        EquipmentSlot.FEET -> 0
-                        else -> return@forEach
-                    }] = itemStack
+                    listOf(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD).forEachIndexed { index, equipmentSlot ->
+                        if ((itemStack.item is ArmorItem) && (itemStack.item as ArmorItem).slotType == equipmentSlot)
+                        {
+                            player.inventory.remove({ ((it.item as ArmorItem).slotType ?: false) == equipmentSlot }, -1, player.playerScreenHandler.craftingInput)
+                            player.inventory.armor[index] = itemStack
+                        }
+                    }
                 } else
                 {
                     player.giveItemStack(itemStack)
