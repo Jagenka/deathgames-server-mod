@@ -1,6 +1,9 @@
 package de.jagenka.shop
 
+import de.jagenka.BlockCuboid
+import de.jagenka.Coordinates
 import de.jagenka.getDGMoney
+import de.jagenka.toDGCoordinates
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -19,6 +22,19 @@ object Shop
 
     private val upgrades = mutableMapOf<ServerPlayerEntity, MutableMap<UpgradeType, Int>>().withDefault { mutableMapOf<UpgradeType, Int>().withDefault { 0 } }
 
+    private val shopBounds = BlockCuboid(Coordinates(-7, 55, -7), Coordinates(8, 61, 8))
+
+    @JvmStatic
+    fun showInterfaceIfInShop(player: ServerPlayerEntity): Boolean
+    {
+        if (isInShopBounds(player))
+        {
+            showInterface(player)
+            return true
+        }
+        return false
+    }
+
     fun showInterface(serverPlayerEntity: ServerPlayerEntity)
     {
         object : NamedScreenHandlerFactory
@@ -27,7 +43,7 @@ object Shop
             {
                 val inventory = ShopInventory(serverPlayerEntity)
                 val screenHandler =
-                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X4, 69, serverPlayerEntity.inventory, inventory, 4)
+                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X4, syncId, serverPlayerEntity.inventory, inventory, 4)
                     {
                         override fun transferSlot(player: PlayerEntity?, index: Int): ItemStack
                         {
@@ -68,6 +84,8 @@ object Shop
     {
         this.upgrades.clear()
     }
+
+    fun isInShopBounds(player: ServerPlayerEntity): Boolean = shopBounds.contains(player.pos.toDGCoordinates())
 }
 
 enum class UpgradeType

@@ -12,6 +12,8 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import java.util.UUID
 import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 
 fun log(message: String)
 {
@@ -117,5 +119,16 @@ object Util
 }
 
 data class BlockAtCoordinates(val block: Block, val coordinates: Coordinates)
+
+class BlockCuboid(corner1: Coordinates, corner2: Coordinates)
+{
+    val smaller: Coordinates = Coordinates(min(corner1.x, corner2.x), min(corner1.y, corner2.y), min(corner1.z, corner2.z))
+    val larger: Coordinates = Coordinates(max(corner1.x, corner2.x), max(corner1.y, corner2.y), max(corner1.z, corner2.z))
+
+    fun contains(coordinates: Coordinates): Boolean
+    {
+        return (coordinates.x in smaller.x..larger.x) && (coordinates.y in smaller.y..larger.y) && (coordinates.z in smaller.z..larger.z)
+    }
+}
 
 fun Double.floor() = floor(this).toInt()

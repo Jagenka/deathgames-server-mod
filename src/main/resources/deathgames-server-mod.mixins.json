@@ -10,7 +10,8 @@
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
     "ItemStackMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
