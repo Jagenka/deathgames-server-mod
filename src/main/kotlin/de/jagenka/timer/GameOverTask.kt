@@ -17,7 +17,6 @@ object GameOverTask : TimerTask
         if (PlayerManager.getOnlineInGameTeams().size <= 1)
         {
             Util.sendChatMessage("GAME OVER") //TODO: change this
-            Timer.pause() //TODO: weg?
             DeathGames.running = false
             PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
             //TODO: timer, back to lobby, etc

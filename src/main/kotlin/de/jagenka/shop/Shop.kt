@@ -22,7 +22,7 @@ object Shop
 
     private val upgrades = mutableMapOf<ServerPlayerEntity, MutableMap<UpgradeType, Int>>().withDefault { mutableMapOf<UpgradeType, Int>().withDefault { 0 } }
 
-    private val shopBounds = BlockCuboid(Coordinates(-7, 55, -7), Coordinates(8, 61, 8))
+    private val shopBounds = BlockCuboid(Coordinates(-7, 55, -7), Coordinates(8, 62, 8))
 
     @JvmStatic
     fun showInterfaceIfInShop(player: ServerPlayerEntity): Boolean

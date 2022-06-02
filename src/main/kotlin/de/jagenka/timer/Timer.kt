@@ -5,7 +5,7 @@ import de.jagenka.DeathGames
 object Timer
 {
     private var ticks = 0
-    private var running = false
+    private var running = true
 
     private val tasks = mutableListOf<TimerTask>()
     private val scheduledTasks = mutableListOf<ScheduledTask>()
@@ -17,6 +17,7 @@ object Timer
     {
         with(tasks)
         {
+            add(BasicTpTask)
             add(MoneyTask)
             add(GameOverTask)
             add(InactivePlayersTask)
