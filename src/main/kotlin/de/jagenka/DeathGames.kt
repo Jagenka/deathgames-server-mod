@@ -2,6 +2,7 @@ package de.jagenka
 
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
+import de.jagenka.commands.DeathGamesCommand
 import de.jagenka.commands.JayCommand
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
@@ -32,7 +33,7 @@ object DeathGames : DedicatedServerModInitializer
     private fun registerCommands()
     {
         CommandRegistrationCallback.EVENT.register { dispatcher, _ ->
-            JayCommand.register(dispatcher)
+            DeathGamesCommand.register(dispatcher)
         }
     }
 
@@ -81,5 +82,13 @@ object DeathGames : DedicatedServerModInitializer
 
         Timer.start()
         running = true
+    }
+
+    fun stopGame()
+    {
+        Util.sendChatMessage("GAME OVER") //TODO: change this
+        running = false
+        PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
+        //TODO: timer, back to lobby, etc
     }
 }
