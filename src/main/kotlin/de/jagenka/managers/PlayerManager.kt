@@ -42,20 +42,30 @@ object PlayerManager
 
     fun ServerPlayerEntity.getDGTeam() = getTeam(this)
 
-    fun ServerPlayerEntity.registerToTeam(team: DGTeam)
+    fun addPlayerToTeam(player: ServerPlayerEntity, team: DGTeam)
     {
         ifServerLoaded {
-            it.scoreboard.addPlayerToTeam(this.name.asString(), it.scoreboard.getTeam(team.name))
-            teamRegistry[this.name.asString()] = team
+            it.scoreboard.addPlayerToTeam(player.name.asString(), it.scoreboard.getTeam(team.name))
+            teamRegistry[player.name.asString()] = team
         }
     }
 
-    fun ServerPlayerEntity.clearTeam()
+    fun ServerPlayerEntity.addToDGTeam(team: DGTeam)
+    {
+        addPlayerToTeam(this, team)
+    }
+
+    fun kickPlayerFromTeam(player: ServerPlayerEntity)
     {
         ifServerLoaded {
-            it.scoreboard.clearPlayerTeam(this.name.asString())
-            teamRegistry.remove(this.name.asString())
+            it.scoreboard.clearPlayerTeam(player.name.asString())
+            teamRegistry.remove(player.name.asString())
         }
+    }
+
+    fun ServerPlayerEntity.kickFromDGTeam()
+    {
+        kickPlayerFromTeam(this)
     }
 
     fun getNonEmptyTeams(): Set<DGTeam>
