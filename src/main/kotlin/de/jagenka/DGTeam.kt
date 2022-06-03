@@ -36,11 +36,18 @@ enum class DGTeam
 
     companion object
     {
-        val defaultColorBlock = Blocks.WHITE_CONCRETE
+        val defaultColorBlock: Block = Blocks.WHITE_CONCRETE
 
         fun random() = values().random()
 
         fun isColorBlock(block: Block) = block isSame defaultColorBlock || values().any { block isSame it.getColorBlock() }
+
+        fun getValuesAsStringList(): List<String>
+        {
+            val result = mutableListOf<String>()
+            values().forEach { result.add(it.name) }
+            return result.toList()
+        }
     }
 
 }

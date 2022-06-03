@@ -1,12 +1,19 @@
 package de.jagenka.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.StringReader
+import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.exceptions.CommandSyntaxException
+import de.jagenka.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.sendPrivateMessage
 import de.jagenka.timer.GameOverTask
 import de.jagenka.timer.Timer
+import net.minecraft.command.CommandSource
+import net.minecraft.server.command.CommandManager.argument
 import net.minecraft.server.command.CommandManager.literal
 import net.minecraft.server.command.ServerCommandSource
 
@@ -50,18 +57,39 @@ object DeathGamesCommand //TODO
                             return@executes 0
                         })
                 )
+                .then(
+                    literal("join")
+                        .then(argument("team", DGTeamArgumentType()).suggests { _, builder ->
+                            CommandSource.suggestMatching(DGTeam.getValuesAsStringList(), builder)
+                        }.executes {
+                            handleJoinTeam(it, it.getArgument("team", DGTeam::class.java))
+                            return@executes 0
+                        })
+                )
         )
     }
 
     private fun ServerCommandSource.isOp() = this.hasPermissionLevel(2)
 
-    private fun handleTest(context: CommandContext<ServerCommandSource>)
+    private fun handleJoinTeam(context: CommandContext<ServerCommandSource>, team: DGTeam)
     {
-        Util.sendChatMessage("helö")
+        Util.sendChatMessage(team.toString())
     }
 
     private fun handleConfig(context: CommandContext<ServerCommandSource>)
     {
         Util.sendChatMessage("confick")
+    }
+}
+
+class DGTeamArgumentType : ArgumentType<DGTeam>
+{
+    override fun parse(reader: StringReader?): DGTeam
+    {
+        DGTeam.values().forEach {
+            if(it.name == (reader?.readString() ?: "")) return it
+        }
+
+        throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(reader)
     }
 }
