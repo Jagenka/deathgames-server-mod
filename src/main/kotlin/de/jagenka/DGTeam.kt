@@ -5,7 +5,7 @@ import de.jagenka.managers.PlayerManager.isInGame
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 
-enum class DGTeam
+enum class DGTeam //TODO: add display names
 {
     BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
 

@@ -1,28 +1,30 @@
 package de.jagenka.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.StringReader
-import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.CommandSyntaxException
 import de.jagenka.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.Util
+import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.sendPrivateMessage
-import de.jagenka.timer.GameOverTask
+import de.jagenka.managers.PlayerManager.addToDGTeam
+import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import de.jagenka.timer.Timer
 import net.minecraft.command.CommandSource
 import net.minecraft.server.command.CommandManager.argument
 import net.minecraft.server.command.CommandManager.literal
 import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.Text
 
-object DeathGamesCommand //TODO
+object DeathGamesCommand
 {
     fun register(dispatcher: CommandDispatcher<ServerCommandSource>)
     {
         dispatcher.register(
-            literal("deathgames")
+            literal("deathgames") // TODO: figure out how to alias
                 .then(literal("start").executes {
                     DeathGames.startGame()
                     return@executes 0
@@ -33,7 +35,7 @@ object DeathGamesCommand //TODO
                         DeathGames.stopGame()
                         return@executes 0
                     })
-                .then(literal("config")
+                .then(literal("config") // TODO: make stuffs configurable
                     .requires { it.isOp() }
                     .executes {
                         handleConfig(it)
@@ -41,55 +43,119 @@ object DeathGamesCommand //TODO
                     })
                 .then(
                     literal("timer")
+                        .requires { it.isOp() }
                         .then(literal("resume").executes {
                             Timer.start()
-                            it.source.player.sendPrivateMessage("Timer is now running.")
+                            it.source.sendFeedback(Text.of("Timer is now running."), false)
                             return@executes 0
                         })
                         .then(literal("pause").executes {
                             Timer.pause()
-                            it.source.player.sendPrivateMessage("Timer is now paused.")
+                            it.source.sendFeedback(Text.of("Timer is now paused."), false)
                             return@executes 0
                         })
                         .then(literal("reset").executes {
                             Timer.reset()
-                            it.source.player.sendPrivateMessage("Timer is now reset.")
+                            it.source.sendFeedback(Text.of("Timer is now reset."), false)
                             return@executes 0
                         })
                 )
                 .then(
                     literal("join")
-                        .then(argument("team", DGTeamArgumentType()).suggests { _, builder ->
+                        .then(argument("team", StringArgumentType.word()).suggests { _, builder ->
                             CommandSource.suggestMatching(DGTeam.getValuesAsStringList(), builder)
                         }.executes {
-                            handleJoinTeam(it, it.getArgument("team", DGTeam::class.java))
+                            handleJoinTeam(it, it.getArgument("team", String::class.java))
                             return@executes 0
-                        })
+                        }
+                            .then(argument("player", StringArgumentType.word())
+                                .requires { it.isOp() }
+                                .suggests { context, builder ->
+                                    CommandSource.suggestMatching(context.source.playerNames, builder)
+                                }.executes {
+                                    ifServerLoaded { minecraftServer ->
+                                        val playerArgument = it.getArgument("player", String::class.java)
+                                        val player = minecraftServer.playerManager.getPlayer(playerArgument)
+                                        if (player == null) it.source.sendError(Text.of("$playerArgument is not a player!"))
+                                        else handleJoinTeamForSomeoneElse(it, it.getArgument("team", String::class.java), player)
+                                    }
+
+                                    return@executes 0
+                                })
+                        )
+
                 )
+                .then(literal("leave").executes { context ->
+                    val leftTeam = handleLeaveTeam(context, context.source.player)
+                    if (leftTeam == null) context.source.sendError(Text.of("You're not part of a team!"))
+                    else context.source.sendFeedback(Text.of("Successfully left $leftTeam."), false)
+                    return@executes 0
+                }
+                    .then(argument("player", StringArgumentType.word())
+                        .requires { it.isOp() }
+                        .suggests { context, builder ->
+                            CommandSource.suggestMatching(context.source.playerNames, builder)
+                        }.executes { context ->
+                            ifServerLoaded { minecraftServer ->
+                                val playerArgument = context.getArgument("player", String::class.java)
+                                val player = minecraftServer.playerManager.getPlayer(playerArgument)
+                                if (player == null) context.source.sendError(Text.of("$playerArgument is not a player!"))
+                                else
+                                {
+                                    val leftTeam = handleLeaveTeam(context, player)
+                                    if (leftTeam == null) context.source.sendError(Text.of("${player.name.asString()} is not part of a team!"))
+                                    else context.source.sendFeedback(Text.of("Successfully kicked ${player.name.asString()} from $leftTeam."), false)
+                                }
+                            }
+                            return@executes 0
+                        }))
         )
     }
 
     private fun ServerCommandSource.isOp() = this.hasPermissionLevel(2)
 
-    private fun handleJoinTeam(context: CommandContext<ServerCommandSource>, team: DGTeam)
+    private fun handleLeaveTeam(context: CommandContext<ServerCommandSource>, player: ServerPlayerEntity): DGTeam?
     {
-        Util.sendChatMessage(team.toString())
+        val dgTeam = player.getDGTeam()
+        return if (dgTeam == null) null
+        else
+        {
+            player.kickFromDGTeam()
+            dgTeam
+        }
+    }
+
+    private fun handleJoinTeamForSomeoneElse(context: CommandContext<ServerCommandSource>, teamName: String, player: ServerPlayerEntity)
+    {
+        if (teamName !in DGTeam.getValuesAsStringList())
+        {
+            context.source.sendError(Text.of("$teamName is not a valid team!"))
+            return
+        }
+
+        val team = DGTeam.valueOf(teamName)
+
+        player.addToDGTeam(team)
+        context.source.sendFeedback(Text.of("Successfully added ${player.name.asString()} to $team."), false)
+    }
+
+    private fun handleJoinTeam(context: CommandContext<ServerCommandSource>, teamName: String)
+    {
+        val player = context.source.player
+        if (teamName !in DGTeam.getValuesAsStringList())
+        {
+            context.source.sendError(Text.of("$teamName is not a valid team!"))
+            return
+        }
+
+        val team = DGTeam.valueOf(teamName)
+
+        player.addToDGTeam(team)
+        context.source.sendFeedback(Text.of("Successfully joined $team."), false)
     }
 
     private fun handleConfig(context: CommandContext<ServerCommandSource>)
     {
         Util.sendChatMessage("confick")
-    }
-}
-
-class DGTeamArgumentType : ArgumentType<DGTeam>
-{
-    override fun parse(reader: StringReader?): DGTeam
-    {
-        DGTeam.values().forEach {
-            if(it.name == (reader?.readString() ?: "")) return it
-        }
-
-        throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(reader)
     }
 }
