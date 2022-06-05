@@ -36,7 +36,7 @@ object DeathGamesCommand
                         else it.source.sendError(Text.of("Game is not running!"))
                         return@executes 0
                     })
-                .then(literal("config") // TODO: make stuffs configurable
+                .then(literal("config")
                     .requires { it.isOp() }
                     .executes {
                         handleConfig(it)

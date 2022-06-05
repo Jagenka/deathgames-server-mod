@@ -23,7 +23,7 @@ object DisplayManager
             server.scoreboard.objectives.toList().forEach { server.scoreboard.removeObjective(it) }
             server.scoreboard.addScoreboardObjective(sidebarObjective)
 
-            if (!DisplayManager::tabListObjective.isInitialized) tabListObjective = //TODO: implement
+            if (!DisplayManager::tabListObjective.isInitialized) tabListObjective =
                 ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of("Kill-streak"), ScoreboardCriterion.RenderType.INTEGER)
             server.scoreboard.addScoreboardObjective(tabListObjective)
             server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, tabListObjective)

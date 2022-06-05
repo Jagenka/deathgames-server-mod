@@ -6,7 +6,7 @@ import de.jagenka.Util.teleport
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 
-object SpawnManager //TODO: lobby spawn
+object SpawnManager
 {
     private val spawns = ArrayList<Coordinates>()
     private val teamSpawns = mutableMapOf<DGTeam?, Coordinates>().withDefault { defaultSpawn }
@@ -35,7 +35,6 @@ object SpawnManager //TODO: lobby spawn
         player.teleport(spawn)
         player.yaw = spawn.yaw
         if (spawn == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
-        //TODO: invulnerability after respawn
     }
 
     fun shuffleSpawns()

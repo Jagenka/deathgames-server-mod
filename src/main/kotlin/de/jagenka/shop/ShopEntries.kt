@@ -18,7 +18,6 @@ object ShopEntries
     val EMPTY = ItemShopEntry(ItemStack.EMPTY, 0, "")
 
     val shopEntries = mapOf(
-        //TODO: load from config
         0 to ItemShopEntry(ItemStack(MELON_SLICE, 8), 5, "Melon"),
         1 to ItemShopEntry(ItemStack(ARROW, 4), 5, "Arrows"),
         2 to ItemShopEntry(ItemStack(ENDER_PEARL, 2), 10, "Ender Pearls"),

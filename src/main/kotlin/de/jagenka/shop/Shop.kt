@@ -16,7 +16,6 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 
 object Shop
-//TODO: refund
 {
     const val SHOP_UNIT = "$"
 

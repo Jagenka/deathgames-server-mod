@@ -51,7 +51,7 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 
     override fun onOpen(player: PlayerEntity?)
     {
-        //TODO: start timer?
+
     }
 
     fun onClick(slotIndex: Int)
