@@ -3,7 +3,6 @@ package de.jagenka
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.commands.DeathGamesCommand
-import de.jagenka.commands.JayCommand
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.makeInGame
@@ -19,11 +18,9 @@ object DeathGames : DedicatedServerModInitializer
 {
     var running = false
 
-    const val CONF_FILE = "deathgames_conf.yaml"
-
     override fun onInitializeServer()
     {
-        Config.load()
+        Config.loadYAML()
 
         registerCommands()
 

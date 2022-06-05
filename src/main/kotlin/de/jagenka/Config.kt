@@ -10,6 +10,9 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 
 object Config
 {
+    private const val CONF_FILE = "deathgames"
+
+
     var worldSpawn = Coordinates(0.5, 51.0, 0.5, 0f, 0f)
         private set
 
@@ -53,9 +56,9 @@ object Config
     var startMoneyPerPlayer = 1
         private set
 
-    fun load()
+    fun loadYAML()
     {
-        val path = FabricLoader.getInstance().configDir.resolve(DeathGames.CONF_FILE)
+        val path = FabricLoader.getInstance().configDir.resolve("$CONF_FILE.yaml")
         val confLoader = YamlConfigurationLoader.builder().path(path).build()
         val root = confLoader.load(
             ConfigurationOptions.defaults()
