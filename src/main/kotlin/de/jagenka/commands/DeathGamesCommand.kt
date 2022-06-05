@@ -7,10 +7,10 @@ import de.jagenka.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
-import de.jagenka.Util.sendPrivateMessage
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
+import de.jagenka.managers.SpawnManager
 import de.jagenka.timer.Timer
 import net.minecraft.command.CommandSource
 import net.minecraft.server.command.CommandManager.argument
@@ -26,13 +26,14 @@ object DeathGamesCommand
         val baseLiteralCommandNode = dispatcher.register(
             literal("deathgames")
                 .then(literal("start").executes {
-                    DeathGames.startGame()
+                    if(!DeathGames.running) DeathGames.startGame()
                     return@executes 0
                 })
                 .then(literal("stop")
-                    .requires { DeathGames.running }
+                    .requires { it.isOp() }
                     .executes {
-                        DeathGames.stopGame()
+                        if(DeathGames.running) DeathGames.stopGame()
+                        else it.source.sendError(Text.of("Game is not running!"))
                         return@executes 0
                     })
                 .then(literal("config") // TODO: make stuffs configurable
@@ -108,7 +109,17 @@ object DeathGamesCommand
                                 }
                             }
                             return@executes 0
-                        }))
+                        })
+                )
+                .then(
+                    literal("shufflespawns")
+                        .requires { it.isOp() }
+                        .executes {
+                            if (DeathGames.running) SpawnManager.shuffleSpawns()
+                            else it.source.sendError(Text.of("Game is not running!"))
+                            return@executes 0
+                        }
+                )
         )
 
         dispatcher.register(literal("dg").redirect(baseLiteralCommandNode))

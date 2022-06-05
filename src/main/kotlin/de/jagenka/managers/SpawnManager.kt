@@ -48,12 +48,6 @@ object SpawnManager //TODO: lobby spawn
         shuffleSpawns(PlayerManager.getNonEmptyTeams())
     }
 
-    // this is for testing only
-    fun shuffleAllSpawns()
-    {
-        shuffleSpawns(DGTeam.values().asList())
-    }
-
     private fun shuffleSpawns(teams: Collection<DGTeam>)
     {
         val shuffledSpawns = spawns.shuffled()
