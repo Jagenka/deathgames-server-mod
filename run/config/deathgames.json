@@ -1,0 +1,132 @@
+{
+  "spawns": {
+    "spawnPositions": [
+      {
+        "x": -37.5,
+        "y": 63,
+        "z": -90.5,
+        "yaw": 0.0,
+        "pitch": 0.0
+      },
+      {
+        "x": 38.5,
+        "y": 63,
+        "z": -90.5,
+        "yaw": 0.0,
+        "pitch": 0.0
+      },
+      {
+        "x": 91.5,
+        "y": 63,
+        "z": -37.5,
+        "yaw": 90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": 91.5,
+        "y": 72,
+        "z": 38.5,
+        "yaw": 90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": 38.5,
+        "y": 72,
+        "z": 91.5,
+        "yaw": 180.0,
+        "pitch": 0.0
+      },
+      {
+        "x": -37.5,
+        "y": 72,
+        "z": 91.5,
+        "yaw": 180.0,
+        "pitch": 0.0
+      },
+      {
+        "x": -90.5,
+        "y": 70,
+        "z": 38.5,
+        "yaw": 270.0,
+        "pitch": 0.0
+      },
+      {
+        "x": -90.5,
+        "y": 63,
+        "z": -37.5,
+        "yaw": 270.0,
+        "pitch": 0.0
+      }
+    ],
+    "platformRadius": 5,
+    "worldSpawn": {
+      "x": 0.5,
+      "y": 51,
+      "z": 0.5,
+      "yaw": 0.0,
+      "pitch": 0.0
+    },
+    "spectatorSpawn": {
+      "x": 0.5,
+      "y": 80,
+      "z": 0.5,
+      "yaw": 0.0,
+      "pitch": 0.0
+    },
+    "shuffleInterval": 2400,
+    "shuffleDelayAfterKill": 200
+  },
+  "bonus": {
+    "platforms": [
+      {
+        "name": "Village Corner",
+        "coordinates": {
+          "x": 119.5,
+          "y": 70,
+          "z": 119.5
+        }
+      },
+      {
+        "name": "Nether Corner",
+        "coordinates": {
+          "x": -119.5,
+          "y": 68,
+          "z": 119.5
+        }
+      },
+      {
+        "name": "Desert Corner",
+        "coordinates": {
+          "x": -119.5,
+          "y": 62,
+          "z": -119.5
+        }
+      },
+      {
+        "name": "Water Corner",
+        "coordinates": {
+          "x": 119.5,
+          "y": 63,
+          "z": -119.5
+        }
+      }
+    ],
+    "radius": 2,
+    "spawnInterval": 3600,
+    "stayTime": 2400,
+    "initialSpawn": 1800,
+    "moneyAmount": 5,
+    "moneyInterval": 200
+  },
+  "lives": {
+    "perPlayer": 5,
+    "perTeam": 10
+  },
+  "money": {
+    "start": 100,
+    "amountPerInterval": 5,
+    "interval": 600,
+    "perKill": 20,
+    "perKillStreakKill": 10
+  }
+}
