@@ -19,12 +19,12 @@ object DisplayManager
     {
         ifServerLoaded { server ->
             if (!DisplayManager::sidebarObjective.isInitialized) sidebarObjective =
-                ScoreboardObjective(server.scoreboard, "sidebar", ScoreboardCriterion.DUMMY, Text.of("change this"), ScoreboardCriterion.RenderType.INTEGER) //TODO: change this
+                ScoreboardObjective(server.scoreboard, "sidebar", ScoreboardCriterion.DUMMY, Text.of("Lives"), ScoreboardCriterion.RenderType.INTEGER)
             server.scoreboard.objectives.toList().forEach { server.scoreboard.removeObjective(it) }
             server.scoreboard.addScoreboardObjective(sidebarObjective)
 
             if (!DisplayManager::tabListObjective.isInitialized) tabListObjective = //TODO: implement
-                ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of("change this"), ScoreboardCriterion.RenderType.INTEGER)
+                ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of("Kill-streak"), ScoreboardCriterion.RenderType.INTEGER)
             server.scoreboard.addScoreboardObjective(tabListObjective)
             server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, tabListObjective)
         }
