@@ -1,11 +1,13 @@
 package de.jagenka.mixin;
 
 import de.jagenka.managers.SpawnManager;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerManager.class)
@@ -16,5 +18,11 @@ public class PlayerManagerMixin
     {
         ServerPlayerEntity newPlayer = cir.getReturnValue();
         SpawnManager.handleRespawn(newPlayer);
+    }
+
+    @Inject(method = "onPlayerConnect", at = @At("TAIL"))
+    private void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci)
+    {
+        de.jagenka.managers.PlayerManager.onPlayerJoin(player);
     }
 }

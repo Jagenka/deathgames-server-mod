@@ -29,12 +29,10 @@ object DisplayManager
             server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, tabListObjective)
         }
 
-        prepareTeams()
-
         resetLevelDisplay()
     }
 
-    private fun prepareTeams()
+    fun prepareTeams()
     {
         ifServerLoaded { server ->
             DGTeam.values().forEach { color ->

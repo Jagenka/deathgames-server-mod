@@ -1,5 +1,6 @@
 package de.jagenka
 
+import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
@@ -32,7 +33,10 @@ object Util
     {
         this.minecraftServer = minecraftServer
 
+        ifServerLoaded { server -> server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) } }
+
         PlayerManager.prepareTeams()
+        DisplayManager.prepareTeams()
     }
 
     fun ifServerLoaded(lambda: (MinecraftServer) -> Unit)

@@ -2,6 +2,7 @@ package de.jagenka.managers
 
 import de.jagenka.Coordinates
 import de.jagenka.DGTeam
+import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
@@ -75,13 +76,12 @@ object PlayerManager
 
     fun reset()
     {
-        playerNames.clear()
+
     }
 
     fun prepareTeams()
     {
         ifServerLoaded { server ->
-            server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
             DGTeam.values().forEach { color ->
                 server.scoreboard.addTeam(color.name)
                 server.scoreboard.getTeam(color.name)?.color = Formatting.byName(color.name.lowercase())
@@ -127,5 +127,16 @@ object PlayerManager
 
     fun Coordinates.getInGamePlayersInRange(range: Double) = getOnlinePlayers().filter { player ->
         (inGameMap.getValue(player.name.asString())) && (Coordinates(player.x, player.y, player.z) distanceTo this <= range)
+    }
+
+    @JvmStatic
+    fun onPlayerJoin(player: ServerPlayerEntity)
+    {
+        if (player.getDGTeam() == null)
+        {
+            ifServerLoaded { server -> server.scoreboard.clearPlayerTeam(player.name.asString()) }
+        }
+
+        DisplayManager.updateLevelDisplay()
     }
 }
