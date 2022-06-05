@@ -23,8 +23,8 @@ object DeathGamesCommand
 {
     fun register(dispatcher: CommandDispatcher<ServerCommandSource>)
     {
-        dispatcher.register(
-            literal("deathgames") // TODO: figure out how to alias
+        val baseLiteralCommandNode = dispatcher.register(
+            literal("deathgames")
                 .then(literal("start").executes {
                     DeathGames.startGame()
                     return@executes 0
@@ -110,6 +110,8 @@ object DeathGamesCommand
                             return@executes 0
                         }))
         )
+
+        dispatcher.register(literal("dg").redirect(baseLiteralCommandNode))
     }
 
     private fun ServerCommandSource.isOp() = this.hasPermissionLevel(2)
