@@ -12,6 +12,7 @@ import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.ShuffleSpawnsTask
 import net.minecraft.entity.Entity
 import net.minecraft.server.network.ServerPlayerEntity
@@ -45,6 +46,7 @@ object KillManager
                 Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
             }
             handleMoney(attacker, deceased)
+            InactivePlayersTask.resetForPlayer(attacker.name.asString())
         }
 
         totalDeaths[deceased.name.asString()] = totalDeaths.getValue(deceased.name.asString()) + 1
@@ -55,6 +57,7 @@ object KillManager
 
         // TODO?: reset shop teleport after kill
         ShuffleSpawnsTask.updateLastKillTime()
+        InactivePlayersTask.resetForPlayer(deceased.name.asString())
     }
 
     private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)

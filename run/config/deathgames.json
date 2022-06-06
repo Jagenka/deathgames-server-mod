@@ -128,5 +128,8 @@
     "interval": 600,
     "perKill": 20,
     "perKillStreakKill": 10
+  },
+  "misc": {
+    "revealTimePerPlayer": 1800
   }
 }

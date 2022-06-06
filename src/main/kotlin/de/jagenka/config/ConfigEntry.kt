@@ -9,12 +9,13 @@ class ConfigEntry(
     val spawns: SpawnsConfigEntry,
     val bonus: BonusPlatformsConfigEntry,
     val lives: LivesConfigEntry,
-    val money: MoneyConfigEntry
+    val money: MoneyConfigEntry,
+    val misc: MiscConfigEntry
 )
 {
     companion object
     {
-        val dummy = ConfigEntry(SpawnsConfigEntry.dummy, BonusPlatformsConfigEntry.dummy, LivesConfigEntry.dummy, MoneyConfigEntry.dummy)
+        val dummy = ConfigEntry(SpawnsConfigEntry.dummy, BonusPlatformsConfigEntry.dummy, LivesConfigEntry.dummy, MoneyConfigEntry.dummy, MiscConfigEntry.dummy)
     }
 }
 
@@ -73,5 +74,14 @@ class MoneyConfigEntry(val start: Int, val amountPerInterval: Int, val interval:
     companion object
     {
         val dummy = MoneyConfigEntry(0, 0, 0, 0, 0)
+    }
+}
+
+@Serializable
+class MiscConfigEntry(val revealTimePerPlayer: Int)
+{
+    companion object
+    {
+        val dummy = MiscConfigEntry(0)
     }
 }

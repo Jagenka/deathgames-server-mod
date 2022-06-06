@@ -55,6 +55,9 @@ object Config
     val startMoneyPerPlayer
         get() = configEntry.money.start
 
+    val revealTimePerPlayer
+        get() = configEntry.misc.revealTimePerPlayer
+
     fun loadJSON()
     {
         configEntry = Json.decodeFromString(FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json").toFile().readText())
