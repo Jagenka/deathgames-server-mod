@@ -42,7 +42,7 @@ object Shop
             {
                 val inventory = ShopInventory(serverPlayerEntity)
                 val screenHandler =
-                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X4, syncId, serverPlayerEntity.inventory, inventory, 4)
+                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, serverPlayerEntity.inventory, inventory, 6)
                     {
                         override fun transferSlot(player: PlayerEntity?, index: Int): ItemStack
                         {
