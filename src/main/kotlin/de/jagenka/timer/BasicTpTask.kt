@@ -24,7 +24,7 @@ object BasicTpTask : TimerTask
         if (!DeathGames.running)
         {
             PlayerManager.getOnlinePlayers().forEach {
-                if (it.interactionManager.gameMode == GameMode.SPECTATOR) return@forEach
+                if (!it.interactionManager.isSurvivalLike) return@forEach
                 if (arena.contains(it.pos.toDGCoordinates())) it.teleport(lobby)
             }
         }
