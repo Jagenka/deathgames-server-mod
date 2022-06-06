@@ -1,11 +1,11 @@
 package de.jagenka
 
+import kotlinx.serialization.Serializable
 import net.minecraft.util.math.Vec3d
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-@ConfigSerializable
+@Serializable
 data class Coordinates(val x: Double, val y: Double, val z: Double, val yaw: Float = 0f, val pitch: Float = 0f)
 {
     constructor(pos: Vec3d) : this(pos.x, pos.y, pos.z)
