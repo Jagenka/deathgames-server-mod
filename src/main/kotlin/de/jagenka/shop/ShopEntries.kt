@@ -9,7 +9,6 @@ import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
 import net.minecraft.item.Items.*
 import net.minecraft.potion.PotionUtil
 import net.minecraft.potion.Potions
@@ -23,41 +22,41 @@ object ShopEntries
         get()
         {
             val entries = mutableMapOf(
-                0 to ItemShopEntry(ItemStack(MELON_SLICE, 8), 5, "Melon"),
-                1 to ItemShopEntry(ItemStack(ARROW, 4), 5, "Arrows"),
-                2 to ItemShopEntry(ItemStack(ENDER_PEARL, 2), 10, "Ender Pearls"),
-                3 to ItemShopEntry(ItemStack(COOKED_BEEF, 1), 10, "Beef"),
-                4 to ItemShopEntry(ItemStack(FISHING_ROD), 30, "Fishing Rod"),
-                5 to ItemShopEntry(ItemStack(BLAZE_ROD).withEnchantment(Enchantments.FIRE_ASPECT, 2), 40, "420 Blaze it"),
-                6 to ItemShopEntry(
+                slot(3, 0) to ItemShopEntry(ItemStack(MELON_SLICE, 8), 5, "Melon"),
+                slot(0, 8) to ItemShopEntry(ItemStack(ARROW, 4), 5, "Arrows"),
+                slot(3, 4) to ItemShopEntry(ItemStack(ENDER_PEARL, 2), 10, "Ender Pearls"),
+                slot(3, 1) to ItemShopEntry(ItemStack(COOKED_BEEF, 1), 10, "Beef"),
+                slot(4, 7) to ItemShopEntry(ItemStack(FISHING_ROD), 30, "Fishing Rod"),
+                slot(4, 6) to ItemShopEntry(ItemStack(BLAZE_ROD).withEnchantment(Enchantments.FIRE_ASPECT, 2), 40, "420 Blaze it"),
+                slot(2, 0) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(
                         POTION.defaultStack.withName("Potion of Invisibility"),
                         listOf(StatusEffectInstance(StatusEffects.INVISIBILITY, 60.seconds()))
                     ), 35, "Invis"
                 ),
-                7 to ItemShopEntry(
+                slot(2, 1) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(POTION.defaultStack.withName("Potion of Speed"), listOf(StatusEffectInstance(StatusEffects.SPEED, 3.minutes()))),
                     30,
                     "Speed"
                 ),
-                8 to ItemShopEntry(
+                slot(2, 2) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(
                         POTION.defaultStack.withName("Potion of Fire Resistance"),
                         listOf(StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 3.minutes()))
                     ), 20, "Fire Res"
                 ),
-                9 to ItemShopEntry(
+                slot(2, 3) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(POTION.defaultStack.withName("Potion of Strength"), listOf(StatusEffectInstance(StatusEffects.STRENGTH, 3.minutes()))),
                     45,
                     "Strength"
                 ),
-                10 to ItemShopEntry(
+                slot(2, 4) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(
                         POTION.defaultStack.withName("Potion of Regeneration"),
                         listOf(StatusEffectInstance(StatusEffects.REGENERATION, 3.minutes()))
                     ), 25, "Regen"
                 ),
-                11 to ItemShopEntry(
+                slot(2, 5) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(
                         LINGERING_POTION.defaultStack.withName("Lingering Potion of Harming"),
                         listOf(StatusEffectInstance(StatusEffects.INSTANT_DAMAGE))
@@ -65,7 +64,7 @@ object ShopEntries
                     20,
                     "Harming"
                 ), // lingering
-                12 to ItemShopEntry(
+                slot(2, 6) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(
                         SPLASH_POTION.defaultStack.withName("Splash Potion of Slowness"),
                         listOf(StatusEffectInstance(StatusEffects.SLOWNESS, 1.minutes() + 30.seconds()))
@@ -73,16 +72,17 @@ object ShopEntries
                     40,
                     "Slowness"
                 ),
-                13 to ItemShopEntry(ItemStack(ENCHANTED_GOLDEN_APPLE), 150, "Gold Apple"),
-                14 to ItemShopEntry(ItemStack(TOTEM_OF_UNDYING), 150, "Totem"),
-                15 to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
-                21 to ItemShopEntry(TrapsAreNotGay.voidTrap, 10, "The Abyss"),
-                22 to ItemShopEntry(ItemStack(SHIELD), 50, "Shield"),
-                23 to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
-                24 to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
-                25 to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
+                slot(3, 2) to ItemShopEntry(ItemStack(ENCHANTED_GOLDEN_APPLE), 150, "Gold Apple"),
+                slot(4, 0) to ItemShopEntry(ItemStack(TOTEM_OF_UNDYING), 150, "Totem"),
+                slot(1, 8) to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
+                slot(3, 7) to ItemShopEntry(TrapsAreNotGay.snareTrap, 10, "Stop right there!"),
+                slot(3, 8) to ItemShopEntry(TrapsAreNotGay.voidTrap, 10, "The Abyss"),
+                slot(0, 3) to ItemShopEntry(ItemStack(SHIELD), 50, "Shield"),
+                slot(4, 1) to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
+                slot(4, 8) to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
+                slot(2, 8) to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
 
-                30 to UpgradeableShopEntry(
+                slot(0, 0) to UpgradeableShopEntry(
                     UpgradeType.ARMOR,
                     mutableListOf(
                         mutableListOf(LEATHER_HELMET.unbreakable(), LEATHER_LEGGINGS.unbreakable()),
@@ -95,7 +95,7 @@ object ShopEntries
                     mutableListOf(20, 40, 60, 80, 100, 120),
                     "Armor Upgrade"
                 ),
-                31 to UpgradeableShopEntry(
+                slot(0, 1) to UpgradeableShopEntry(
                     UpgradeType.SWORD,
                     mutableListOf(
                         mutableListOf(WOODEN_SWORD.unbreakable()),
@@ -107,7 +107,7 @@ object ShopEntries
                     mutableListOf(50, 50, 50, 50, 50),
                     "Sword Upgrade"
                 ),
-                32 to UpgradeableShopEntry(
+                slot(0, 2) to UpgradeableShopEntry(
                     UpgradeType.AXE,
                     mutableListOf(
                         mutableListOf(WOODEN_AXE.unbreakable()),
@@ -119,7 +119,7 @@ object ShopEntries
                     mutableListOf(120, 40, 40, 40, 40),
                     "Axe Upgrade"
                 ),
-                33 to UpgradeableShopEntry(
+                slot(0, 6) to UpgradeableShopEntry(
                     UpgradeType.BOW,
                     mutableListOf(
                         mutableListOf(BOW.unbreakable()),
@@ -132,7 +132,7 @@ object ShopEntries
                     mutableListOf(75, 100, 100, 100, 100, 100),
                     "Bow Upgrade"
                 ),
-                34 to UpgradeableShopEntry(
+                slot(0, 7) to UpgradeableShopEntry(
                     UpgradeType.CROSSBOW,
                     mutableListOf(
                         mutableListOf(CROSSBOW.unbreakable()),
@@ -147,7 +147,11 @@ object ShopEntries
                 ),
             )
 
-            entries[31]?.let { entries[36] = RefundShopEntry(it) }
+            entries[slot(0, 0)]?.let { entries[slot(1, 0)] = RefundShopEntry(it) }
+            entries[slot(0, 1)]?.let { entries[slot(1, 1)] = RefundShopEntry(it) }
+            entries[slot(0, 2)]?.let { entries[slot(1, 2)] = RefundShopEntry(it) }
+            entries[slot(0, 6)]?.let { entries[slot(1, 6)] = RefundShopEntry(it) }
+            entries[slot(0, 7)]?.let { entries[slot(1, 7)] = RefundShopEntry(it) }
 
             return entries.toMap()
         }
@@ -170,5 +174,10 @@ object ShopEntries
     {
         this.setCustomName(Text.of(name))
         return this
+    }
+
+    private fun slot(row: Int, column: Int): Int
+    {
+        return (row * 9 + column).coerceAtLeast(0).coerceAtMost(Shop.slotAmount)
     }
 }

@@ -23,6 +23,8 @@ object Shop
 
     private val shopBounds = BlockCuboid(Coordinates(-7, 55, -7), Coordinates(8, 62, 8))
 
+    const val slotAmount = 9 * 6
+
     @JvmStatic
     fun showInterfaceIfInShop(player: ServerPlayerEntity): Boolean
     {
