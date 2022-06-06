@@ -19,127 +19,138 @@ object ShopEntries
 {
     val EMPTY = ItemShopEntry(ItemStack.EMPTY, 0, "")
 
-    val shopEntries = mapOf(
-        0 to ItemShopEntry(ItemStack(MELON_SLICE, 8), 5, "Melon"),
-        1 to ItemShopEntry(ItemStack(ARROW, 4), 5, "Arrows"),
-        2 to ItemShopEntry(ItemStack(ENDER_PEARL, 2), 10, "Ender Pearls"),
-        3 to ItemShopEntry(ItemStack(COOKED_BEEF, 1), 10, "Beef"),
-        4 to ItemShopEntry(ItemStack(FISHING_ROD), 30, "Fishing Rod"),
-        5 to ItemShopEntry(ItemStack(BLAZE_ROD).withEnchantment(Enchantments.FIRE_ASPECT, 2), 40, "420 Blaze it"),
-        6 to ItemShopEntry(
-            PotionUtil.setCustomPotionEffects(
-                POTION.defaultStack.withName("Potion of Invisibility"),
-                listOf(StatusEffectInstance(StatusEffects.INVISIBILITY, 60.seconds()))
-            ), 35, "Invis"
-        ),
-        7 to ItemShopEntry(
-            PotionUtil.setCustomPotionEffects(POTION.defaultStack.withName("Potion of Speed"), listOf(StatusEffectInstance(StatusEffects.SPEED, 3.minutes()))),
-            30,
-            "Speed"
-        ),
-        8 to ItemShopEntry(
-            PotionUtil.setCustomPotionEffects(
-                POTION.defaultStack.withName("Potion of Fire Resistance"),
-                listOf(StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 3.minutes()))
-            ), 20, "Fire Res"
-        ),
-        9 to ItemShopEntry(
-            PotionUtil.setCustomPotionEffects(POTION.defaultStack.withName("Potion of Strength"), listOf(StatusEffectInstance(StatusEffects.STRENGTH, 3.minutes()))),
-            45,
-            "Strength"
-        ),
-        10 to ItemShopEntry(
-            PotionUtil.setCustomPotionEffects(
-                POTION.defaultStack.withName("Potion of Regeneration"),
-                listOf(StatusEffectInstance(StatusEffects.REGENERATION, 3.minutes()))
-            ), 25, "Regen"
-        ),
-        11 to ItemShopEntry(
-            PotionUtil.setCustomPotionEffects(LINGERING_POTION.defaultStack.withName("Lingering Potion of Harming"), listOf(StatusEffectInstance(StatusEffects.INSTANT_DAMAGE))),
-            20,
-            "Harming"
-        ), // lingering
-        12 to ItemShopEntry(
-            PotionUtil.setCustomPotionEffects(
-                SPLASH_POTION.defaultStack.withName("Splash Potion of Slowness"),
-                listOf(StatusEffectInstance(StatusEffects.SLOWNESS, 1.minutes() + 30.seconds()))
-            ),
-            40,
-            "Slowness"
-        ),
-        13 to ItemShopEntry(ItemStack(ENCHANTED_GOLDEN_APPLE), 150, "Gold Apple"),
-        14 to ItemShopEntry(ItemStack(TOTEM_OF_UNDYING), 150, "Totem"),
-        15 to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
-        21 to ItemShopEntry(TrapsAreNotGay.voidTrap, 10, "The Abyss"),
-        22 to ItemShopEntry(ItemStack(SHIELD), 50, "Shield"),
-        23 to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
-        24 to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
-        25 to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
+    val shopEntries: Map<Int, ShopEntry>
+        get()
+        {
+            val entries = mutableMapOf(
+                0 to ItemShopEntry(ItemStack(MELON_SLICE, 8), 5, "Melon"),
+                1 to ItemShopEntry(ItemStack(ARROW, 4), 5, "Arrows"),
+                2 to ItemShopEntry(ItemStack(ENDER_PEARL, 2), 10, "Ender Pearls"),
+                3 to ItemShopEntry(ItemStack(COOKED_BEEF, 1), 10, "Beef"),
+                4 to ItemShopEntry(ItemStack(FISHING_ROD), 30, "Fishing Rod"),
+                5 to ItemShopEntry(ItemStack(BLAZE_ROD).withEnchantment(Enchantments.FIRE_ASPECT, 2), 40, "420 Blaze it"),
+                6 to ItemShopEntry(
+                    PotionUtil.setCustomPotionEffects(
+                        POTION.defaultStack.withName("Potion of Invisibility"),
+                        listOf(StatusEffectInstance(StatusEffects.INVISIBILITY, 60.seconds()))
+                    ), 35, "Invis"
+                ),
+                7 to ItemShopEntry(
+                    PotionUtil.setCustomPotionEffects(POTION.defaultStack.withName("Potion of Speed"), listOf(StatusEffectInstance(StatusEffects.SPEED, 3.minutes()))),
+                    30,
+                    "Speed"
+                ),
+                8 to ItemShopEntry(
+                    PotionUtil.setCustomPotionEffects(
+                        POTION.defaultStack.withName("Potion of Fire Resistance"),
+                        listOf(StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 3.minutes()))
+                    ), 20, "Fire Res"
+                ),
+                9 to ItemShopEntry(
+                    PotionUtil.setCustomPotionEffects(POTION.defaultStack.withName("Potion of Strength"), listOf(StatusEffectInstance(StatusEffects.STRENGTH, 3.minutes()))),
+                    45,
+                    "Strength"
+                ),
+                10 to ItemShopEntry(
+                    PotionUtil.setCustomPotionEffects(
+                        POTION.defaultStack.withName("Potion of Regeneration"),
+                        listOf(StatusEffectInstance(StatusEffects.REGENERATION, 3.minutes()))
+                    ), 25, "Regen"
+                ),
+                11 to ItemShopEntry(
+                    PotionUtil.setCustomPotionEffects(
+                        LINGERING_POTION.defaultStack.withName("Lingering Potion of Harming"),
+                        listOf(StatusEffectInstance(StatusEffects.INSTANT_DAMAGE))
+                    ),
+                    20,
+                    "Harming"
+                ), // lingering
+                12 to ItemShopEntry(
+                    PotionUtil.setCustomPotionEffects(
+                        SPLASH_POTION.defaultStack.withName("Splash Potion of Slowness"),
+                        listOf(StatusEffectInstance(StatusEffects.SLOWNESS, 1.minutes() + 30.seconds()))
+                    ),
+                    40,
+                    "Slowness"
+                ),
+                13 to ItemShopEntry(ItemStack(ENCHANTED_GOLDEN_APPLE), 150, "Gold Apple"),
+                14 to ItemShopEntry(ItemStack(TOTEM_OF_UNDYING), 150, "Totem"),
+                15 to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
+                21 to ItemShopEntry(TrapsAreNotGay.voidTrap, 10, "The Abyss"),
+                22 to ItemShopEntry(ItemStack(SHIELD), 50, "Shield"),
+                23 to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
+                24 to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
+                25 to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
 
-        30 to UpgradeableShopEntry(
-            UpgradeType.ARMOR,
-            mutableListOf(
-                mutableListOf(LEATHER_HELMET.unbreakable(), LEATHER_LEGGINGS.unbreakable()),
-                mutableListOf(LEATHER_CHESTPLATE.unbreakable(), LEATHER_BOOTS.unbreakable()),
-                mutableListOf(IRON_HELMET.unbreakable(), IRON_LEGGINGS.unbreakable()),
-                mutableListOf(IRON_CHESTPLATE.unbreakable(), IRON_BOOTS.unbreakable()),
-                mutableListOf(DIAMOND_HELMET.unbreakable(), DIAMOND_LEGGINGS.unbreakable()),
-                mutableListOf(DIAMOND_CHESTPLATE.unbreakable(), DIAMOND_BOOTS.unbreakable()),
-            ),
-            mutableListOf(20, 40, 60, 80, 100, 120),
-            "Armor Upgrade"
-        ),
-        31 to UpgradeableShopEntry(
-            UpgradeType.SWORD,
-            mutableListOf(
-                mutableListOf(WOODEN_SWORD.unbreakable()),
-                mutableListOf(STONE_SWORD.unbreakable()),
-                mutableListOf(IRON_SWORD.unbreakable()),
-                mutableListOf(DIAMOND_SWORD.unbreakable()),
-                mutableListOf(NETHERITE_SWORD.unbreakable()),
-            ),
-            mutableListOf(50, 50, 50, 50, 50),
-            "Sword Upgrade"
-        ),
-        32 to UpgradeableShopEntry(
-            UpgradeType.AXE,
-            mutableListOf(
-                mutableListOf(WOODEN_AXE.unbreakable()),
-                mutableListOf(STONE_AXE.unbreakable()),
-                mutableListOf(IRON_AXE.unbreakable()),
-                mutableListOf(DIAMOND_AXE.unbreakable()),
-                mutableListOf(NETHERITE_AXE.unbreakable()),
-            ),
-            mutableListOf(120, 40, 40, 40, 40),
-            "Axe Upgrade"
-        ),
-        33 to UpgradeableShopEntry(
-            UpgradeType.BOW,
-            mutableListOf(
-                mutableListOf(BOW.unbreakable()),
-                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 1)),
-                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 2)),
-                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 3)),
-                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 4)),
-                mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 5)),
-            ),
-            mutableListOf(75, 100, 100, 100, 100, 100),
-            "Bow Upgrade"
-        ),
-        34 to UpgradeableShopEntry(
-            UpgradeType.CROSSBOW,
-            mutableListOf(
-                mutableListOf(CROSSBOW.unbreakable()),
-                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 1)),
-                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 2)),
-                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 3)),
-                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 4)),
-                mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 5)),
-            ),
-            mutableListOf(75, 25, 50, 100, 150, 150),
-            "Crossbow Upgrade"
-        ),
-    )
+                30 to UpgradeableShopEntry(
+                    UpgradeType.ARMOR,
+                    mutableListOf(
+                        mutableListOf(LEATHER_HELMET.unbreakable(), LEATHER_LEGGINGS.unbreakable()),
+                        mutableListOf(LEATHER_CHESTPLATE.unbreakable(), LEATHER_BOOTS.unbreakable()),
+                        mutableListOf(IRON_HELMET.unbreakable(), IRON_LEGGINGS.unbreakable()),
+                        mutableListOf(IRON_CHESTPLATE.unbreakable(), IRON_BOOTS.unbreakable()),
+                        mutableListOf(DIAMOND_HELMET.unbreakable(), DIAMOND_LEGGINGS.unbreakable()),
+                        mutableListOf(DIAMOND_CHESTPLATE.unbreakable(), DIAMOND_BOOTS.unbreakable()),
+                    ),
+                    mutableListOf(20, 40, 60, 80, 100, 120),
+                    "Armor Upgrade"
+                ),
+                31 to UpgradeableShopEntry(
+                    UpgradeType.SWORD,
+                    mutableListOf(
+                        mutableListOf(WOODEN_SWORD.unbreakable()),
+                        mutableListOf(STONE_SWORD.unbreakable()),
+                        mutableListOf(IRON_SWORD.unbreakable()),
+                        mutableListOf(DIAMOND_SWORD.unbreakable()),
+                        mutableListOf(NETHERITE_SWORD.unbreakable()),
+                    ),
+                    mutableListOf(50, 50, 50, 50, 50),
+                    "Sword Upgrade"
+                ),
+                32 to UpgradeableShopEntry(
+                    UpgradeType.AXE,
+                    mutableListOf(
+                        mutableListOf(WOODEN_AXE.unbreakable()),
+                        mutableListOf(STONE_AXE.unbreakable()),
+                        mutableListOf(IRON_AXE.unbreakable()),
+                        mutableListOf(DIAMOND_AXE.unbreakable()),
+                        mutableListOf(NETHERITE_AXE.unbreakable()),
+                    ),
+                    mutableListOf(120, 40, 40, 40, 40),
+                    "Axe Upgrade"
+                ),
+                33 to UpgradeableShopEntry(
+                    UpgradeType.BOW,
+                    mutableListOf(
+                        mutableListOf(BOW.unbreakable()),
+                        mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 1)),
+                        mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 2)),
+                        mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 3)),
+                        mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 4)),
+                        mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 5)),
+                    ),
+                    mutableListOf(75, 100, 100, 100, 100, 100),
+                    "Bow Upgrade"
+                ),
+                34 to UpgradeableShopEntry(
+                    UpgradeType.CROSSBOW,
+                    mutableListOf(
+                        mutableListOf(CROSSBOW.unbreakable()),
+                        mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 1)),
+                        mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 2)),
+                        mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 3)),
+                        mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 4)),
+                        mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 5)),
+                    ),
+                    mutableListOf(75, 25, 50, 100, 150, 150),
+                    "Crossbow Upgrade"
+                ),
+            )
+
+            entries[31]?.let { entries[36] = RefundShopEntry(it) }
+
+            return entries.toMap()
+        }
 
     private fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()
 

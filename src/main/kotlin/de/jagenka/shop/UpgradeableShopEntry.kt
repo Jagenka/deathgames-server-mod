@@ -35,9 +35,23 @@ class UpgradeableShopEntry(
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
     {
         val nextLevel = getUpgradeLevel(player) + 1
-        if (nextLevel >= prices.size) return ItemStack.EMPTY
-        val price = prices[nextLevel]
-        return boughtItemStacks[Shop.getUpgradeLevel(player, type)][0].copy().setCustomName(
+        return getDisplayItemStackForLevel(player, nextLevel)
+
+    }
+
+    fun getPreviousDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    {
+        return getDisplayItemStackForLevel(player, getUpgradeLevel(player))
+    }
+
+    /**
+     *  first item in boughtItemStacks list is shown
+     */
+    private fun getDisplayItemStackForLevel(player: ServerPlayerEntity, level: Int): ItemStack
+    {
+        if (level !in prices.indices) return ItemStack.EMPTY
+        val price = prices[level]
+        return boughtItemStacks[level][0].copy().setCustomName(
             Text.of("${Shop.SHOP_UNIT}$price: $name").getWithStyle(
                 Style.EMPTY.withColor(
                     if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
@@ -45,7 +59,7 @@ class UpgradeableShopEntry(
                 )
             )[0]
         )
-    } // first item in list is shown
+    }
 
     override fun buy(player: ServerPlayerEntity): Boolean
     {
@@ -92,4 +106,30 @@ class UpgradeableShopEntry(
     }
 
     private fun getUpgradeLevel(player: ServerPlayerEntity) = Shop.getUpgradeLevel(player, type) - 1
+
+    override fun getTotalSpentPrice(player: ServerPlayerEntity): Int
+    {
+        val currentUpgradeLevel = Shop.getUpgradeLevel(player, type)
+        return prices.subList(0, currentUpgradeLevel.coerceAtLeast(0)).sum()
+    }
+
+    override fun getDisplayName(): String = name
+
+    override fun hasItem(player: ServerPlayerEntity): Boolean
+    {
+        return getUpgradeLevel(player) >= 0
+    }
+
+    override fun removeItem(player: ServerPlayerEntity)
+    {
+        boughtItemStacks.forEach { list ->
+            list.forEach { itemStackToRemove ->
+                player.inventory.remove({ itemStackInInventory ->
+                    itemStackInInventory.item == itemStackToRemove.item
+                }, -1, player.playerScreenHandler.craftingInput)
+            }
+        }
+
+        Shop.setUpgradeLevel(player, type, 0)
+    }
 }
