@@ -1,8 +1,9 @@
 package de.jagenka.managers
 
 import de.jagenka.*
-import de.jagenka.Config.defaultSpawn
 import de.jagenka.Util.teleport
+import de.jagenka.config.Config.defaultSpawn
+import de.jagenka.config.Config.spawnPlatformRadius
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 
@@ -40,7 +41,7 @@ object SpawnManager
     fun shuffleSpawns()
     {
         spawns.forEach { coordinates ->
-            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), Config.spawnPlatformRadius).forEach { (block, coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), spawnPlatformRadius).forEach { (block, coordinates) ->
                 if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
             }
         }
@@ -63,7 +64,7 @@ object SpawnManager
     fun colorTeamSpawn(team: DGTeam)
     {
         teamSpawns[team]?.let { coordinates ->
-            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), Config.spawnPlatformRadius).forEach { (block, coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), spawnPlatformRadius).forEach { (block, coordinates) ->
                 if (block.isDGColorBlock()) Util.setBlockAt(coordinates, team.getColorBlock())
             }
         }

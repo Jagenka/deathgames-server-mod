@@ -1,6 +1,7 @@
 package de.jagenka.timer
 
-import de.jagenka.Config
+import de.jagenka.config.Config.shuffleDelayAfterKill
+import de.jagenka.config.Config.shuffleSpawnsInterval
 import de.jagenka.managers.SpawnManager
 
 object ShuffleSpawnsTask : TimerTask
@@ -8,9 +9,9 @@ object ShuffleSpawnsTask : TimerTask
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
-        get() = Config.shuffleSpawnsInterval
+        get() = shuffleSpawnsInterval
 
-    private val shuffleKillDelay = Config.shuffleDelayAfterKill
+    private val shuffleKillDelay = shuffleDelayAfterKill
 
     private var lastKillTime = 0
 

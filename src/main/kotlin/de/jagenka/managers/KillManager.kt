@@ -1,13 +1,13 @@
 package de.jagenka.managers
 
-import de.jagenka.Config.livesPerPlayer
-import de.jagenka.Config.livesPerTeam
-import de.jagenka.Config.moneyBonusPerKillStreakKill
-import de.jagenka.Config.moneyPerKill
-import de.jagenka.Config.startMoneyPerPlayer
 import de.jagenka.DGTeam
 import de.jagenka.Util.sendChatMessage
 import de.jagenka.Util.sendPrivateMessage
+import de.jagenka.config.Config.livesPerPlayer
+import de.jagenka.config.Config.livesPerTeam
+import de.jagenka.config.Config.moneyBonusPerKillStreakKill
+import de.jagenka.config.Config.moneyPerKill
+import de.jagenka.config.Config.startMoneyPerPlayer
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate

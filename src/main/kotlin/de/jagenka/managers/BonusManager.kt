@@ -1,7 +1,9 @@
 package de.jagenka.managers
 
 import de.jagenka.*
-import de.jagenka.Config.bonusPlatformRadius
+import de.jagenka.config.Config
+import de.jagenka.config.Config.bonusPlatformInitialSpawn
+import de.jagenka.config.Config.bonusPlatformRadius
 import de.jagenka.timer.ScheduledTask
 import de.jagenka.timer.Timer
 import kotlinx.serialization.Serializable
@@ -89,7 +91,7 @@ object BonusManager
         queueRandomPlatforms(1)
         currentSpawnTask = Timer.schedule({
             spawnBonusPlatformTask()
-        }, Config.bonusPlatformInitialSpawn)
+        }, bonusPlatformInitialSpawn)
         currentDespawnTask = null
     }
 
