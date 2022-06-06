@@ -10,10 +10,12 @@ import de.jagenka.timer.ticks
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.ItemUsageContext
+import net.minecraft.item.Items
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
+import net.minecraft.text.Text
 import net.minecraft.util.math.Direction
 
 enum class DGStatusEffect(val statusEffectInstance: StatusEffectInstance)
@@ -37,6 +39,12 @@ object TrapsAreNotGay
     visible and can be triggered. Upon triggering, the trap applies the desired effects to the affected players
     and disappears.
      */
+    val snareTrap = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Snare Trap"))
+    val voidTrap = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Void Trap"))
+    val exhaustionTrap = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Exhaustion Trap"))
+    val revealingTrap = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Revealing Trap"))
+    val poisonTrap = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Poison Trap"))
+
     private val notGayness = mutableSetOf<NotGay>()
 
     private fun addLessGay(x: Int, y: Int, z: Int, gaynessRange: Double = 0.5,
@@ -172,7 +180,7 @@ object TrapsAreNotGay
                     snares = false,
                     effectsString = listOf(DGStatusEffect.WEAKNESS, DGStatusEffect.POISON)) }
             ).forEach { (name, unit) ->
-                if (name == ctx.stack.name.asString())
+                if (name == ctx.stack.name.asString() && Items.BAT_SPAWN_EGG == ctx.stack.item)
                 {
                     unit()
                     ctx.player?.inventory?.selectedSlot?.let { ctx.player?.inventory?.removeStack(it, 1) }

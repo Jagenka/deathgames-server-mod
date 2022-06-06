@@ -1,5 +1,6 @@
 package de.jagenka.shop
 
+import de.jagenka.TrapsAreNotGay
 import de.jagenka.timer.minutes
 import de.jagenka.timer.seconds
 import net.minecraft.enchantment.Enchantment
@@ -8,6 +9,7 @@ import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.item.Items.*
 import net.minecraft.potion.PotionUtil
 import net.minecraft.potion.Potions
@@ -68,7 +70,7 @@ object ShopEntries
         13 to ItemShopEntry(ItemStack(ENCHANTED_GOLDEN_APPLE), 150, "Gold Apple"),
         14 to ItemShopEntry(ItemStack(TOTEM_OF_UNDYING), 150, "Totem"),
         15 to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
-        21 to ItemShopEntry(ItemStack(BAT_SPAWN_EGG, 1), 10, "Not Gay"),
+        21 to ItemShopEntry(TrapsAreNotGay.voidTrap, 10, "The Abyss"),
         22 to ItemShopEntry(ItemStack(SHIELD), 50, "Shield"),
         23 to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
         24 to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
