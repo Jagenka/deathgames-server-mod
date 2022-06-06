@@ -123,6 +123,7 @@ object DeathGamesCommand
         )
 
         dispatcher.register(literal("dg").redirect(baseLiteralCommandNode))
+        dispatcher.register(literal("deeznutz").redirect(baseLiteralCommandNode))
     }
 
     private fun ServerCommandSource.isOp() = this.hasPermissionLevel(2)
