@@ -1,6 +1,5 @@
-package de.jagenka
+package de.jagenka.config
 
-import de.jagenka.config.ConfigEntry
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.SpawnManager
 import kotlinx.serialization.decodeFromString
