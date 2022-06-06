@@ -20,7 +20,7 @@ object DeathGames : DedicatedServerModInitializer
 
     override fun onInitializeServer()
     {
-        Config.loadYAML()
+        Config.loadJSON()
 
         registerCommands()
 

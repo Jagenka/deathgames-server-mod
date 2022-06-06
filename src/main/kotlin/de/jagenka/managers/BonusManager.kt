@@ -4,9 +4,9 @@ import de.jagenka.*
 import de.jagenka.Config.bonusPlatformRadius
 import de.jagenka.timer.ScheduledTask
 import de.jagenka.timer.Timer
+import kotlinx.serialization.Serializable
 import net.minecraft.block.Blocks
 import net.minecraft.server.network.ServerPlayerEntity
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import kotlin.math.abs
 
 object BonusManager
@@ -125,5 +125,5 @@ object BonusManager
     }
 }
 
-@ConfigSerializable
+@Serializable
 data class Platform(val name: String, val coordinates: Coordinates, var active: Boolean = false)
