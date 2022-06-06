@@ -36,6 +36,8 @@ object Util
         ifServerLoaded { server -> server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) } }
 
         PlayerManager.prepareTeams()
+
+        DisplayManager.reset()
         DisplayManager.prepareTeams()
     }
 
