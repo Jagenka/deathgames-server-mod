@@ -26,6 +26,7 @@ class SpawnsConfigEntry(
     val platformRadius: Int,
     val worldSpawn: Coordinates,
     val spectatorSpawn: Coordinates,
+    val lobbySpawn: Coordinates,
     val shuffleInterval: Int,
     val shuffleDelayAfterKill: Int
 )
@@ -35,6 +36,7 @@ class SpawnsConfigEntry(
         val dummy = SpawnsConfigEntry(
             listOf(Coordinates(0.0, 0.0, 0.0, 1f, 1f), Coordinates(0.0, 0.0, 0.0, 1f, 1f)),
             0,
+            Coordinates(0.0, 0.0, 0.0, 1f, 1f),
             Coordinates(0.0, 0.0, 0.0, 1f, 1f),
             Coordinates(0.0, 0.0, 0.0, 1f, 1f),
             0,

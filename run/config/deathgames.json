@@ -73,6 +73,13 @@
       "yaw": 0.0,
       "pitch": 0.0
     },
+    "lobbySpawn": {
+      "x": 0.5,
+      "y": 20,
+      "z": 0.5,
+      "yaw": 0.0,
+      "pitch": 0.0
+    },
     "shuffleInterval": 2400,
     "shuffleDelayAfterKill": 200
   },

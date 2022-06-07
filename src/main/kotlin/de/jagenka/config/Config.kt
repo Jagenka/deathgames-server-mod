@@ -23,6 +23,8 @@ object Config
 
     val defaultSpawn
         get() = configEntry.spawns.spectatorSpawn
+    val lobbySpawn
+        get() = configEntry.spawns.lobbySpawn
 
     val bonusPlatformRadius
         get() = configEntry.bonus.radius
