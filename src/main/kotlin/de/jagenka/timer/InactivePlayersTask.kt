@@ -46,7 +46,7 @@ object InactivePlayersTask : TimerTask
                 highlightedPlayers.remove(playerName)
             }
         }
-        PlayerManager.getInGamePlayers().forEach { inactiveTimer[it] = inactiveTimer.getValue(it) + 1 }
+        PlayerManager.getInGamePlayers().filter { !PlayerManager.isCurrentlyDead(it) }.forEach { inactiveTimer[it] = inactiveTimer.getValue(it) + 1 }
     }
 
     override fun reset()

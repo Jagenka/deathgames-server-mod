@@ -16,6 +16,8 @@ object PlayerManager
     private val inGameMap = mutableMapOf<String, Boolean>().withDefault { false } // TODO participating
     private val teamRegistry = mutableMapOf<String, DGTeam>()
 
+    private val currentlyDead = mutableSetOf<String>()
+
     fun getOnlinePlayer(name: String): ServerPlayerEntity? = getOnlinePlayers().find { it.name.asString() == name }
 
     fun getOnlinePlayers(): Set<ServerPlayerEntity>
@@ -64,11 +66,6 @@ object PlayerManager
     fun getNonEmptyTeams(): Set<DGTeam>
     {
         return teamRegistry.values.toHashSet()
-    }
-
-    fun reset()
-    {
-
     }
 
     fun prepareTeams()
@@ -137,10 +134,16 @@ object PlayerManager
         DisplayManager.resetBossBars()
     }
 
+    fun registerAsCurrentlyDead(playerName: String) = currentlyDead.add(playerName)
+
+    fun isCurrentlyDead(playerName: String) = playerName in currentlyDead
+
     @JvmStatic
     fun handleRespawn(player: ServerPlayerEntity)
     {
         SpawnManager.teleportPlayerToSpawn(player)
         player.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 5.seconds(), 255))
+
+        currentlyDead.remove(player.name.asString())
     }
 }

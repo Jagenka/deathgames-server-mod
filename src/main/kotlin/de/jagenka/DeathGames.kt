@@ -48,7 +48,6 @@ object DeathGames : DedicatedServerModInitializer
         KillManager.reset()
         MoneyManager.reset()
         Timer.reset()
-        PlayerManager.reset()
 
         DisplayManager.reset()
         Shop.reset()

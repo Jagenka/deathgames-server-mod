@@ -51,8 +51,10 @@ object KillManager
         }
 
         totalDeaths[deceased.name.asString()] = totalDeaths.getValue(deceased.name.asString()) + 1
-        handleLives(deceased)
+        removeOneLife(deceased)
         resetKillStreak(deceased)
+
+        PlayerManager.registerAsCurrentlyDead(deceased.name.asString())
 
         DisplayManager.updateLivesDisplay()
         DisplayManager.updateKillStreakDisplay()
@@ -105,7 +107,7 @@ object KillManager
         DisplayManager.updateKillStreakDisplay()
     }
 
-    private fun handleLives(deceased: ServerPlayerEntity)
+    fun removeOneLife(deceased: ServerPlayerEntity)
     {
         when (livesMode)
         {
@@ -122,6 +124,8 @@ object KillManager
                 if (livesAmount - 1 < 1) deceased.eliminate()
             }
         }
+
+        DisplayManager.updateLivesDisplay()
     }
 
     fun initLives()
