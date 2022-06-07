@@ -67,6 +67,8 @@ object Config
         get() = configEntry.shopSettings.shopBounds
     val arenaBounds
         get() = configEntry.misc.arenaBounds
+    val spectatorRadiusPadding
+        get() = configEntry.misc.spectatorRadiusPadding
 
     val refundPercent
         get() = configEntry.shopSettings.refundPercent

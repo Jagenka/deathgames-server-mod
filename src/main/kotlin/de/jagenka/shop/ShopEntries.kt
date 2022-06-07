@@ -58,13 +58,19 @@ object ShopEntries
                 ),
                 slot(2, 5) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(
+                        POTION.defaultStack.withName("Potion of Dolphin's Grace"),
+                        listOf(StatusEffectInstance(StatusEffects.DOLPHINS_GRACE, 3.minutes()))
+                    ), 20, "Aquadynamics"
+                ),
+                slot(2, 6) to ItemShopEntry(
+                    PotionUtil.setCustomPotionEffects(
                         LINGERING_POTION.defaultStack.withName("Lingering Potion of Harming"),
                         listOf(StatusEffectInstance(StatusEffects.INSTANT_DAMAGE))
                     ),
                     20,
                     "Harming"
                 ), // lingering
-                slot(2, 6) to ItemShopEntry(
+                slot(2, 7) to ItemShopEntry(
                     PotionUtil.setCustomPotionEffects(
                         SPLASH_POTION.defaultStack.withName("Splash Potion of Slowness"),
                         listOf(StatusEffectInstance(StatusEffects.SLOWNESS, 1.minutes() + 30.seconds()))

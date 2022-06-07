@@ -26,6 +26,8 @@ fun Int.toCenter() = this + 0.5
 
 operator fun Coordinates.plus(other: Coordinates) = Coordinates(this.x + other.x, this.y + other.y, this.z + other.z, this.yaw, this.pitch)
 operator fun Coordinates.minus(other: Coordinates) = Coordinates(this.x - other.x, this.y - other.y, this.z - other.z, this.yaw, this.pitch)
+operator fun Coordinates.times(value: Double) = Coordinates((this.x * value).floor(), (this.y * value).floor(), (this.z * value).floor(), this.yaw, this.pitch)
+operator fun Coordinates.div(value: Double) = Coordinates((this.x / value).floor(), (this.y / value).floor(), (this.z / value).floor(), this.yaw, this.pitch)
 
 
 fun Vec3d.toDGCoordinates() = Coordinates(this)

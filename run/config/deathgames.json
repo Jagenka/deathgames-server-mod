@@ -165,6 +165,7 @@
         "y": 152,
         "z": 127
       }
-    }
+    },
+    "spectatorRadiusPadding": 20
   }
 }

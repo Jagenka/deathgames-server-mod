@@ -98,10 +98,10 @@ class ShopSettingsConfigEntry(val shopBounds: BlockCuboid, val tpOutOfShopAfter:
 }
 
 @Serializable
-class MiscConfigEntry(val revealTimePerPlayer: Int, val arenaBounds: BlockCuboid)
+class MiscConfigEntry(val revealTimePerPlayer: Int, val arenaBounds: BlockCuboid, val spectatorRadiusPadding: Int)
 {
     companion object
     {
-        val dummy = MiscConfigEntry(0, BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)))
+        val dummy = MiscConfigEntry(0, BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)), 0)
     }
 }
