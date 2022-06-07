@@ -12,6 +12,7 @@ import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.timer.GameOverTask
 import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.ShuffleSpawnsTask
 import net.minecraft.entity.Entity
@@ -55,7 +56,7 @@ object KillManager
 
         DisplayManager.updateLivesDisplay()
 
-        // TODO?: reset shop teleport after kill
+        deceased.getDGTeam()?.let { GameOverTask.handleTeamGameOver(it) }
         ShuffleSpawnsTask.updateLastKillTime()
         InactivePlayersTask.resetForPlayer(deceased.name.asString())
     }
