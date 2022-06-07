@@ -23,7 +23,7 @@ object Util
 {
     private lateinit var minecraftServer: MinecraftServer
 
-    val modUUID = UUID.randomUUID()
+    val modUUID: UUID = UUID.randomUUID()
 
     @JvmStatic
     fun onServerLoaded(minecraftServer: MinecraftServer)

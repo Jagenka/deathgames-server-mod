@@ -82,7 +82,6 @@ object DeathGames : DedicatedServerModInitializer
 
         //TODO: remove arrows / items from map
 
-        //TODO: show begin message
         PlayerManager.getOnlinePlayers().forEach { player ->
             DisplayManager.sendTitleMessage(player, Text.of("Whaddup fuckers"), Text.of("Ready to fuck?"), 5.seconds())
         }
@@ -105,6 +104,7 @@ object DeathGames : DedicatedServerModInitializer
         PlayerManager.getOnlinePlayers().forEach {
             DisplayManager.sendTitleMessage(it, Text.of("Game Over"), Texts.join(winners, Text.of(": ")), 5.seconds())
         }
+
         running = false
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
         //TODO: timer, back to lobby, etc

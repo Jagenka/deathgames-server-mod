@@ -29,7 +29,7 @@ object KillManager
     private val totalKills = mutableMapOf<String, Int>().withDefault { 0 }
     private val totalDeaths = mutableMapOf<String, Int>().withDefault { 0 }
 
-    var moneyMode = Mode.PLAYER
+    var moneyMode = Mode.PLAYER // TODO raus
     var livesMode = Mode.TEAM
     var killStreakMode = Mode.PLAYER
 
@@ -62,7 +62,7 @@ object KillManager
         InactivePlayersTask.resetForPlayer(deceased.name.asString())
     }
 
-    private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity) // TODO raus
     {
         when (moneyMode)
         {
@@ -149,9 +149,6 @@ object KillManager
             }
         }
     }
-
-    fun getPlayerLives() = playerLives
-    fun getTeamLives() = teamLives
 
     fun getLives(playerName: String) = playerLives[playerName]
     fun getLives(team: DGTeam) = teamLives[team]
