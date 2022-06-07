@@ -13,6 +13,10 @@ import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
+import net.minecraft.entity.Entity
+import net.minecraft.entity.ItemEntity
+import net.minecraft.entity.projectile.ArrowEntity
+import net.minecraft.entity.projectile.ProjectileEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -88,7 +92,9 @@ object DeathGames : DedicatedServerModInitializer
             it.teleport(it.getSpawn())
         }
 
-        //TODO: remove arrows / items from map
+        ifServerLoaded { server ->
+            server.overworld.iterateEntities().toList().filter { it is ItemEntity || it is ProjectileEntity }.forEach { it.remove(Entity.RemovalReason.KILLED) }
+        }
 
         PlayerManager.getOnlinePlayers().forEach { player ->
             DisplayManager.sendTitleMessage(player, Text.of("Whaddup fuckers"), Text.of("Ready to fuck?"), 5.seconds())
