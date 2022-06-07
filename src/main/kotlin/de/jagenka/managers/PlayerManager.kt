@@ -2,6 +2,7 @@ package de.jagenka.managers
 
 import de.jagenka.Coordinates
 import de.jagenka.DGTeam
+import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.timer.seconds
 import net.minecraft.entity.effect.StatusEffectInstance
@@ -132,6 +133,11 @@ object PlayerManager
 
         DisplayManager.updateLevelDisplay()
         DisplayManager.resetBossBars()
+
+        if (!DeathGames.running && !player.hasPermissionLevel(2)) //is op
+        {
+            player.changeGameMode(GameMode.ADVENTURE)
+        }
     }
 
     fun registerAsCurrentlyDead(playerName: String) = currentlyDead.add(playerName)

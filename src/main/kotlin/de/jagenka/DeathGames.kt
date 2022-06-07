@@ -21,6 +21,7 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
 import net.minecraft.world.GameRules
+import kotlin.time.Duration.Companion.seconds
 
 object DeathGames : DedicatedServerModInitializer
 {
@@ -116,6 +117,9 @@ object DeathGames : DedicatedServerModInitializer
 
         running = false
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
-        //TODO: timer, back to lobby, etc
+
+        Timer.schedule({
+            PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.ADVENTURE) }
+        }, 10.seconds())
     }
 }
