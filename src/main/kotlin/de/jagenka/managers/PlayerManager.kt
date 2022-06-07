@@ -3,6 +3,9 @@ package de.jagenka.managers
 import de.jagenka.Coordinates
 import de.jagenka.DGTeam
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.timer.seconds
+import net.minecraft.entity.effect.StatusEffectInstance
+import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
 import net.minecraft.world.GameMode
@@ -147,5 +150,6 @@ object PlayerManager
     fun handleRespawn(player: ServerPlayerEntity)
     {
         SpawnManager.teleportPlayerToSpawn(player)
+        player.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 5.seconds(), 255))
     }
 }
