@@ -13,14 +13,10 @@ import net.minecraft.world.GameMode
 object PlayerManager
 {
     private val playerNames = mutableSetOf<String>()
-    private val inGameMap = mutableMapOf<String, Boolean>().withDefault { false }
+    private val inGameMap = mutableMapOf<String, Boolean>().withDefault { false } // TODO participating
     private val teamRegistry = mutableMapOf<String, DGTeam>()
 
-    fun getOnlinePlayer(name: String): ServerPlayerEntity?
-    {
-        getOnlinePlayers().forEach { if (it.name.asString() == name) return it }
-        return null
-    }
+    fun getOnlinePlayer(name: String): ServerPlayerEntity? = getOnlinePlayers().find { it.name.asString() == name }
 
     fun getOnlinePlayers(): Set<ServerPlayerEntity>
     {
@@ -47,6 +43,7 @@ object PlayerManager
 
     fun ServerPlayerEntity.getDGTeam() = getTeam(this)
 
+    fun ServerPlayerEntity.addToDGTeam(team: DGTeam) = addPlayerToTeam(this, team)
     fun addPlayerToTeam(player: ServerPlayerEntity, team: DGTeam)
     {
         ifServerLoaded {
@@ -55,22 +52,13 @@ object PlayerManager
         }
     }
 
-    fun ServerPlayerEntity.addToDGTeam(team: DGTeam)
-    {
-        addPlayerToTeam(this, team)
-    }
-
+    fun ServerPlayerEntity.kickFromDGTeam() = kickPlayerFromTeam(this)
     fun kickPlayerFromTeam(player: ServerPlayerEntity)
     {
         ifServerLoaded {
             it.scoreboard.clearPlayerTeam(player.name.asString())
             teamRegistry.remove(player.name.asString())
         }
-    }
-
-    fun ServerPlayerEntity.kickFromDGTeam()
-    {
-        kickPlayerFromTeam(this)
     }
 
     fun getNonEmptyTeams(): Set<DGTeam>

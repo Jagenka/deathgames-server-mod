@@ -48,7 +48,7 @@ object Shop
 
                         override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
                         {
-                            if(actionType == SlotActionType.PICKUP) inventory.onClick(slotIndex)
+                            if (actionType == SlotActionType.PICKUP) inventory.onClick(slotIndex)
                             serverPlayerEntity.playerScreenHandler.updateToClient()
                         }
                     }
@@ -56,10 +56,9 @@ object Shop
             }
 
             override fun getDisplayName(): Text = Text.of("SHOP")
+        }.let {
+            serverPlayerEntity.openHandledScreen(it)
         }
-            .let {
-                serverPlayerEntity.openHandledScreen(it)
-            }
     }
 
     fun getUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType) = upgrades.getValue(player).getValue(upgradeType)
