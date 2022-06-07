@@ -61,8 +61,10 @@ object BonusManager
     fun getActivePlatforms() = platforms.filter { it.active }
 
     fun isOnActivePlatform(player: ServerPlayerEntity) = getActivePlatforms().any {
-        val (x, y, z) = it.coordinates - player.pos.toDGCoordinates()
-        y < 2 && abs(x) < bonusPlatformRadius && abs(z) < bonusPlatformRadius
+        val dx = abs(it.coordinates.x.toCenter() - player.pos.x)
+        val dy = abs(it.coordinates.y.toDouble() - player.pos.y)
+        val dz = abs(it.coordinates.z.toCenter() - player.pos.z)
+        dy < 2 && dx <= bonusPlatformRadius + 0.5 && dz <= bonusPlatformRadius + 0.5
     }
 
     private fun colorPlatforms()

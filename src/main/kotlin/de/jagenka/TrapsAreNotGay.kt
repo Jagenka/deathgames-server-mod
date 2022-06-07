@@ -88,17 +88,17 @@ object TrapsAreNotGay
             if (it.getAge() < it.setupTime)
             {
                 gayPrepareSpectator.forEach { currentPlayer ->
-                    server.overworld.spawnParticles(currentPlayer, ParticleTypes.CRIT, true, it.pos.x, it.pos.y + 0.2, it.pos.z, 1, 0.05, 0.1, 0.05, 0.1)
+                    server.overworld.spawnParticles(currentPlayer, ParticleTypes.CRIT, true, it.pos.x.toCenter(), it.pos.y + 0.2, it.pos.z.toCenter(), 1, 0.05, 0.1, 0.05, 0.1)
                 }
             } else
             {
-                server.overworld.spawnParticles(ParticleTypes.NAUTILUS, it.pos.x, it.pos.y - 0.015, it.pos.z, 0, 0.0, 0.0, 0.0, 0.0)
+                server.overworld.spawnParticles(ParticleTypes.NAUTILUS, it.pos.x.toCenter(), it.pos.y - 0.015, it.pos.z.toCenter(), 0, 0.0, 0.0, 0.0, 0.0)
                 // Manage ethan
                 if (triggered && !it.isTriggered())
                 {
                     it.trigger()
                     gayTriggerSpectator.forEach { player ->
-                        server.overworld.spawnParticles(player, ParticleTypes.LARGE_SMOKE, true, it.pos.x, it.pos.y, it.pos.z, 500, 0.0, 0.0, 0.0, 0.5)
+                        server.overworld.spawnParticles(player, ParticleTypes.LARGE_SMOKE, true, it.pos.x.toCenter(), it.pos.y.toDouble(), it.pos.z.toCenter(), 500, 0.0, 0.0, 0.0, 0.5)
                     }
                     affectedPlayers.forEach { player ->
                         player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 1f, 1f)

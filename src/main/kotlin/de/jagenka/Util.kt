@@ -62,7 +62,7 @@ object Util
     fun ServerPlayerEntity.teleport(coordinates: Coordinates)
     {
         val (x, y, z, yaw, pitch) = coordinates
-        this.teleport(server.overworld, x, y, z, yaw, pitch)
+        this.teleport(server.overworld, x.toCenter(), y.toDouble(), z.toCenter(), yaw, pitch)
     }
 
     fun setBlockAt(coordinates: Coordinates, block: Block)
@@ -111,11 +111,11 @@ object Util
 
         val (centerX, centerY, centerZ) = coordinates
 
-        for (x in centerX.floor() - radius..centerX.floor() + radius)
+        for (x in centerX - radius..centerX + radius)
         {
-            for (z in centerZ.floor() - radius..centerZ.floor() + radius)
+            for (z in centerZ - radius..centerZ + radius)
             {
-                result.add(BlockAtCoordinates(getBlockAt(x, centerY.floor(), z), Coordinates(x, centerY.floor(), z)))
+                result.add(BlockAtCoordinates(getBlockAt(x, centerY, z), Coordinates(x, centerY, z)))
             }
         }
 

@@ -126,12 +126,12 @@ object PlayerManager
     fun getInGameTeams() = DGTeam.values().filter { getInGamePlayersInTeam(it).isNotEmpty() }
     fun getOnlineInGameTeams() = DGTeam.values().filter { it.getOnlineInGamePlayers().isNotEmpty() }
 
-    fun Coordinates.getInGamePlayersInRange(range: Double) = getOnlinePlayers().filter { player ->
-        (inGameMap.getValue(player.name.asString())) && (Coordinates(player.x, player.y, player.z) distanceTo this <= range)
+    fun Coordinates.getInGamePlayersInRange(range: Double) = getOnlinePlayersInRange(range).filter { player ->
+        inGameMap.getValue(player.name.asString())
     }
 
     fun Coordinates.getOnlinePlayersInRange(range: Double) = getOnlinePlayers().filter { player ->
-        Coordinates(player.x, player.y, player.z) distanceTo this <= range
+        this distanceTo player.pos <= range
     }
 
     @JvmStatic

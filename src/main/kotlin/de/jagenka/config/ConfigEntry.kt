@@ -34,11 +34,11 @@ class SpawnsConfigEntry(
     companion object
     {
         val dummy = SpawnsConfigEntry(
-            listOf(Coordinates(0.0, 0.0, 0.0, 1f, 1f), Coordinates(0.0, 0.0, 0.0, 1f, 1f)),
+            listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f)),
             0,
-            Coordinates(0.0, 0.0, 0.0, 1f, 1f),
-            Coordinates(0.0, 0.0, 0.0, 1f, 1f),
-            Coordinates(0.0, 0.0, 0.0, 1f, 1f),
+            Coordinates(0, 0, 0, 1f, 1f),
+            Coordinates(0, 0, 0, 1f, 1f),
+            Coordinates(0, 0, 0, 1f, 1f),
             0,
             0
         )
