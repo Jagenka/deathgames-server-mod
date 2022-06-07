@@ -2,6 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.BlockCuboid
 import de.jagenka.Coordinates
+import de.jagenka.config.Config
 import de.jagenka.managers.getDGMoney
 import de.jagenka.toDGCoordinates
 import net.minecraft.entity.player.PlayerEntity
@@ -20,8 +21,6 @@ object Shop
     const val SHOP_UNIT = "$"
 
     private val upgrades = mutableMapOf<ServerPlayerEntity, MutableMap<UpgradeType, Int>>().withDefault { mutableMapOf<UpgradeType, Int>().withDefault { 0 } }
-
-    private val shopBounds = BlockCuboid(Coordinates(-7, 55, -7), Coordinates(8, 62, 8))
 
     const val slotAmount = 9 * 6
 
@@ -86,7 +85,7 @@ object Shop
         this.upgrades.clear()
     }
 
-    fun isInShopBounds(player: ServerPlayerEntity): Boolean = shopBounds.contains(player.pos.toDGCoordinates())
+    fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.contains(player.pos.toDGCoordinates())
 }
 
 enum class UpgradeType

@@ -131,6 +131,18 @@
   },
   "misc": {
     "revealTimePerPlayer": 1800,
-    "tpOutOfShopAfter": 600
+    "tpOutOfShopAfter": 600,
+    "shopBounds": {
+      "firstCorner": {
+        "x": -7.0,
+        "y": 55.0,
+        "z": -7.0
+      },
+      "secondCorner": {
+        "x": 8.0,
+        "y": 62.0,
+        "z": 8.0
+      }
+    }
   }
 }

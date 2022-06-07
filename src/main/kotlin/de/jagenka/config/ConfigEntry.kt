@@ -1,5 +1,6 @@
 package de.jagenka.config
 
+import de.jagenka.BlockCuboid
 import de.jagenka.Coordinates
 import de.jagenka.managers.Platform
 import kotlinx.serialization.Serializable
@@ -78,10 +79,10 @@ class MoneyConfigEntry(val start: Int, val amountPerInterval: Int, val interval:
 }
 
 @Serializable
-class MiscConfigEntry(val revealTimePerPlayer: Int, val tpOutOfShopAfter: Int)
+class MiscConfigEntry(val revealTimePerPlayer: Int, val tpOutOfShopAfter: Int, val shopBounds: BlockCuboid)
 {
     companion object
     {
-        val dummy = MiscConfigEntry(0, 0)
+        val dummy = MiscConfigEntry(0, 0, BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)))
     }
 }

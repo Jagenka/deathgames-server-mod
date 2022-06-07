@@ -2,6 +2,7 @@ package de.jagenka
 
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
+import kotlinx.serialization.Serializable
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.network.MessageType
@@ -127,15 +128,44 @@ object Util
 
 data class BlockAtCoordinates(val block: Block, val coordinates: Coordinates)
 
-class BlockCuboid(corner1: Coordinates, corner2: Coordinates)
+@Serializable
+class BlockCuboid
 {
-    val smaller: Coordinates = Coordinates(min(corner1.x, corner2.x), min(corner1.y, corner2.y), min(corner1.z, corner2.z))
-    val larger: Coordinates = Coordinates(max(corner1.x, corner2.x), max(corner1.y, corner2.y), max(corner1.z, corner2.z))
+    val firstCorner: Coordinates
+    val secondCorner: Coordinates
+
+    constructor(firstCorner: Coordinates, secondCorner: Coordinates)
+    {
+        this.firstCorner = Coordinates(min(firstCorner.x, secondCorner.x), min(firstCorner.y, secondCorner.y), min(firstCorner.z, secondCorner.z))
+        this.secondCorner = Coordinates(max(firstCorner.x, secondCorner.x), max(firstCorner.y, secondCorner.y), max(firstCorner.z, secondCorner.z))
+    }
 
     fun contains(coordinates: Coordinates): Boolean
     {
-        return (coordinates.x in smaller.x..larger.x) && (coordinates.y in smaller.y..larger.y) && (coordinates.z in smaller.z..larger.z)
+        return (coordinates.x in firstCorner.x..secondCorner.x) && (coordinates.y in firstCorner.y..secondCorner.y) && (coordinates.z in firstCorner.z..secondCorner.z)
     }
+
+    override fun equals(other: Any?): Boolean
+    {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BlockCuboid
+
+        if (firstCorner != other.firstCorner) return false
+        if (secondCorner != other.secondCorner) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int
+    {
+        var result = firstCorner.hashCode()
+        result = 31 * result + secondCorner.hashCode()
+        return result
+    }
+
+
 }
 
 fun Double.floor() = floor(this).toInt()
