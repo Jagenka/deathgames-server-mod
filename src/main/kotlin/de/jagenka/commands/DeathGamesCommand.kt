@@ -26,13 +26,13 @@ object DeathGamesCommand
         val baseLiteralCommandNode = dispatcher.register(
             literal("deathgames")
                 .then(literal("start").executes {
-                    if(!DeathGames.running) DeathGames.startGame()
+                    if (!DeathGames.running) DeathGames.startGame()
                     return@executes 0
                 })
                 .then(literal("stop")
                     .requires { it.isOp() }
                     .executes {
-                        if(DeathGames.running) DeathGames.stopGame()
+                        if (DeathGames.running) DeathGames.stopGame()
                         else it.source.sendError(Text.of("Game is not running!"))
                         return@executes 0
                     })
@@ -141,6 +141,11 @@ object DeathGamesCommand
 
     private fun handleJoinTeamForSomeoneElse(context: CommandContext<ServerCommandSource>, teamName: String, player: ServerPlayerEntity)
     {
+        if (DeathGames.running)
+        {
+            context.source.sendError(Text.of("Cannot join while game is running!"))
+            return
+        }
         if (teamName !in DGTeam.getValuesAsStringList())
         {
             context.source.sendError(Text.of("$teamName is not a valid team!"))
@@ -155,6 +160,11 @@ object DeathGamesCommand
 
     private fun handleJoinTeam(context: CommandContext<ServerCommandSource>, teamName: String)
     {
+        if (DeathGames.running)
+        {
+            context.source.sendError(Text.of("Cannot join while game is running!"))
+            return
+        }
         val player = context.source.player
         if (teamName !in DGTeam.getValuesAsStringList())
         {
