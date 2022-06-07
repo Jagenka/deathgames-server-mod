@@ -1,8 +1,8 @@
 package de.jagenka.timer
 
-import de.jagenka.Util.sendPrivateMessage
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
+import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.shop.Shop

@@ -4,6 +4,7 @@ import de.jagenka.*
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config.defaultSpawn
 import de.jagenka.config.Config.spawnPlatformRadius
+import de.jagenka.managers.DisplayManager.sendChatMessage
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 
@@ -63,7 +64,7 @@ object SpawnManager
             colorTeamSpawn(team)
         }
 
-        if (DeathGames.running) Util.sendChatMessage("Spawns shuffled!")
+        if (DeathGames.running) sendChatMessage("Spawns shuffled!")
     }
 
     fun colorTeamSpawn(team: DGTeam)

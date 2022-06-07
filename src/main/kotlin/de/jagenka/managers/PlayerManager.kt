@@ -2,9 +2,7 @@ package de.jagenka.managers
 
 import de.jagenka.Coordinates
 import de.jagenka.DGTeam
-import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
-import de.jagenka.managers.PlayerManager.getInGamePlayersInRange
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
 import net.minecraft.world.GameMode

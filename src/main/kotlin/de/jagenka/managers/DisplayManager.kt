@@ -2,7 +2,9 @@ package de.jagenka.managers
 
 
 import de.jagenka.DGTeam
+import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
+import net.minecraft.network.MessageType
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket
 import net.minecraft.network.packet.s2c.play.TitleFadeS2CPacket
@@ -11,8 +13,10 @@ import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
 import net.minecraft.scoreboard.ScoreboardObjective
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import java.util.*
 
 object DisplayManager
 {
@@ -114,5 +118,16 @@ object DisplayManager
         player.networkHandler.sendPacket(TitleFadeS2CPacket(5,remainingFor,5))
         player.networkHandler.sendPacket(SubtitleS2CPacket(subtitle))
         player.networkHandler.sendPacket(TitleS2CPacket(title))
+    }
+
+    fun sendChatMessage(message: String, formatting: Formatting = Formatting.WHITE, sender: UUID = Util.modUUID)
+    {
+        val text = LiteralText(message).formatted(formatting)
+        ifServerLoaded { it.playerManager.broadcast(text, MessageType.CHAT, sender) }
+    }
+
+    fun ServerPlayerEntity.sendPrivateMessage(text: String)
+    {
+        this.sendMessage(Text.of(text), MessageType.CHAT, Util.modUUID)
     }
 }

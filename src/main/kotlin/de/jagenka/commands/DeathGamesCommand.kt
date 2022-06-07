@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import de.jagenka.DGTeam
 import de.jagenka.DeathGames
-import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.getDGTeam
@@ -180,6 +179,6 @@ object DeathGamesCommand
 
     private fun handleConfig(context: CommandContext<ServerCommandSource>)
     {
-        Util.sendChatMessage("confick")
+
     }
 }

@@ -1,7 +1,5 @@
 package de.jagenka.shop
 
-import de.jagenka.BlockCuboid
-import de.jagenka.Coordinates
 import de.jagenka.config.Config
 import de.jagenka.managers.getDGMoney
 import de.jagenka.toDGCoordinates

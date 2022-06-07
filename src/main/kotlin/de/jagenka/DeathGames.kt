@@ -84,7 +84,7 @@ object DeathGames : DedicatedServerModInitializer
 
     fun stopGame()
     {
-        Util.sendChatMessage("GAME OVER")
+        DisplayManager.sendChatMessage("GAME OVER")
         running = false
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
         //TODO: timer, back to lobby, etc

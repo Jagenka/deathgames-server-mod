@@ -1,7 +1,7 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.Util.sendPrivateMessage
+import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.entity.EquipmentSlot

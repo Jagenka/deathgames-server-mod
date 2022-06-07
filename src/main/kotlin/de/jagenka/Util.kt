@@ -5,13 +5,9 @@ import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
-import net.minecraft.network.MessageType
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.LiteralText
-import net.minecraft.text.Text
 import net.minecraft.text.TextColor
-import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import java.util.*
 import kotlin.math.floor
@@ -46,17 +42,6 @@ object Util
     {
         if (Util::minecraftServer.isInitialized) lambda(minecraftServer)
         else log("Minecraft Server not yet initialized")
-    }
-
-    fun sendChatMessage(message: String, formatting: Formatting = Formatting.WHITE, sender: UUID = modUUID)
-    {
-        val text = LiteralText(message).formatted(formatting)
-        ifServerLoaded { it.playerManager.broadcast(text, MessageType.CHAT, sender) }
-    }
-
-    fun ServerPlayerEntity.sendPrivateMessage(text: String)
-    {
-        this.sendMessage(Text.of(text), MessageType.CHAT, modUUID)
     }
 
     fun ServerPlayerEntity.teleport(coordinates: Coordinates)

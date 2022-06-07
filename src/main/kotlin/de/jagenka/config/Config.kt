@@ -1,11 +1,8 @@
 package de.jagenka.config
 
-import de.jagenka.BlockCuboid
-import de.jagenka.Coordinates
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.SpawnManager
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 
