@@ -29,6 +29,8 @@ object PlayerManager
         return allPlayers.toSet()
     }
 
+    fun getOnlineInGamePlayers() = getOnlinePlayers().filter { inGameMap.getValue(it.name.asString()) }
+
     fun getPlayers(): Set<String>
     {
         ifServerLoaded { server ->

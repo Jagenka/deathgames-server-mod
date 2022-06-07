@@ -26,6 +26,7 @@ object Timer
             add(TrapTask)
             add(BonusDisplayTask)
             add(ShopTask)
+            add(KeepInBoundsTask)
         }
     }
 
