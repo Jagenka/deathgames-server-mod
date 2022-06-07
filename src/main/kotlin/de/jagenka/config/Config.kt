@@ -66,6 +66,8 @@ object Config
 
     val shopBounds
         get() = configEntry.misc.shopBounds
+    val arenaBounds
+        get() = configEntry.misc.arenaBounds
 
     fun loadJSON()
     {

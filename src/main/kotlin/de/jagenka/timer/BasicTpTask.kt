@@ -1,17 +1,14 @@
 package de.jagenka.timer
 
-import de.jagenka.BlockCuboid
 import de.jagenka.Coordinates
 import de.jagenka.DeathGames
 import de.jagenka.Util.teleport
+import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.toDGCoordinates
-import net.minecraft.world.GameMode
 
 object BasicTpTask : TimerTask
 {
-    private val arena = BlockCuboid(Coordinates(-128, 48, -128), Coordinates(129, 152, 129)) //TODO: config
-
     private val lobby = Coordinates(0.5, 20.0, 0.5) //TODO: Config
 
     override val onlyInGame: Boolean
@@ -25,7 +22,7 @@ object BasicTpTask : TimerTask
         {
             PlayerManager.getOnlinePlayers().forEach {
                 if (!it.interactionManager.isSurvivalLike) return@forEach
-                if (arena.contains(it.pos.toDGCoordinates())) it.teleport(lobby)
+                if (Config.arenaBounds.contains(it.pos.toDGCoordinates())) it.teleport(lobby)
             }
         }
     }
