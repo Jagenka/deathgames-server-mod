@@ -145,6 +145,7 @@ object ShopEntries
                     mutableListOf(75, 25, 50, 100, 150, 150),
                     "Crossbow Upgrade"
                 ),
+                slot(5,8) to LeaveShopEntry()
             )
 
             entries[slot(0, 0)]?.let { entries[slot(1, 0)] = RefundShopEntry(it) }

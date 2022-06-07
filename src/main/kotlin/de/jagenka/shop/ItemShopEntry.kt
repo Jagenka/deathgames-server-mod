@@ -41,7 +41,7 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
         return false
     }
 
-    override fun getTotalSpentPrice(player: ServerPlayerEntity): Int = getPrice(player)
+    override fun getTotalSpentMoney(player: ServerPlayerEntity): Int = getPrice(player)
 
     override fun getDisplayName(): String = name
     override fun hasItem(player: ServerPlayerEntity): Boolean

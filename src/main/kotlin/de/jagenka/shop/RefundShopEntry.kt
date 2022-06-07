@@ -18,7 +18,7 @@ class RefundShopEntry(private val shopEntryToRefund: ShopEntry) : ShopEntry
 
         return itemStackToDisplay
             .setCustomName(
-                Text.of("Refund ${shopEntryToRefund.getDisplayName()} for ${Shop.SHOP_UNIT}${shopEntryToRefund.getTotalSpentPrice(player)}").getWithStyle(
+                Text.of("Refund ${shopEntryToRefund.getDisplayName()} for ${Shop.SHOP_UNIT}${shopEntryToRefund.getTotalSpentMoney(player)}").getWithStyle(
                     Style.EMPTY.withColor(
                         Util.getTextColor(255, 255, 255)
                     )
@@ -30,7 +30,7 @@ class RefundShopEntry(private val shopEntryToRefund: ShopEntry) : ShopEntry
     {
         return if (shopEntryToRefund.hasItem(player))
         {
-            player.deductDGMoney(-shopEntryToRefund.getTotalSpentPrice(player))
+            player.deductDGMoney(-shopEntryToRefund.getTotalSpentMoney(player))
             shopEntryToRefund.removeItem(player)
             true
         } else false

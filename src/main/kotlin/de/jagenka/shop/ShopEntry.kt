@@ -8,9 +8,25 @@ interface ShopEntry
     fun getPrice(player: ServerPlayerEntity): Int
     fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
     fun buy(player: ServerPlayerEntity): Boolean
-    fun getTotalSpentPrice(player: ServerPlayerEntity): Int = 0
+
+    /**
+     * total money spent for refund
+     */
+    fun getTotalSpentMoney(player: ServerPlayerEntity): Int = 0
+
+    /**
+     * display name for refund
+     */
     fun getDisplayName(): String = ""
+
+    /**
+     * for refund: only refundable if true
+     */
     fun hasItem(player: ServerPlayerEntity): Boolean = false
+
+    /**
+     * what to do if refunding
+     */
     fun removeItem(player: ServerPlayerEntity)
     {
     }

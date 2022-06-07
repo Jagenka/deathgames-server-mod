@@ -5,6 +5,7 @@ import de.jagenka.DGTeam
 import de.jagenka.Util.ifServerLoaded
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket
+import net.minecraft.network.packet.s2c.play.TitleFadeS2CPacket
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket
 import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
@@ -108,8 +109,9 @@ object DisplayManager
         }
     }
 
-    fun sendTitleMessage(player: ServerPlayerEntity, title: Text, subtitle: Text) // timing?
+    fun sendTitleMessage(player: ServerPlayerEntity, title: Text, subtitle: Text, remainingFor: Int)
     {
+        player.networkHandler.sendPacket(TitleFadeS2CPacket(5,remainingFor,5))
         player.networkHandler.sendPacket(SubtitleS2CPacket(subtitle))
         player.networkHandler.sendPacket(TitleS2CPacket(title))
     }

@@ -14,6 +14,8 @@ object ShopTask : TimerTask
     private val currentlyInShop = mutableSetOf<String>()
     private val timeInShop = mutableMapOf<String, Int>().withDefault { 0 } // time in ticks
 
+    private val countdownStartingWithSecondsLeft = 5
+
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
@@ -31,28 +33,23 @@ object ShopTask : TimerTask
                     currentlyInShop.add(playerName)
                     timeInShop[playerName] = 0
 
-                    DisplayManager.sendTitleMessage(serverPlayerEntity, Text.of("Welcome to the shop!"), Text.of("Press F to pay money."))
+                    DisplayManager.sendTitleMessage(serverPlayerEntity, Text.of("Welcome to the shop!"), Text.of("Press F to pay money."), 3.seconds())
                 }
 
                 timeInShop[playerName] = timeInShop.getValue(playerName) + 1
 
                 val ticksToTpOut = Config.tpOutOfShopAfter - timeInShop.getValue(playerName)
 
-                if (ticksToTpOut == 5.seconds())
+                if (ticksToTpOut == countdownStartingWithSecondsLeft.seconds())
                 {
-                    serverPlayerEntity.sendPrivateMessage("You will be teleported out in 5 seconds.")
-                    Timer.schedule({
-                        serverPlayerEntity.sendPrivateMessage("You will be teleported out in 4 seconds.")
-                    }, 1.seconds())
-                    Timer.schedule({
-                        serverPlayerEntity.sendPrivateMessage("You will be teleported out in 3 seconds.")
-                    }, 2.seconds())
-                    Timer.schedule({
-                        serverPlayerEntity.sendPrivateMessage("You will be teleported out in 2 seconds.")
-                    }, 3.seconds())
-                    Timer.schedule({
-                        serverPlayerEntity.sendPrivateMessage("You will be teleported out in 1 seconds.")
-                    }, 4.seconds())
+                    serverPlayerEntity.sendPrivateMessage("You will be teleported out in $countdownStartingWithSecondsLeft seconds.")
+
+                    for (i in countdownStartingWithSecondsLeft - 1 downTo 1)
+                    {
+                        Timer.schedule({
+                            serverPlayerEntity.sendPrivateMessage("You will be teleported out in $i seconds.")
+                        }, (countdownStartingWithSecondsLeft - i).seconds())
+                    }
                 }
 
                 if (ticksToTpOut < 0)

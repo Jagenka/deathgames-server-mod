@@ -107,7 +107,7 @@ class UpgradeableShopEntry(
 
     private fun getUpgradeLevel(player: ServerPlayerEntity) = Shop.getUpgradeLevel(player, type) - 1
 
-    override fun getTotalSpentPrice(player: ServerPlayerEntity): Int
+    override fun getTotalSpentMoney(player: ServerPlayerEntity): Int
     {
         val currentUpgradeLevel = Shop.getUpgradeLevel(player, type)
         return prices.subList(0, currentUpgradeLevel.coerceAtLeast(0)).sum()
