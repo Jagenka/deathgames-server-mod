@@ -14,7 +14,7 @@ object ShopTask : TimerTask
     private val currentlyInShop = mutableSetOf<String>()
     private val timeInShop = mutableMapOf<String, Int>().withDefault { 0 } // time in ticks
 
-    private val countdownStartingWithSecondsLeft = 5
+    private const val countdownStartingWithSecondsLeft = 5 // configurable
 
     override val onlyInGame: Boolean
         get() = true
