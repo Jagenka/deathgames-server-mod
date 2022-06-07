@@ -4,6 +4,8 @@ package de.jagenka.managers
 import de.jagenka.DGTeam
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
+import net.minecraft.entity.boss.BossBar
+import net.minecraft.entity.boss.CommandBossBar
 import net.minecraft.network.MessageType
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket
@@ -15,6 +17,7 @@ import net.minecraft.scoreboard.ScoreboardObjective
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import net.minecraft.util.Identifier
 import java.util.*
 
 object DisplayManager
@@ -37,6 +40,7 @@ object DisplayManager
         }
 
         resetLevelDisplay()
+        resetBossBars()
     }
 
     fun prepareTeams()
@@ -142,5 +146,53 @@ object DisplayManager
     fun ServerPlayerEntity.sendPrivateMessage(text: String)
     {
         this.sendMessage(Text.of(text), MessageType.CHAT, Util.modUUID)
+    }
+
+    fun updateBossBarForPlayer(player: ServerPlayerEntity, percent: Int)
+    {
+        ifServerLoaded { server ->
+
+            val bossBarId = Identifier(player.name.asString().lowercase())
+            var bossBar = server.bossBarManager.get(bossBarId)
+            if (bossBar == null)
+            {
+                bossBar = server.bossBarManager.add(bossBarId, Text.of(""))
+            }
+
+            bossBar?.let {
+                it.addPlayer(player)
+                it.percent = (percent.toFloat() / 100f).coerceAtMost(1f)
+
+                if (percent <= 33)
+                {
+                    it.color = BossBar.Color.GREEN
+                    it.name = Text.of("Time to kill someone!")
+                } else if (percent <= 66)
+                {
+                    it.color = BossBar.Color.YELLOW
+                    it.name = Text.of("Better kill someone soon...")
+                } else if (percent < 100)
+                {
+                    it.color = BossBar.Color.RED
+                    it.name = Text.of("You are about to be revealed!")
+                } else
+                {
+                    it.color = BossBar.Color.RED
+                    it.name = Text.of("You can no longer hide! `o´")
+                }
+            }
+        }
+    }
+
+    fun resetBossBars()
+    {
+        ifServerLoaded { server ->
+            server.bossBarManager.all.toList().forEach { commandBossBar ->
+                commandBossBar.players.toList().forEach { player ->
+                    commandBossBar.removePlayer(player)
+                }
+                server.bossBarManager.remove(commandBossBar)
+            }
+        }
     }
 }

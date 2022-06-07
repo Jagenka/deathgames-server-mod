@@ -105,6 +105,8 @@ object DeathGames : DedicatedServerModInitializer
             DisplayManager.sendTitleMessage(it, Text.of("Game Over"), Texts.join(winners, Text.of(": ")), 5.seconds())
         }
 
+        DisplayManager.resetBossBars()
+
         running = false
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
         //TODO: timer, back to lobby, etc

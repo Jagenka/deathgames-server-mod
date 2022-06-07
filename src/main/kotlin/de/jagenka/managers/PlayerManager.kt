@@ -134,6 +134,7 @@ object PlayerManager
         }
 
         DisplayManager.updateLevelDisplay()
+        DisplayManager.resetBossBars()
     }
 
     @JvmStatic
