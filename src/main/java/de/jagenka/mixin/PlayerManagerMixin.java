@@ -1,6 +1,5 @@
 package de.jagenka.mixin;
 
-import de.jagenka.managers.SpawnManager;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,7 +16,7 @@ public class PlayerManagerMixin
     private void respawnPlayer(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir)
     {
         ServerPlayerEntity newPlayer = cir.getReturnValue();
-        SpawnManager.handleRespawn(newPlayer);
+        de.jagenka.managers.PlayerManager.handleRespawn(newPlayer);
     }
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))

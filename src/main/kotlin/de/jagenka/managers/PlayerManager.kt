@@ -142,4 +142,10 @@ object PlayerManager
 
         DisplayManager.updateLevelDisplay()
     }
+
+    @JvmStatic
+    fun handleRespawn(player: ServerPlayerEntity)
+    {
+        SpawnManager.teleportPlayerToSpawn(player)
+    }
 }

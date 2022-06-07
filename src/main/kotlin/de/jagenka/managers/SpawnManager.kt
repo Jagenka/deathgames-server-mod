@@ -38,12 +38,6 @@ object SpawnManager
         if (spawn == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
     }
 
-    @JvmStatic
-    fun handleRespawn(player: ServerPlayerEntity)
-    {
-        teleportPlayerToSpawn(player)
-    }
-
     fun shuffleSpawns()
     {
         spawns.forEach { coordinates ->
