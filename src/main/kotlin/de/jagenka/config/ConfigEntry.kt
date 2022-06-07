@@ -11,12 +11,20 @@ class ConfigEntry(
     val bonus: BonusPlatformsConfigEntry,
     val lives: LivesConfigEntry,
     val money: MoneyConfigEntry,
+    val shopSettings: ShopSettingsConfigEntry,
     val misc: MiscConfigEntry
 )
 {
     companion object
     {
-        val dummy = ConfigEntry(SpawnsConfigEntry.dummy, BonusPlatformsConfigEntry.dummy, LivesConfigEntry.dummy, MoneyConfigEntry.dummy, MiscConfigEntry.dummy)
+        val dummy = ConfigEntry(
+            SpawnsConfigEntry.dummy,
+            BonusPlatformsConfigEntry.dummy,
+            LivesConfigEntry.dummy,
+            MoneyConfigEntry.dummy,
+            ShopSettingsConfigEntry.dummy,
+            MiscConfigEntry.dummy
+        )
     }
 }
 
@@ -81,10 +89,19 @@ class MoneyConfigEntry(val start: Int, val amountPerInterval: Int, val interval:
 }
 
 @Serializable
-class MiscConfigEntry(val revealTimePerPlayer: Int, val tpOutOfShopAfter: Int, val shopBounds: BlockCuboid, val arenaBounds: BlockCuboid)
+class ShopSettingsConfigEntry(val shopBounds: BlockCuboid, val tpOutOfShopAfter: Int, val refundPercent: Int)
 {
     companion object
     {
-        val dummy = MiscConfigEntry(0, 0, BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)), BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)))
+        val dummy = ShopSettingsConfigEntry(BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)), 0, 0)
+    }
+}
+
+@Serializable
+class MiscConfigEntry(val revealTimePerPlayer: Int, val arenaBounds: BlockCuboid)
+{
+    companion object
+    {
+        val dummy = MiscConfigEntry(0, BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)))
     }
 }

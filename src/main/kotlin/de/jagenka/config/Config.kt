@@ -61,12 +61,15 @@ object Config
         get() = configEntry.misc.revealTimePerPlayer
 
     val tpOutOfShopAfter
-        get() = configEntry.misc.tpOutOfShopAfter
+        get() = configEntry.shopSettings.tpOutOfShopAfter
 
     val shopBounds
-        get() = configEntry.misc.shopBounds
+        get() = configEntry.shopSettings.shopBounds
     val arenaBounds
         get() = configEntry.misc.arenaBounds
+
+    val refundPercent
+        get() = configEntry.shopSettings.refundPercent
 
     fun loadJSON()
     {

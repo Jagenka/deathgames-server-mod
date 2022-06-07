@@ -136,9 +136,7 @@
     "perKill": 20,
     "perKillStreakKill": 10
   },
-  "misc": {
-    "revealTimePerPlayer": 1800,
-    "tpOutOfShopAfter": 600,
+  "shopSettings": {
     "shopBounds": {
       "firstCorner": {
         "x": -7,
@@ -151,6 +149,11 @@
         "z": 8
       }
     },
+    "tpOutOfShopAfter": 600,
+    "refundPercent": 75
+  },
+  "misc": {
+    "revealTimePerPlayer": 1800,
     "arenaBounds": {
       "firstCorner": {
         "x": -128,

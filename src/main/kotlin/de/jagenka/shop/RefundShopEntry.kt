@@ -1,6 +1,8 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
+import de.jagenka.config.Config
+import de.jagenka.floor
 import de.jagenka.managers.deductDGMoney
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
@@ -18,7 +20,7 @@ class RefundShopEntry(private val shopEntryToRefund: ShopEntry) : ShopEntry
 
         return itemStackToDisplay
             .setCustomName(
-                Text.of("Refund ${shopEntryToRefund.getDisplayName()} for ${Shop.SHOP_UNIT}${shopEntryToRefund.getTotalSpentMoney(player)}").getWithStyle(
+                Text.of("Refund ${shopEntryToRefund.getDisplayName()} for ${Shop.SHOP_UNIT}${getRefundAmount(player)}").getWithStyle(
                     Style.EMPTY.withColor(
                         Util.getTextColor(255, 255, 255)
                     )
@@ -30,9 +32,11 @@ class RefundShopEntry(private val shopEntryToRefund: ShopEntry) : ShopEntry
     {
         return if (shopEntryToRefund.hasItem(player))
         {
-            player.deductDGMoney(-shopEntryToRefund.getTotalSpentMoney(player))
+            player.deductDGMoney(-getRefundAmount(player))
             shopEntryToRefund.removeItem(player)
             true
         } else false
     }
+
+    private fun getRefundAmount(player: ServerPlayerEntity) = (shopEntryToRefund.getTotalSpentMoney(player) * (Config.refundPercent.toDouble() / 100.0)).floor()
 }
