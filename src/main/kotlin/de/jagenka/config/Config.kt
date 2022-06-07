@@ -58,6 +58,9 @@ object Config
     val revealTimePerPlayer
         get() = configEntry.misc.revealTimePerPlayer
 
+    val tpOutOfShopAfter
+        get() = configEntry.misc.tpOutOfShopAfter
+
     fun loadJSON()
     {
         configEntry = Json.decodeFromString(FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json").toFile().readText())

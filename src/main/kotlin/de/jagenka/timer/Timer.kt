@@ -25,6 +25,7 @@ object Timer
             add(BonusMoneyTask)
             add(TrapTask)
             add(BonusDisplayTask)
+            add(ShopTask)
         }
     }
 

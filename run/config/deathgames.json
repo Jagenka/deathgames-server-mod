@@ -130,6 +130,7 @@
     "perKillStreakKill": 10
   },
   "misc": {
-    "revealTimePerPlayer": 1800
+    "revealTimePerPlayer": 1800,
+    "tpOutOfShopAfter": 600
   }
 }

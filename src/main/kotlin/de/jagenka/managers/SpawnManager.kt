@@ -29,13 +29,18 @@ object SpawnManager
 
     fun ServerPlayerEntity.getSpawn() = getSpawn(PlayerManager.getTeam(this))
 
-    @JvmStatic
-    fun handleRespawn(player: ServerPlayerEntity)
+    fun teleportPlayerToSpawn(player: ServerPlayerEntity)
     {
         val spawn = player.getSpawn()
         player.teleport(spawn)
         player.yaw = spawn.yaw
         if (spawn == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
+    }
+
+    @JvmStatic
+    fun handleRespawn(player: ServerPlayerEntity)
+    {
+        teleportPlayerToSpawn(player)
     }
 
     fun shuffleSpawns()

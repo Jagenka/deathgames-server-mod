@@ -78,10 +78,10 @@ class MoneyConfigEntry(val start: Int, val amountPerInterval: Int, val interval:
 }
 
 @Serializable
-class MiscConfigEntry(val revealTimePerPlayer: Int)
+class MiscConfigEntry(val revealTimePerPlayer: Int, val tpOutOfShopAfter: Int)
 {
     companion object
     {
-        val dummy = MiscConfigEntry(0)
+        val dummy = MiscConfigEntry(0, 0)
     }
 }

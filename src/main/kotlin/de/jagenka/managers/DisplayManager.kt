@@ -4,9 +4,12 @@ package de.jagenka.managers
 import de.jagenka.DGTeam
 import de.jagenka.Util.ifServerLoaded
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
+import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket
 import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
 import net.minecraft.scoreboard.ScoreboardObjective
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
@@ -103,5 +106,11 @@ object DisplayManager
         PlayerManager.getOnlinePlayers().forEach { player ->
             player.networkHandler.sendPacket(OverlayMessageS2CPacket(text))
         }
+    }
+
+    fun sendTitleMessage(player: ServerPlayerEntity, title: Text, subtitle: Text) // timing?
+    {
+        player.networkHandler.sendPacket(SubtitleS2CPacket(subtitle))
+        player.networkHandler.sendPacket(TitleS2CPacket(title))
     }
 }
