@@ -6,6 +6,8 @@ import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.shop.Shop
+import net.minecraft.entity.effect.StatusEffectInstance
+import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 
@@ -28,6 +30,8 @@ object ShopTask : TimerTask
 
             if (Shop.isInShopBounds(serverPlayerEntity))
             {
+                serverPlayerEntity.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 1.seconds(), 255))
+
                 if (playerName !in currentlyInShop)
                 {
                     currentlyInShop.add(playerName)
