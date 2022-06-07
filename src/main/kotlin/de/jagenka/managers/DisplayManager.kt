@@ -76,6 +76,16 @@ object DisplayManager
         }
     }
 
+    fun updateKillStreakDisplay()
+    {
+        ifServerLoaded { server ->
+            PlayerManager.getPlayers().forEach { playerName ->
+                val killStreak = KillManager.getKillStreak(playerName)
+                server.scoreboard.getPlayerScore(playerName, tabListObjective).score = killStreak
+            }
+        }
+    }
+
     fun showSidebar()
     {
         ifServerLoaded { server ->

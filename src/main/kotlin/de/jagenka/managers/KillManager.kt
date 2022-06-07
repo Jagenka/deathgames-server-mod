@@ -55,6 +55,7 @@ object KillManager
         resetKillStreak(deceased)
 
         DisplayManager.updateLivesDisplay()
+        DisplayManager.updateKillStreakDisplay()
 
         deceased.getDGTeam()?.let { GameOverTask.handleTeamGameOver(it) }
         ShuffleSpawnsTask.updateLastKillTime()
@@ -67,14 +68,14 @@ object KillManager
         {
             Mode.PLAYER ->
             {
-                val killStreakAmount = getKillStreak(deceased)
+                val killStreakAmount = getKillStreak(deceased.name.asString())
                 addMoney(attacker.name.asString(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.sendPrivateMessage("You received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}")
             }
             Mode.TEAM ->
             {
-                val killStreakAmount = getKillStreak(deceased)
+                val killStreakAmount = getKillStreak(deceased.name.asString())
                 addMoney(attacker.getDGTeam(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.getDGTeam()?.getOnlinePlayers()?.forEach { it.sendPrivateMessage("Your team received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}") }
@@ -84,12 +85,12 @@ object KillManager
         DisplayManager.updateLevelDisplay()
     }
 
-    private fun getKillStreak(deceased: ServerPlayerEntity): Int
+    fun getKillStreak(playerName: String): Int
     {
         return when (killStreakMode)
         {
-            Mode.PLAYER -> playerKillStreak.getValue(deceased.name.asString())
-            Mode.TEAM -> teamKillStreak.getValue(deceased.getDGTeam())
+            Mode.PLAYER -> playerKillStreak.getValue(playerName)
+            Mode.TEAM -> teamKillStreak.getValue(PlayerManager.getTeam(playerName))
         }
     }
 
@@ -100,6 +101,8 @@ object KillManager
             Mode.PLAYER -> playerKillStreak[deceased.name.asString()] = 0
             Mode.TEAM -> teamKillStreak[deceased.getDGTeam()] = 0
         }
+
+        DisplayManager.updateKillStreakDisplay()
     }
 
     private fun handleLives(deceased: ServerPlayerEntity)
