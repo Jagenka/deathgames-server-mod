@@ -13,7 +13,6 @@ import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
 import net.minecraft.scoreboard.ScoreboardObjective
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import java.util.*
@@ -115,14 +114,18 @@ object DisplayManager
 
     fun sendTitleMessage(player: ServerPlayerEntity, title: Text, subtitle: Text, remainingFor: Int)
     {
-        player.networkHandler.sendPacket(TitleFadeS2CPacket(5,remainingFor,5))
+        player.networkHandler.sendPacket(TitleFadeS2CPacket(5, remainingFor, 5))
         player.networkHandler.sendPacket(SubtitleS2CPacket(subtitle))
         player.networkHandler.sendPacket(TitleS2CPacket(title))
     }
 
-    fun sendChatMessage(message: String, formatting: Formatting = Formatting.WHITE, sender: UUID = Util.modUUID)
+    fun sendChatMessage(message: String, sender: UUID = Util.modUUID)
     {
-        val text = LiteralText(message).formatted(formatting)
+        sendChatMessage(Text.of(message), sender)
+    }
+
+    fun sendChatMessage(text: Text, sender: UUID = Util.modUUID)
+    {
         ifServerLoaded { it.playerManager.broadcast(text, MessageType.CHAT, sender) }
     }
 
