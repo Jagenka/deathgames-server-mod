@@ -3,6 +3,7 @@ package de.jagenka.shop
 import de.jagenka.config.Config
 import de.jagenka.managers.getDGMoney
 import de.jagenka.toDGCoordinates
+import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -43,14 +44,12 @@ object Shop
                 val screenHandler =
                     object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, serverPlayerEntity.inventory, inventory, 6)
                     {
-                        override fun transferSlot(player: PlayerEntity?, index: Int): ItemStack
-                        {
-                            return ItemStack.EMPTY
-                        }
+                        override fun transferSlot(player: PlayerEntity?, index: Int): ItemStack = ItemStack.EMPTY
 
                         override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
                         {
-                            inventory.onClick(slotIndex)
+                            if(actionType == SlotActionType.PICKUP) inventory.onClick(slotIndex)
+                            serverPlayerEntity.playerScreenHandler.updateToClient()
                         }
                     }
                 return screenHandler

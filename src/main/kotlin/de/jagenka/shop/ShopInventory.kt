@@ -29,13 +29,11 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 
     override fun removeStack(slot: Int, amount: Int): ItemStack
     {
-        onClick(slot)
         return ItemStack.EMPTY
     }
 
     override fun removeStack(slot: Int): ItemStack
     {
-        onClick(slot)
         return ItemStack.EMPTY
     }
 
