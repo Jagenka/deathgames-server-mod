@@ -1,9 +1,8 @@
 package de.jagenka.managers
 
 
-import de.jagenka.DGTeam
-import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.team.DGTeam
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.network.message.MessageType
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket

@@ -3,7 +3,7 @@ package de.jagenka.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import de.jagenka.DGTeam
+import de.jagenka.team.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.managers.PlayerManager.addToDGTeam

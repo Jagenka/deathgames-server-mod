@@ -1,9 +1,9 @@
 package de.jagenka.timer
 
-import de.jagenka.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
+import de.jagenka.team.DGTeam
 import net.minecraft.text.Style
 import net.minecraft.text.Text.literal
 import net.minecraft.util.Formatting

@@ -1,9 +1,9 @@
 package de.jagenka.managers
 
 import de.jagenka.Coordinates
-import de.jagenka.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.team.DGTeam
 import de.jagenka.timer.seconds
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects

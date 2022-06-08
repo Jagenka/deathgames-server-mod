@@ -5,6 +5,8 @@ import de.jagenka.Util.teleport
 import de.jagenka.config.Config.defaultSpawn
 import de.jagenka.config.Config.spawnPlatformRadius
 import de.jagenka.managers.DisplayManager.sendChatMessage
+import de.jagenka.team.DGTeam
+import de.jagenka.team.isDGColorBlock
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 

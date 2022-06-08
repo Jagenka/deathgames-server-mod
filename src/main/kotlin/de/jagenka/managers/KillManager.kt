@@ -1,6 +1,6 @@
 package de.jagenka.managers
 
-import de.jagenka.DGTeam
+import de.jagenka.team.DGTeam
 import de.jagenka.config.Config.livesPerPlayer
 import de.jagenka.config.Config.livesPerTeam
 import de.jagenka.config.Config.moneyBonusPerKillStreakKill

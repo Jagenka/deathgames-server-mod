@@ -154,3 +154,5 @@ class BlockCuboid
 }
 
 fun Double.floor() = floor(this).toInt()
+
+infix fun Block.isSame(block: Block) = this.lootTableId == block.lootTableId

@@ -1,5 +1,6 @@
-package de.jagenka
+package de.jagenka.team
 
+import de.jagenka.isSame
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isInGame
 import net.minecraft.block.Block
@@ -53,5 +54,3 @@ enum class DGTeam
 }
 
 fun Block.isDGColorBlock() = DGTeam.isColorBlock(this)
-
-infix fun Block.isSame(block: Block) = this.lootTableId == block.lootTableId

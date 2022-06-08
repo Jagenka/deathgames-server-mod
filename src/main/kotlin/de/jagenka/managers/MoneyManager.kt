@@ -1,9 +1,9 @@
 package de.jagenka.managers
 
-import de.jagenka.DGTeam
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.getMoney
 import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.team.DGTeam
 import net.minecraft.server.network.ServerPlayerEntity
 
 object MoneyManager
