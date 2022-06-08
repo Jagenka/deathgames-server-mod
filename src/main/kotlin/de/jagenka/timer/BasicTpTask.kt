@@ -4,6 +4,7 @@ import de.jagenka.*
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
+import de.jagenka.team.TeamSelectorUI
 import net.minecraft.server.world.ServerWorld
 import kotlin.math.absoluteValue
 import kotlin.math.sign
@@ -42,7 +43,7 @@ object BasicTpTask : TimerTask
                     if (it.pos.z < negZ - Config.spectatorRadiusPadding) it.teleport(Coordinates(it.pos.x, it.pos.y, negZ.toDouble()))
                     return@forEach
                 }
-                if (Config.arenaBounds.contains(it.pos.toDGCoordinates())) it.teleport(Config.lobbySpawn)
+                if (!TeamSelectorUI.lobbyBounds.contains(it.pos.toDGCoordinates())) it.teleport(Config.lobbySpawn)
             }
         }
     }
