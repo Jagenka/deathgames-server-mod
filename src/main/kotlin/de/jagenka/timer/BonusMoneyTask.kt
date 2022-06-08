@@ -19,7 +19,7 @@ object BonusMoneyTask : TimerTask
     override fun run()
     {
         PlayerManager.getOnlinePlayers().forEach {
-            if (ticks.getValue(it) % bonusMoneyInterval == 0) addMoney(it.name.asString(), bonusMoneyAmount)
+            if (ticks.getValue(it) % bonusMoneyInterval == 0) addMoney(it.name.string, bonusMoneyAmount)
             if (BonusManager.isOnActivePlatform(it)) ticks[it] = ticks.getValue(it) + 1
         }
     }

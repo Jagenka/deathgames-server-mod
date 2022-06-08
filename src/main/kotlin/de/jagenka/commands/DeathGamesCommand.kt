@@ -86,9 +86,12 @@ object DeathGamesCommand
 
                 )
                 .then(literal("leave").executes { context ->
-                    val leftTeam = handleLeaveTeam(context, context.source.player)
-                    if (leftTeam == null) context.source.sendError(Text.of("You're not part of a team!"))
-                    else context.source.sendFeedback(Text.of("Successfully left $leftTeam."), false)
+                    context.source.player?.let {
+                        val leftTeam = handleLeaveTeam(context, it)
+                        if (leftTeam == null) context.source.sendError(Text.of("You're not part of a team!"))
+                        else context.source.sendFeedback(Text.of("Successfully left $leftTeam."), false)
+                    }
+
                     return@executes 0
                 }
                     .then(argument("player", StringArgumentType.word())
@@ -103,8 +106,8 @@ object DeathGamesCommand
                                 else
                                 {
                                     val leftTeam = handleLeaveTeam(context, player)
-                                    if (leftTeam == null) context.source.sendError(Text.of("${player.name.asString()} is not part of a team!"))
-                                    else context.source.sendFeedback(Text.of("Successfully kicked ${player.name.asString()} from $leftTeam."), false)
+                                    if (leftTeam == null) context.source.sendError(Text.of("${player.name.string} is not part of a team!"))
+                                    else context.source.sendFeedback(Text.of("Successfully kicked ${player.name.string} from $leftTeam."), false)
                                 }
                             }
                             return@executes 0
@@ -154,7 +157,7 @@ object DeathGamesCommand
         val team = DGTeam.valueOf(teamName)
 
         player.addToDGTeam(team)
-        context.source.sendFeedback(Text.of("Successfully added ${player.name.asString()} to $team."), false)
+        context.source.sendFeedback(Text.of("Successfully added ${player.name.string} to $team."), false)
     }
 
     private fun handleJoinTeam(context: CommandContext<ServerCommandSource>, teamName: String)
@@ -173,7 +176,7 @@ object DeathGamesCommand
 
         val team = DGTeam.valueOf(teamName)
 
-        player.addToDGTeam(team)
+        player?.addToDGTeam(team)
         context.source.sendFeedback(Text.of("Successfully joined $team."), false)
     }
 

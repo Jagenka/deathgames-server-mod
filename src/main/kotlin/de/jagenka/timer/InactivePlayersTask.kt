@@ -6,9 +6,9 @@ import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
+import net.minecraft.text.Text.literal
 import net.minecraft.util.Formatting
 
 object InactivePlayersTask : TimerTask
@@ -33,7 +33,7 @@ object InactivePlayersTask : TimerTask
             {
                 if (playerName !in highlightedPlayers)
                 {
-                    val base = LiteralText("")
+                    val base = literal("")
                     base.append(Text.of(playerName).getWithStyle(Style.EMPTY.withColor(Formatting.byName(PlayerManager.getTeam(playerName)?.name?.lowercase())))[0])
                     base.append(Text.of(" is now glowing!"))
                     DisplayManager.sendChatMessage(base)

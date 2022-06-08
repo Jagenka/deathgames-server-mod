@@ -39,29 +39,29 @@ object KillManager
     {
         if (attacker is ServerPlayerEntity)
         {
-            sendChatMessage("${attacker.name.asString()} killed ${deceased.name.asString()}")
-            totalKills[attacker.name.asString()] = totalKills.getValue(attacker.name.asString()) + 1
+            sendChatMessage("${attacker.name.string} killed ${deceased.name.string}")
+            totalKills[attacker.name.string] = totalKills.getValue(attacker.name.string) + 1
             when (killStreakMode)
             {
-                Mode.PLAYER -> playerKillStreak[attacker.name.asString()] = playerKillStreak.getValue(attacker.name.asString()) + 1
+                Mode.PLAYER -> playerKillStreak[attacker.name.string] = playerKillStreak.getValue(attacker.name.string) + 1
                 Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
             }
             handleMoney(attacker, deceased)
-            InactivePlayersTask.resetForPlayer(attacker.name.asString())
+            InactivePlayersTask.resetForPlayer(attacker.name.string)
         }
 
-        totalDeaths[deceased.name.asString()] = totalDeaths.getValue(deceased.name.asString()) + 1
+        totalDeaths[deceased.name.string] = totalDeaths.getValue(deceased.name.string) + 1
         removeOneLife(deceased)
         resetKillStreak(deceased)
 
-        PlayerManager.registerAsCurrentlyDead(deceased.name.asString())
+        PlayerManager.registerAsCurrentlyDead(deceased.name.string)
 
         DisplayManager.updateLivesDisplay()
         DisplayManager.updateKillStreakDisplay()
 
         deceased.getDGTeam()?.let { GameOverTask.handleTeamGameOver(it) }
         ShuffleSpawnsTask.updateLastKillTime()
-        InactivePlayersTask.resetForPlayer(deceased.name.asString())
+        InactivePlayersTask.resetForPlayer(deceased.name.string)
     }
 
     private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity) // TODO raus
@@ -70,14 +70,14 @@ object KillManager
         {
             Mode.PLAYER ->
             {
-                val killStreakAmount = getKillStreak(deceased.name.asString())
-                addMoney(attacker.name.asString(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
+                val killStreakAmount = getKillStreak(deceased.name.string)
+                addMoney(attacker.name.string, moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.sendPrivateMessage("You received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}")
             }
             Mode.TEAM ->
             {
-                val killStreakAmount = getKillStreak(deceased.name.asString())
+                val killStreakAmount = getKillStreak(deceased.name.string)
                 addMoney(attacker.getDGTeam(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.getDGTeam()?.getOnlinePlayers()?.forEach { it.sendPrivateMessage("Your team received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}") }
@@ -100,7 +100,7 @@ object KillManager
     {
         when (killStreakMode)
         {
-            Mode.PLAYER -> playerKillStreak[deceased.name.asString()] = 0
+            Mode.PLAYER -> playerKillStreak[deceased.name.string] = 0
             Mode.TEAM -> teamKillStreak[deceased.getDGTeam()] = 0
         }
 
@@ -113,8 +113,8 @@ object KillManager
         {
             Mode.PLAYER ->
             {
-                val livesAmount = playerLives.getValue(deceased.name.asString())
-                if (livesAmount > 0) playerLives[deceased.name.asString()] = livesAmount - 1
+                val livesAmount = playerLives.getValue(deceased.name.string)
+                if (livesAmount > 0) playerLives[deceased.name.string] = livesAmount - 1
                 if (livesAmount - 1 < 1) deceased.eliminate()
             }
             Mode.TEAM ->
