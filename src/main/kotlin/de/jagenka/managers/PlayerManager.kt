@@ -131,8 +131,11 @@ object PlayerManager
             ifServerLoaded { server ->
                 server.scoreboard.clearPlayerTeam(player.name.string)
             }
-            SpawnManager.teleportPlayerToSpawn(player)
-            player.changeGameMode(GameMode.SPECTATOR)
+            if (DeathGames.running)
+            {
+                SpawnManager.teleportPlayerToSpawn(player)
+                player.changeGameMode(GameMode.SPECTATOR)
+            }
         }
 
         DisplayManager.updateLevelDisplay()
