@@ -85,6 +85,7 @@ object DeathGames : DedicatedServerModInitializer
         SpawnManager.shuffleSpawns()
 
         PlayerManager.getOnlinePlayers().forEach {
+            it.closeHandledScreen()
             val (x, y, z) = Config.worldSpawn
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
             it.teleport(it.getSpawn())
@@ -119,7 +120,6 @@ object DeathGames : DedicatedServerModInitializer
 
         DisplayManager.resetBossBars()
 
-        running = false
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
         Timer.schedule({
@@ -132,6 +132,7 @@ object DeathGames : DedicatedServerModInitializer
             }
 
             PlayerManager.clearInGameStatusForEveryone()
+            running = false
         }, 10.seconds())
     }
 }
