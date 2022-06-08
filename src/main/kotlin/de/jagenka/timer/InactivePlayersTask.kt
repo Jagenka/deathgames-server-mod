@@ -3,6 +3,7 @@ package de.jagenka.timer
 import de.jagenka.config.Config.revealTimePerPlayer
 import de.jagenka.floor
 import de.jagenka.managers.DisplayManager
+import de.jagenka.managers.KillManager
 import de.jagenka.managers.PlayerManager
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
@@ -25,7 +26,8 @@ object InactivePlayersTask : TimerTask
     override fun run()
     {
         inactiveTimer.forEach { (playerName, time) ->
-            val percentage = ((time.toDouble() / revealTimePerPlayer.toDouble()) * 100).floor()
+            val personalRevealTime = revealTimePerPlayer.toDouble() * (10 - KillManager.getKillStreak(playerName)).toDouble() / 10.0
+            val percentage = if (personalRevealTime > 0) ((time.toDouble() / personalRevealTime) * 100).floor() else 100
 
             PlayerManager.getOnlinePlayer(playerName)?.let { DisplayManager.updateBossBarForPlayer(it, percentage) }
 
