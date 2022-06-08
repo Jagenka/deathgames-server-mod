@@ -26,7 +26,7 @@ object ShopTask : TimerTask
     override fun run()
     {
         PlayerManager.getOnlinePlayers().forEach { serverPlayerEntity ->
-            val playerName = serverPlayerEntity.name.asString()
+            val playerName = serverPlayerEntity.name.string
 
             if (Shop.isInShopBounds(serverPlayerEntity))
             {
@@ -68,7 +68,7 @@ object ShopTask : TimerTask
     fun exitShop(player: ServerPlayerEntity)
     {
         SpawnManager.teleportPlayerToSpawn(player)
-        timeInShop[player.name.asString()] = 0
+        timeInShop[player.name.string] = 0
         player.closeHandledScreen()
     }
 

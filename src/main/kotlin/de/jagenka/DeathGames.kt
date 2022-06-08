@@ -12,20 +12,18 @@ import de.jagenka.shop.Shop
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.fabricmc.api.DedicatedServerModInitializer
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
-import net.minecraft.entity.projectile.ArrowEntity
 import net.minecraft.entity.projectile.ProjectileEntity
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
+import net.minecraft.text.Text.literal
 import net.minecraft.text.Texts
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
 import net.minecraft.world.GameRules
-import kotlin.time.Duration.Companion.seconds
 
 object DeathGames : DedicatedServerModInitializer
 {
@@ -42,7 +40,7 @@ object DeathGames : DedicatedServerModInitializer
 
     private fun registerCommands()
     {
-        CommandRegistrationCallback.EVENT.register { dispatcher, _ ->
+        CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             DeathGamesCommand.register(dispatcher)
         }
     }
@@ -108,7 +106,7 @@ object DeathGames : DedicatedServerModInitializer
     {
         val winners = mutableListOf<Text>()
         PlayerManager.getOnlineInGameTeams().forEach { team ->
-            winners.add(LiteralText("$team").getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
+            winners.add(literal("$team").getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
         }
         val winnerCount = winners.count()
         val winnerPlayers = Texts.join(winners, Text.of(", "))

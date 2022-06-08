@@ -19,7 +19,7 @@ object PlayerManager
 
     private val currentlyDead = mutableSetOf<String>()
 
-    fun getOnlinePlayer(name: String): ServerPlayerEntity? = getOnlinePlayers().find { it.name.asString() == name }
+    fun getOnlinePlayer(name: String): ServerPlayerEntity? = getOnlinePlayers().find { it.name.string == name }
 
     fun getOnlinePlayers(): Set<ServerPlayerEntity>
     {
@@ -28,20 +28,20 @@ object PlayerManager
         return allPlayers.toSet()
     }
 
-    fun getOnlineInGamePlayers() = getOnlinePlayers().filter { inGameMap.getValue(it.name.asString()) }
+    fun getOnlineInGamePlayers() = getOnlinePlayers().filter { inGameMap.getValue(it.name.string) }
 
     fun getPlayers(): Set<String>
     {
         ifServerLoaded { server ->
             server.playerManager.playerList.forEach {
-                if (!playerNames.contains(it.name.asString())) playerNames.add(it.name.asString())
+                if (!playerNames.contains(it.name.string)) playerNames.add(it.name.string)
             }
         }
 
         return playerNames.toSet()
     }
 
-    fun getTeam(player: ServerPlayerEntity) = getTeam(player.name.asString())
+    fun getTeam(player: ServerPlayerEntity) = getTeam(player.name.string)
     fun getTeam(playerName: String) = teamRegistry[playerName]
 
     fun ServerPlayerEntity.getDGTeam() = getTeam(this)
@@ -50,8 +50,8 @@ object PlayerManager
     fun addPlayerToTeam(player: ServerPlayerEntity, team: DGTeam)
     {
         ifServerLoaded {
-            it.scoreboard.addPlayerToTeam(player.name.asString(), it.scoreboard.getTeam(team.name))
-            teamRegistry[player.name.asString()] = team
+            it.scoreboard.addPlayerToTeam(player.name.string, it.scoreboard.getTeam(team.name))
+            teamRegistry[player.name.string] = team
         }
     }
 
@@ -59,8 +59,8 @@ object PlayerManager
     fun kickPlayerFromTeam(player: ServerPlayerEntity)
     {
         ifServerLoaded {
-            it.scoreboard.clearPlayerTeam(player.name.asString())
-            teamRegistry.remove(player.name.asString())
+            it.scoreboard.clearPlayerTeam(player.name.string)
+            teamRegistry.remove(player.name.string)
         }
     }
 
@@ -79,7 +79,7 @@ object PlayerManager
         }
     }
 
-    fun getTeamPlayers() = getOnlinePlayers().filter { teamRegistry[it.name.asString()] != null }
+    fun getTeamPlayers() = getOnlinePlayers().filter { teamRegistry[it.name.string] != null }
 
     fun getPlayersInTeam(team: DGTeam): List<String>
     {
@@ -98,17 +98,17 @@ object PlayerManager
 
     fun getInGamePlayersInTeam(team: DGTeam): List<String> = getInGamePlayers().filter { teamRegistry[it] == team }
 
-    fun ServerPlayerEntity.isInGame() = getInGamePlayers().contains(this.name.asString())
+    fun ServerPlayerEntity.isInGame() = getInGamePlayers().contains(this.name.string)
 
 
     fun ServerPlayerEntity.makeInGame()
     {
-        inGameMap[this.name.asString()] = true
+        inGameMap[this.name.string] = true
     }
 
     fun ServerPlayerEntity.eliminate()
     {
-        inGameMap[this.name.asString()] = false
+        inGameMap[this.name.string] = false
         this.changeGameMode(GameMode.SPECTATOR)
     }
 
@@ -116,7 +116,7 @@ object PlayerManager
     fun getOnlineInGameTeams() = DGTeam.values().filter { it.getOnlineInGamePlayers().isNotEmpty() }
 
     fun Coordinates.getInGamePlayersInRange(range: Double) = getOnlinePlayersInRange(range).filter { player ->
-        inGameMap.getValue(player.name.asString())
+        inGameMap.getValue(player.name.string)
     }
 
     fun Coordinates.getOnlinePlayersInRange(range: Double) = getOnlinePlayers().filter { player ->
@@ -128,7 +128,7 @@ object PlayerManager
     {
         if (player.getDGTeam() == null)
         {
-            ifServerLoaded { server -> server.scoreboard.clearPlayerTeam(player.name.asString()) }
+            ifServerLoaded { server -> server.scoreboard.clearPlayerTeam(player.name.string) }
         }
 
         DisplayManager.updateLevelDisplay()
@@ -150,6 +150,6 @@ object PlayerManager
         SpawnManager.teleportPlayerToSpawn(player)
         player.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 5.seconds(), 255))
 
-        currentlyDead.remove(player.name.asString())
+        currentlyDead.remove(player.name.string)
     }
 }

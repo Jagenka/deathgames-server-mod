@@ -4,10 +4,8 @@ import de.jagenka.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.text.Texts
+import net.minecraft.text.Text.literal
 import net.minecraft.util.Formatting
 
 object GameOverTask : TimerTask
@@ -29,9 +27,9 @@ object GameOverTask : TimerTask
     {
         if (team !in PlayerManager.getInGameTeams())
         {
-            val prefix = LiteralText("Game Over for Team ")
-            val teamText = LiteralText("$team").getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0]
-            val suffix = LiteralText(".")
+            val prefix = literal("Game Over for Team ")
+            val teamText = literal("$team").getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0]
+            val suffix = literal(".")
 
             DisplayManager.sendChatMessage(prefix.append(teamText).append(suffix))
         }

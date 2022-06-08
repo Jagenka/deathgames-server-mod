@@ -183,7 +183,7 @@ object TrapsAreNotGay
                     snares = false,
                     effectsString = listOf(DGStatusEffect.WEAKNESS, DGStatusEffect.POISON)) }
             ).forEach { (name, `|unit|`) ->
-                if (name == ctx.stack.name.asString() && Items.BAT_SPAWN_EGG == ctx.stack.item)
+                if (name == ctx.stack.name.string && Items.BAT_SPAWN_EGG == ctx.stack.item)
                 {
                     if (`|unit|`()) ctx.player?.inventory?.selectedSlot?.let { ctx.player?.inventory?.removeStack(it, 1) }
                     return true

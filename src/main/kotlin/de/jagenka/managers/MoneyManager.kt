@@ -12,7 +12,7 @@ object MoneyManager
     private val teamMoney = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
     fun getMoney(playerName: String) = playerMoney.getValue(playerName)
-    fun getMoney(player: ServerPlayerEntity) = getMoney(player.name.asString())
+    fun getMoney(player: ServerPlayerEntity) = getMoney(player.name.string)
     fun getMoney(team: DGTeam?) = teamMoney.getValue(team)
 
     fun setMoney(playerName: String, amount: Int)
@@ -59,7 +59,7 @@ fun ServerPlayerEntity.deductDGMoney(amount: Int)
 {
     when (KillManager.moneyMode)
     {
-        Mode.PLAYER -> addMoney(this.name.asString(), -amount)
+        Mode.PLAYER -> addMoney(this.name.string, -amount)
         Mode.TEAM -> addMoney(this.getDGTeam(), -amount)
     }
 }

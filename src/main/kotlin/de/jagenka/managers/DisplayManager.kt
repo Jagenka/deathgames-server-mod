@@ -5,8 +5,7 @@ import de.jagenka.DGTeam
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
 import net.minecraft.entity.boss.BossBar
-import net.minecraft.entity.boss.CommandBossBar
-import net.minecraft.network.MessageType
+import net.minecraft.network.message.MessageType
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket
 import net.minecraft.network.packet.s2c.play.TitleFadeS2CPacket
@@ -133,26 +132,28 @@ object DisplayManager
         player.networkHandler.sendPacket(TitleS2CPacket(title))
     }
 
-    fun sendChatMessage(message: String, sender: UUID = Util.modUUID)
+    fun sendChatMessage(message: String)
     {
-        sendChatMessage(Text.of(message), sender)
+        sendChatMessage(Text.of(message))
     }
 
-    fun sendChatMessage(text: Text, sender: UUID = Util.modUUID)
+    fun sendChatMessage(text: Text)
     {
-        ifServerLoaded { it.playerManager.broadcast(text, MessageType.CHAT, sender) }
+        ifServerLoaded {
+            it.playerManager.broadcast(text, MessageType.TELLRAW_COMMAND)
+        }
     }
 
     fun ServerPlayerEntity.sendPrivateMessage(text: String)
     {
-        this.sendMessage(Text.of(text), MessageType.CHAT, Util.modUUID)
+        this.sendMessage(Text.of(text))
     }
 
     fun updateBossBarForPlayer(player: ServerPlayerEntity, percent: Int)
     {
         ifServerLoaded { server ->
 
-            val bossBarId = Identifier(player.name.asString().lowercase())
+            val bossBarId = Identifier(player.name.string.lowercase())
             var bossBar = server.bossBarManager.get(bossBarId)
             if (bossBar == null)
             {
