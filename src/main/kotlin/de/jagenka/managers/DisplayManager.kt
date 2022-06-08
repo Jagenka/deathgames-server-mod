@@ -120,7 +120,7 @@ object DisplayManager
     fun sendMessageToHotbar(text: Text, remainingFor: Int = 5.ticks())
     {
         PlayerManager.getOnlinePlayers().forEach { player ->
-            player.networkHandler.sendPacket(TitleFadeS2CPacket(0, remainingFor, 0))
+//            player.networkHandler.sendPacket(TitleFadeS2CPacket(0, remainingFor, 5)) raus weil konflikt mit sendTitleMessage
             player.networkHandler.sendPacket(OverlayMessageS2CPacket(text))
         }
     }
