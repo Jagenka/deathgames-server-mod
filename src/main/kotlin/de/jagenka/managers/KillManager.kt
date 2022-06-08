@@ -31,28 +31,15 @@ object KillManager
     private val totalKills = mutableMapOf<String, Int>().withDefault { 0 }
     private val totalDeaths = mutableMapOf<String, Int>().withDefault { 0 }
 
-    var moneyMode = Mode.PLAYER // TODO raus
+    var moneyMode = Mode.PLAYER
     var livesMode = Mode.TEAM
     var killStreakMode = Mode.PLAYER
 
 
     @JvmStatic
-    fun handleDeath(attacker: Entity?, deceased: ServerPlayerEntity)
+    fun handleDeath(deceased: ServerPlayerEntity)
     {
         if (!DeathGames.running) return
-
-        if (attacker is ServerPlayerEntity)
-        {
-//            sendChatMessage("${attacker.name.string} killed ${deceased.name.string}")
-            totalKills[attacker.name.string] = totalKills.getValue(attacker.name.string) + 1
-            when (killStreakMode)
-            {
-                Mode.PLAYER -> playerKillStreak[attacker.name.string] = playerKillStreak.getValue(attacker.name.string) + 1
-                Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
-            }
-            handleMoney(attacker, deceased)
-            InactivePlayersTask.resetForPlayer(attacker.name.string)
-        }
 
         totalDeaths[deceased.name.string] = totalDeaths.getValue(deceased.name.string) + 1
         removeOneLife(deceased)
@@ -63,9 +50,25 @@ object KillManager
         DisplayManager.updateLivesDisplay()
         DisplayManager.updateKillStreakDisplay()
 
-        deceased.getDGTeam()?.let { GameOverTask.handleTeamGameOver(it) }
-        ShuffleSpawnsTask.updateLastKillTime()
         InactivePlayersTask.resetForPlayer(deceased.name.string)
+    }
+
+    @JvmStatic
+    fun handlePlayerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    {
+        if (!DeathGames.running) return
+
+        totalKills[attacker.name.string] = totalKills.getValue(attacker.name.string) + 1
+        when (killStreakMode)
+        {
+            Mode.PLAYER -> playerKillStreak[attacker.name.string] = playerKillStreak.getValue(attacker.name.string) + 1
+            Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
+        }
+        handleMoney(attacker, deceased)
+        InactivePlayersTask.resetForPlayer(attacker.name.string)
+
+        DisplayManager.updateLivesDisplay()
+        DisplayManager.updateKillStreakDisplay()
     }
 
     private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity) // TODO raus
