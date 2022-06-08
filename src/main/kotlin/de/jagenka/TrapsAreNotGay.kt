@@ -32,6 +32,26 @@ enum class DGStatusEffect(val statusEffectInstance: StatusEffectInstance)
     FATIGUE(StatusEffectInstance(StatusEffects.MINING_FATIGUE, 2.seconds(), 0, false, false, false))
 }
 
+enum class TrapItems(val item: ItemStack)
+{
+    SNARE_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Snare Trap"))),
+    VOID_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Void Trap"))),
+    EXHAUSTION_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Exhaustion Trap"))),
+    REVEALING_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Revealing Trap"))),
+    POISON_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Poison Trap")))
+}
+
+@kotlinx.serialization.Serializable
+data class Trap(val displayName: String,                            // name shown in shop
+                val gaynessRange: Double = 0.5,                     // trigger range
+                val setupTime: Int = 10.seconds(),                  // time, until trap can be triggered. shows particles in the meantime
+                val gaynessTriggerVisibleRange: Double = 30.0,      // range, in which trigger particles can be seen
+                val gaynessVisibilityRange: Double = 10.0,          // range, in which preparation particles can be seen
+                val affectedGayRange: Double = 1.5,                 // range, in which players are affected upon trigger
+                private var triggerDuration: Int = 6.seconds(),     // how long effects are applied
+                val snares: Boolean = false,                        // if the trap holds player in place
+                val effects: List<DGStatusEffect>)                  // what effects to apply
+
 object TrapsAreNotGay
 {
     // DEFAULT: visibility, trigger: 30; visibility, prepare: 10; affected: 1.5; trigger: 0.5;
@@ -41,11 +61,6 @@ object TrapsAreNotGay
     visible and can be triggered. Upon triggering, the trap applies the desired effects to the affected players
     and disappears.
      */
-    val snareTrap: ItemStack = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Snare Trap"))
-    val voidTrap: ItemStack = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Void Trap"))
-    val exhaustionTrap: ItemStack = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Exhaustion Trap"))
-    val revealingTrap: ItemStack = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Revealing Trap"))
-    val poisonTrap: ItemStack = Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Poison Trap"))
 
     private val notGayness = mutableSetOf<NotGay>()
 
