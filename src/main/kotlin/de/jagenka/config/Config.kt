@@ -3,14 +3,18 @@ package de.jagenka.config
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.SpawnManager
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
+import java.nio.file.Files
 
 object Config
 {
     private const val CONF_FILE = "deathgames"
 
-    private lateinit var configEntry: ConfigEntry
+    private val serializer = Json { prettyPrint = true }
+
+    lateinit var configEntry: ConfigEntry
 
     val worldSpawn
         get() = configEntry.spawns.worldSpawn
@@ -79,5 +83,12 @@ object Config
 
         SpawnManager.setSpawns(configEntry.spawns.spawnPositions)
         BonusManager.setPlatforms(configEntry.bonus.platforms)
+    }
+
+    fun store() {
+        val json = serializer.encodeToString(configEntry)
+        val path = FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json")
+
+        Files.writeString(path, json)
     }
 }

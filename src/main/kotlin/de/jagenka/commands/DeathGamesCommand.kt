@@ -23,113 +23,108 @@ object DeathGamesCommand
 {
     fun register(dispatcher: CommandDispatcher<ServerCommandSource>)
     {
-        val baseLiteralCommandNode = dispatcher.register(
-            literal("deathgames")
-                .then(literal("start").executes {
-                    if (!DeathGames.running) DeathGames.startGame()
+        val literalArgumentBuilder = literal("deathgames")
+            .then(literal("start").executes {
+                if (!DeathGames.running) DeathGames.startGame()
+                return@executes 0
+            })
+            .then(literal("stop")
+                .requires { it.isOp() }
+                .executes {
+                    if (DeathGames.running) DeathGames.stopGame()
+                    else it.source.sendError(Text.of("Game is not running!"))
                     return@executes 0
                 })
-                .then(literal("stop")
+            .then(
+                literal("timer")
+                    .requires { it.isOp() }
+                    .then(literal("resume").executes {
+                        Timer.start()
+                        it.source.sendFeedback(Text.of("Timer is now running."), false)
+                        return@executes 0
+                    })
+                    .then(literal("pause").executes {
+                        Timer.pause()
+                        it.source.sendFeedback(Text.of("Timer is now paused."), false)
+                        return@executes 0
+                    })
+                    .then(literal("reset").executes {
+                        Timer.reset()
+                        it.source.sendFeedback(Text.of("Timer is now reset."), false)
+                        return@executes 0
+                    })
+            )
+            .then(
+                literal("join")
+                    .then(argument("team", StringArgumentType.word()).suggests { _, builder ->
+                        CommandSource.suggestMatching(DGTeam.getValuesAsStringList(), builder)
+                    }.executes {
+                        handleJoinTeam(it, it.getArgument("team", String::class.java))
+                        return@executes 0
+                    }
+                        .then(argument("player", StringArgumentType.word())
+                            .requires { it.isOp() }
+                            .suggests { context, builder ->
+                                CommandSource.suggestMatching(context.source.playerNames, builder)
+                            }.executes {
+                                ifServerLoaded { minecraftServer ->
+                                    val playerArgument = it.getArgument("player", String::class.java)
+                                    val player = minecraftServer.playerManager.getPlayer(playerArgument)
+                                    if (player == null) it.source.sendError(Text.of("$playerArgument is not a player!"))
+                                    else handleJoinTeamForSomeoneElse(it, it.getArgument("team", String::class.java), player)
+                                }
+
+                                return@executes 0
+                            })
+                    )
+
+            )
+            .then(literal("leave").executes { context ->
+                context.source.player?.let {
+                    val leftTeam = handleLeaveTeam(context, it)
+                    if (leftTeam == null) context.source.sendError(Text.of("You're not part of a team!"))
+                    else context.source.sendFeedback(Text.of("Successfully left $leftTeam."), false)
+                } ?: context.source.sendError(Text.of("You must be a player to do that!"))
+                return@executes 0
+            }
+                .then(argument("player", StringArgumentType.word())
+                    .requires { it.isOp() }
+                    .suggests { context, builder ->
+                        CommandSource.suggestMatching(context.source.playerNames, builder)
+                    }.executes { context ->
+                        ifServerLoaded { minecraftServer ->
+                            val playerArgument = context.getArgument("player", String::class.java)
+                            val player = minecraftServer.playerManager.getPlayer(playerArgument)
+                            if (player == null) context.source.sendError(Text.of("$playerArgument is not a player!"))
+                            else
+                            {
+                                val leftTeam = handleLeaveTeam(context, player)
+                                if (leftTeam == null) context.source.sendError(Text.of("${player.name.string} is not part of a team!"))
+                                else context.source.sendFeedback(Text.of("Successfully kicked ${player.name.string} from $leftTeam."), false)
+                            }
+                        }
+                        return@executes 0
+                    })
+            )
+            .then(
+                literal("shufflespawns")
                     .requires { it.isOp() }
                     .executes {
-                        if (DeathGames.running) DeathGames.stopGame()
+                        if (DeathGames.running) SpawnManager.shuffleSpawns()
                         else it.source.sendError(Text.of("Game is not running!"))
                         return@executes 0
-                    })
-                .then(literal("config")
-                    .requires { it.isOp() }
-                    .executes {
-                        handleConfig(it)
-                        return@executes 0
-                    })
-                .then(
-                    literal("timer")
-                        .requires { it.isOp() }
-                        .then(literal("resume").executes {
-                            Timer.start()
-                            it.source.sendFeedback(Text.of("Timer is now running."), false)
-                            return@executes 0
-                        })
-                        .then(literal("pause").executes {
-                            Timer.pause()
-                            it.source.sendFeedback(Text.of("Timer is now paused."), false)
-                            return@executes 0
-                        })
-                        .then(literal("reset").executes {
-                            Timer.reset()
-                            it.source.sendFeedback(Text.of("Timer is now reset."), false)
-                            return@executes 0
-                        })
-                )
-                .then(
-                    literal("join")
-                        .then(argument("team", StringArgumentType.word()).suggests { _, builder ->
-                            CommandSource.suggestMatching(DGTeam.getValuesAsStringList(), builder)
-                        }.executes {
-                            handleJoinTeam(it, it.getArgument("team", String::class.java))
-                            return@executes 0
-                        }
-                            .then(argument("player", StringArgumentType.word())
-                                .requires { it.isOp() }
-                                .suggests { context, builder ->
-                                    CommandSource.suggestMatching(context.source.playerNames, builder)
-                                }.executes {
-                                    ifServerLoaded { minecraftServer ->
-                                        val playerArgument = it.getArgument("player", String::class.java)
-                                        val player = minecraftServer.playerManager.getPlayer(playerArgument)
-                                        if (player == null) it.source.sendError(Text.of("$playerArgument is not a player!"))
-                                        else handleJoinTeamForSomeoneElse(it, it.getArgument("team", String::class.java), player)
-                                    }
+                    }
+            )
 
-                                    return@executes 0
-                                })
-                        )
+        val literalArgumentBuilderAfterConfig = DeathGamesConfigCommand.generateConfigCommand(literalArgumentBuilder)
 
-                )
-                .then(literal("leave").executes { context ->
-                    context.source.player?.let {
-                        val leftTeam = handleLeaveTeam(context, it)
-                        if (leftTeam == null) context.source.sendError(Text.of("You're not part of a team!"))
-                        else context.source.sendFeedback(Text.of("Successfully left $leftTeam."), false)
-                    } ?: context.source.sendError(Text.of("You must be a player to do that!"))
-
-                    return@executes 0
-                }
-                    .then(argument("player", StringArgumentType.word())
-                        .requires { it.isOp() }
-                        .suggests { context, builder ->
-                            CommandSource.suggestMatching(context.source.playerNames, builder)
-                        }.executes { context ->
-                            ifServerLoaded { minecraftServer ->
-                                val playerArgument = context.getArgument("player", String::class.java)
-                                val player = minecraftServer.playerManager.getPlayer(playerArgument)
-                                if (player == null) context.source.sendError(Text.of("$playerArgument is not a player!"))
-                                else
-                                {
-                                    val leftTeam = handleLeaveTeam(context, player)
-                                    if (leftTeam == null) context.source.sendError(Text.of("${player.name.string} is not part of a team!"))
-                                    else context.source.sendFeedback(Text.of("Successfully kicked ${player.name.string} from $leftTeam."), false)
-                                }
-                            }
-                            return@executes 0
-                        })
-                )
-                .then(
-                    literal("shufflespawns")
-                        .requires { it.isOp() }
-                        .executes {
-                            if (DeathGames.running) SpawnManager.shuffleSpawns()
-                            else it.source.sendError(Text.of("Game is not running!"))
-                            return@executes 0
-                        }
-                )
-        )
+        val baseLiteralCommandNode = dispatcher.register(literalArgumentBuilderAfterConfig)
 
         dispatcher.register(literal("dg").redirect(baseLiteralCommandNode))
         dispatcher.register(literal("deeznutz").redirect(baseLiteralCommandNode))
     }
 
-    private fun ServerCommandSource.isOp() = this.hasPermissionLevel(2)
+    fun ServerCommandSource.isOp() = this.hasPermissionLevel(2)
 
     private fun handleLeaveTeam(context: CommandContext<ServerCommandSource>, player: ServerPlayerEntity): DGTeam?
     {

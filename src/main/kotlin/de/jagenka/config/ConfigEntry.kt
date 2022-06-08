@@ -5,103 +5,109 @@ import de.jagenka.Coordinates
 import de.jagenka.managers.Platform
 import kotlinx.serialization.Serializable
 
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FIELD)
+annotation class Section(val name: String)
+
 @Serializable
 class ConfigEntry(
-    val spawns: SpawnsConfigEntry,
-    val bonus: BonusPlatformsConfigEntry,
-    val lives: LivesConfigEntry,
-    val money: MoneyConfigEntry,
-    val shopSettings: ShopSettingsConfigEntry,
-    val misc: MiscConfigEntry
+    @Section("spawns") val spawns: SpawnsConfigEntry = SpawnsConfigEntry(),
+    @Section("bonus") val bonus: BonusPlatformsConfigEntry = BonusPlatformsConfigEntry(),
+    @Section("lives") val lives: LivesConfigEntry = LivesConfigEntry(),
+    @Section("money") val money: MoneyConfigEntry = MoneyConfigEntry(),
+    @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
+    @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry()
 )
 {
     companion object
     {
-        val dummy = ConfigEntry(
-            SpawnsConfigEntry.dummy,
-            BonusPlatformsConfigEntry.dummy,
-            LivesConfigEntry.dummy,
-            MoneyConfigEntry.dummy,
-            ShopSettingsConfigEntry.dummy,
-            MiscConfigEntry.dummy
-        )
+        val dummy = ConfigEntry()
     }
 }
 
 @Serializable
 class SpawnsConfigEntry(
-    val spawnPositions: List<Coordinates>,
-    val platformRadius: Int,
-    val worldSpawn: Coordinates,
-    val spectatorSpawn: Coordinates,
-    val lobbySpawn: Coordinates,
-    val shuffleInterval: Int,
-    val shuffleDelayAfterKill: Int
+    var spawnPositions: List<Coordinates> = listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f)),
+    var platformRadius: Int = 0,
+    var worldSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
+    var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
+    var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
+    var shuffleInterval: Int = 0,
+    var shuffleDelayAfterKill: Int = 0
 )
 {
     companion object
     {
-        val dummy = SpawnsConfigEntry(
-            listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f)),
-            0,
-            Coordinates(0, 0, 0, 1f, 1f),
-            Coordinates(0, 0, 0, 1f, 1f),
-            Coordinates(0, 0, 0, 1f, 1f),
-            0,
-            0
-        )
+        val dummy = SpawnsConfigEntry()
     }
 }
 
 @Serializable
 class BonusPlatformsConfigEntry(
-    val platforms: List<Platform>,
-    val radius: Int,
-    val spawnInterval: Int,
-    val stayTime: Int,
-    val initialSpawn: Int,
-    val moneyAmount: Int,
-    val moneyInterval: Int
+    var platforms: List<Platform> = listOf(Platform("bonus1", Coordinates(0, 0, 0)), Platform("bonus2", Coordinates(0, 0, 0))),
+    var radius: Int = 0,
+    var spawnInterval: Int = 0,
+    var stayTime: Int = 0,
+    var initialSpawn: Int = 0,
+    var moneyAmount: Int = 0,
+    var moneyInterval: Int = 0
 )
 {
     companion object
     {
-        val dummy = BonusPlatformsConfigEntry(listOf(Platform("bonus1", Coordinates(0, 0, 0)), Platform("bonus2", Coordinates(0, 0, 0))), 0, 0, 0, 0, 0, 0)
+        val dummy = BonusPlatformsConfigEntry()
     }
 }
 
 @Serializable
-class LivesConfigEntry(val perPlayer: Int, val perTeam: Int)
+class LivesConfigEntry(
+    var perPlayer: Int = 0,
+    var perTeam: Int = 0
+)
 {
     companion object
     {
-        val dummy = LivesConfigEntry(0, 0)
+        val dummy = LivesConfigEntry()
     }
 }
 
 @Serializable
-class MoneyConfigEntry(val start: Int, val amountPerInterval: Int, val interval: Int, val perKill: Int, val perKillStreakKill: Int)
+class MoneyConfigEntry(
+    var start: Int = 0,
+    var amountPerInterval: Int = 0,
+    var interval: Int = 0,
+    var perKill: Int = 0,
+    var perKillStreakKill: Int = 0
+)
 {
     companion object
     {
-        val dummy = MoneyConfigEntry(0, 0, 0, 0, 0)
+        val dummy = MoneyConfigEntry()
     }
 }
 
 @Serializable
-class ShopSettingsConfigEntry(val shopBounds: BlockCuboid, val tpOutOfShopAfter: Int, val refundPercent: Int)
+class ShopSettingsConfigEntry(
+    var shopBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
+    var tpOutOfShopAfter: Int = 0,
+    var refundPercent: Int = 0
+)
 {
     companion object
     {
-        val dummy = ShopSettingsConfigEntry(BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)), 0, 0)
+        val dummy = ShopSettingsConfigEntry()
     }
 }
 
 @Serializable
-class MiscConfigEntry(val revealTimePerPlayer: Int, val arenaBounds: BlockCuboid, val spectatorRadiusPadding: Int)
+class MiscConfigEntry(
+    var revealTimePerPlayer: Int = 0,
+    var arenaBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
+    var spectatorRadiusPadding: Int = 0
+)
 {
     companion object
     {
-        val dummy = MiscConfigEntry(0, BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)), 0)
+        val dummy = MiscConfigEntry()
     }
 }
