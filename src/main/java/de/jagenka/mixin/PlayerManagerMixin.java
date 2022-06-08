@@ -24,4 +24,10 @@ public class PlayerManagerMixin
     {
         de.jagenka.managers.PlayerManager.onPlayerJoin(player);
     }
+
+    @Inject(method = "remove", at = @At("HEAD"))
+    private void onPlayerLeave(ServerPlayerEntity player, CallbackInfo ci)
+    {
+        de.jagenka.managers.PlayerManager.onPlayerLeave(player);
+    }
 }

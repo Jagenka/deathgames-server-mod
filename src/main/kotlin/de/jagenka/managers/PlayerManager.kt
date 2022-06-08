@@ -149,6 +149,12 @@ object PlayerManager
         }
     }
 
+    @JvmStatic
+    fun onPlayerLeave(player: ServerPlayerEntity)
+    {
+        if (!DeathGames.running) player.kickFromDGTeam()
+    }
+
     fun registerAsCurrentlyDead(playerName: String) = currentlyDead.add(playerName)
 
     fun isCurrentlyDead(playerName: String) = playerName in currentlyDead
