@@ -28,7 +28,7 @@ object ShopTask : TimerTask
         PlayerManager.getOnlinePlayers().forEach { serverPlayerEntity ->
             val playerName = serverPlayerEntity.name.string
 
-            if (Shop.isInShopBounds(serverPlayerEntity))
+            if (PlayerManager.isInGame(playerName) && Shop.isInShopBounds(serverPlayerEntity))
             {
                 serverPlayerEntity.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 1.seconds(), 255))
 

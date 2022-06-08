@@ -173,4 +173,6 @@ object PlayerManager
     {
         inGameMap.clear()
     }
+
+    fun isInGame(playerName: String) = inGameMap.getValue(playerName)
 }
