@@ -130,6 +130,8 @@ object DeathGames : DedicatedServerModInitializer
                 it.health = 20f //set max hearts
                 it.hungerManager.add(20, 1f) //set max food and saturation
             }
+
+            PlayerManager.clearInGameStatusForEveryone()
         }, 10.seconds())
     }
 }

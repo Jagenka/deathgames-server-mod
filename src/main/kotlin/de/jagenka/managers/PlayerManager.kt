@@ -159,4 +159,9 @@ object PlayerManager
 
         currentlyDead.remove(player.name.string)
     }
+
+    fun clearInGameStatusForEveryone()
+    {
+        inGameMap.clear()
+    }
 }
