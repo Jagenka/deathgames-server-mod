@@ -12,6 +12,7 @@ import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.shop.Shop
 import de.jagenka.timer.GameOverTask
 import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.ShuffleSpawnsTask
@@ -73,14 +74,15 @@ object KillManager
                 val killStreakAmount = getKillStreak(deceased.name.string)
                 addMoney(attacker.name.string, moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.sendPrivateMessage("You received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}")
+                attacker.sendPrivateMessage("You received ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.")
             }
             Mode.TEAM ->
             {
                 val killStreakAmount = getKillStreak(deceased.name.string)
                 addMoney(attacker.getDGTeam(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
                 sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.getDGTeam()?.getOnlinePlayers()?.forEach { it.sendPrivateMessage("Your team received ${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}") }
+                attacker.getDGTeam()?.getOnlinePlayers()
+                    ?.forEach { it.sendPrivateMessage("Your team received ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.") }
             }
         }
 
