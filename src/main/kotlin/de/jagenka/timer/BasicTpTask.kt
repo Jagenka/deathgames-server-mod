@@ -1,13 +1,13 @@
 package de.jagenka.timer
 
-import de.jagenka.*
+import de.jagenka.Coordinates
+import de.jagenka.DeathGames
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.team.TeamSelectorUI
-import net.minecraft.server.world.ServerWorld
-import kotlin.math.absoluteValue
-import kotlin.math.sign
+import de.jagenka.toDGCoordinates
+import net.minecraft.world.GameMode
 
 object BasicTpTask : TimerTask
 {
@@ -23,6 +23,8 @@ object BasicTpTask : TimerTask
             PlayerManager.getOnlinePlayers().forEach {
                 if (!it.interactionManager.isSurvivalLike)
                 {
+                    if (!DeathGames.running && !it.hasPermissionLevel(2)) it.changeGameMode(GameMode.ADVENTURE)
+
                     /* BY RADIUS, OLD CODE
                     val middle = (Config.arenaBounds.firstCorner + Config.arenaBounds.secondCorner) / 2.0
                     val maxRadius = (Config.arenaBounds.firstCorner - middle).toVec3d().length()
