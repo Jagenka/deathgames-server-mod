@@ -123,7 +123,13 @@ object DeathGames : DedicatedServerModInitializer
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
         Timer.schedule({
-            PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.ADVENTURE) }
+            PlayerManager.getOnlinePlayers().forEach {
+                it.changeGameMode(GameMode.ADVENTURE)
+                it.clearStatusEffects()
+                it.inventory.clear()
+                it.health = 20f //set max hearts
+                it.hungerManager.add(20, 1f) //set max food and saturation
+            }
         }, 10.seconds())
     }
 }
