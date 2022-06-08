@@ -27,12 +27,6 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
-
-    //for config files
-    modImplementation("org.spongepowered:configurate-yaml:4.1.2")
-    shadow("org.spongepowered:configurate-yaml:4.1.2")
-    modImplementation("org.spongepowered:configurate-extra-kotlin:4.1.2")
-    shadow("org.spongepowered:configurate-extra-kotlin:4.1.2")
 }
 
 tasks.remapJar {
