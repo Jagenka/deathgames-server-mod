@@ -153,7 +153,7 @@
     "refundPercent": 75
   },
   "misc": {
-    "revealTimePerPlayer": 1800,
+    "revealTimePerPlayer": 2400,
     "arenaBounds": {
       "firstCorner": {
         "x": -128,
