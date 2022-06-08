@@ -1,5 +1,6 @@
 package de.jagenka.managers
 
+import de.jagenka.DeathGames
 import de.jagenka.team.DGTeam
 import de.jagenka.config.Config.livesPerPlayer
 import de.jagenka.config.Config.livesPerTeam
@@ -38,6 +39,8 @@ object KillManager
     @JvmStatic
     fun handleDeath(attacker: Entity?, deceased: ServerPlayerEntity)
     {
+        if (!DeathGames.running) return
+
         if (attacker is ServerPlayerEntity)
         {
 //            sendChatMessage("${attacker.name.string} killed ${deceased.name.string}")
