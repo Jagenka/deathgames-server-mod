@@ -40,7 +40,7 @@ object KillManager
     {
         if (attacker is ServerPlayerEntity)
         {
-            sendChatMessage("${attacker.name.string} killed ${deceased.name.string}")
+//            sendChatMessage("${attacker.name.string} killed ${deceased.name.string}")
             totalKills[attacker.name.string] = totalKills.getValue(attacker.name.string) + 1
             when (killStreakMode)
             {
@@ -73,14 +73,14 @@ object KillManager
             {
                 val killStreakAmount = getKillStreak(deceased.name.string)
                 addMoney(attacker.name.string, moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
-                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
+//                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.sendPrivateMessage("You received ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.")
             }
             Mode.TEAM ->
             {
                 val killStreakAmount = getKillStreak(deceased.name.string)
                 addMoney(attacker.getDGTeam(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
-                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
+//                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.getDGTeam()?.getOnlinePlayers()
                     ?.forEach { it.sendPrivateMessage("Your team received ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.") }
             }
