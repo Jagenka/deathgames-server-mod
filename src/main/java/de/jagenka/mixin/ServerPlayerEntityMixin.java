@@ -27,5 +27,6 @@ public class ServerPlayerEntityMixin
         Testing.dropTest(); // TODO: remove in release
         cir.setReturnValue(false);
         cir.cancel();
+        ((ServerPlayerEntity) (Object) this).playerScreenHandler.updateToClient();
     }
 }
