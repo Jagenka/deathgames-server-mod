@@ -1,5 +1,6 @@
 package de.jagenka.timer
 
+import de.jagenka.DeathGames
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.team.TeamSelectorUI
@@ -15,7 +16,12 @@ object LobbyTask : TimerTask
     override fun run()
     {
         PlayerManager.getOnlinePlayers().forEach { player ->
-            if(TeamSelectorUI.isInLobbyBounds(player))
+            if (!DeathGames.running && !player.hasPermissionLevel(2))
+            {
+                player.inventory.clear()
+                DisplayManager.resetBossBars()
+            }
+            if (TeamSelectorUI.isInLobbyBounds(player))
             {
                 DisplayManager.sendMessageToHotbar(Text.of("Press F to choose your team."))
             }
