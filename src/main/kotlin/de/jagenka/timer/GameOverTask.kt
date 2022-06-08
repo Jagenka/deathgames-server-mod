@@ -10,6 +10,10 @@ import net.minecraft.util.Formatting
 
 object GameOverTask : TimerTask
 {
+    private val inGameTeams = mutableSetOf<DGTeam>()
+
+    private var gameEnded = false
+
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
@@ -17,9 +21,23 @@ object GameOverTask : TimerTask
 
     override fun run()
     {
-        if (PlayerManager.getOnlineInGameTeams().size <= 1)
+        if (gameEnded) return
+
+        val onlineInGameTeams = PlayerManager.getOnlineInGameTeams()
+        onlineInGameTeams.toList().forEach { if (it !in inGameTeams) inGameTeams.add(it) }
+
+        inGameTeams.toList().forEach {
+            if (it !in onlineInGameTeams)
+            {
+                handleTeamGameOver(it)
+                inGameTeams.remove(it)
+            }
+        }
+
+        if (onlineInGameTeams.size <= 1)
         {
             DeathGames.stopGame()
+            gameEnded = true
         }
     }
 
@@ -37,5 +55,7 @@ object GameOverTask : TimerTask
 
     override fun reset()
     {
+        inGameTeams.clear()
+        gameEnded = false
     }
 }
