@@ -3,6 +3,8 @@ package de.jagenka.managers
 import de.jagenka.Coordinates
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.Util.teleport
+import de.jagenka.config.Config
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.seconds
 import net.minecraft.entity.effect.StatusEffectInstance
@@ -154,7 +156,8 @@ object PlayerManager
     @JvmStatic
     fun handleRespawn(player: ServerPlayerEntity)
     {
-        SpawnManager.teleportPlayerToSpawn(player)
+        if (DeathGames.running) SpawnManager.teleportPlayerToSpawn(player)
+        else player.teleport(Config.lobbySpawn)
         player.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 5.seconds(), 255))
 
         currentlyDead.remove(player.name.string)
