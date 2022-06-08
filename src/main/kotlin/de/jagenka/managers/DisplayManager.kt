@@ -3,6 +3,7 @@ package de.jagenka.managers
 
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.team.DGTeam
+import de.jagenka.timer.ticks
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.network.message.MessageType
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
@@ -16,7 +17,6 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
-import java.util.*
 
 object DisplayManager
 {
@@ -117,9 +117,10 @@ object DisplayManager
         sendMessageToHotbar(text)
     }
 
-    private fun sendMessageToHotbar(text: Text)
+    fun sendMessageToHotbar(text: Text, remainingFor: Int = 5.ticks())
     {
         PlayerManager.getOnlinePlayers().forEach { player ->
+            player.networkHandler.sendPacket(TitleFadeS2CPacket(0, remainingFor, 0))
             player.networkHandler.sendPacket(OverlayMessageS2CPacket(text))
         }
     }

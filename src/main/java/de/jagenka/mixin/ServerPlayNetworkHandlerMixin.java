@@ -1,6 +1,7 @@
 package de.jagenka.mixin;
 
 import de.jagenka.shop.Shop;
+import de.jagenka.team.TeamSelectorUI;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -22,6 +23,7 @@ public class ServerPlayNetworkHandlerMixin
         if (packet.getAction().equals(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND))
         {
             if (Shop.showInterfaceIfInShop(this.player)) ci.cancel();
+            else if (TeamSelectorUI.showInterfaceIfInLobby(this.player)) ci.cancel();
         }
     }
 }
