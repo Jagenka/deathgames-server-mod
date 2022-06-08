@@ -128,7 +128,11 @@ object PlayerManager
     {
         if (player.getDGTeam() == null)
         {
-            ifServerLoaded { server -> server.scoreboard.clearPlayerTeam(player.name.string) }
+            ifServerLoaded { server ->
+                server.scoreboard.clearPlayerTeam(player.name.string)
+            }
+            SpawnManager.teleportPlayerToSpawn(player)
+            player.changeGameMode(GameMode.SPECTATOR)
         }
 
         DisplayManager.updateLevelDisplay()
