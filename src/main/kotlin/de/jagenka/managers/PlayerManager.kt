@@ -51,6 +51,7 @@ object PlayerManager
     fun ServerPlayerEntity.addToDGTeam(team: DGTeam) = addPlayerToTeam(this, team)
     fun addPlayerToTeam(player: ServerPlayerEntity, team: DGTeam)
     {
+        if (DeathGames.running) return
         ifServerLoaded {
             it.scoreboard.addPlayerToTeam(player.name.string, it.scoreboard.getTeam(team.name))
             teamRegistry[player.name.string] = team
