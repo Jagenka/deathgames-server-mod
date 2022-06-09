@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.TextColor
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.GameRules
 import java.util.*
 import kotlin.math.floor
 import kotlin.math.max
@@ -30,7 +31,17 @@ object Util
     {
         this.minecraftServer = minecraftServer
 
-        ifServerLoaded { server -> server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) } }
+        ifServerLoaded { server ->
+            server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
+
+            server.gameRules[GameRules.SPECTATORS_GENERATE_CHUNKS].set(false, server)
+            server.gameRules[GameRules.ANNOUNCE_ADVANCEMENTS].set(false, server)
+            server.gameRules[GameRules.KEEP_INVENTORY].set(true, server)
+            server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(false, server)
+            server.gameRules[GameRules.DO_WEATHER_CYCLE].set(false, server)
+            server.overworld.setWeather(Int.MAX_VALUE, 0, false, false)
+            server.overworld.timeOfDay = 6000 // noon
+        }
 
         PlayerManager.prepareTeams()
 

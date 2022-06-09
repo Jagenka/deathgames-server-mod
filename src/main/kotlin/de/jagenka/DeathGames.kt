@@ -73,15 +73,6 @@ object DeathGames : DedicatedServerModInitializer
 
         PlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
-        ifServerLoaded { server ->
-            server.overworld.setWeather(Int.MAX_VALUE, 0, false, false)
-            server.gameRules[GameRules.KEEP_INVENTORY].set(true, server)
-            server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(false, server)
-            server.gameRules[GameRules.DO_WEATHER_CYCLE].set(false, server)
-            server.gameRules[GameRules.ANNOUNCE_ADVANCEMENTS].set(false, server)
-            server.overworld.timeOfDay = 6000 // noon
-        }
-
         SpawnManager.shuffleSpawns()
 
         PlayerManager.getOnlinePlayers().forEach {
