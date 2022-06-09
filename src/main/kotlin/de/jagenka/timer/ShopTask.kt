@@ -8,6 +8,7 @@ import de.jagenka.managers.SpawnManager
 import de.jagenka.shop.Shop
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
+import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 
@@ -27,6 +28,8 @@ object ShopTask : TimerTask
     {
         PlayerManager.getOnlinePlayers().forEach { serverPlayerEntity ->
             val playerName = serverPlayerEntity.name.string
+
+            clearIllegalItems(serverPlayerEntity)
 
             if (PlayerManager.isInGame(playerName) && Shop.isInShopBounds(serverPlayerEntity))
             {
@@ -63,6 +66,12 @@ object ShopTask : TimerTask
 
             } else currentlyInShop.remove(playerName)
         }
+    }
+
+    private fun clearIllegalItems(player: ServerPlayerEntity)
+    {
+        val illegalItems = listOf(Items.GLASS_BOTTLE, Items.BUCKET)
+        player.inventory.remove({ itemStack -> itemStack.item in illegalItems }, -1, player.playerScreenHandler.craftingInput)
     }
 
     fun exitShop(player: ServerPlayerEntity)
