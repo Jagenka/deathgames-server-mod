@@ -3,12 +3,14 @@ package de.jagenka
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.TextColor
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.GameRules
 import java.util.*
 import kotlin.math.floor
 import kotlin.math.max
@@ -21,7 +23,8 @@ fun log(message: String)
 
 object Util
 {
-    private lateinit var minecraftServer: MinecraftServer
+    var minecraftServer: MinecraftServer? = null
+        private set
 
     val modUUID: UUID = UUID.randomUUID()
 
@@ -30,7 +33,19 @@ object Util
     {
         this.minecraftServer = minecraftServer
 
-        ifServerLoaded { server -> server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) } }
+        ServerLifecycleEvents.SERVER_STARTED
+
+        ifServerLoaded { server ->
+            server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
+
+            server.gameRules[GameRules.SPECTATORS_GENERATE_CHUNKS].set(false, server)
+            server.gameRules[GameRules.ANNOUNCE_ADVANCEMENTS].set(false, server)
+            server.gameRules[GameRules.KEEP_INVENTORY].set(true, server)
+            server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(false, server)
+            server.gameRules[GameRules.DO_WEATHER_CYCLE].set(false, server)
+            server.overworld.setWeather(Int.MAX_VALUE, 0, false, false)
+            server.overworld.timeOfDay = 6000 // noon
+        }
 
         PlayerManager.prepareTeams()
 
@@ -40,8 +55,8 @@ object Util
 
     fun ifServerLoaded(lambda: (MinecraftServer) -> Unit)
     {
-        if (Util::minecraftServer.isInitialized) lambda(minecraftServer)
-        else log("Minecraft Server not yet initialized")
+        minecraftServer?.let { lambda(it) }
+            ?: log("Minecraft Server not yet initialized")
     }
 
     fun ServerPlayerEntity.teleport(coordinates: Coordinates)

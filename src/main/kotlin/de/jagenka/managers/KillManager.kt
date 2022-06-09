@@ -1,23 +1,21 @@
 package de.jagenka.managers
 
 import de.jagenka.DeathGames
-import de.jagenka.team.DGTeam
 import de.jagenka.config.Config.livesPerPlayer
 import de.jagenka.config.Config.livesPerTeam
 import de.jagenka.config.Config.moneyBonusPerKillStreakKill
 import de.jagenka.config.Config.moneyPerKill
 import de.jagenka.config.Config.startMoneyPerPlayer
-import de.jagenka.managers.DisplayManager.sendChatMessage
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.shop.Shop
-import de.jagenka.timer.GameOverTask
+import de.jagenka.team.DGTeam
 import de.jagenka.timer.InactivePlayersTask
-import de.jagenka.timer.ShuffleSpawnsTask
-import net.minecraft.entity.Entity
+import de.jagenka.timer.Timer
+import de.jagenka.timer.seconds
 import net.minecraft.server.network.ServerPlayerEntity
 
 object KillManager
@@ -39,13 +37,20 @@ object KillManager
     @JvmStatic
     fun handleDeath(deceased: ServerPlayerEntity)
     {
+        PlayerManager.registerAsCurrentlyDead(deceased.name.string)
+
+        Timer.schedule({
+            if (PlayerManager.requestRespawn(deceased))
+            {
+                deceased.sendPrivateMessage("You have been force-respawned.")
+            }
+        }, 5.seconds())
+
         if (!DeathGames.running) return
 
         totalDeaths[deceased.name.string] = totalDeaths.getValue(deceased.name.string) + 1
         removeOneLife(deceased)
         resetKillStreak(deceased)
-
-        PlayerManager.registerAsCurrentlyDead(deceased.name.string)
 
         DisplayManager.updateLivesDisplay()
         DisplayManager.updateKillStreakDisplay()

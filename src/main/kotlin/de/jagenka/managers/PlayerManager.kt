@@ -2,16 +2,19 @@ package de.jagenka.managers
 
 import de.jagenka.Coordinates
 import de.jagenka.DeathGames
+import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.seconds
+import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
 import net.minecraft.world.GameMode
+import net.minecraft.world.World
 
 object PlayerManager
 {
@@ -177,4 +180,25 @@ object PlayerManager
     }
 
     fun isInGame(playerName: String) = inGameMap.getValue(playerName)
+
+    fun requestRespawn(player: ServerPlayerEntity): Boolean
+    {
+        if (!isCurrentlyDead(player.name.string)) return false
+
+        Util.minecraftServer?.let { server ->
+            if (player.notInAnyWorld)
+            {
+                player.notInAnyWorld = false
+                player.networkHandler.player = server.playerManager.respawnPlayer(player, true)
+                Criteria.CHANGED_DIMENSION.trigger(player, World.END, World.OVERWORLD)
+                return true
+            }
+            if (player.health > 0.0f)
+            {
+                return false
+            }
+            player.networkHandler.player = server.playerManager.respawnPlayer(player, false)
+            return true
+        } ?: return false
+    }
 }
