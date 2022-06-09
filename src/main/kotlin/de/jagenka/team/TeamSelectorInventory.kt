@@ -41,16 +41,12 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
 
     fun onClick(slotIndex: Int)
     {
-        slots[slotIndex]?.let {
+        val team = slots[slotIndex]
+        team?.let {
             player.addToDGTeam(it)
+        } ?: player.kickFromDGTeam()
 
-            val base = Text.literal("")
-            base.append(Text.of("${player.name.string} joined Team "))
-            base.append(Text.of(it.name).getWithStyle(Style.EMPTY.withColor(Formatting.byName(it.name.lowercase())))[0])
-            DisplayManager.sendChatMessage(base)
-        } ?: player.kickFromDGTeam().also {
-            DisplayManager.sendChatMessage(Text.of("${player.name.string} wants to spectate."))
-        }
+        DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
     }
 
     override fun clear() = Unit

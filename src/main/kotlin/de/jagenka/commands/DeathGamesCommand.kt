@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext
 import de.jagenka.team.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
@@ -90,7 +91,7 @@ object DeathGamesCommand
                         val leftTeam = handleLeaveTeam(context, it)
                         if (leftTeam == null) context.source.sendError(Text.of("You're not part of a team!"))
                         else context.source.sendFeedback(Text.of("Successfully left $leftTeam."), false)
-                    }
+                    } ?: context.source.sendError(Text.of("You must be a player to do that!"))
 
                     return@executes 0
                 }
@@ -137,6 +138,7 @@ object DeathGamesCommand
         else
         {
             player.kickFromDGTeam()
+            DisplayManager.displayMessageOnPlayerTeamJoin(player, null)
             dgTeam
         }
     }
@@ -157,6 +159,7 @@ object DeathGamesCommand
         val team = DGTeam.valueOf(teamName)
 
         player.addToDGTeam(team)
+        DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
         context.source.sendFeedback(Text.of("Successfully added ${player.name.string} to $team."), false)
     }
 
@@ -176,8 +179,11 @@ object DeathGamesCommand
 
         val team = DGTeam.valueOf(teamName)
 
-        player?.addToDGTeam(team)
-        context.source.sendFeedback(Text.of("Successfully joined $team."), false)
+        player?.let {
+            player.addToDGTeam(team)
+            DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
+            context.source.sendFeedback(Text.of("Successfully joined $team."), false)
+        } ?: context.source.sendError(Text.of("You must be a player to do that!"))
     }
 
     private fun handleConfig(context: CommandContext<ServerCommandSource>)

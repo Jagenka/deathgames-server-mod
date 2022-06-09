@@ -13,7 +13,9 @@ import net.minecraft.network.packet.s2c.play.TitleS2CPacket
 import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
 import net.minecraft.scoreboard.ScoreboardObjective
+import net.minecraft.scoreboard.Team
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
@@ -147,6 +149,20 @@ object DisplayManager
     fun ServerPlayerEntity.sendPrivateMessage(text: String)
     {
         this.sendMessage(Text.of(text))
+    }
+
+    fun displayMessageOnPlayerTeamJoin(player: ServerPlayerEntity, team: DGTeam?)
+    {
+        if (team == null)
+        {
+            sendChatMessage(Text.of("${player.name.string} wants to spectate."))
+        } else
+        {
+            val base = Text.literal("")
+            base.append(Text.of("${player.name.string} joined Team "))
+            base.append(Text.of(team.name).getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
+            sendChatMessage(base)
+        }
     }
 
     fun updateBossBarForPlayer(player: ServerPlayerEntity, percent: Int)
