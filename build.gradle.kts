@@ -27,6 +27,8 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+
+    implementation("io.netty:netty-all:4.1.24.Final")
 }
 
 tasks.remapJar {
