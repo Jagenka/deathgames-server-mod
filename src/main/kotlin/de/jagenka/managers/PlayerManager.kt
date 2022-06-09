@@ -143,8 +143,9 @@ object PlayerManager
         DisplayManager.updateLevelDisplay()
         DisplayManager.resetBossBars()
 
-        if (!DeathGames.running && !player.hasPermissionLevel(2)) //is op
+        if (!DeathGames.running && !player.hasPermissionLevel(2)) //is not op
         {
+            player.inventory.clear()
             player.changeGameMode(GameMode.ADVENTURE)
         }
     }
