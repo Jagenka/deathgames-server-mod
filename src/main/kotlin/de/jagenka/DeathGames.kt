@@ -120,6 +120,9 @@ object DeathGames : DedicatedServerModInitializer
 
         DisplayManager.resetBossBars()
 
+        MoneyManager.reset()
+        DisplayManager.updateLevelDisplay()
+
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
         Timer.schedule({
