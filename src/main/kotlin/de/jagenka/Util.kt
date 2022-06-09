@@ -3,6 +3,7 @@ package de.jagenka
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.server.MinecraftServer
@@ -22,7 +23,8 @@ fun log(message: String)
 
 object Util
 {
-    private lateinit var minecraftServer: MinecraftServer
+    var minecraftServer: MinecraftServer? = null
+        private set
 
     val modUUID: UUID = UUID.randomUUID()
 
@@ -30,6 +32,8 @@ object Util
     fun onServerLoaded(minecraftServer: MinecraftServer)
     {
         this.minecraftServer = minecraftServer
+
+        ServerLifecycleEvents.SERVER_STARTED
 
         ifServerLoaded { server ->
             server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
@@ -51,8 +55,8 @@ object Util
 
     fun ifServerLoaded(lambda: (MinecraftServer) -> Unit)
     {
-        if (Util::minecraftServer.isInitialized) lambda(minecraftServer)
-        else log("Minecraft Server not yet initialized")
+        minecraftServer?.let { lambda(it) }
+            ?: log("Minecraft Server not yet initialized")
     }
 
     fun ServerPlayerEntity.teleport(coordinates: Coordinates)
