@@ -9,7 +9,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.TextColor
-import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.*
 import net.minecraft.world.GameRules
 import java.util.*
 import kotlin.math.floor
@@ -169,5 +169,28 @@ class BlockCuboid
 }
 
 fun Double.floor() = floor(this).toInt()
+
+fun Double.toRadians(): Double = (this / 180.0) * Math.PI
+
+fun Double.toDegree(): Double = (this * 180.0) / Math.PI
+
+fun Float.toRadians(): Float = (this / 180f) * Math.PI.toFloat()
+
+fun Float.toDegree(): Float = (this * 180f) / Math.PI.toFloat()
+
+fun Vec3d.pureQuarternion(): Quaternion = Quaternion(this.x.toFloat(), this.y.toFloat(), this.z.toFloat(), 0f)
+
+fun Vec3d.rotateAroundVector(axis: Vec3d, degrees: Float): Vec3d
+{
+    val rotationQuaternion = Quaternion(Vec3f(axis), degrees, true)
+    val vectorQuaternion = this.pureQuarternion()
+    val finalQuaternion = rotationQuaternion.copy()
+
+    finalQuaternion.hamiltonProduct(vectorQuaternion)
+    rotationQuaternion.conjugate()
+    finalQuaternion.hamiltonProduct(rotationQuaternion)
+
+    return Vec3d(finalQuaternion.x.toDouble(), finalQuaternion.y.toDouble(), finalQuaternion.z.toDouble())
+}
 
 infix fun Block.isSame(block: Block) = this.lootTableId == block.lootTableId

@@ -10,33 +10,54 @@ import net.minecraft.util.math.Vec3d
 
 object GPS
 {
-    private val vertexTree = VertexTree()
-
     fun makeArrowGoBrrr()
     {
         val origin = Vec3d(0.0, 4.0, 0.0)
+        val arrow = VertexTreeElement(origin)
         ifServerLoaded { server: MinecraftServer ->
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayerEntity ->
-                drawMultipleParticles(server, player, ParticleTypes.WAX_OFF, generateLine(origin, player.rotationVector, 4.0, 0.1))
+                val lookDirection = player.rotationVector.normalize()
+                val lookDirectionXZImage = Vec3d(lookDirection.x, 0.0, lookDirection.z).rotateY(90f.toRadians()).normalize()
+                val localYAxis = lookDirection.crossProduct(lookDirectionXZImage).normalize()
+                arrow
+                    .makeChildByOffset(lookDirection.multiply(-1.0))
+                    .up()
+                    .makeChildByOffset(lookDirection.multiply(4.0))
+                    .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, 135f).multiply(1.0))
+                    .up()
+                    .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, -135f).multiply(1.0))
+                drawParticlesFromVertices(server, player, ParticleTypes.WAX_OFF, arrow)
             }
         }
     }
 
-    private fun generateLine(origin: Vec3d, vector: Vec3d, magnitude: Double, vertexSpacing: Double): List<Vec3d>
+    private fun generateLine(point1: Vec3d, point2: Vec3d, vertexSpacing: Double): List<Vec3d>
     {
         val vertices: MutableList<Vec3d> = mutableListOf()
-        vertices.add(Vec3d(origin.x, origin.y, origin.z))
-        var iterationVector = origin
-        val normalizedVector = vector.normalize()
+        val vector: Vec3d = point2.subtract(point1)
+        val direction: Vec3d = vector.normalize()
+        val magnitude: Double = vector.length()
+        var iterationVector: Vec3d = point1
+        vertices.add(iterationVector)
         var steps = (magnitude / vertexSpacing).floor() + 1
         val stepLength = magnitude / steps
         while (steps >= 1)
         {
-            iterationVector = iterationVector.add(normalizedVector.multiply(stepLength))
+            iterationVector = iterationVector.add(direction.multiply(stepLength))
             vertices.add(iterationVector)
             steps--
         }
         return vertices
+    }
+
+    private fun drawParticlesFromVertices(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertex: VertexTreeElement)
+    {
+        if (vertex.children.isEmpty()) return
+        for (child in vertex.children)
+        {
+            drawParticlesFromVertices(server, player, particle, child)
+            drawMultipleParticles(server, player, particle, generateLine(vertex.position, child.position, 0.1))
+        }
     }
 
     private fun drawMultipleParticles(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertices: Collection<Vec3d>)
@@ -44,7 +65,6 @@ object GPS
         val baseX = player.pos.x
         val baseY = player.pos.y
         val baseZ = player.pos.z
-        val playerViewDirection = player.movementDirection
         vertices.forEach {vertex: Vec3d ->
             server.overworld.spawnParticles(player, particle, true, baseX + vertex.x, baseY + vertex.y, baseZ + vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
@@ -55,55 +75,58 @@ object GPS
         return vertex.toList()
     }
 
-    class VertexTreeElement(val position: Vec3d, var parent: VertexTreeElement? = null, vararg child: VertexTreeElement)
+    class VertexTreeElement(val position: Vec3d, var parent: VertexTreeElement? = null, val children: MutableList<VertexTreeElement> = mutableListOf())
     {
-        private val children: MutableList<VertexTreeElement> = child.toMutableList()
-
-        fun makeChildren(vararg childPosition: Vec3d): Collection<VertexTreeElement>
+        fun makeChild(child: VertexTreeElement): VertexTreeElement
         {
-            val childrenToAdd = mutableListOf<VertexTreeElement>()
-            childPosition.forEach {
-                childrenToAdd.add(VertexTreeElement(it, this))
+            child.parent = this
+            children.add(child)
+            return children.last()
+        }
+
+        fun makeChild(child: Vec3d): VertexTreeElement
+        {
+            return makeChild(VertexTreeElement(child))
+        }
+
+        fun makeChildren(vararg child: VertexTreeElement): List<VertexTreeElement>
+        {
+            val list = mutableListOf<VertexTreeElement>()
+            child.forEach {
+                makeChild(it)
+                list.add(it)
             }
-            children.addAll(childrenToAdd)
-            return childrenToAdd
+            return list
         }
 
-        fun remove(): VertexTreeElement
+        fun makeChildren(vararg childPos: Vec3d): List<VertexTreeElement>
         {
-            parent?.removeChild(this)
-            return this
+            return makeChildren(*childPos.toList().map { VertexTreeElement(it) }.toTypedArray())
         }
 
-        private fun removeChild(element: VertexTreeElement)
+        fun makeChildByOffset(offset: Vec3d): VertexTreeElement
         {
-            children.remove(element)
+            return makeChild(this.position.add(offset))
+        }
+
+        fun order66(vararg child: VertexTreeElement)
+        {
+            child.forEach {
+                children.remove(it)
+            }
+        }
+
+        fun up(): VertexTreeElement
+        {
+            return parent?:this
         }
     }
 
-    class VertexTree()
+    class VectorBase()
     {
-        var elements = listOf<VertexTreeElement>()
+        private val x: Vec3d = Vec3d(1.0, 0.0, 0.0)
+        private val y: Vec3d = Vec3d(0.0, 1.0, 0.0)
+        private val z: Vec3d = Vec3d(0.0, 0.0, 1.0)
 
-        fun addOrigin(position: Vec3d)
-        {
-            val returnList = elements.toMutableList()
-            returnList.add(VertexTreeElement(position))
-            elements = returnList.toList()
-        }
-
-        fun addOnElement(origin: VertexTreeElement, vararg destination: Vec3d)
-        {
-            val returnList = elements.toMutableList()
-            returnList.addAll(origin.makeChildren(*destination))
-            elements = returnList.toList()
-        }
-
-        fun removeElement(element: VertexTreeElement)
-        {
-            val returnList = elements.toMutableList()
-            returnList.remove(element.remove())
-            elements = returnList.toList()
-        }
     }
 }
