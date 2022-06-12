@@ -43,10 +43,17 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
     {
         val team = slots[slotIndex]
         team?.let {
-            player.addToDGTeam(it)
-        } ?: player.kickFromDGTeam()
+            if (player.addToDGTeam(it))
+            {
+                DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
+            }
+        } ?: if (player.kickFromDGTeam())
+        {
+            DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
+        } else
+        {
 
-        DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
+        }
     }
 
     override fun clear() = Unit

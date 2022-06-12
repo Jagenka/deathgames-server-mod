@@ -7,6 +7,7 @@ import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.team.DGTeam
+import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.entity.effect.StatusEffectInstance
@@ -23,6 +24,8 @@ object PlayerManager
     private val teamRegistry = mutableMapOf<String, DGTeam>()
 
     private val currentlyDead = mutableSetOf<String>()
+
+    private val canPlayerJoin = mutableMapOf<String, Boolean>().withDefault { true }
 
     fun getOnlinePlayer(name: String): ServerPlayerEntity? = getOnlinePlayers().find { it.name.string == name }
 
@@ -52,22 +55,55 @@ object PlayerManager
     fun ServerPlayerEntity.getDGTeam() = getTeam(this)
 
     fun ServerPlayerEntity.addToDGTeam(team: DGTeam) = addPlayerToTeam(this, team)
-    fun addPlayerToTeam(player: ServerPlayerEntity, team: DGTeam)
+
+    /**
+     * @return if player was added to team
+     */
+    fun addPlayerToTeam(player: ServerPlayerEntity, team: DGTeam): Boolean
     {
-        if (DeathGames.running) return
-        ifServerLoaded {
-            it.scoreboard.addPlayerToTeam(player.name.string, it.scoreboard.getTeam(team.name))
-            teamRegistry[player.name.string] = team
+        if (DeathGames.running) return false
+        val playerName = player.name.string
+        if (canPlayerJoin.getValue(playerName))
+        {
+            ifServerLoaded {
+                it.scoreboard.addPlayerToTeam(playerName, it.scoreboard.getTeam(team.name))
+                teamRegistry[playerName] = team
+            }
+            disableTeamJoinForSomeTime(playerName)
+            return true
         }
+        return false
+    }
+
+    fun disableTeamJoinForSomeTime(playerName: String)
+    {
+        canPlayerJoin[playerName] = false
+        Timer.schedule({ makePlayerAbleToJoinAgain(playerName) }, 1.seconds())
+    }
+
+    fun makePlayerAbleToJoinAgain(playerName: String)
+    {
+        canPlayerJoin[playerName] = true
     }
 
     fun ServerPlayerEntity.kickFromDGTeam() = kickPlayerFromTeam(this)
-    fun kickPlayerFromTeam(player: ServerPlayerEntity)
+
+    /**
+     * @return if player left their team
+     */
+    fun kickPlayerFromTeam(player: ServerPlayerEntity): Boolean
     {
-        ifServerLoaded {
-            it.scoreboard.clearPlayerTeam(player.name.string)
-            teamRegistry.remove(player.name.string)
+        val playerName = player.name.string
+        if (canPlayerJoin.getValue(playerName))
+        {
+            ifServerLoaded {
+                it.scoreboard.clearPlayerTeam(playerName)
+                teamRegistry.remove(playerName)
+            }
+            disableTeamJoinForSomeTime(playerName)
+            return true
         }
+        return false
     }
 
     fun getNonEmptyTeams(): Set<DGTeam>

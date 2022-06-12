@@ -158,9 +158,11 @@ object DeathGamesCommand
 
         val team = DGTeam.valueOf(teamName)
 
-        player.addToDGTeam(team)
-        DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
-        context.source.sendFeedback(Text.of("Successfully added ${player.name.string} to $team."), false)
+        if (player.addToDGTeam(team))
+        {
+            DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
+            context.source.sendFeedback(Text.of("Successfully added ${player.name.string} to $team."), false)
+        }
     }
 
     private fun handleJoinTeam(context: CommandContext<ServerCommandSource>, teamName: String)
@@ -180,9 +182,11 @@ object DeathGamesCommand
         val team = DGTeam.valueOf(teamName)
 
         player?.let {
-            player.addToDGTeam(team)
-            DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
-            context.source.sendFeedback(Text.of("Successfully joined $team."), false)
+            if (player.addToDGTeam(team))
+            {
+                DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
+                context.source.sendFeedback(Text.of("Successfully joined $team."), false)
+            }
         } ?: context.source.sendError(Text.of("You must be a player to do that!"))
     }
 
