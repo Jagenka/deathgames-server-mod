@@ -103,8 +103,11 @@ object DeathGames : DedicatedServerModInitializer
         val winnerCount = winners.count()
         val winnerPlayers = Texts.join(winners, Text.of(", "))
         winners.clear()
-        winners.add(Text.of("Winner${if (winnerCount != 1) "s" else ""}"))
-        winners.add(winnerPlayers)
+        if (winnerCount != 0)
+        {
+            winners.add(Text.of("Winner${if (winnerCount != 1) "s" else ""}"))
+            winners.add(winnerPlayers)
+        }
         PlayerManager.getOnlinePlayers().forEach {
             DisplayManager.sendTitleMessage(it, Text.of("Game Over"), Texts.join(winners, Text.of(": ")), 5.seconds())
         }
