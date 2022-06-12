@@ -24,6 +24,9 @@ object LobbyTask : TimerTask
             if (TeamSelectorUI.isInLobbyBounds(player))
             {
                 DisplayManager.sendMessageToHotbar(Text.of("Press F to choose your team."))
+
+                player.health = 20f //set max hearts
+                player.hungerManager.add(20, 1f) //set max food and saturation
             }
         }
     }
