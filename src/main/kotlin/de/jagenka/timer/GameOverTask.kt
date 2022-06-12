@@ -46,7 +46,7 @@ object GameOverTask : TimerTask
         if (team !in PlayerManager.getInGameTeams())
         {
             val prefix = literal("Game Over for Team ")
-            val teamText = literal("$team").getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0]
+            val teamText = literal(team.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0]
             val suffix = literal(".")
 
             DisplayManager.sendChatMessage(prefix.append(teamText).append(suffix))

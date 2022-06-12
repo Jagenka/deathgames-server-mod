@@ -98,7 +98,7 @@ object DeathGames : DedicatedServerModInitializer
     {
         val winners = mutableListOf<Text>()
         PlayerManager.getOnlineInGameTeams().forEach { team ->
-            winners.add(literal("$team").getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
+            winners.add(literal(team.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
         }
         val winnerCount = winners.count()
         val winnerPlayers = Texts.join(winners, Text.of(", "))

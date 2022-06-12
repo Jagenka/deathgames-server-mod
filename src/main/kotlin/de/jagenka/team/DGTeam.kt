@@ -35,6 +35,11 @@ enum class DGTeam
 
     fun getOnlineInGamePlayers() = getOnlinePlayers().filter { it.isInGame() }
 
+    fun getPrettyName(): String
+    {
+        return this.name.replace('_', ' ').lowercase().capitalizeWords()
+    }
+
     companion object
     {
         val defaultColorBlock: Block = Blocks.WHITE_CONCRETE
@@ -54,3 +59,5 @@ enum class DGTeam
 }
 
 fun Block.isDGColorBlock() = DGTeam.isColorBlock(this)
+
+fun String.capitalizeWords() = split(" ").joinToString(separator = " ", transform = { it.replaceFirstChar { char -> char.uppercaseChar() } })

@@ -50,7 +50,7 @@ object DisplayManager
                 server.scoreboard.addTeam(color.name + "_display")
                 val team = server.scoreboard.getTeam(color.name + "_display")
                 team?.color = Formatting.byName(color.name.lowercase())
-                server.scoreboard.addPlayerToTeam(color.name, team)
+                server.scoreboard.addPlayerToTeam(color.getPrettyName(), team)
             }
         }
     }
@@ -72,8 +72,8 @@ object DisplayManager
                 {
                     DGTeam.values().forEach { team ->
                         val lives = KillManager.getLives(team)
-                        if (lives != null && lives > 0) server.scoreboard.getPlayerScore(team.name, sidebarObjective).score = lives
-                        else server.scoreboard.resetPlayerScore(team.name, sidebarObjective)
+                        if (lives != null && lives > 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score = lives
+                        else server.scoreboard.resetPlayerScore(team.getPrettyName(), sidebarObjective)
                     }
                 }
             }
@@ -160,7 +160,7 @@ object DisplayManager
         {
             val base = Text.literal("")
             base.append(Text.of("${player.name.string} joined Team "))
-            base.append(Text.of(team.name).getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
+            base.append(Text.of(team.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
             sendChatMessage(base)
         }
     }
