@@ -1,6 +1,7 @@
 package de.jagenka
 
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.managers.BonusManager
 import de.jagenka.managers.PlayerManager
 import net.minecraft.particle.ParticleEffect
 import net.minecraft.particle.ParticleTypes
@@ -13,20 +14,24 @@ object GPS
     fun makeArrowGoBrrr()
     {
         val origin = Vec3d(0.0, 4.0, 0.0)
-        val arrow = VertexTreeElement(origin)
         ifServerLoaded { server: MinecraftServer ->
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayerEntity ->
-                val lookDirection = player.rotationVector.normalize()
-                val lookDirectionXZImage = Vec3d(lookDirection.x, 0.0, lookDirection.z).rotateY(90f.toRadians()).normalize()
-                val localYAxis = lookDirection.crossProduct(lookDirectionXZImage).normalize()
-                arrow
-                    .makeChildByOffset(lookDirection.multiply(-1.0))
-                    .up()
-                    .makeChildByOffset(lookDirection.multiply(4.0))
-                    .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, 135f).multiply(1.0))
-                    .up()
-                    .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, -135f).multiply(1.0))
-                drawParticlesFromVertices(server, player, ParticleTypes.WAX_OFF, arrow)
+                BonusManager.getSelectedPlatforms().forEach {
+                    val arrow = VertexTreeElement(origin)
+                    var lookDirection = it.coordinates.toVec3d().subtract(player.pos.add(origin))
+                    if (lookDirection.length() < 10) return@forEach
+                    lookDirection = lookDirection.normalize()
+                    val lookDirectionXZImage = Vec3d(lookDirection.x, 0.0, lookDirection.z).rotateY(90f.toRadians()).normalize()
+                    val localYAxis = lookDirection.crossProduct(lookDirectionXZImage).normalize()
+                    arrow
+                        .makeChildByOffset(lookDirection.multiply(-1.0))
+                        .up()
+                        .makeChildByOffset(lookDirection.multiply(4.0))
+                        .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, 135f).multiply(1.0))
+                        .up()
+                        .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, -135f).multiply(1.0))
+                    drawParticlesFromVertices(server, player, ParticleTypes.WAX_OFF, arrow)
+                }
             }
         }
     }

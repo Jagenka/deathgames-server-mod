@@ -28,6 +28,7 @@ object Timer
             add(ShopTask)
             add(KeepInBoundsTask)
             add(LobbyTask)
+            add(GPSTask)
         }
     }
 
