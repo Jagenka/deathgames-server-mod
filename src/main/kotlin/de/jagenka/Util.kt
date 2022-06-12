@@ -39,6 +39,11 @@ object Util
             server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
 
             server.gameRules[GameRules.SPECTATORS_GENERATE_CHUNKS].set(false, server)
+            server.gameRules[GameRules.DO_MOB_SPAWNING].set(false, server)
+            server.gameRules[GameRules.DO_MOB_GRIEFING].set(false, server)
+            server.gameRules[GameRules.DO_PATROL_SPAWNING].set(false, server)
+            server.gameRules[GameRules.DO_TRADER_SPAWNING].set(false, server)
+            server.gameRules[GameRules.DO_WARDEN_SPAWNING].set(false, server)
             server.gameRules[GameRules.ANNOUNCE_ADVANCEMENTS].set(false, server)
             server.gameRules[GameRules.KEEP_INVENTORY].set(true, server)
             server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(false, server)
