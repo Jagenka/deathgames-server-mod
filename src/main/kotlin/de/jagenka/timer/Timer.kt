@@ -27,7 +27,6 @@ object Timer
             add(BonusDisplayTask)
             add(ShopTask)
             add(KeepInBoundsTask)
-            add(DeathPenaltyTask)
             add(LobbyTask)
         }
     }
