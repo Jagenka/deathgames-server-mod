@@ -49,14 +49,7 @@ object ShopTask : TimerTask
 
                 if (ticksToTpOut == countdownStartingWithSecondsLeft.seconds())
                 {
-                    serverPlayerEntity.sendPrivateMessage("You will be teleported out in $countdownStartingWithSecondsLeft seconds.")
-
-                    for (i in countdownStartingWithSecondsLeft - 1 downTo 1)
-                    {
-                        Timer.schedule({
-                            serverPlayerEntity.sendPrivateMessage("You will be teleported out in $i seconds.")
-                        }, (countdownStartingWithSecondsLeft - i).seconds())
-                    }
+                    sendTpOutMessage(serverPlayerEntity, countdownStartingWithSecondsLeft)
                 }
 
                 if (ticksToTpOut < 0)
@@ -65,6 +58,15 @@ object ShopTask : TimerTask
                 }
 
             } else currentlyInShop.remove(playerName)
+        }
+    }
+
+    private fun sendTpOutMessage(player: ServerPlayerEntity, secondsLeft: Int)
+    {
+        if (secondsLeft > 0 && currentlyInShop.contains(player.name.string))
+        {
+            player.sendPrivateMessage("You will be teleported out in $secondsLeft seconds.")
+            Timer.schedule({ sendTpOutMessage(player, secondsLeft - 1) }, 1.seconds())
         }
     }
 
