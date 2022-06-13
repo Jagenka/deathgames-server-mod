@@ -87,7 +87,7 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         PlayerManager.getOnlinePlayers().forEach { player ->
-            DisplayManager.sendTitleMessage(player, Text.of("Whaddup fuckers"), Text.of("Ready to fuck?"), 5.seconds())
+            DisplayManager.sendTitleMessage(player, Text.of("Good Luck"), Text.of("and have fun"), 5.seconds())
         }
 
         Timer.start()
