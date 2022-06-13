@@ -217,9 +217,12 @@ object PlayerManager
 
     fun isInGame(playerName: String) = inGameMap.getValue(playerName)
 
+    /**
+     * @return is player was able to respawn (not currently alive)
+     */
     fun requestRespawn(player: ServerPlayerEntity): Boolean
     {
-        if (!isCurrentlyDead(player.name.string)) return false
+        if (!isCurrentlyDead(player.name.string)) return false // das is doppelt zu if (player.health > 0.0f)
 
         Util.minecraftServer?.let { server ->
             if (player.notInAnyWorld)
