@@ -205,7 +205,7 @@ object PlayerManager
     {
         if (DeathGames.running) SpawnManager.teleportPlayerToSpawn(player)
         else player.teleport(Config.lobbySpawn)
-        player.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 5.seconds(), 255))
+        player.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 10.seconds(), 255))
 
         currentlyDead.remove(player.name.string)
     }
