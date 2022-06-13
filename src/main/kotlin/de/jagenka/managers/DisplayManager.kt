@@ -212,4 +212,13 @@ object DisplayManager
             }
         }
     }
+
+    fun getFormattedPlayerName(playerName: String): Text
+    {
+        val team = PlayerManager.getTeam(playerName)
+        team?.let {
+            return Text.of(playerName).getWithStyle(Style.EMPTY.withFormatting(Formatting.byName(team.name.lowercase())))[0]
+        }
+        return Text.of(playerName)
+    }
 }
