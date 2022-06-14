@@ -3,7 +3,6 @@ package de.jagenka.shop
 import de.jagenka.config.Config
 import de.jagenka.managers.getDGMoney
 import de.jagenka.toDGCoordinates
-import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -19,7 +18,7 @@ object Shop
 {
     const val SHOP_UNIT = "$"
 
-    private val upgrades = mutableMapOf<ServerPlayerEntity, MutableMap<UpgradeType, Int>>().withDefault { mutableMapOf<UpgradeType, Int>().withDefault { 0 } }
+    private val upgrades = mutableMapOf<String, MutableMap<UpgradeType, Int>>().withDefault { mutableMapOf<UpgradeType, Int>().withDefault { 0 } }
 
     const val slotAmount = 9 * 6
 
@@ -61,17 +60,17 @@ object Shop
         }
     }
 
-    fun getUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType) = upgrades.getValue(player).getValue(upgradeType)
-    fun setUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType, level: Int)
+    fun getUpgradeLevel(playerName: String, upgradeType: UpgradeType) = upgrades.getValue(playerName).getValue(upgradeType)
+    fun setUpgradeLevel(playerName: String, upgradeType: UpgradeType, level: Int)
     {
-        val upgradeTypeIntMutableMap = upgrades.getValue(player)
+        val upgradeTypeIntMutableMap = upgrades.getValue(playerName)
         upgradeTypeIntMutableMap[upgradeType] = level
-        upgrades[player] = upgradeTypeIntMutableMap
+        upgrades[playerName] = upgradeTypeIntMutableMap
     }
 
-    fun increaseUpgradeLevel(player: ServerPlayerEntity, upgradeType: UpgradeType)
+    fun increaseUpgradeLevel(playerName: String, upgradeType: UpgradeType)
     {
-        setUpgradeLevel(player, upgradeType, getUpgradeLevel(player, upgradeType) + 1)
+        setUpgradeLevel(playerName, upgradeType, getUpgradeLevel(playerName, upgradeType) + 1)
     }
 
     fun getBalanceString(player: ServerPlayerEntity) = "You have $SHOP_UNIT${player.getDGMoney()} to spend."

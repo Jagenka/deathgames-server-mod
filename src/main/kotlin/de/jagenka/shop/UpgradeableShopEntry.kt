@@ -30,7 +30,7 @@ class UpgradeableShopEntry(
         }
     }
 
-    override fun getPrice(player: ServerPlayerEntity): Int = prices[Shop.getUpgradeLevel(player, type)]
+    override fun getPrice(player: ServerPlayerEntity): Int = prices[Shop.getUpgradeLevel(player.name.string, type)]
 
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
     {
@@ -96,7 +96,7 @@ class UpgradeableShopEntry(
             }
 
             player.deductDGMoney(prices[nextLevel])
-            Shop.increaseUpgradeLevel(player, type)
+            Shop.increaseUpgradeLevel(player.name.string, type)
             return true
         } else
         {
@@ -105,11 +105,11 @@ class UpgradeableShopEntry(
         return false
     }
 
-    private fun getUpgradeLevel(player: ServerPlayerEntity) = Shop.getUpgradeLevel(player, type) - 1
+    private fun getUpgradeLevel(player: ServerPlayerEntity) = Shop.getUpgradeLevel(player.name.string, type) - 1
 
     override fun getTotalSpentMoney(player: ServerPlayerEntity): Int
     {
-        val currentUpgradeLevel = Shop.getUpgradeLevel(player, type)
+        val currentUpgradeLevel = Shop.getUpgradeLevel(player.name.string, type)
         return prices.subList(0, currentUpgradeLevel.coerceAtLeast(0)).sum()
     }
 
@@ -130,6 +130,6 @@ class UpgradeableShopEntry(
             }
         }
 
-        Shop.setUpgradeLevel(player, type, 0)
+        Shop.setUpgradeLevel(player.name.string, type, 0)
     }
 }
