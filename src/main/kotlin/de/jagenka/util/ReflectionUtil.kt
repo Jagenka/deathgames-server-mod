@@ -49,17 +49,6 @@ fun setPropertyFromString(newValue: String, configEntry: ConfigEntry, sectionFie
         val transformer = getConfigPropertyTransformer(propertyField.type, transformers) ?: return false
         val newValueObject = transformer.fromString(newValue)
 
-        // make property field non final
-//        val modifiersField = Field::class.java.getDeclaredField("modifiers")   // hidden from java 12 on
-//        val getDeclaredFields0: Method = Class::class.java.getDeclaredMethod("getDeclaredFields0", Boolean::class.java)
-//        getDeclaredFields0.isAccessible = true
-//        val fieldFields = (getDeclaredFields0.invoke(Field::class.java, false) as Array<Field>).toList()
-//
-//        val modifiersField = fieldFields.find { it.name == "modifiers" } ?: return false
-//
-//        modifiersField.isAccessible = true
-//        modifiersField.setInt(propertyField, propertyField.modifiers.and(Modifier.FINAL.inv()))
-
         propertyField.set(currentSection, newValueObject)
 
         return true
