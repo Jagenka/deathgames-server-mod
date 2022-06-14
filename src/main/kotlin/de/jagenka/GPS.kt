@@ -16,10 +16,10 @@ object GPS
         val origin = Vec3d(0.0, 4.0, 0.0)
         ifServerLoaded { server: MinecraftServer ->
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayerEntity ->
-                BonusManager.getSelectedPlatforms().forEach {
+                BonusManager.getSelectedPlatforms().forEach platforms@{
                     val arrow = VertexTreeElement(origin)
                     var lookDirection = it.coordinates.toVec3d().subtract(player.pos.add(origin))
-                    if (lookDirection.length() < 10) return@forEach
+                    if (lookDirection.length() < 10) return@platforms
                     lookDirection = lookDirection.normalize()
                     val lookDirectionXZImage = Vec3d(lookDirection.x, 0.0, lookDirection.z).rotateY(90f.toRadians()).normalize()
                     val localYAxis = lookDirection.crossProduct(lookDirectionXZImage).normalize()
@@ -30,8 +30,26 @@ object GPS
                         .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, 135f).multiply(1.0))
                         .up()
                         .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, -135f).multiply(1.0))
-                    drawParticlesFromVertices(server, player, ParticleTypes.WAX_OFF, arrow)
+                    drawParticlesFromVertexTreeElement(server, player, ParticleTypes.WAX_OFF, arrow)
                 }
+            }
+        }
+    }
+
+    private val model = PlyImporter.parsePlyFromFile("C:/Programming Projects/deathgames-server-mod/src/main/resources/models/Squirtle.ply")
+
+    fun renderCube()
+    {
+        ifServerLoaded { server ->
+            PlayerManager.getOnlinePlayers().forEach { player ->
+                val lookDirection = player.rotationVector.normalize()
+                val offset = Vec3d(lookDirection.x, 0.0, lookDirection.z).multiply(3.0)
+                val finalStructure = VertexStructure()
+                if (model.isEmpty()) return@ifServerLoaded
+                model.getSet().forEach { edge ->
+                    finalStructure.add(Edge(edge.point1.add(offset), edge.point2.add(offset)))
+                }
+                drawParticlesFromVertexStructure(server, player, ParticleTypes.WAX_OFF, finalStructure)
             }
         }
     }
@@ -55,12 +73,19 @@ object GPS
         return vertices
     }
 
-    private fun drawParticlesFromVertices(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertex: VertexTreeElement)
+    private fun drawParticlesFromVertexStructure(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, edges: VertexStructure)
+    {
+        edges.getSet().forEach { edge ->
+            drawMultipleParticles(server, player, particle, generateLine(edge.point1, edge.point2, 0.1))
+        }
+    }
+
+    private fun drawParticlesFromVertexTreeElement(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertex: VertexTreeElement)
     {
         if (vertex.children.isEmpty()) return
         for (child in vertex.children)
         {
-            drawParticlesFromVertices(server, player, particle, child)
+            drawParticlesFromVertexTreeElement(server, player, particle, child)
             drawMultipleParticles(server, player, particle, generateLine(vertex.position, child.position, 0.1))
         }
     }
@@ -127,11 +152,35 @@ object GPS
         }
     }
 
-    class VectorBase()
-    {
-        private val x: Vec3d = Vec3d(1.0, 0.0, 0.0)
-        private val y: Vec3d = Vec3d(0.0, 1.0, 0.0)
-        private val z: Vec3d = Vec3d(0.0, 0.0, 1.0)
+    data class Edge(val point1: Vec3d, val point2: Vec3d) {
+        fun equals(other: Edge): Boolean
+        {
+            return (point1 == other.point1) && (point2 == other.point2) || (point1 == other.point2) && (point2 == other.point1)
+        }
+    }
 
+    class VertexStructure
+    {
+        private val edges: MutableSet<Edge> = mutableSetOf()
+
+        fun add(edge: Edge): Boolean
+        {
+            return edges.add(edge)
+        }
+
+        fun remove(edge: Edge): Boolean
+        {
+            return edges.remove(edge)
+        }
+
+        fun getSet(): MutableSet<Edge>
+        {
+            return edges
+        }
+
+        fun isEmpty(): Boolean
+        {
+            return edges.isEmpty()
+        }
     }
 }
