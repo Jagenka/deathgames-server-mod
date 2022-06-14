@@ -63,7 +63,8 @@ object BonusManager
 
     fun getActivePlatforms() = platforms.filter { it.active }
 
-    fun isOnActivePlatform(player: ServerPlayerEntity) = getActivePlatforms().any {
+    fun isOnActivePlatform(playerName: String) = getActivePlatforms().any {
+        val player = PlayerManager.getOnlinePlayer(playerName) ?: return false
         val dx = abs(it.coordinates.x.toCenter() - player.pos.x)
         val dy = abs(it.coordinates.y.toDouble() - player.pos.y)
         val dz = abs(it.coordinates.z.toCenter() - player.pos.z)

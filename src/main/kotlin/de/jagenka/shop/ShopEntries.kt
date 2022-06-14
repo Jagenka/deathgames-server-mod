@@ -83,7 +83,7 @@ object ShopEntries
                 slot(1, 8) to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
                 slot(3, 7) to ItemShopEntry(TrapItems.SNARE_TRAP.item, 10, "Stop right there, criminal scum!"),
                 slot(3, 8) to ItemShopEntry(TrapItems.VOID_TRAP.item, 10, "The Abyss"),
-                slot(0, 3) to ItemShopEntry(ItemStack(SHIELD).withDamage(257), 50, "Shield"),
+                slot(0, 3) to ItemShopEntry(ItemStack(SHIELD).withDamage(217), 50, "Shield"),
                 slot(4, 1) to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
                 slot(4, 8) to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
                 slot(2, 8) to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
@@ -91,14 +91,13 @@ object ShopEntries
                 slot(0, 0) to UpgradeableShopEntry(
                     UpgradeType.ARMOR,
                     mutableListOf(
-                        mutableListOf(LEATHER_HELMET.unbreakable(), LEATHER_LEGGINGS.unbreakable()),
-                        mutableListOf(LEATHER_CHESTPLATE.unbreakable(), LEATHER_BOOTS.unbreakable()),
+                        mutableListOf(LEATHER_HELMET.unbreakable(), LEATHER_CHESTPLATE.unbreakable(), LEATHER_LEGGINGS.unbreakable(), LEATHER_BOOTS.unbreakable()),
                         mutableListOf(IRON_HELMET.unbreakable(), IRON_LEGGINGS.unbreakable()),
                         mutableListOf(IRON_CHESTPLATE.unbreakable(), IRON_BOOTS.unbreakable()),
                         mutableListOf(DIAMOND_HELMET.unbreakable(), DIAMOND_LEGGINGS.unbreakable()),
                         mutableListOf(DIAMOND_CHESTPLATE.unbreakable(), DIAMOND_BOOTS.unbreakable()),
                     ),
-                    mutableListOf(20, 40, 60, 80, 100, 120),
+                    mutableListOf(40, 60, 80, 100, 120),
                     "Armor Upgrade"
                 ),
                 slot(0, 1) to UpgradeableShopEntry(
@@ -151,7 +150,7 @@ object ShopEntries
                     mutableListOf(75, 25, 50, 100, 150, 150),
                     "Crossbow Upgrade"
                 ),
-                slot(5,8) to LeaveShopEntry()
+                slot(5, 8) to LeaveShopEntry()
             )
 
             entries[slot(0, 0)]?.let { entries[slot(1, 0)] = RefundShopEntry(it) }

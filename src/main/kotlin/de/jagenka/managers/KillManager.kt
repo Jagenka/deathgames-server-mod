@@ -17,6 +17,7 @@ import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.Text
 
 object KillManager
 {
@@ -37,7 +38,9 @@ object KillManager
     @JvmStatic
     fun handleDeath(deceased: ServerPlayerEntity)
     {
-        PlayerManager.registerAsCurrentlyDead(deceased.name.string)
+        val playerName = deceased.name.string
+
+        PlayerManager.registerAsCurrentlyDead(playerName)
 
         Timer.schedule({
             if (PlayerManager.requestRespawn(deceased))
@@ -48,14 +51,24 @@ object KillManager
 
         if (!DeathGames.running) return
 
-        totalDeaths[deceased.name.string] = totalDeaths.getValue(deceased.name.string) + 1
+        totalDeaths[playerName] = totalDeaths.getValue(playerName) + 1
         removeOneLife(deceased)
+
+        val killStreak = getKillStreak(playerName)
+        if (killStreak >= 3)
+        {
+            val shutdownText = Text.literal("Shutdown! ")
+            shutdownText.append(DisplayManager.getFormattedPlayerName(playerName))
+            shutdownText.append(Text.of(" was on a kill streak of $killStreak."))
+            DisplayManager.sendChatMessage(shutdownText)
+        }
+
         resetKillStreak(deceased)
 
         DisplayManager.updateLivesDisplay()
         DisplayManager.updateKillStreakDisplay()
 
-        InactivePlayersTask.resetForPlayer(deceased.name.string)
+        InactivePlayersTask.resetForPlayer(playerName)
     }
 
     @JvmStatic
@@ -85,7 +98,7 @@ object KillManager
                 val killStreakAmount = getKillStreak(deceased.name.string)
                 addMoney(attacker.name.string, moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
 //                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.sendPrivateMessage("You received ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.")
+                attacker.sendPrivateMessage("You receive ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.")
             }
             Mode.TEAM ->
             {
@@ -93,7 +106,7 @@ object KillManager
                 addMoney(attacker.getDGTeam(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
 //                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.getDGTeam()?.getOnlinePlayers()
-                    ?.forEach { it.sendPrivateMessage("Your team received ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.") }
+                    ?.forEach { it.sendPrivateMessage("Your team receives ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.") }
             }
         }
 
