@@ -2,6 +2,7 @@ package de.jagenka
 
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
+import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getInGamePlayersInRange
 import de.jagenka.managers.PlayerManager.getOnlinePlayersInRange
 import de.jagenka.timer.CustomTimer
@@ -42,15 +43,17 @@ enum class TrapItems(val item: ItemStack)
 }
 
 @kotlinx.serialization.Serializable
-data class Trap(val displayName: String,                            // name shown in shop
-                val gaynessRange: Double = 0.5,                     // trigger range
-                val setupTime: Int = 10.seconds(),                  // time, until trap can be triggered. shows particles in the meantime
-                val gaynessTriggerVisibleRange: Double = 30.0,      // range, in which trigger particles can be seen
-                val gaynessVisibilityRange: Double = 10.0,          // range, in which preparation particles can be seen
-                val affectedGayRange: Double = 1.5,                 // range, in which players are affected upon trigger
-                private var triggerDuration: Int = 6.seconds(),     // how long effects are applied
-                val snares: Boolean = false,                        // if the trap holds player in place
-                val effects: List<DGStatusEffect>)                  // what effects to apply
+data class Trap(
+    val displayName: String,                            // name shown in shop
+    val gaynessRange: Double = 0.5,                     // trigger range
+    val setupTime: Int = 10.seconds(),                  // time, until trap can be triggered. shows particles in the meantime
+    val gaynessTriggerVisibleRange: Double = 30.0,      // range, in which trigger particles can be seen
+    val gaynessVisibilityRange: Double = 10.0,          // range, in which preparation particles can be seen
+    val affectedGayRange: Double = 1.5,                 // range, in which players are affected upon trigger
+    private var triggerDuration: Int = 6.seconds(),     // how long effects are applied
+    val snares: Boolean = false,                        // if the trap holds player in place
+    val effects: List<DGStatusEffect>
+)                  // what effects to apply
 
 object TrapsAreNotGay
 {
@@ -64,20 +67,23 @@ object TrapsAreNotGay
 
     private val notGayness = mutableSetOf<NotGay>()
 
-    private fun addLessGay(x: Int, y: Int, z: Int, gaynessRange: Double = 0.5,
-                           setupTime: Int = 10.seconds(),
-                           gaynessTriggerVisibleRange: Double = 30.0,
-                           gaynessVisibilityRange: Double = 10.0,
-                           affectedGayRange: Double = 1.5,
-                           triggerDuration: Int = 6.seconds(),
-                           snares: Boolean = false,
-                           effectsString: List<DGStatusEffect>): Boolean
+    private fun addLessGay(
+        x: Int, y: Int, z: Int, gaynessRange: Double = 0.5,
+        setupTime: Int = 10.seconds(),
+        gaynessTriggerVisibleRange: Double = 30.0,
+        gaynessVisibilityRange: Double = 10.0,
+        affectedGayRange: Double = 1.5,
+        triggerDuration: Int = 6.seconds(),
+        snares: Boolean = false,
+        effectsString: List<DGStatusEffect>
+    ): Boolean
     {
         val effects = mutableListOf<StatusEffectInstance>()
         effectsString.forEach { jaysMom ->
             effects.add(jaysMom.statusEffectInstance)
         }
-        val notGay = NotGay(Coordinates(x.toDouble() + 0.5, y.toDouble(), z.toDouble() + 0.5), 0.ticks(),
+        val notGay = NotGay(
+            Coordinates(x.toDouble() + 0.5, y.toDouble(), z.toDouble() + 0.5), 0.ticks(),
             gaynessRange = gaynessRange,
             setupTime = setupTime,
             gaynessTriggerVisibleRange = gaynessTriggerVisibleRange,
@@ -85,7 +91,8 @@ object TrapsAreNotGay
             affectedGayRange = affectedGayRange,
             triggerDuration = triggerDuration,
             snares = snares,
-            effects = effects)
+            effects = effects
+        )
         return if (!notGayness.contains(notGay))
         {
             notGayness.add(notGay)
@@ -113,11 +120,23 @@ object TrapsAreNotGay
                 {
                     it.trigger()
                     gayTriggerSpectator.forEach { player ->
-                        server.overworld.spawnParticles(player, ParticleTypes.LARGE_SMOKE, true, it.pos.x.toCenter(), it.pos.y.toDouble(), it.pos.z.toCenter(), 500, 0.0, 0.0, 0.0, 0.5)
+                        server.overworld.spawnParticles(
+                            player,
+                            ParticleTypes.LARGE_SMOKE,
+                            true,
+                            it.pos.x.toCenter(),
+                            it.pos.y.toDouble(),
+                            it.pos.z.toCenter(),
+                            500,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.5
+                        )
                     }
                     affectedPlayers.forEach { player ->
                         player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 1f, 1f)
-                        it.addDisabledPlayer(player)
+                        it.addDisabledPlayer(player.name.string)
                     }
                 }
             }
@@ -140,7 +159,8 @@ object TrapsAreNotGay
             // Handles snaring player
             if (notGay.isTriggered() && notGay.getRemainingDuration() > 0)
             {
-                notGay.getDisabledPlayers().forEach { (player, coordinatesMaybe) ->
+                notGay.disabledJumpPlayers.forEach { (playerName, coordinatesMaybe) ->
+                    val player = PlayerManager.getOnlinePlayer(playerName) ?: return@forEach
                     if (notGay.snares)
                     {
                         if (coordinatesMaybe.flag && player.isOnGround)
@@ -177,26 +197,46 @@ object TrapsAreNotGay
         if (ctx.side == Direction.UP)
         {
             mapOf(
-                "Snare Trap" to { addLessGay(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                    snares = true,
-                    effectsString = listOf(DGStatusEffect.BLIND)) },
-                "Void Trap" to { addLessGay(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                    snares = false,
-                    effectsString = listOf(DGStatusEffect.BLIND, DGStatusEffect.LEVITATION, DGStatusEffect.SLOWNESS)) },
-                "Exhaustion Trap" to { addLessGay(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                    triggerDuration = 10.seconds(),
-                    snares = false,
-                    effectsString = listOf(DGStatusEffect.HUNGER, DGStatusEffect.FATIGUE)) },
-                "Revealing Trap" to { addLessGay(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                    triggerDuration = 15.seconds(),
-                    gaynessRange = 5.0,
-                    affectedGayRange = 20.0,
-                    snares = false,
-                    effectsString = listOf(DGStatusEffect.GLOWING)) },
-                "Poison Trap" to { addLessGay(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                    triggerDuration = 7.seconds(),
-                    snares = false,
-                    effectsString = listOf(DGStatusEffect.WEAKNESS, DGStatusEffect.POISON)) }
+                "Snare Trap" to {
+                    addLessGay(
+                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
+                        snares = true,
+                        effectsString = listOf(DGStatusEffect.BLIND)
+                    )
+                },
+                "Void Trap" to {
+                    addLessGay(
+                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
+                        snares = false,
+                        effectsString = listOf(DGStatusEffect.BLIND, DGStatusEffect.LEVITATION, DGStatusEffect.SLOWNESS)
+                    )
+                },
+                "Exhaustion Trap" to {
+                    addLessGay(
+                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
+                        triggerDuration = 10.seconds(),
+                        snares = false,
+                        effectsString = listOf(DGStatusEffect.HUNGER, DGStatusEffect.FATIGUE)
+                    )
+                },
+                "Revealing Trap" to {
+                    addLessGay(
+                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
+                        triggerDuration = 15.seconds(),
+                        gaynessRange = 5.0,
+                        affectedGayRange = 20.0,
+                        snares = false,
+                        effectsString = listOf(DGStatusEffect.GLOWING)
+                    )
+                },
+                "Poison Trap" to {
+                    addLessGay(
+                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
+                        triggerDuration = 7.seconds(),
+                        snares = false,
+                        effectsString = listOf(DGStatusEffect.WEAKNESS, DGStatusEffect.POISON)
+                    )
+                }
             ).forEach { (name, `|unit|`) ->
                 if (name == ctx.stack.name.string && Items.BAT_SPAWN_EGG == ctx.stack.item)
                 {
@@ -223,7 +263,7 @@ data class NotGay(
     val effects: List<StatusEffectInstance>
 )
 {
-    private val disabledJumpPlayers = mutableMapOf<ServerPlayerEntity, DisabledPlayerCoordinateFetch>()
+    val disabledJumpPlayers = mutableMapOf<String, DisabledPlayerCoordinateFetch>()
     private var triggered = false
 
     override fun equals(other: Any?): Boolean
@@ -238,9 +278,9 @@ data class NotGay(
         return true
     }
 
-    fun addDisabledPlayer(player: ServerPlayerEntity)
+    fun addDisabledPlayer(playerName: String)
     {
-        disabledJumpPlayers[player] = DisabledPlayerCoordinateFetch(true)
+        disabledJumpPlayers[playerName] = DisabledPlayerCoordinateFetch(true)
     }
 
     fun trigger()
@@ -252,9 +292,6 @@ data class NotGay(
     {
         triggerDuration--
     }
-
-    // Getters
-    fun getDisabledPlayers(): Map<ServerPlayerEntity, DisabledPlayerCoordinateFetch> = disabledJumpPlayers
 
     fun isTriggered(): Boolean = triggered
 
