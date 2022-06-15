@@ -1,6 +1,7 @@
 package de.jagenka
 
 import kotlinx.serialization.Serializable
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -20,6 +21,8 @@ data class Coordinates(val x: Int, val y: Int, val z: Int, val yaw: Float = 0f, 
     fun relative(x: Int, y: Int, z: Int) = relative(x.toDouble(), y.toDouble(), z.toDouble())
 
     fun toVec3d() = Vec3d(x.toCenter(), y.toDouble(), z.toCenter())
+
+    override fun toString() = "($x, $y, $z, y=%.2f, p=%.2f)".format(yaw, pitch)
 }
 
 fun Int.toCenter() = this + 0.5
@@ -31,3 +34,4 @@ operator fun Coordinates.div(value: Double) = Coordinates((this.x / value).floor
 
 
 fun Vec3d.toDGCoordinates() = Coordinates(this)
+fun ServerPlayerEntity.toDGCoordinates() = Coordinates(this.pos.x, this.pos.y, this.pos.z, this.yaw, this.pitch)

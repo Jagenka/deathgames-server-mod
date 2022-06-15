@@ -1,6 +1,7 @@
 package de.jagenka.config
 
 import de.jagenka.BlockCuboid
+import de.jagenka.CoordinateList
 import de.jagenka.Coordinates
 import de.jagenka.managers.Platform
 import kotlinx.serialization.Serializable
@@ -27,7 +28,7 @@ class ConfigEntry(
 
 @Serializable
 class SpawnsConfigEntry(
-    var spawnPositions: List<Coordinates> = listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f)),
+    var spawnPositions: CoordinateList = CoordinateList(listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f))),
     var platformRadius: Int = 0,
     var worldSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),

@@ -4,6 +4,7 @@ import de.jagenka.commands.ConfigPropertyTransformer
 import de.jagenka.config.Config
 import de.jagenka.config.ConfigEntry
 import de.jagenka.config.Section
+import net.minecraft.server.command.ServerCommandSource
 import java.lang.reflect.Field
 
 fun <T> getDeclaredFields(clazz: Class<T>): List<Field> {
@@ -36,8 +37,10 @@ fun getConfigPropertyTransformer(type: Class<*>, transformers: Map<Class<out Any
     return transformers.entries.find { type.canonicalName == it.key.canonicalName }?.value
 }
 
-fun setPropertyFromString(newValue: String, configEntry: ConfigEntry, sectionField: Field, propertyField: Field,
-                          transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>
+fun setPropertyFromString(
+    newValue: String, configEntry: ConfigEntry, sectionField: Field, propertyField: Field,
+    transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>,
+    source: ServerCommandSource
 ): Boolean {
     try {
         sectionField.isAccessible = true
@@ -47,12 +50,14 @@ fun setPropertyFromString(newValue: String, configEntry: ConfigEntry, sectionFie
 //        val currentValue = propertyField.get(currentSection)
 
         val transformer = getConfigPropertyTransformer(propertyField.type, transformers) ?: return false
-        val newValueObject = transformer.fromString(newValue)
+        val newValueObject = transformer.fromString(newValue, source)
 
-        propertyField.set(currentSection, newValueObject)
-
-        return true
-
+        if(newValueObject != null) {
+            propertyField.set(currentSection, newValueObject)
+            return true
+        } else {
+            return false
+        }
     } catch (e: Exception) {
         e.printStackTrace()
         return false

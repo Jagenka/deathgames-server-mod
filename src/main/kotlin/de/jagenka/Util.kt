@@ -9,7 +9,10 @@ import net.minecraft.block.Blocks
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.TextColor
-import net.minecraft.util.math.*
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Quaternion
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3f
 import net.minecraft.world.GameRules
 import java.util.*
 import kotlin.math.floor
@@ -170,7 +173,14 @@ class BlockCuboid
         return result
     }
 
+    override fun toString() = "BlockCuboid(" + listOf(firstCorner, secondCorner).joinToString(", ") { it.toString() } + ")"
 
+}
+
+// this is needed so the config command transformer can correctly deduce the non generic type of the list
+@Serializable
+class CoordinateList(val coords: List<Coordinates>) {
+    override fun toString() = "[" + coords.joinToString(", ") { it.toString() } + "]"
 }
 
 fun Double.floor() = floor(this).toInt()

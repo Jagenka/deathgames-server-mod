@@ -81,7 +81,7 @@ object Config
     {
         configEntry = Json.decodeFromString(FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json").toFile().readText())
 
-        SpawnManager.setSpawns(configEntry.spawns.spawnPositions)
+        SpawnManager.setSpawns(configEntry.spawns.spawnPositions.coords) // TODO: these won't be change by the config command
         BonusManager.setPlatforms(configEntry.bonus.platforms)
     }
 

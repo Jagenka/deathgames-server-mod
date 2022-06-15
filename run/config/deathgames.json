@@ -1,6 +1,6 @@
 {
   "spawns": {
-    "spawnPositions": [
+    "spawnPositions": {"coords": [
       {
         "x": -38,
         "y": 63,
@@ -57,7 +57,7 @@
         "yaw": 270.0,
         "pitch": 0.0
       }
-    ],
+    ]},
     "platformRadius": 5,
     "worldSpawn": {
       "x": 0,
