@@ -1,6 +1,7 @@
 package de.jagenka.managers
 
 import de.jagenka.DeathGames
+import de.jagenka.TrapsAreNotGay
 import de.jagenka.config.Config.livesPerPlayer
 import de.jagenka.config.Config.livesPerTeam
 import de.jagenka.config.Config.startMoneyPerPlayer
@@ -38,6 +39,8 @@ object KillManager
         val playerName = deceased.name.string
 
         PlayerManager.registerAsCurrentlyDead(playerName)
+
+        TrapsAreNotGay.onPlayerDeath(playerName)
 
         Timer.schedule({
             if (PlayerManager.requestRespawn(deceased))

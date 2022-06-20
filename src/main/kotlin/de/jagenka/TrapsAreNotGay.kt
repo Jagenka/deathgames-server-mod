@@ -143,6 +143,11 @@ object TrapsAreNotGay
         }
     }
 
+    fun onPlayerDeath(playerName: String)
+    {
+        notGayness.forEach { it.disabledJumpPlayers.remove(playerName) }
+    }
+
     fun becomeGay()
     {
         notGayness.clear()
