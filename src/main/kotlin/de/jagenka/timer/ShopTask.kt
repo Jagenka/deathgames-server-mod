@@ -1,21 +1,29 @@
 package de.jagenka.timer
 
+import de.jagenka.Util
+import de.jagenka.Util.teleport
 import de.jagenka.config.Config
+import de.jagenka.isSame
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.shop.Shop
+import de.jagenka.toDGCoordinates
+import net.minecraft.block.Blocks
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import net.minecraft.util.math.Vec3d
 
 object ShopTask : TimerTask
 {
     private val currentlyInShop = mutableSetOf<String>()
     private val timeInShop = mutableMapOf<String, Int>().withDefault { 0 } // time in ticks
+
+    private val lastPosOutOfShop = mutableMapOf<String, TPPos>()
 
     private const val countdownStartingWithSecondsLeft = 5 // configurable
 
@@ -33,6 +41,15 @@ object ShopTask : TimerTask
 
             if (PlayerManager.isInGame(playerName) && Shop.isInShopBounds(serverPlayerEntity))
             {
+                if (InactivePlayersTask.isInactive(playerName))
+                {
+                    lastPosOutOfShop[playerName]?.let {
+                        serverPlayerEntity.teleport(it.pos, it.yaw, it.pitch)
+                        DisplayManager.sendTitleMessage(serverPlayerEntity, Text.literal("Shop's closed!"), Text.literal("a K/D change might help"), 3.seconds())
+                    }
+                    return@forEach
+                }
+
                 serverPlayerEntity.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 1.seconds(), 255))
 
                 if (playerName !in currentlyInShop)
@@ -58,6 +75,14 @@ object ShopTask : TimerTask
                 }
 
             } else currentlyInShop.remove(playerName)
+
+            if (playerName !in currentlyInShop && serverPlayerEntity.isOnGround)
+            {
+                if (!Util.getBlockAt(serverPlayerEntity.pos.toDGCoordinates().relative(0, -1, 0)).isSame(Blocks.AIR))
+                {
+                    lastPosOutOfShop[playerName] = TPPos(serverPlayerEntity.pos, serverPlayerEntity.yaw, serverPlayerEntity.pitch)
+                }
+            }
         }
     }
 
@@ -89,3 +114,5 @@ object ShopTask : TimerTask
         timeInShop.clear()
     }
 }
+
+data class TPPos(val pos: Vec3d, val yaw: Float, val pitch: Float)

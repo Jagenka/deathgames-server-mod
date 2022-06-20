@@ -73,6 +73,8 @@ object Util
         this.teleport(server.overworld, x.toCenter(), y.toDouble(), z.toCenter(), yaw, pitch)
     }
 
+    fun ServerPlayerEntity.teleport(vec3d: Vec3d, yaw: Float, pitch: Float) = this.teleport(server.overworld, vec3d.x, vec3d.y, vec3d.z, yaw, pitch)
+
     fun setBlockAt(coordinates: Coordinates, block: Block)
     {
         val (x, y, z) = coordinates
@@ -179,7 +181,8 @@ class BlockCuboid
 
 // this is needed so the config command transformer can correctly deduce the non generic type of the list
 @Serializable
-class CoordinateList(val coords: List<Coordinates>) {
+class CoordinateList(val coords: List<Coordinates>)
+{
     override fun toString() = "[" + coords.joinToString(", ") { it.toString() } + "]"
 }
 

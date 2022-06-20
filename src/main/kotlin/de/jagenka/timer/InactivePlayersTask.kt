@@ -26,7 +26,7 @@ object InactivePlayersTask : TimerTask
     override fun run()
     {
         inactiveTimer.forEach { (playerName, time) ->
-            val personalRevealTime = revealTimePerPlayer.toDouble() * (10 - KillManager.getKillStreak(playerName)).toDouble() / 10.0
+            val personalRevealTime = getPersonalRevealTime(playerName)
             val percentage = if (personalRevealTime > 0) ((time.toDouble() / personalRevealTime) * 100).floor() else 100
 
             PlayerManager.getOnlinePlayer(playerName)?.let { DisplayManager.updateBossBarForPlayer(it, percentage) }
@@ -55,6 +55,10 @@ object InactivePlayersTask : TimerTask
     {
         inactiveTimer.clear()
     }
+
+    private fun getPersonalRevealTime(playerName: String) = revealTimePerPlayer.toDouble() * (10 - KillManager.getKillStreak(playerName)).toDouble() / 10.0
+
+    fun isInactive(playerName: String) = playerName in highlightedPlayers
 
     fun resetForPlayer(name: String)
     {

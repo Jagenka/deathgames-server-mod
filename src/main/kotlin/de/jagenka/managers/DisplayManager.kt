@@ -199,19 +199,19 @@ object DisplayManager
                 if (percent <= 33)
                 {
                     it.color = BossBar.Color.GREEN
-                    it.name = Text.of("Time to kill someone!")
+                    it.name = Text.of("^_^")
                 } else if (percent <= 66)
                 {
                     it.color = BossBar.Color.YELLOW
-                    it.name = Text.of("Better kill someone soon...")
+                    it.name = Text.of("Kill someone to prevent being revealed!")
                 } else if (percent < 100)
                 {
                     it.color = BossBar.Color.RED
-                    it.name = Text.of("You are about to be revealed!")
+                    it.name = Text.of("Shop will also not be available soon...")
                 } else
                 {
                     it.color = BossBar.Color.RED
-                    it.name = Text.of("You can no longer hide! `o´")
+                    it.name = Text.of("You are glowing and locked out of the shop!")
                 }
             }
         }
