@@ -27,11 +27,11 @@ object InactivePlayersTask : TimerTask
     {
         inactiveTimer.forEach { (playerName, time) ->
             val personalRevealTime = getPersonalRevealTime(playerName)
-            val percentage = if (personalRevealTime > 0) ((time.toDouble() / personalRevealTime) * 100).floor() else 100
+            val percentage = if (personalRevealTime > 0) ((time.toDouble() / (personalRevealTime * 2)) * 100).floor() else 100
 
             PlayerManager.getOnlinePlayer(playerName)?.let { DisplayManager.updateBossBarForPlayer(it, percentage) }
 
-            if (percentage >= 100)
+            if (percentage >= 50)
             {
                 if (playerName !in highlightedPlayers)
                 {
@@ -58,7 +58,7 @@ object InactivePlayersTask : TimerTask
 
     private fun getPersonalRevealTime(playerName: String) = revealTimePerPlayer.toDouble() * (10 - KillManager.getKillStreak(playerName)).toDouble() / 10.0
 
-    fun isInactive(playerName: String) = playerName in highlightedPlayers
+    fun hasShopClosed(playerName: String) = (playerName in highlightedPlayers) && (inactiveTimer.getValue(playerName) >= (getPersonalRevealTime(playerName) * 2))
 
     fun resetForPlayer(name: String)
     {

@@ -41,7 +41,7 @@ object ShopTask : TimerTask
 
             if (PlayerManager.isInGame(playerName) && Shop.isInShopBounds(serverPlayerEntity))
             {
-                if (InactivePlayersTask.isInactive(playerName))
+                if (InactivePlayersTask.hasShopClosed(playerName))
                 {
                     lastPosOutOfShop[playerName]?.let {
                         serverPlayerEntity.teleport(it.pos, it.yaw, it.pitch)

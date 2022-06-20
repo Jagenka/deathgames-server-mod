@@ -196,22 +196,26 @@ object DisplayManager
                 it.addPlayer(player)
                 it.percent = (percent.toFloat() / 100f).coerceAtMost(1f)
 
-                if (percent <= 33)
+                if (percent <= 25)
                 {
                     it.color = BossBar.Color.GREEN
-                    it.name = Text.of("^_^")
-                } else if (percent <= 66)
+                    it.name = Text.of("Kill someone to prevent being revealed!")
+                } else if (percent <= 50)
+                {
+                    it.color = BossBar.Color.GREEN
+                    it.name = Text.of("You are about to be revealed...")
+                } else if (percent <= 75)
                 {
                     it.color = BossBar.Color.YELLOW
-                    it.name = Text.of("Kill someone to prevent being revealed!")
+                    it.name = Text.of("You are glowing!")
                 } else if (percent < 100)
                 {
                     it.color = BossBar.Color.RED
-                    it.name = Text.of("Shop will also not be available soon...")
+                    it.name = Text.of("Shop is about to close for you!")
                 } else
                 {
-                    it.color = BossBar.Color.RED
-                    it.name = Text.of("You are glowing and locked out of the shop!")
+                    it.color = BossBar.Color.PURPLE
+                    it.name = Text.of("Shop's closed!")
                 }
             }
         }
