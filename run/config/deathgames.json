@@ -1,171 +1,157 @@
 {
-  "spawns": {
-    "spawnPositions": {"coords": [
-      {
-        "x": -38,
-        "y": 63,
-        "z": -91,
-        "yaw": 0.0,
-        "pitch": 0.0
-      },
-      {
-        "x": 38,
-        "y": 63,
-        "z": -91,
-        "yaw": 0.0,
-        "pitch": 0.0
-      },
-      {
-        "x": 91,
-        "y": 63,
-        "z": -38,
-        "yaw": 90.0,
-        "pitch": 0.0
-      },
-      {
-        "x": 91,
-        "y": 72,
-        "z": 38,
-        "yaw": 90.0,
-        "pitch": 0.0
-      },
-      {
-        "x": 38,
-        "y": 72,
-        "z": 91,
-        "yaw": 180.0,
-        "pitch": 0.0
-      },
-      {
-        "x": -38,
-        "y": 72,
-        "z": 91,
-        "yaw": 180.0,
-        "pitch": 0.0
-      },
-      {
-        "x": -91,
-        "y": 70,
-        "z": 38,
-        "yaw": 270.0,
-        "pitch": 0.0
-      },
-      {
-        "x": -91,
-        "y": 63,
-        "z": -38,
-        "yaw": 270.0,
-        "pitch": 0.0
-      }
-    ]},
-    "platformRadius": 5,
-    "worldSpawn": {
-      "x": 0,
-      "y": 51,
-      "z": 0,
-      "yaw": 0.0,
-      "pitch": 0.0
+    "spawns": {
+        "spawnPositions": {
+            "coords": [
+                {
+                    "x": -38,
+                    "y": 63,
+                    "z": -91
+                },
+                {
+                    "x": 38,
+                    "y": 63,
+                    "z": -91
+                },
+                {
+                    "x": 91,
+                    "y": 63,
+                    "z": -38,
+                    "yaw": 90.0
+                },
+                {
+                    "x": 91,
+                    "y": 72,
+                    "z": 38,
+                    "yaw": 90.0
+                },
+                {
+                    "x": 38,
+                    "y": 72,
+                    "z": 91,
+                    "yaw": 180.0
+                },
+                {
+                    "x": -38,
+                    "y": 72,
+                    "z": 91,
+                    "yaw": 180.0
+                },
+                {
+                    "x": -91,
+                    "y": 70,
+                    "z": 38,
+                    "yaw": 270.0
+                },
+                {
+                    "x": -91,
+                    "y": 63,
+                    "z": -38,
+                    "yaw": 270.0
+                }
+            ]
+        },
+        "platformRadius": 5,
+        "worldSpawn": {
+            "x": 0,
+            "y": 51,
+            "z": 0
+        },
+        "spectatorSpawn": {
+            "x": 0,
+            "y": 80,
+            "z": 0
+        },
+        "lobbySpawn": {
+            "x": 0,
+            "y": 20,
+            "z": 0
+        },
+        "shuffleInterval": 2400,
+        "shuffleDelayAfterKill": 200
     },
-    "spectatorSpawn": {
-      "x": 0,
-      "y": 80,
-      "z": 0,
-      "yaw": 0.0,
-      "pitch": 0.0
+    "bonus": {
+        "platforms": [
+            {
+                "name": "Village Corner",
+                "coordinates": {
+                    "x": 119,
+                    "y": 70,
+                    "z": 119
+                }
+            },
+            {
+                "name": "Nether Corner",
+                "coordinates": {
+                    "x": -120,
+                    "y": 68,
+                    "z": 119
+                }
+            },
+            {
+                "name": "Desert Corner",
+                "coordinates": {
+                    "x": -120,
+                    "y": 62,
+                    "z": -120
+                }
+            },
+            {
+                "name": "Water Corner",
+                "coordinates": {
+                    "x": 119,
+                    "y": 63,
+                    "z": -120
+                }
+            }
+        ],
+        "radius": 2,
+        "spawnInterval": 3600,
+        "stayTime": 2400,
+        "initialSpawn": 1800,
+        "moneyAmount": 5,
+        "moneyInterval": 200
     },
-    "lobbySpawn": {
-      "x": 0,
-      "y": 20,
-      "z": 0,
-      "yaw": 0.0,
-      "pitch": 0.0
+    "lives": {
+        "perPlayer": 5,
+        "perTeam": 10
     },
-    "shuffleInterval": 2400,
-    "shuffleDelayAfterKill": 200
-  },
-  "bonus": {
-    "platforms": [
-      {
-        "name": "Village Corner",
-        "coordinates": {
-          "x": 119,
-          "y": 70,
-          "z": 119
-        }
-      },
-      {
-        "name": "Nether Corner",
-        "coordinates": {
-          "x": -120,
-          "y": 68,
-          "z": 119
-        }
-      },
-      {
-        "name": "Desert Corner",
-        "coordinates": {
-          "x": -120,
-          "y": 62,
-          "z": -120
-        }
-      },
-      {
-        "name": "Water Corner",
-        "coordinates": {
-          "x": 119,
-          "y": 63,
-          "z": -120
-        }
-      }
-    ],
-    "radius": 2,
-    "spawnInterval": 3600,
-    "stayTime": 2400,
-    "initialSpawn": 1800,
-    "moneyAmount": 5,
-    "moneyInterval": 200
-  },
-  "lives": {
-    "perPlayer": 5,
-    "perTeam": 10
-  },
-  "money": {
-    "start": 100,
-    "amountPerInterval": 5,
-    "interval": 600,
-    "perKill": 20,
-    "perKillStreakKill": 10
-  },
-  "shopSettings": {
-    "shopBounds": {
-      "firstCorner": {
-        "x": -7,
-        "y": 55,
-        "z": -7
-      },
-      "secondCorner": {
-        "x": 7,
-        "y": 62,
-        "z": 7
-      }
+    "money": {
+        "start": 100,
+        "amountPerInterval": 5,
+        "interval": 600,
+        "perKill": 20,
+        "perKillStreakKill": 10
     },
-    "tpOutOfShopAfter": 600,
-    "refundPercent": 75
-  },
-  "misc": {
-    "revealTimePerPlayer": 2400,
-    "arenaBounds": {
-      "firstCorner": {
-        "x": -128,
-        "y": 48,
-        "z": -128
-      },
-      "secondCorner": {
-        "x": 127,
-        "y": 152,
-        "z": 127
-      }
+    "shopSettings": {
+        "shopBounds": {
+            "firstCorner": {
+                "x": -7,
+                "y": 55,
+                "z": -7
+            },
+            "secondCorner": {
+                "x": 7,
+                "y": 62,
+                "z": 7
+            }
+        },
+        "tpOutOfShopAfter": 600,
+        "refundPercent": 75
     },
-    "spectatorRadiusPadding": 20
-  }
+    "misc": {
+        "revealTimePerPlayer": 2400,
+        "arenaBounds": {
+            "firstCorner": {
+                "x": -128,
+                "y": 48,
+                "z": -128
+            },
+            "secondCorner": {
+                "x": 127,
+                "y": 152,
+                "z": 127
+            }
+        },
+        "spectatorRadiusPadding": 20
+    }
 }
