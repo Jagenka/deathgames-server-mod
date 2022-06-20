@@ -1,8 +1,11 @@
 package de.jagenka.managers
 
+import de.jagenka.config.Config
+import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.getMoney
 import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.shop.Shop
 import de.jagenka.team.DGTeam
 import net.minecraft.server.network.ServerPlayerEntity
 
@@ -37,6 +40,30 @@ object MoneyManager
     {
         if (team == null) return
         setMoney(team, getMoney(team) + amount)
+    }
+
+    fun handleMoneyOnPlayerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    {
+        when (KillManager.moneyMode)
+        {
+            Mode.PLAYER ->
+            {
+                val killStreakAmount = KillManager.getKillStreak(deceased.name.string)
+                addMoney(attacker.name.string, Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount)
+//                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
+                attacker.sendPrivateMessage("You receive ${Shop.SHOP_UNIT}${Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount}.")
+            }
+            Mode.TEAM ->
+            {
+                val killStreakAmount = KillManager.getKillStreak(deceased.name.string)
+                addMoney(attacker.getDGTeam(), Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount)
+//                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
+                attacker.getDGTeam()?.getOnlinePlayers()
+                    ?.forEach { it.sendPrivateMessage("Your team receives ${Shop.SHOP_UNIT}${Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount}.") }
+            }
+        }
+
+        DisplayManager.updateLevelDisplay()
     }
 
     fun reset()

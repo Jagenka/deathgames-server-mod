@@ -23,7 +23,6 @@ import net.minecraft.text.Texts
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
-import net.minecraft.world.GameRules
 
 object DeathGames : DedicatedServerModInitializer
 {
@@ -60,8 +59,6 @@ object DeathGames : DedicatedServerModInitializer
         KillManager.initLives()
         KillManager.initMoney()
 
-        DisplayManager.showSidebar()
-
         teamPlayers.forEach {
             it.clearStatusEffects()
             it.inventory.clear()
@@ -89,6 +86,8 @@ object DeathGames : DedicatedServerModInitializer
         PlayerManager.getOnlinePlayers().forEach { player ->
             DisplayManager.sendTitleMessage(player, Text.of("Good Luck"), Text.of("and have fun"), 5.seconds())
         }
+
+        DisplayManager.showSidebar()
 
         Timer.start()
         running = true

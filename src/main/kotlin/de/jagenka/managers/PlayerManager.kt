@@ -217,6 +217,8 @@ object PlayerManager
 
     fun isInGame(playerName: String) = inGameMap.getValue(playerName)
 
+    fun isInGame(team: DGTeam) = getInGameTeams().contains(team)
+
     /**
      * @return is player was able to respawn (not currently alive)
      */

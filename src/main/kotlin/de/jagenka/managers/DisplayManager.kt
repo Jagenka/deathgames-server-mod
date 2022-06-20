@@ -13,7 +13,6 @@ import net.minecraft.network.packet.s2c.play.TitleS2CPacket
 import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
 import net.minecraft.scoreboard.ScoreboardObjective
-import net.minecraft.scoreboard.Team
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -29,7 +28,7 @@ object DisplayManager
     {
         ifServerLoaded { server ->
             if (!DisplayManager::sidebarObjective.isInitialized) sidebarObjective =
-                ScoreboardObjective(server.scoreboard, "sidebar", ScoreboardCriterion.DUMMY, Text.of("Lives"), ScoreboardCriterion.RenderType.INTEGER)
+                ScoreboardObjective(server.scoreboard, "sidebar", ScoreboardCriterion.DUMMY, Text.of("Respawns"), ScoreboardCriterion.RenderType.INTEGER)
             server.scoreboard.objectives.toList().forEach { server.scoreboard.removeObjective(it) }
             server.scoreboard.addScoreboardObjective(sidebarObjective)
 
@@ -41,6 +40,7 @@ object DisplayManager
 
         resetLevelDisplay()
         resetBossBars()
+        resetKillStreakDisplay()
     }
 
     fun prepareTeams()
@@ -64,7 +64,7 @@ object DisplayManager
                 {
                     PlayerManager.getPlayers().forEach { playerName ->
                         val lives = KillManager.getLives(playerName)
-                        if (lives != null && lives > 0) server.scoreboard.getPlayerScore(playerName, sidebarObjective).score = lives
+                        if (lives != null && PlayerManager.isInGame(playerName) && lives >= 0) server.scoreboard.getPlayerScore(playerName, sidebarObjective).score = lives
                         else server.scoreboard.resetPlayerScore(playerName, sidebarObjective)
                     }
                 }
@@ -72,7 +72,7 @@ object DisplayManager
                 {
                     DGTeam.values().forEach { team ->
                         val lives = KillManager.getLives(team)
-                        if (lives != null && lives > 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score = lives
+                        if (lives != null && PlayerManager.isInGame(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score = lives
                         else server.scoreboard.resetPlayerScore(team.getPrettyName(), sidebarObjective)
                     }
                 }
@@ -86,6 +86,15 @@ object DisplayManager
             PlayerManager.getPlayers().forEach { playerName ->
                 val killStreak = KillManager.getKillStreak(playerName)
                 server.scoreboard.getPlayerScore(playerName, tabListObjective).score = killStreak
+            }
+        }
+    }
+
+    fun resetKillStreakDisplay()
+    {
+        ifServerLoaded { server ->
+            PlayerManager.getPlayers().forEach { playerName ->
+                server.scoreboard.getPlayerScore(playerName, tabListObjective).score = 0
             }
         }
     }
