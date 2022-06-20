@@ -150,7 +150,6 @@ object PlayerManager
 
     fun ServerPlayerEntity.eliminate()
     {
-        println(this.name.string)
         inGameMap[this.name.string] = false
         this.changeGameMode(GameMode.SPECTATOR)
     }
