@@ -123,6 +123,13 @@ object DisplayManager
         }
     }
 
+    fun setExpProgress(playerName: String, progress: Float)
+    {
+        PlayerManager.getOnlinePlayer(playerName)?.let { player ->
+            player.setExperiencePoints((progress.coerceAtLeast(0f).coerceAtMost(1f) * player.nextLevelExperience).toInt())
+        }
+    }
+
     fun showTimeToBonusMessage(text: Text)
     {
         sendMessageToHotbar(text)
