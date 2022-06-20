@@ -25,8 +25,7 @@ object KillManager
     private val playerKillStreak = mutableMapOf<String, Int>().withDefault { 0 }
     private val teamKillStreak = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
-    private val totalKills = mutableMapOf<String, Int>().withDefault { 0 }
-    private val totalDeaths = mutableMapOf<String, Int>().withDefault { 0 }
+    private val kDEntries = mutableMapOf<String, KD>()
 
     var moneyMode = Mode.PLAYER
     var livesMode = Mode.TEAM
@@ -49,7 +48,10 @@ object KillManager
 
         if (!DeathGames.running) return
 
-        totalDeaths[playerName] = totalDeaths.getValue(playerName) + 1
+        val playerKD = kDEntries[playerName]
+        if (playerKD != null) playerKD.addDeath()
+        else kDEntries[playerName] = KD(0, 1)
+
         removeOneRespawn(deceased)
 
         val killStreak = getKillStreak(playerName)
@@ -77,14 +79,19 @@ object KillManager
         if (attacker == deceased) return
         if (attacker.getDGTeam() == deceased.getDGTeam()) return
 
-        totalKills[attacker.name.string] = totalKills.getValue(attacker.name.string) + 1
+        val attackerName = attacker.name.string
+
+        val playerKD = kDEntries[attackerName]
+        if (playerKD != null) playerKD.addKill()
+        else kDEntries[attackerName] = KD(1, 0)
+
         when (killStreakMode)
         {
-            Mode.PLAYER -> playerKillStreak[attacker.name.string] = playerKillStreak.getValue(attacker.name.string) + 1
+            Mode.PLAYER -> playerKillStreak[attackerName] = playerKillStreak.getValue(attackerName) + 1
             Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
         }
         MoneyManager.handleMoneyOnPlayerKill(attacker, deceased)
-        InactivePlayersTask.resetForPlayer(attacker.name.string)
+        InactivePlayersTask.resetForPlayer(attackerName)
 
         DisplayManager.updateLivesDisplay()
         DisplayManager.updateKillStreakDisplay()
@@ -187,9 +194,7 @@ object KillManager
         }
     }
 
-    fun getNonZeroLifePlayers() = playerRespawns.filter { it.value > 0 }
-
-    fun getNonZeroLifeTeams() = teamRespawns.filter { it.value > 0 }
+    fun getKDs() = kDEntries.toList().sortedByDescending { (_, kd) -> kd.getRatio() }
 
     fun reset()
     {
@@ -197,8 +202,20 @@ object KillManager
         teamRespawns.clear()
         playerKillStreak.clear()
         teamKillStreak.clear()
-        totalKills.clear()
-        totalDeaths.clear()
+        kDEntries.clear()
+    }
+}
+
+data class KD(var kills: Int, var deaths: Int)
+{
+    fun addKill() = kills++
+    fun addDeath() = deaths++
+
+    fun getRatio() = kills.toDouble() / deaths.coerceAtLeast(1).toDouble()
+
+    override fun toString(): String
+    {
+        return "$kills / $deaths"
     }
 }
 

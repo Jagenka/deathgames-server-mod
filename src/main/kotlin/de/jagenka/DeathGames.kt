@@ -118,6 +118,12 @@ object DeathGames : DedicatedServerModInitializer
 
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
+        DisplayManager.sendChatMessage("")
+        DisplayManager.sendChatMessage(literal("Player K/Ds:").getWithStyle(Style.EMPTY.withBold(true))[0])
+        KillManager.getKDs().forEach { (playerName, kd) ->
+            DisplayManager.sendChatMessage("$playerName: $kd")
+        }
+
         Timer.schedule({
             PlayerManager.getOnlinePlayers().forEach {
                 it.changeGameMode(GameMode.ADVENTURE)
