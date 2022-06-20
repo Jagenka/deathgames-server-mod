@@ -14,23 +14,27 @@ object MoneyTask : TimerTask
     override val runEvery: Int
         get() = 1.ticks()
 
-    private var moneyTimer = 0
+    private val moneyTimer = mutableMapOf<String, Int>().withDefault { 0 }
 
     override fun run()
     {
-        if (moneyTimer >= moneyInterval)
-        {
-            PlayerManager.getPlayers().forEach { addMoney(it, moneyPerInterval) }
-            moneyTimer -= moneyInterval
-        }
-        PlayerManager.getPlayers().forEach { playerName ->
+        PlayerManager.getInGamePlayers().forEach { playerName ->
+            val playerTimer = moneyTimer.getValue(playerName)
+
+            if (playerTimer >= moneyInterval)
+            {
+                addMoney(playerName, moneyPerInterval)
+                moneyTimer[playerName] = playerTimer - moneyInterval
+            }
+
             if (!BonusManager.isOnActivePlatform(playerName))
             {
-                DisplayManager.setExpProgress(playerName, moneyTimer.toFloat() / moneyInterval.toFloat())
-            } // else -> BonusMoneyTask
-        }
+                DisplayManager.setExpProgress(playerName, playerTimer.toFloat() / moneyInterval.toFloat())
+            }
+            // else -> BonusMoneyTask
 
-        moneyTimer++
+            moneyTimer[playerName] = moneyTimer.getValue(playerName) + 1
+        }
     }
 
     override fun reset()

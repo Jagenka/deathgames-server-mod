@@ -8,12 +8,14 @@ import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.managers.PlayerManager.makeInGame
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import net.minecraft.world.GameMode
 
 object KillManager
 {
@@ -115,14 +117,14 @@ object KillManager
             Mode.PLAYER ->
             {
                 val respawnsAmount = playerRespawns.getValue(deceased.name.string)
-                if (respawnsAmount >= 0) playerRespawns[deceased.name.string] = respawnsAmount - 1
-                if (respawnsAmount - 1 < 0) deceased.eliminate()
+                if (respawnsAmount > 0) playerRespawns[deceased.name.string] = respawnsAmount - 1
+                if (respawnsAmount <= 0) deceased.eliminate()
             }
             Mode.TEAM ->
             {
                 val respawnsAmount = teamRespawns.getValue(deceased.getDGTeam())
-                if (respawnsAmount >= 0) teamRespawns[deceased.getDGTeam()] = respawnsAmount - 1
-                if (respawnsAmount - 1 < 0) deceased.eliminate()
+                if (respawnsAmount > 0) teamRespawns[deceased.getDGTeam()] = respawnsAmount - 1
+                if (respawnsAmount <= 0) deceased.eliminate()
             }
         }
 
@@ -155,17 +157,34 @@ object KillManager
         }
     }
 
-    fun getLives(playerName: String) = playerRespawns[playerName]
-    fun getLives(team: DGTeam) = teamRespawns[team]
+    fun getRespawns(playerName: String) = playerRespawns[playerName]
+    fun getRespawns(team: DGTeam) = teamRespawns[team]
 
     fun addLives(playerName: String, amount: Int)
     {
         when (livesMode)
         {
             Mode.PLAYER -> playerRespawns[playerName] = playerRespawns.getValue(playerName) + amount
-            Mode.TEAM -> teamRespawns[PlayerManager.getTeam(playerName)] = teamRespawns.getValue(PlayerManager.getTeam(playerName)) + amount
+            Mode.TEAM ->
+            {
+                val team = PlayerManager.getTeam(playerName)
+                teamRespawns[team] = teamRespawns.getValue(team) + amount
+                team?.let { tryToRespawnDeadTeamPlayer(it) }
+            }
         }
         DisplayManager.updateLivesDisplay()
+    }
+
+    fun tryToRespawnDeadTeamPlayer(team: DGTeam)
+    {
+        getRespawns(team)?.let { if (it < 1) return } ?: return
+
+        team.getOnlinePlayers().filter { !PlayerManager.isInGame(it.name.string) }.randomOrNull()?.let { player ->
+            player.makeInGame()
+            player.changeGameMode(GameMode.ADVENTURE)
+            SpawnManager.teleportPlayerToSpawn(player)
+            removeOneRespawn(player)
+        }
     }
 
     fun getNonZeroLifePlayers() = playerRespawns.filter { it.value > 0 }

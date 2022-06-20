@@ -31,6 +31,8 @@ enum class DGTeam
         }
     }
 
+    fun getPlayers() = PlayerManager.getPlayersInTeam(this)
+
     fun getOnlinePlayers() = PlayerManager.getOnlinePlayersInTeam(this)
 
     fun getOnlineInGamePlayers() = getOnlinePlayers().filter { it.isInGame() }
