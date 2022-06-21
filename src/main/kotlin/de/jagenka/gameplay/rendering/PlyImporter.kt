@@ -1,4 +1,4 @@
-package de.jagenka
+package de.jagenka.gameplay.rendering
 
 import net.minecraft.util.math.Vec3d
 import java.io.File
@@ -42,7 +42,15 @@ object PlyImporter
             val elements = line.split(" ")
             if (vertex_count > 0)
             {
-                vertexList.add(GPS.VertexTreeElement(Vec3d(elements[0].toDouble(), elements[1].toDouble(), elements[2].toDouble())))
+                vertexList.add(
+                    GPS.VertexTreeElement(
+                        Vec3d(
+                            elements[0].toDouble(),
+                            elements[1].toDouble(),
+                            elements[2].toDouble()
+                        )
+                    )
+                )
                 vertex_count--
             }
             else if (face_count > 0)

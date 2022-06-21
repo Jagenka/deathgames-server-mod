@@ -1,8 +1,11 @@
-package de.jagenka
+package de.jagenka.gameplay.rendering
 
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.floor
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.PlayerManager
+import de.jagenka.rotateAroundVector
+import de.jagenka.toRadians
 import net.minecraft.particle.ParticleEffect
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.MinecraftServer
@@ -36,7 +39,8 @@ object GPS
         }
     }
 
-    private val model = PlyImporter.parsePlyFromFile("C:/Programming Projects/deathgames-server-mod/src/main/resources/models/Squirtle.ply")
+    private val model =
+        PlyImporter.parsePlyFromFile("C:/Programming Projects/deathgames-server-mod/src/main/resources/models/Squirtle.ply")
 
     fun renderCube()
     {

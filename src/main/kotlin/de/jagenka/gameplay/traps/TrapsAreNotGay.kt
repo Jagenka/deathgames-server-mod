@@ -1,5 +1,6 @@
-package de.jagenka
+package de.jagenka.gameplay.traps
 
+import de.jagenka.Coordinates
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.managers.PlayerManager
@@ -9,13 +10,14 @@ import de.jagenka.timer.CustomTimer
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.timer.ticks
+import de.jagenka.toCenter
+import kotlinx.serialization.Serializable
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
 import net.minecraft.particle.ParticleTypes
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
@@ -42,7 +44,7 @@ enum class TrapItems(val item: ItemStack)
     POISON_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Poison Trap")))
 }
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class Trap(
     val displayName: String,                            // name shown in shop
     val gaynessRange: Double = 0.5,                     // trigger range

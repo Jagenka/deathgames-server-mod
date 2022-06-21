@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.TrapsAreNotGay;
+import de.jagenka.gameplay.traps.TrapsAreNotGay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;

@@ -1,6 +1,6 @@
 package de.jagenka.shop
 
-import de.jagenka.TrapItems
+import de.jagenka.gameplay.traps.TrapItems
 import de.jagenka.timer.minutes
 import de.jagenka.timer.seconds
 import net.minecraft.enchantment.Enchantment

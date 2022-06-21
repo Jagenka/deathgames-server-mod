@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.GPS
+import de.jagenka.gameplay.rendering.GPS
 
 object GPSTask: TimerTask
 {

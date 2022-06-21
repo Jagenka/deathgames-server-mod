@@ -1,10 +1,10 @@
 package de.jagenka.managers
 
 import de.jagenka.DeathGames
-import de.jagenka.TrapsAreNotGay
 import de.jagenka.config.Config.livesPerPlayer
 import de.jagenka.config.Config.livesPerTeam
 import de.jagenka.config.Config.startMoneyPerPlayer
+import de.jagenka.gameplay.traps.TrapsAreNotGay
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate
