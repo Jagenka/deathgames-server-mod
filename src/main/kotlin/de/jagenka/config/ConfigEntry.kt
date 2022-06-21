@@ -4,6 +4,7 @@ import de.jagenka.BlockCuboid
 import de.jagenka.CoordinateList
 import de.jagenka.Coordinates
 import de.jagenka.managers.Platform
+import de.jagenka.timer.seconds
 import kotlinx.serialization.Serializable
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -17,7 +18,8 @@ class ConfigEntry(
     @Section("lives") val lives: LivesConfigEntry = LivesConfigEntry(),
     @Section("money") val money: MoneyConfigEntry = MoneyConfigEntry(),
     @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
-    @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry()
+    @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
+    @Section("traps") val traps: TrapConfigEntry = TrapConfigEntry()
 )
 
 @Serializable
@@ -71,4 +73,14 @@ class MiscConfigEntry(
     var revealTimePerPlayer: Int = 0,
     var arenaBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
     var spectatorRadiusPadding: Int = 0
+)
+
+@Serializable
+class TrapConfigEntry(
+    var triggerRange: Double = 0.5,
+    var setupTime: Int = 10.seconds(),
+    var triggerVisibilityRange: Double = 30.0,
+    var visibilityRange: Double = 10.0,
+    var affectedRange: Double = 1.5,
+    var triggerDuration: Int = 6.seconds()
 )

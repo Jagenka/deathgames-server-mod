@@ -10,8 +10,8 @@ import de.jagenka.timer.ScheduledTask
 import de.jagenka.timer.Timer
 import de.jagenka.toCenter
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import net.minecraft.block.Blocks
-import net.minecraft.server.network.ServerPlayerEntity
 import kotlin.math.abs
 
 object BonusManager
@@ -134,4 +134,4 @@ object BonusManager
 }
 
 @Serializable
-data class Platform(val name: String, val coordinates: Coordinates, var active: Boolean = false)
+data class Platform(val name: String, val coordinates: Coordinates, @Transient var active: Boolean = false)

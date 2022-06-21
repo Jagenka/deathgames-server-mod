@@ -3,6 +3,7 @@ package de.jagenka.gameplay.traps
 import de.jagenka.Coordinates
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
+import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getInGamePlayersInRange
 import de.jagenka.managers.PlayerManager.getOnlinePlayersInRange
@@ -260,12 +261,12 @@ data class DisabledPlayerCoordinateFetch(var flag: Boolean, var coordinates: Coo
 
 data class NotGay(
     val pos: Coordinates, private var age: Int,
-    val gaynessRange: Double = 0.5,
-    val setupTime: Int = 10.seconds(),
-    val gaynessTriggerVisibleRange: Double = 30.0,
-    val gaynessVisibilityRange: Double = 10.0,
-    val affectedGayRange: Double = 1.5,
-    private var triggerDuration: Int = 6.seconds(),
+    val gaynessRange: Double = Config.trapConfig.triggerRange,
+    val setupTime: Int = Config.trapConfig.setupTime,
+    val gaynessTriggerVisibleRange: Double = Config.trapConfig.triggerVisibilityRange,
+    val gaynessVisibilityRange: Double = Config.trapConfig.visibilityRange,
+    val affectedGayRange: Double = Config.trapConfig.affectedRange,
+    private var triggerDuration: Int = Config.trapConfig.triggerDuration,
     val snares: Boolean = false,
     val effects: List<StatusEffectInstance>
 )

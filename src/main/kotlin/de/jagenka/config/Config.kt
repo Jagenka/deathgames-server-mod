@@ -15,6 +15,7 @@ object Config
     private val serializer = Json {
         prettyPrint = true
         ignoreUnknownKeys = true
+        encodeDefaults = true // WHO EVEN THOUGHT THIS WOULD BE A GOOD IDEA AS FALSE BY DEFAULT? WTF? WHAT IF I SEND A MESSAGE OVER THE NETWORK?
     }
 
     lateinit var configEntry: ConfigEntry
@@ -84,6 +85,9 @@ object Config
         get() = configEntry.spawns.captureTimeNeeded
     val captureEnabled
         get() = configEntry.spawns.captureEnabled
+
+    val trapConfig
+        get() = configEntry.traps
 
     fun loadJSON()
     {

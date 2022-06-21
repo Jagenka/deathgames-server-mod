@@ -5,48 +5,58 @@
                 {
                     "x": -38,
                     "y": 63,
-                    "z": -91
+                    "z": -91,
+                    "yaw": 0.0,
+                    "pitch": 0.0
                 },
                 {
                     "x": 38,
                     "y": 63,
-                    "z": -91
+                    "z": -91,
+                    "yaw": 0.0,
+                    "pitch": 0.0
                 },
                 {
                     "x": 91,
                     "y": 63,
                     "z": -38,
-                    "yaw": 90.0
+                    "yaw": 90.0,
+                    "pitch": 0.0
                 },
                 {
                     "x": 91,
                     "y": 72,
                     "z": 38,
-                    "yaw": 90.0
+                    "yaw": 90.0,
+                    "pitch": 0.0
                 },
                 {
                     "x": 38,
                     "y": 72,
                     "z": 91,
-                    "yaw": 180.0
+                    "yaw": 180.0,
+                    "pitch": 0.0
                 },
                 {
                     "x": -38,
                     "y": 72,
                     "z": 91,
-                    "yaw": 180.0
+                    "yaw": 180.0,
+                    "pitch": 0.0
                 },
                 {
                     "x": -91,
                     "y": 70,
                     "z": 38,
-                    "yaw": 270.0
+                    "yaw": 270.0,
+                    "pitch": 0.0
                 },
                 {
                     "x": -91,
                     "y": 63,
                     "z": -38,
-                    "yaw": 270.0
+                    "yaw": 270.0,
+                    "pitch": 0.0
                 }
             ]
         },
@@ -54,17 +64,23 @@
         "worldSpawn": {
             "x": 0,
             "y": 51,
-            "z": 0
+            "z": 0,
+            "yaw": 0.0,
+            "pitch": 0.0
         },
         "spectatorSpawn": {
             "x": 0,
             "y": 80,
-            "z": 0
+            "z": 0,
+            "yaw": 0.0,
+            "pitch": 0.0
         },
         "lobbySpawn": {
             "x": 0,
             "y": 20,
-            "z": 0
+            "z": 0,
+            "yaw": 0.0,
+            "pitch": 0.0
         },
         "shuffleInterval": 2400,
         "shuffleDelayAfterKill": 200,
@@ -78,7 +94,9 @@
                 "coordinates": {
                     "x": 119,
                     "y": 70,
-                    "z": 119
+                    "z": 119,
+                    "yaw": 0.0,
+                    "pitch": 0.0
                 }
             },
             {
@@ -86,7 +104,9 @@
                 "coordinates": {
                     "x": -120,
                     "y": 68,
-                    "z": 119
+                    "z": 119,
+                    "yaw": 0.0,
+                    "pitch": 0.0
                 }
             },
             {
@@ -94,7 +114,9 @@
                 "coordinates": {
                     "x": -120,
                     "y": 62,
-                    "z": -120
+                    "z": -120,
+                    "yaw": 0.0,
+                    "pitch": 0.0
                 }
             },
             {
@@ -102,7 +124,9 @@
                 "coordinates": {
                     "x": 119,
                     "y": 63,
-                    "z": -120
+                    "z": -120,
+                    "yaw": 0.0,
+                    "pitch": 0.0
                 }
             }
         ],
@@ -129,12 +153,16 @@
             "firstCorner": {
                 "x": -7,
                 "y": 55,
-                "z": -7
+                "z": -7,
+                "yaw": 0.0,
+                "pitch": 0.0
             },
             "secondCorner": {
                 "x": 7,
                 "y": 62,
-                "z": 7
+                "z": 7,
+                "yaw": 0.0,
+                "pitch": 0.0
             }
         },
         "tpOutOfShopAfter": 600,
@@ -146,14 +174,26 @@
             "firstCorner": {
                 "x": -128,
                 "y": 48,
-                "z": -128
+                "z": -128,
+                "yaw": 0.0,
+                "pitch": 0.0
             },
             "secondCorner": {
                 "x": 127,
                 "y": 152,
-                "z": 127
+                "z": 127,
+                "yaw": 0.0,
+                "pitch": 0.0
             }
         },
         "spectatorRadiusPadding": 20
+    },
+    "traps": {
+        "triggerRange": 0.5,
+        "setupTime": 200,
+        "triggerVisibilityRange": 30.0,
+        "visibilityRange": 10.0,
+        "affectedRange": 1.5,
+        "triggerDuration": 120
     }
 }
