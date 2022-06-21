@@ -17,7 +17,10 @@ object ShuffleSpawnsTask : TimerTask
 
     override fun run()
     {
-        Timer.scheduleAt({ SpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
+        if (!SpawnManager.captureEnabled)
+        {
+            Timer.scheduleAt({ SpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
+        }
     }
 
     override fun reset()

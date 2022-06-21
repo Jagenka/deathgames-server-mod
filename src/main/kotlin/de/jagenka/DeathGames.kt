@@ -7,7 +7,7 @@ import de.jagenka.config.Config
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.makeInGame
-import de.jagenka.managers.SpawnManager.getSpawn
+import de.jagenka.managers.SpawnManager.getSpawnCoordinates
 import de.jagenka.shop.Shop
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
@@ -76,7 +76,7 @@ object DeathGames : DedicatedServerModInitializer
             it.closeHandledScreen()
             val (x, y, z) = Config.worldSpawn
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
-            it.teleport(it.getSpawn())
+            it.teleport(it.getSpawnCoordinates())
         }
 
         ifServerLoaded { server ->

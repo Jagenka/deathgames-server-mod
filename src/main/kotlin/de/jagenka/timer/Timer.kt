@@ -29,6 +29,7 @@ object Timer
             add(KeepInBoundsTask)
             add(LobbyTask)
             add(GPSTask)
+            add(CaptureSpawnTask)
         }
     }
 

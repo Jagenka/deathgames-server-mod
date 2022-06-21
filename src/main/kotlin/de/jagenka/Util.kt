@@ -155,6 +155,13 @@ class BlockCuboid
         return (coordinates.x in firstCorner.x..secondCorner.x) && (coordinates.y in firstCorner.y..secondCorner.y) && (coordinates.z in firstCorner.z..secondCorner.z)
     }
 
+    fun contains(pos: Vec3d): Boolean
+    {
+        return (pos.x in firstCorner.x.toFloat().rangeTo(secondCorner.x.toFloat()))
+                && (pos.y in firstCorner.y.toFloat().rangeTo(secondCorner.y.toFloat()))
+                && (pos.z in firstCorner.z.toFloat().rangeTo(secondCorner.z.toFloat()))
+    }
+
     override fun equals(other: Any?): Boolean
     {
         if (this === other) return true
