@@ -12,7 +12,10 @@ object Config
 {
     private const val CONF_FILE = "deathgames"
 
-    private val serializer = Json { prettyPrint = true }
+    private val serializer = Json {
+        prettyPrint = true
+        ignoreUnknownKeys = true
+    }
 
     lateinit var configEntry: ConfigEntry
 
@@ -77,15 +80,21 @@ object Config
     val refundPercent
         get() = configEntry.shopSettings.refundPercent
 
+    val captureTimeNeeded
+        get() = configEntry.spawns.captureTimeNeeded
+    val captureEnabled
+        get() = configEntry.spawns.captureEnabled
+
     fun loadJSON()
     {
-        configEntry = Json.decodeFromString(FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json").toFile().readText())
+        configEntry = serializer.decodeFromString(FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json").toFile().readText())
 
         SpawnManager.setSpawns(configEntry.spawns.spawnPositions.coords) // TODO: these won't be change by the config command
         BonusManager.setPlatforms(configEntry.bonus.platforms)
     }
 
-    fun store() {
+    fun store()
+    {
         val json = serializer.encodeToString(configEntry)
         val path = FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json")
 

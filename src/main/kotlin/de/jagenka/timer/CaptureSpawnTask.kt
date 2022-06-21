@@ -1,5 +1,7 @@
 package de.jagenka.timer
 
+import de.jagenka.config.Config.captureEnabled
+import de.jagenka.config.Config.captureTimeNeeded
 import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getDGTeam
@@ -8,8 +10,6 @@ import de.jagenka.team.DGTeam
 
 object CaptureSpawnTask : TimerTask
 {
-    val captureTimeNeeded = 20.seconds() //TODO: config
-
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
@@ -19,7 +19,7 @@ object CaptureSpawnTask : TimerTask
 
     override fun run()
     {
-        if (SpawnManager.captureEnabled)
+        if (captureEnabled)
         {
             SpawnManager.getSpawns().forEach forEachSpawn@{ spawn ->
                 val playersOnSpawn = PlayerManager.getOnlineInGamePlayers().filter { player -> spawn.containsPlayer(player) }
@@ -29,7 +29,7 @@ object CaptureSpawnTask : TimerTask
 
                 PlayerManager.getInGameTeams().forEach forEachTeam@{ team ->
                     val playerAmountOnSpawn = team.getOnlineInGamePlayers().count { teamPlayer -> spawn.containsPlayer(teamPlayer) }
-                    if (playerAmountOnSpawn > 0) captureProgress[spawn to team] = captureProgress.getValue(spawn to team) + playerAmountOnSpawn
+                    if (playerAmountOnSpawn > 0) captureProgress[spawn to team] = captureProgress.getValue(spawn to team) + 1
                     else captureProgress.remove(spawn to team)
                 }
             }

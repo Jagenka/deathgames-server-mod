@@ -16,9 +16,6 @@ object SpawnManager
     private val spawns = ArrayList<DGSpawn>()
     private val teamSpawns = BiMap<DGSpawn, DGTeam>()
 
-    var captureEnabled = true
-        private set
-
     private fun addSpawns(spawns: Collection<Coordinates>)
     {
         SpawnManager.spawns.addAll(spawns.map { DGSpawn(it) })

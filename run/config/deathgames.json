@@ -67,7 +67,9 @@
             "z": 0
         },
         "shuffleInterval": 2400,
-        "shuffleDelayAfterKill": 200
+        "shuffleDelayAfterKill": 200,
+        "captureTimeNeeded": 800,
+        "captureEnabled": true
     },
     "bonus": {
         "platforms": [

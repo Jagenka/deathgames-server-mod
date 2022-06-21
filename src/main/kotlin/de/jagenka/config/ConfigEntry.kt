@@ -19,12 +19,6 @@ class ConfigEntry(
     @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
     @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry()
 )
-{
-    companion object
-    {
-        val dummy = ConfigEntry()
-    }
-}
 
 @Serializable
 class SpawnsConfigEntry(
@@ -34,14 +28,10 @@ class SpawnsConfigEntry(
     var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var shuffleInterval: Int = 0,
-    var shuffleDelayAfterKill: Int = 0
+    var shuffleDelayAfterKill: Int = 0,
+    var captureTimeNeeded: Int = 0,
+    var captureEnabled: Boolean = false
 )
-{
-    companion object
-    {
-        val dummy = SpawnsConfigEntry()
-    }
-}
 
 @Serializable
 class BonusPlatformsConfigEntry(
@@ -53,24 +43,12 @@ class BonusPlatformsConfigEntry(
     var moneyAmount: Int = 0,
     var moneyInterval: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = BonusPlatformsConfigEntry()
-    }
-}
 
 @Serializable
 class LivesConfigEntry(
     var perPlayer: Int = 0,
     var perTeam: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = LivesConfigEntry()
-    }
-}
 
 @Serializable
 class MoneyConfigEntry(
@@ -80,12 +58,6 @@ class MoneyConfigEntry(
     var perKill: Int = 0,
     var perKillStreakKill: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = MoneyConfigEntry()
-    }
-}
 
 @Serializable
 class ShopSettingsConfigEntry(
@@ -93,12 +65,6 @@ class ShopSettingsConfigEntry(
     var tpOutOfShopAfter: Int = 0,
     var refundPercent: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = ShopSettingsConfigEntry()
-    }
-}
 
 @Serializable
 class MiscConfigEntry(
@@ -106,9 +72,3 @@ class MiscConfigEntry(
     var arenaBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
     var spectatorRadiusPadding: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = MiscConfigEntry()
-    }
-}
