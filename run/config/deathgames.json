@@ -151,18 +151,14 @@
     "shopSettings": {
         "shopBounds": {
             "firstCorner": {
-                "x": -7,
-                "y": 55,
-                "z": -7,
-                "yaw": 0.0,
-                "pitch": 0.0
+                "x": -5,
+                "y": 57,
+                "z": -5
             },
             "secondCorner": {
-                "x": 7,
+                "x": 5,
                 "y": 62,
-                "z": 7,
-                "yaw": 0.0,
-                "pitch": 0.0
+                "z": 5
             }
         },
         "tpOutOfShopAfter": 600,
