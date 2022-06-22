@@ -84,7 +84,7 @@
         },
         "shuffleInterval": 2400,
         "shuffleDelayAfterKill": 200,
-        "captureTimeNeeded": 800,
+        "captureTimeNeeded": 400,
         "captureEnabled": true
     },
     "bonus": {
