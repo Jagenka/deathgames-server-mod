@@ -4,9 +4,8 @@ import de.jagenka.DeathGames
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.team.DGTeam
-import net.minecraft.text.Style
 import net.minecraft.text.Text.literal
-import net.minecraft.util.Formatting
+import net.minecraft.world.GameMode
 
 object GameOverTask : TimerTask
 {
@@ -21,6 +20,11 @@ object GameOverTask : TimerTask
 
     override fun run()
     {
+        if (DeathGames.currentlyEnding)
+        {
+            PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
+        }
+
         if (gameEnded) return
 
         val onlineInGameTeams = PlayerManager.getOnlineInGameTeams()

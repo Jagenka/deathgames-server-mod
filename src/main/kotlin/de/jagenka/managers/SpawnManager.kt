@@ -1,6 +1,9 @@
 package de.jagenka.managers
 
-import de.jagenka.*
+import de.jagenka.BlockCuboid
+import de.jagenka.Coordinates
+import de.jagenka.DeathGames
+import de.jagenka.Util
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config.defaultSpawn
 import de.jagenka.managers.DisplayManager.sendChatMessage

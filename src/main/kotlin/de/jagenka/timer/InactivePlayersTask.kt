@@ -1,5 +1,6 @@
 package de.jagenka.timer
 
+import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config.killStreakPenaltyCap
 import de.jagenka.config.Config.revealTimePerPlayer
 import de.jagenka.config.Config.shopCloseTimeAfterReveal
@@ -27,6 +28,8 @@ object InactivePlayersTask : TimerTask
 
     override fun run()
     {
+        if (currentlyEnding) return
+
         inactiveTimer.forEach { (playerName, time) ->
             val personalRevealTime = getPersonalRevealTime(playerName).toInt()
             val personalShopCloseTime = getPersonalShopCloseTime(playerName).toInt()

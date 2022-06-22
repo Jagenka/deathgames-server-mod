@@ -9,9 +9,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemStack.EMPTY
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Style
 import net.minecraft.text.Text
-import net.minecraft.util.Formatting
 
 class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
 {

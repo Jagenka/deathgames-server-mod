@@ -1,5 +1,6 @@
 package de.jagenka.timer
 
+import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config.captureEnabled
 import de.jagenka.config.Config.captureTimeNeeded
 import de.jagenka.managers.DGSpawn
@@ -7,10 +8,8 @@ import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager
-import de.jagenka.team.DGTeam
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
 
 object CaptureSpawnTask : TimerTask
@@ -24,6 +23,8 @@ object CaptureSpawnTask : TimerTask
 
     override fun run()
     {
+        if (currentlyEnding) return
+
         if (!captureEnabled) return
 
         val playersOnAnySpawn = mutableListOf<Pair<ServerPlayerEntity, DGSpawn>>()

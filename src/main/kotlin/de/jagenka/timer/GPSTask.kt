@@ -1,5 +1,6 @@
 package de.jagenka.timer
 
+import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.gameplay.rendering.GPS
 
 object GPSTask: TimerTask
@@ -11,6 +12,8 @@ object GPSTask: TimerTask
 
     override fun run()
     {
+        if (currentlyEnding) return
+
         GPS.makeArrowGoBrrr()
     }
 

@@ -1,5 +1,6 @@
 package de.jagenka.timer
 
+import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config.moneyInterval
 import de.jagenka.config.Config.moneyPerInterval
 import de.jagenka.managers.BonusManager
@@ -18,6 +19,8 @@ object MoneyTask : TimerTask
 
     override fun run()
     {
+        if (currentlyEnding) return
+
         PlayerManager.getInGamePlayers().forEach { playerName ->
             val playerTimer = moneyTimer.getValue(playerName)
 

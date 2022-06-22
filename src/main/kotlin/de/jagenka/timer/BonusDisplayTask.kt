@@ -1,5 +1,6 @@
 package de.jagenka.timer
 
+import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
 import net.minecraft.text.Style
@@ -15,6 +16,8 @@ object BonusDisplayTask : TimerTask
 
     override fun run()
     {
+        if (currentlyEnding) return
+
         val timeToSpawn = BonusManager.getTimeToSpawn()
         val timeToDespawn = BonusManager.getTimeToDespawn()
 
@@ -35,7 +38,8 @@ object BonusDisplayTask : TimerTask
             {
                 val (name) = activePlatforms[0]
                 DisplayManager.showTimeToBonusMessage(
-                    Text.of("Bonus Money Platform: $name for another ${timeToDespawn / DGUnit.SECONDS.factor}sec").getWithStyle(Style.EMPTY.withColor(Formatting.DARK_GREEN).withBold(true))[0]
+                    Text.of("Bonus Money Platform: $name for another ${timeToDespawn / DGUnit.SECONDS.factor}sec")
+                        .getWithStyle(Style.EMPTY.withColor(Formatting.DARK_GREEN).withBold(true))[0]
                 )
             }
         }

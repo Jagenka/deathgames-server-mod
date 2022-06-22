@@ -1,5 +1,6 @@
 package de.jagenka.timer
 
+import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config.captureEnabled
 import de.jagenka.config.Config.shuffleDelayAfterKill
 import de.jagenka.config.Config.shuffleSpawnsInterval
@@ -18,10 +19,11 @@ object ShuffleSpawnsTask : TimerTask
 
     override fun run()
     {
-        if (!captureEnabled)
-        {
-            Timer.scheduleAt({ SpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
-        }
+        if (captureEnabled) return
+
+        if (currentlyEnding) return
+
+        Timer.scheduleAt({ SpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
     }
 
     override fun reset()

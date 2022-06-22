@@ -20,13 +20,14 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
 import net.minecraft.text.Texts
-import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
 
 object DeathGames : DedicatedServerModInitializer
 {
     var running = false
+
+    var currentlyEnding = false
 
     override fun onInitializeServer()
     {
@@ -95,6 +96,8 @@ object DeathGames : DedicatedServerModInitializer
 
     fun stopGame()
     {
+        currentlyEnding = true
+
         val winners = mutableListOf<Text>()
         PlayerManager.getOnlineInGameTeams().forEach { team ->
             winners.add(team.getFormattedText())
@@ -135,6 +138,7 @@ object DeathGames : DedicatedServerModInitializer
 
             PlayerManager.clearInGameStatusForEveryone()
             running = false
+            currentlyEnding = false
         }, 10.seconds())
     }
 }
