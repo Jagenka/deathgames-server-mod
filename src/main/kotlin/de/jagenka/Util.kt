@@ -157,9 +157,9 @@ class BlockCuboid
 
     fun contains(pos: Vec3d): Boolean
     {
-        return (pos.x in firstCorner.x.toFloat().rangeTo(secondCorner.x.toFloat()))
-                && (pos.y in firstCorner.y.toFloat().rangeTo(secondCorner.y.toFloat()))
-                && (pos.z in firstCorner.z.toFloat().rangeTo(secondCorner.z.toFloat()))
+        return (pos.x in firstCorner.x.toFloat().rangeTo((secondCorner.x + 1).toFloat()))
+                && (pos.y in firstCorner.y.toFloat().rangeTo((secondCorner.y + 1).toFloat()))
+                && (pos.z in firstCorner.z.toFloat().rangeTo((secondCorner.z + 1).toFloat()))
     }
 
     override fun equals(other: Any?): Boolean
