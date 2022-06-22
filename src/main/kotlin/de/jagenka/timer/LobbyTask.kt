@@ -15,11 +15,14 @@ object LobbyTask : TimerTask
 
     override fun run()
     {
+        if (DeathGames.running) return
+
+        DisplayManager.resetBossBars()
+
         PlayerManager.getOnlinePlayers().forEach { player ->
-            if (!DeathGames.running && !player.hasPermissionLevel(2))
+            if (!player.hasPermissionLevel(2))
             {
                 player.inventory.clear()
-                DisplayManager.resetBossBars()
             }
             if (TeamSelectorUI.isInLobbyBounds(player))
             {

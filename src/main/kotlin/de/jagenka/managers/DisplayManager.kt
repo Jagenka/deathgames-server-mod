@@ -214,11 +214,11 @@ object DisplayManager
     fun resetBossBars()
     {
         ifServerLoaded { server ->
-            server.bossBarManager.all.toList().forEach { commandBossBar ->
-                commandBossBar.players.toList().forEach { player ->
-                    commandBossBar.removePlayer(player)
-                }
-                server.bossBarManager.remove(commandBossBar)
+            server.bossBarManager.ids.toList().forEach { id ->
+                val bossBar = server.bossBarManager.get(id)
+                println(bossBar)
+                bossBar?.clearPlayers()
+                server.bossBarManager.remove(bossBar)
             }
         }
     }
