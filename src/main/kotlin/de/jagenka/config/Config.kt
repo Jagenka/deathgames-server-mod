@@ -1,16 +1,19 @@
 package de.jagenka.config
 
+import de.jagenka.Util
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.SpawnManager
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.util.WorldSavePath
+import java.io.File
 import java.nio.file.Files
+import java.nio.file.Path
 
 object Config
 {
-    private const val CONF_FILE = "deathgames"
+    private lateinit var pathToConfFile: Path
 
     private val serializer = Json {
         prettyPrint = true
@@ -94,9 +97,24 @@ object Config
     val killStreakPenaltyCap
         get() = configEntry.misc.killStreakPenaltyCap
 
-    fun loadJSON()
+    fun lateLoadConfig()
     {
-        configEntry = serializer.decodeFromString(FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json").toFile().readText())
+        Util.minecraftServer?.let { server ->
+            val configFolder = server.getSavePath(WorldSavePath.ROOT).resolve("deathgames")
+            if (!Files.exists(configFolder))
+            {
+                Files.createDirectories(configFolder)
+            }
+            pathToConfFile = configFolder.resolve("config.json")
+            loadJSON(pathToConfFile.toFile())
+        } ?: error("Failed loading DeathGames config - Server not loaded yet.")
+
+        println("Successfully loaded DeathGames config!")
+    }
+
+    fun loadJSON(jsonConfFile: File)
+    {
+        configEntry = serializer.decodeFromString(jsonConfFile.readText())
 
         SpawnManager.setSpawns(configEntry.spawns.spawnPositions.coords) // TODO: these won't be change by the config command
         BonusManager.setPlatforms(configEntry.bonus.platforms)
@@ -105,8 +123,7 @@ object Config
     fun store()
     {
         val json = serializer.encodeToString(configEntry)
-        val path = FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json")
 
-        Files.writeString(path, json)
+        Files.writeString(pathToConfFile, json)
     }
 }

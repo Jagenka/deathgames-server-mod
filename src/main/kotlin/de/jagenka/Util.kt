@@ -1,5 +1,6 @@
 package de.jagenka
 
+import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
@@ -39,6 +40,8 @@ object Util
         ServerLifecycleEvents.SERVER_STARTED
 
         ifServerLoaded { server ->
+            Config.lateLoadConfig()
+
             server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
 
             server.gameRules[GameRules.SPECTATORS_GENERATE_CHUNKS].set(false, server)

@@ -153,12 +153,16 @@
             "firstCorner": {
                 "x": -5,
                 "y": 57,
-                "z": -5
+                "z": -5,
+                "yaw": 0.0,
+                "pitch": 0.0
             },
             "secondCorner": {
                 "x": 5,
                 "y": 62,
-                "z": 5
+                "z": 5,
+                "yaw": 0.0,
+                "pitch": 0.0
             }
         },
         "tpOutOfShopAfter": 600,

@@ -31,8 +31,6 @@ object DeathGames : DedicatedServerModInitializer
 
     override fun onInitializeServer()
     {
-        Config.loadJSON()
-
         registerCommands()
 
         println("DeathGames Mod initialized!")
