@@ -60,7 +60,7 @@
                 }
             ]
         },
-        "platformRadius": 5,
+        "platformRadius": 4,
         "worldSpawn": {
             "x": 0,
             "y": 51,
