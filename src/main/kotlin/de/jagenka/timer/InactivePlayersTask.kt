@@ -38,23 +38,23 @@ object InactivePlayersTask : TimerTask
                         val fillAmount = time.toDouble() / personalRevealTime.toDouble()
                         if (fillAmount < 0.75)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Kill someone to prevent being revealed!"), GREEN)
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Kill someone to prevent being revealed!"), GREEN, idSuffix = "reveal")
                         } else if (fillAmount < 1)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("You are about to be revealed..."), YELLOW)
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("You are about to be revealed..."), YELLOW, idSuffix = "reveal")
                         }
                     } else if (time in personalRevealTime + 1..personalRevealTime + personalShopCloseTime)
                     {
                         val fillAmount = (time - personalRevealTime).toDouble() / personalShopCloseTime.toDouble()
                         if (fillAmount < 0.75)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("You are glowing!"), RED)
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("You are glowing!"), RED, idSuffix = "reveal")
                         } else if (fillAmount < 1)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Shop is about to close for you!"), PINK)
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Shop is about to close for you!"), PINK, idSuffix = "reveal")
                         } else
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Shop's closed!"), PURPLE)
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Shop's closed!"), PURPLE, idSuffix = "reveal")
                         }
                     }
                 }

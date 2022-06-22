@@ -181,10 +181,10 @@ object DisplayManager
         }
     }
 
-    fun setBossBarForPlayer(player: ServerPlayerEntity, fillAmount: Float, text: Text, color: BossBar.Color)
+    fun setBossBarForPlayer(player: ServerPlayerEntity, fillAmount: Float, text: Text, color: BossBar.Color, idSuffix: String = "main")
     {
         ifServerLoaded { server ->
-            val bossBarId = Identifier(player.name.string.lowercase())
+            val bossBarId = Identifier(player.name.string.lowercase() + "_$idSuffix")
             var bossBar = server.bossBarManager.get(bossBarId)
             if (bossBar == null)
             {
@@ -196,6 +196,17 @@ object DisplayManager
                 it.percent = fillAmount
                 it.color = color
                 it.name = text
+            }
+        }
+    }
+
+    fun removeBossBarForPlayer(player: ServerPlayerEntity, idSuffix: String)
+    {
+        ifServerLoaded { server ->
+            val bossBarId = Identifier(player.name.string.lowercase() + "_$idSuffix")
+            server.bossBarManager.get(bossBarId)?.let {
+                it.removePlayer(player)
+                server.bossBarManager.remove(it)
             }
         }
     }

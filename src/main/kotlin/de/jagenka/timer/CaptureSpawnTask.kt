@@ -8,6 +8,8 @@ import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.team.DGTeam
+import net.minecraft.entity.boss.BossBar
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
 
@@ -18,50 +20,68 @@ object CaptureSpawnTask : TimerTask
     override val runEvery: Int
         get() = 1.ticks()
 
-    private val captureProgress = mutableMapOf<Pair<DGSpawn, DGTeam>, Int>().withDefault { 0 }
+    private val captureProgress = mutableMapOf<DGSpawn, Int>().withDefault { 0 }
 
     override fun run()
     {
-        if (captureEnabled)
-        {
-            SpawnManager.getSpawns().forEach forEachSpawn@{ spawn ->
-                val playersOnSpawn = PlayerManager.getOnlineInGamePlayers().filter { player -> spawn.containsPlayer(player) }
-                SpawnManager.getTeam(spawn)?.let { teamAssignedToSpawn ->
-                    if (playersOnSpawn.find { player -> player.getDGTeam() == teamAssignedToSpawn } != null) return@forEachSpawn
-                }
+        if (!captureEnabled) return
 
-                PlayerManager.getInGameTeams().forEach forEachTeam@{ team ->
-                    val playerAmountOnSpawn = team.getOnlineInGamePlayers().count { teamPlayer -> spawn.containsPlayer(teamPlayer) }
-                    if (playerAmountOnSpawn > 0) captureProgress[spawn to team] = captureProgress.getValue(spawn to team) + 1
-                    else captureProgress.remove(spawn to team)
-                }
-            }
+        val playersOnAnySpawn = mutableListOf<Pair<ServerPlayerEntity, DGSpawn>>()
 
-            captureProgress.toList().forEach { (pair, progress) ->
-                val (spawn, team) = pair
-
-                if (progress > captureTimeNeeded)
+        SpawnManager.getSpawns().forEach forEachSpawn@{ spawn ->
+            val playersOnSpawn = PlayerManager.getOnlineInGamePlayers().filter { spawn.containsPlayer(it) }
+            val teamsOnSpawn = playersOnSpawn.map { it.getDGTeam() }.toSet()
+            if (teamsOnSpawn.count { it != null } == 1)
+            {
+                if(SpawnManager.getTeam(spawn) !in teamsOnSpawn)
                 {
-                    val teamPreviouslyAssigned = SpawnManager.reassignSpawn(spawn, team)
-                    captureProgress.remove(pair)
-
-                    val captureMessage = literal("")
-                    captureMessage.append(team.getFormattedText())
-                    captureMessage.append(literal(" captured "))
-
-                    if (teamPreviouslyAssigned != null)
+                    if (captureProgress.getValue(spawn) > captureTimeNeeded)
                     {
-                        captureMessage.append(teamPreviouslyAssigned.getFormattedText())
-                        captureMessage.append(literal("'s spawn!"))
+                        val team = teamsOnSpawn.find { it != null } ?: return@forEachSpawn // das sollte nie passieren
+                        captureProgress[spawn] = 0
+                        val teamPreviouslyAssigned = SpawnManager.reassignSpawn(spawn, team)
+                        val captureMessage = literal("")
+                        captureMessage.append(team.getFormattedText())
+                        captureMessage.append(literal(" captured "))
+
+                        if (teamPreviouslyAssigned != null)
+                        {
+                            captureMessage.append(teamPreviouslyAssigned.getFormattedText())
+                            captureMessage.append(literal("'s spawn!"))
+                        } else
+                        {
+                            captureMessage.append(literal("a spawn!"))
+                        }
+
+                        DisplayManager.sendChatMessage(captureMessage)
                     } else
                     {
-                        captureMessage.append(literal("a spawn!"))
+                        captureProgress[spawn] = captureProgress.getValue(spawn) + 1
                     }
-
-                    DisplayManager.sendChatMessage(captureMessage)
                 }
+                else
+                {
+                    captureProgress[spawn] = 0
+                    return@forEachSpawn
+                }
+
+            } else
+            {
+                captureProgress[spawn] = 0
             }
+
+            playersOnSpawn.forEach { player -> playersOnAnySpawn.add(player to spawn) }
         }
+
+        playersOnAnySpawn.forEach forEachPlayer@{ (playerOnSpawn, spawn) ->
+            val progress = captureProgress.getValue(spawn)
+            val fillAmount = progress.toFloat() / captureTimeNeeded.toFloat()
+            DisplayManager.setBossBarForPlayer(playerOnSpawn, fillAmount, text = literal("capture progress..."), color = BossBar.Color.BLUE, idSuffix = "capture")
+        }
+
+        PlayerManager.getOnlinePlayers()
+            .filter { player -> player !in playersOnAnySpawn.map { pair -> pair.first } }
+            .forEach { player -> DisplayManager.removeBossBarForPlayer(player, idSuffix = "capture") }
     }
 
     override fun reset()
