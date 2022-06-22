@@ -5,6 +5,9 @@ import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isInGame
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
+import net.minecraft.text.Style
+import net.minecraft.text.Text
+import net.minecraft.util.Formatting
 
 enum class DGTeam
 {
@@ -41,6 +44,8 @@ enum class DGTeam
     {
         return this.name.replace('_', ' ').lowercase().capitalizeWords()
     }
+
+    fun getFormattedText() = Text.literal(this.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(this.name.lowercase())))[0]
 
     companion object
     {

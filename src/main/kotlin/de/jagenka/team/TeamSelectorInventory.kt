@@ -35,7 +35,7 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
     override fun getStack(slotIndex: Int): ItemStack
     {
         return slots[slotIndex]?.let {
-            it.getColorBlock().asItem().defaultStack.setCustomName(Text.of(it.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(it.name.lowercase())))[0])
+            it.getColorBlock().asItem().defaultStack.setCustomName(it.getFormattedText())
         } ?: Items.ENDER_EYE.defaultStack.setCustomName(Text.of("Spectator"))
     }
 

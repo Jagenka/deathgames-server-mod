@@ -176,7 +176,7 @@ object DisplayManager
         {
             val base = Text.literal("")
             base.append(Text.of("${player.name.string} joined Team "))
-            base.append(Text.of(team.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
+            base.append(team.getFormattedText())
             sendChatMessage(base)
         }
     }
