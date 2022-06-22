@@ -8,6 +8,7 @@ import de.jagenka.Coordinates
 import de.jagenka.commands.DeathGamesCommand.isOp
 import de.jagenka.config.Config
 import de.jagenka.config.ConfigEntry
+import de.jagenka.timer.DGUnit
 import de.jagenka.toDGCoordinates
 import de.jagenka.util.getPropertiesFromSection
 import de.jagenka.util.getSectionsFromConfig
@@ -18,6 +19,8 @@ import net.minecraft.server.command.CommandManager.literal
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 object DeathGamesConfigCommand {
 
@@ -121,6 +124,30 @@ object DeathGamesConfigCommand {
 
 }
 
+val NUMBER_TRANSFORM_MATCHERS = mapOf(
+    Pattern.compile("(-?\\d+)") to 1,
+    Pattern.compile("(\\d+)\\s*(t|tick|ticks)") to DGUnit.TICKS.factor,
+    Pattern.compile("(\\d+)\\s*(s|sec|secs|seconds)") to DGUnit.SECONDS.factor,
+    Pattern.compile("(\\d+)\\s*(m|min|mins|minutes)") to DGUnit.MINUTES.factor,
+    Pattern.compile("(\\d+)\\s*(h|hour|hours)") to DGUnit.HOURS.factor
+)
+
+@Throws(java.lang.NumberFormatException::class)
+fun <T: Number> transformNumber(str: String, numeralParser: (String) -> T): T? {
+
+    val match: Pair<Matcher, Int> = NUMBER_TRANSFORM_MATCHERS.map {
+        it.key.matcher(str) to it.value
+    }.find { it.first.matches() } ?: return null
+
+    val valueString = match.first.group(1)
+    val numeralValue: T = numeralParser.invoke(valueString)
+
+    val scaledNumeral = numeralParser.invoke((numeralValue.toLong() * match.second).toString())
+
+    return scaledNumeral
+}
+
+
 interface ConfigPropertyTransformer<T> {
     fun toString(value: Any): String
     fun fromString(str: String, source: ServerCommandSource): T?
@@ -179,7 +206,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
         override fun toString(value: Any): String = (value as? Int)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): Int? {
             try {
-                return str.toInt()
+                return transformNumber(str) { it.toInt() }
             } catch (e: NumberFormatException) {
                 return null
             }
@@ -189,7 +216,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
         override fun toString(value: Any): String = (value as? Long)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): Long? {
             try {
-                return str.toLong()
+                return transformNumber(str) { it.toLong() }
             } catch (e: NumberFormatException) {
                 return null
             }
@@ -199,7 +226,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
         override fun toString(value: Any): String = (value as? Short)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): Short? {
             try {
-                return str.toShort()
+                return transformNumber(str) { it.toShort() }
             } catch (e: NumberFormatException) {
                 return null
             }
@@ -209,7 +236,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
         override fun toString(value: Any): String = (value as? Byte)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): Byte? {
             try {
-                return str.toByte()
+                return transformNumber(str) { it.toByte() }
             } catch (e: NumberFormatException) {
                 return null
             }
