@@ -86,21 +86,24 @@ object SpawnManager
 
     fun getUnassignedSpawns() = spawns.filter { teamSpawns[it] == null }.toList()
 
-    fun reassignSpawn(spawn: DGSpawn, team: DGTeam)
+    /**
+     * @return who owned the spawn before
+     */
+    fun reassignSpawn(spawn: DGSpawn, team: DGTeam): DGTeam?
     {
         teamSpawns.removeForValue(team)
 
-        val teamAssignedToSpawn = getTeam(spawn)
-        if (teamAssignedToSpawn != null)
+        val teamPreviouslyAssignedToSpawn = getTeam(spawn)
+        if (teamPreviouslyAssignedToSpawn != null)
         {
-            teamSpawns[getUnassignedSpawns().random()] = teamAssignedToSpawn
+            teamSpawns[getUnassignedSpawns().random()] = teamPreviouslyAssignedToSpawn
         }
 
         teamSpawns[spawn] = team
 
         colorSpawns()
 
-        //TODO: capture message
+        return teamPreviouslyAssignedToSpawn
     }
 }
 

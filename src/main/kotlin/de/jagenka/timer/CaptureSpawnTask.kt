@@ -3,10 +3,13 @@ package de.jagenka.timer
 import de.jagenka.config.Config.captureEnabled
 import de.jagenka.config.Config.captureTimeNeeded
 import de.jagenka.managers.DGSpawn
+import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.team.DGTeam
+import net.minecraft.text.Text
+import net.minecraft.text.Text.literal
 
 object CaptureSpawnTask : TimerTask
 {
@@ -39,9 +42,23 @@ object CaptureSpawnTask : TimerTask
 
                 if (progress > captureTimeNeeded)
                 {
-                    println("$team has captured $spawn")
-                    SpawnManager.reassignSpawn(spawn, team)
+                    val teamPreviouslyAssigned = SpawnManager.reassignSpawn(spawn, team)
                     captureProgress.remove(pair)
+
+                    val captureMessage = literal("")
+                    captureMessage.append(team.getFormattedText())
+                    captureMessage.append(literal(" captured "))
+
+                    if (teamPreviouslyAssigned != null)
+                    {
+                        captureMessage.append(teamPreviouslyAssigned.getFormattedText())
+                        captureMessage.append(literal("'s spawn!"))
+                    } else
+                    {
+                        captureMessage.append(literal("a spawn!"))
+                    }
+
+                    DisplayManager.sendChatMessage(captureMessage)
                 }
             }
         }
