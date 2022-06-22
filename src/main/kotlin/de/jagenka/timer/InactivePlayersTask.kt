@@ -1,10 +1,12 @@
 package de.jagenka.timer
 
+import de.jagenka.config.Config.killStreakPenaltyCap
 import de.jagenka.config.Config.revealTimePerPlayer
-import de.jagenka.floor
+import de.jagenka.config.Config.shopCloseTimeAfterReveal
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.KillManager
 import de.jagenka.managers.PlayerManager
+import net.minecraft.entity.boss.BossBar.Color.*
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.text.Style
@@ -26,12 +28,38 @@ object InactivePlayersTask : TimerTask
     override fun run()
     {
         inactiveTimer.forEach { (playerName, time) ->
-            val personalRevealTime = getPersonalRevealTime(playerName)
-            val percentage = if (personalRevealTime > 0) ((time.toDouble() / (personalRevealTime * 2)) * 100).floor() else 100
+            val personalRevealTime = getPersonalRevealTime(playerName).toInt()
+            val personalShopCloseTime = getPersonalShopCloseTime(playerName).toInt()
 
-            PlayerManager.getOnlinePlayer(playerName)?.let { DisplayManager.updateBossBarForPlayer(it, percentage) }
+            PlayerManager.getOnlinePlayer(playerName)
+                ?.let { player ->
+                    if (time in 0..personalRevealTime)
+                    {
+                        val fillAmount = time.toDouble() / personalRevealTime.toDouble()
+                        if (fillAmount < 0.75)
+                        {
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Kill someone to prevent being revealed!"), GREEN)
+                        } else if (fillAmount < 1)
+                        {
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("You are about to be revealed..."), YELLOW)
+                        }
+                    } else if (time in personalRevealTime + 1..personalRevealTime + personalShopCloseTime)
+                    {
+                        val fillAmount = (time - personalRevealTime).toDouble() / personalShopCloseTime.toDouble()
+                        if (fillAmount < 0.75)
+                        {
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("You are glowing!"), RED)
+                        } else if (fillAmount < 1)
+                        {
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Shop is about to close for you!"), PINK)
+                        } else
+                        {
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Shop's closed!"), PURPLE)
+                        }
+                    }
+                }
 
-            if (percentage >= 50)
+            if (time >= personalRevealTime)
             {
                 if (playerName !in highlightedPlayers)
                 {
@@ -56,7 +84,10 @@ object InactivePlayersTask : TimerTask
         inactiveTimer.clear()
     }
 
-    private fun getPersonalRevealTime(playerName: String) = revealTimePerPlayer.toDouble() * (10 - KillManager.getKillStreak(playerName)).toDouble() / 10.0
+    private fun getPersonalRevealTime(playerName: String) = revealTimePerPlayer.toDouble() * getKillStreakPenaltyFactor(playerName)
+    private fun getPersonalShopCloseTime(playerName: String) = shopCloseTimeAfterReveal.toDouble() * getKillStreakPenaltyFactor(playerName)
+
+    private fun getKillStreakPenaltyFactor(playerName: String) = (killStreakPenaltyCap - KillManager.getKillStreak(playerName)).toDouble() / killStreakPenaltyCap.toDouble()
 
     fun hasShopClosed(playerName: String) = (playerName in highlightedPlayers) && (inactiveTimer.getValue(playerName) >= (getPersonalRevealTime(playerName) * 2))
 

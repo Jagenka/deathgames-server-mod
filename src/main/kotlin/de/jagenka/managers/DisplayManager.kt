@@ -181,10 +181,9 @@ object DisplayManager
         }
     }
 
-    fun updateBossBarForPlayer(player: ServerPlayerEntity, percent: Int)
+    fun setBossBarForPlayer(player: ServerPlayerEntity, fillAmount: Float, text: Text, color: BossBar.Color)
     {
         ifServerLoaded { server ->
-
             val bossBarId = Identifier(player.name.string.lowercase())
             var bossBar = server.bossBarManager.get(bossBarId)
             if (bossBar == null)
@@ -194,29 +193,9 @@ object DisplayManager
 
             bossBar?.let {
                 it.addPlayer(player)
-                it.percent = (percent.toFloat() / 100f).coerceAtMost(1f)
-
-                if (percent <= 25)
-                {
-                    it.color = BossBar.Color.GREEN
-                    it.name = Text.of("Kill someone to prevent being revealed!")
-                } else if (percent <= 50)
-                {
-                    it.color = BossBar.Color.GREEN
-                    it.name = Text.of("You are about to be revealed...")
-                } else if (percent <= 75)
-                {
-                    it.color = BossBar.Color.YELLOW
-                    it.name = Text.of("You are glowing!")
-                } else if (percent < 100)
-                {
-                    it.color = BossBar.Color.RED
-                    it.name = Text.of("Shop is about to close for you!")
-                } else
-                {
-                    it.color = BossBar.Color.PURPLE
-                    it.name = Text.of("Shop's closed!")
-                }
+                it.percent = fillAmount
+                it.color = color
+                it.name = text
             }
         }
     }

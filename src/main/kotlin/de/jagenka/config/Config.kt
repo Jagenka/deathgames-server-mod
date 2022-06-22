@@ -89,6 +89,11 @@ object Config
     val trapConfig
         get() = configEntry.traps
 
+    val shopCloseTimeAfterReveal
+        get() = configEntry.misc.shopCloseTimeAfterReveal
+    val killStreakPenaltyCap
+        get() = configEntry.misc.killStreakPenaltyCap
+
     fun loadJSON()
     {
         configEntry = serializer.decodeFromString(FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json").toFile().readText())

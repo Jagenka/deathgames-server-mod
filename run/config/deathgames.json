@@ -170,6 +170,8 @@
     },
     "misc": {
         "revealTimePerPlayer": 2400,
+        "shopCloseTimeAfterReveal": 2400,
+        "killStreakPenaltyCap": 10,
         "arenaBounds": {
             "firstCorner": {
                 "x": -128,
