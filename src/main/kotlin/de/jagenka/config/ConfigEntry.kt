@@ -15,7 +15,7 @@ annotation class Section(val name: String)
 class ConfigEntry(
     @Section("spawns") val spawns: SpawnsConfigEntry = SpawnsConfigEntry(),
     @Section("bonus") val bonus: BonusPlatformsConfigEntry = BonusPlatformsConfigEntry(),
-    @Section("lives") val lives: LivesConfigEntry = LivesConfigEntry(),
+    @Section("respawns") val respawns: RespawnsConfigEntry = RespawnsConfigEntry(),
     @Section("money") val money: MoneyConfigEntry = MoneyConfigEntry(),
     @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
     @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
@@ -46,7 +46,7 @@ class BonusPlatformsConfigEntry(
 )
 
 @Serializable
-class LivesConfigEntry(
+class RespawnsConfigEntry(
     var perPlayer: Int = 0,
     var perTeam: Int = 0
 )

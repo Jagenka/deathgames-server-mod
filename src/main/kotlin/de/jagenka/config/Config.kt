@@ -45,10 +45,10 @@ object Config
     val bonusMoneyInterval
         get() = configEntry.bonus.moneyInterval
 
-    val livesPerPlayer
-        get() = configEntry.lives.perPlayer
-    val livesPerTeam
-        get() = configEntry.lives.perTeam
+    val respawnsPerPlayer
+        get() = configEntry.respawns.perPlayer
+    val respawnsPerTeam
+        get() = configEntry.respawns.perTeam
 
     val shuffleSpawnsInterval
         get() = configEntry.spawns.shuffleInterval

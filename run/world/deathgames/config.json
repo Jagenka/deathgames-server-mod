@@ -130,7 +130,7 @@
         "moneyAmount": 5,
         "moneyInterval": 200
     },
-    "lives": {
+    "respawns": {
         "perPlayer": 5,
         "perTeam": 10
     },

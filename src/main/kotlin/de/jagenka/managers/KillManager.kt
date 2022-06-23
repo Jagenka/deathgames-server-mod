@@ -1,8 +1,8 @@
 package de.jagenka.managers
 
 import de.jagenka.DeathGames
-import de.jagenka.config.Config.livesPerPlayer
-import de.jagenka.config.Config.livesPerTeam
+import de.jagenka.config.Config.respawnsPerPlayer
+import de.jagenka.config.Config.respawnsPerTeam
 import de.jagenka.config.Config.startMoneyPerPlayer
 import de.jagenka.gameplay.traps.TrapsAreNotGay
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
@@ -146,8 +146,8 @@ object KillManager
         val players = PlayerManager.getPlayers()
         when (livesMode)
         {
-            Mode.PLAYER -> players.forEach { playerRespawns[it] = livesPerPlayer }
-            Mode.TEAM -> players.forEach { teamRespawns[PlayerManager.getTeam(it)] = livesPerTeam }
+            Mode.PLAYER -> players.forEach { playerRespawns[it] = respawnsPerPlayer }
+            Mode.TEAM -> players.forEach { teamRespawns[PlayerManager.getTeam(it)] = respawnsPerTeam }
         }
     }
 
