@@ -7,6 +7,8 @@ import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getInGamePlayersInRange
 import de.jagenka.managers.PlayerManager.getOnlinePlayersInRange
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.gib
 import de.jagenka.timer.CustomTimer
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
@@ -140,6 +142,8 @@ object TrapsAreNotGay
                     affectedPlayers.forEach { player ->
                         player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 1f, 1f)
                         it.addDisabledPlayer(player.name.string)
+
+                        StatManager.personalStats.gib(player.name.string).timesCaughtInTrap++
                     }
                 }
             }

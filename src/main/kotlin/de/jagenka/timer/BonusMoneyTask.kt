@@ -6,6 +6,8 @@ import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.PlayerManager
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.gib
 
 object BonusMoneyTask : TimerTask
 {
@@ -29,6 +31,8 @@ object BonusMoneyTask : TimerTask
             {
                 DisplayManager.setExpProgress(playerName, ticks.getValue(playerName).toFloat() / bonusMoneyInterval.toFloat())
                 ticks[playerName] = ticks.getValue(playerName) + 1
+
+                StatManager.personalStats.gib(playerName).ticksOnBonus++
             }
         }
     }

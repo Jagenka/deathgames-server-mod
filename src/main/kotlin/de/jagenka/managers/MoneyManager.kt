@@ -4,13 +4,18 @@ import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.getMoney
+import de.jagenka.managers.MoneyManager.moneyMode
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.shop.Shop
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
 import net.minecraft.server.network.ServerPlayerEntity
 
 object MoneyManager
 {
+    var moneyMode = Mode.PLAYER
+
     private val playerMoney = mutableMapOf<String, Int>().withDefault { 0 }
     private val teamMoney = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
@@ -18,13 +23,34 @@ object MoneyManager
     fun getMoney(player: ServerPlayerEntity) = getMoney(player.name.string)
     fun getMoney(team: DGTeam?) = teamMoney.getValue(team)
 
-    fun setMoney(playerName: String, amount: Int)
+    fun initMoney()
+    {
+        val players = PlayerManager.getPlayers()
+
+        when (moneyMode)
+        {
+            Mode.PLAYER -> players.forEach {
+                setMoney(it, Config.startMoneyPerPlayer)
+                StatManager.personalStats.gib(it).moneyEarned += Config.startMoneyPerPlayer
+            }
+            Mode.TEAM ->
+            {
+                PlayerManager.getInGameTeams().forEach { inGameTeam ->
+                    val teamSize = inGameTeam.getPlayers().size
+                    setMoney(inGameTeam, teamSize * Config.startMoneyPerPlayer)
+                    inGameTeam.getPlayers().forEach { StatManager.personalStats.gib(it).moneyEarned += teamSize * Config.startMoneyPerPlayer }
+                }
+            }
+        }
+    }
+
+    private fun setMoney(playerName: String, amount: Int)
     {
         playerMoney[playerName] = amount
         DisplayManager.updateLevelDisplay()
     }
 
-    fun setMoney(team: DGTeam?, amount: Int)
+    private fun setMoney(team: DGTeam?, amount: Int)
     {
         if (team == null) return
         teamMoney[team] = amount
@@ -34,17 +60,27 @@ object MoneyManager
     fun addMoney(playerName: String, amount: Int)
     {
         setMoney(playerName, getMoney(playerName) + amount)
+        if (amount >= 0)
+        {
+            StatManager.personalStats.gib(playerName).moneyEarned += amount
+        }
     }
 
     fun addMoney(team: DGTeam?, amount: Int)
     {
         if (team == null) return
         setMoney(team, getMoney(team) + amount)
+        if (amount >= 0)
+        {
+            team.getPlayers().forEach { playerName ->
+                StatManager.personalStats.gib(playerName).moneyEarned += amount
+            }
+        }
     }
 
     fun handleMoneyOnPlayerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
     {
-        when (KillManager.moneyMode)
+        when (moneyMode)
         {
             Mode.PLAYER ->
             {
@@ -75,7 +111,7 @@ object MoneyManager
 
 fun ServerPlayerEntity.getDGMoney(): Int
 {
-    return when (KillManager.moneyMode)
+    return when (moneyMode)
     {
         Mode.PLAYER -> getMoney(this)
         Mode.TEAM -> this.getDGTeam()?.let { getMoney(it) } ?: 0
@@ -84,7 +120,8 @@ fun ServerPlayerEntity.getDGMoney(): Int
 
 fun ServerPlayerEntity.deductDGMoney(amount: Int)
 {
-    when (KillManager.moneyMode)
+    StatManager.personalStats.gib(this.name.string).moneySpent += amount
+    when (moneyMode)
     {
         Mode.PLAYER -> addMoney(this.name.string, -amount)
         Mode.TEAM -> addMoney(this.getDGTeam(), -amount)

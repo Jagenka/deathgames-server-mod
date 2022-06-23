@@ -8,6 +8,8 @@ import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.gib
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text.literal
@@ -34,15 +36,15 @@ object CaptureSpawnTask : TimerTask
             val teamsOnSpawn = playersOnSpawn.map { it.getDGTeam() }.toSet()
             if (teamsOnSpawn.count { it != null } == 1)
             {
-                if(SpawnManager.getTeam(spawn) !in teamsOnSpawn)
+                if (SpawnManager.getTeam(spawn) !in teamsOnSpawn)
                 {
                     if (captureProgress.getValue(spawn) > captureTimeNeeded)
                     {
-                        val team = teamsOnSpawn.find { it != null } ?: return@forEachSpawn // das sollte nie passieren
+                        val newTeam = teamsOnSpawn.find { it != null } ?: return@forEachSpawn // das sollte nie passieren
                         captureProgress[spawn] = 0
-                        val teamPreviouslyAssigned = SpawnManager.reassignSpawn(spawn, team)
+                        val teamPreviouslyAssigned = SpawnManager.reassignSpawn(spawn, newTeam)
                         val captureMessage = literal("")
-                        captureMessage.append(team.getFormattedText())
+                        captureMessage.append(newTeam.getFormattedText())
                         captureMessage.append(literal(" captured "))
 
                         if (teamPreviouslyAssigned != null)
@@ -55,12 +57,13 @@ object CaptureSpawnTask : TimerTask
                         }
 
                         DisplayManager.sendChatMessage(captureMessage)
+
+                        playersOnSpawn.filter { it.getDGTeam() == newTeam }.forEach { StatManager.personalStats.gib(it.name.string).spawnsCaptured++ }
                     } else
                     {
                         captureProgress[spawn] = captureProgress.getValue(spawn) + 1
                     }
-                }
-                else
+                } else
                 {
                     captureProgress[spawn] = 0
                     return@forEachSpawn

@@ -39,4 +39,7 @@ class RefundShopEntry(private val shopEntryToRefund: ShopEntry) : ShopEntry
     }
 
     private fun getRefundAmount(player: ServerPlayerEntity) = (shopEntryToRefund.getTotalSpentMoney(player) * (Config.refundPercent.toDouble() / 100.0)).floor()
+
+    override val nameForStat: String
+        get() = "${shopEntryToRefund.nameForStat}_REFUND"
 }

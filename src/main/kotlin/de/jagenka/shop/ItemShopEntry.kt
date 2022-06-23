@@ -58,4 +58,7 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
             itemStackInInventory.item == boughtItemStack.item
         }, amount, player.playerScreenHandler.craftingInput)
     }
+
+    override val nameForStat: String
+        get() = "${boughtItemStack.count} $name"
 }

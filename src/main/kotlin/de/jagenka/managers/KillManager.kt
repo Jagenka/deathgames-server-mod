@@ -3,13 +3,13 @@ package de.jagenka.managers
 import de.jagenka.DeathGames
 import de.jagenka.config.Config.respawnsPerPlayer
 import de.jagenka.config.Config.respawnsPerTeam
-import de.jagenka.config.Config.startMoneyPerPlayer
 import de.jagenka.gameplay.traps.TrapsAreNotGay
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
-import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.makeInGame
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
@@ -28,7 +28,6 @@ object KillManager
 
     private val kDEntries = mutableMapOf<String, KD>()
 
-    var moneyMode = Mode.PLAYER
     var livesMode = Mode.TEAM
     var killStreakMode = Mode.PLAYER
 
@@ -54,6 +53,8 @@ object KillManager
         val playerKD = kDEntries[playerName]
         if (playerKD != null) playerKD.addDeath()
         else kDEntries[playerName] = KD(0, 1)
+
+        StatManager.personalStats.gib(playerName).deaths++
 
         removeOneRespawn(deceased)
 
@@ -88,11 +89,18 @@ object KillManager
         if (playerKD != null) playerKD.addKill()
         else kDEntries[attackerName] = KD(1, 0)
 
+        StatManager.personalStats.gib(attackerName).kills++
+
         when (killStreakMode)
         {
             Mode.PLAYER -> playerKillStreak[attackerName] = playerKillStreak.getValue(attackerName) + 1
             Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
         }
+        if (getKillStreak(attackerName) > StatManager.personalStats.gib(attackerName).highestKillStreak)
+        {
+            StatManager.personalStats.gib(attackerName).highestKillStreak = getKillStreak(attackerName)
+        }
+
         MoneyManager.handleMoneyOnPlayerKill(attacker, deceased)
         InactivePlayersTask.resetForPlayer(attackerName)
 
@@ -111,9 +119,11 @@ object KillManager
 
     private fun resetKillStreak(deceased: ServerPlayerEntity)
     {
+        val playerName = deceased.name.string
+
         when (killStreakMode)
         {
-            Mode.PLAYER -> playerKillStreak[deceased.name.string] = 0
+            Mode.PLAYER -> playerKillStreak[playerName] = 0
             Mode.TEAM -> teamKillStreak[deceased.getDGTeam()] = 0
         }
 
@@ -148,22 +158,6 @@ object KillManager
         {
             Mode.PLAYER -> players.forEach { playerRespawns[it] = respawnsPerPlayer }
             Mode.TEAM -> players.forEach { teamRespawns[PlayerManager.getTeam(it)] = respawnsPerTeam }
-        }
-    }
-
-    fun initMoney()
-    {
-        val players = PlayerManager.getPlayers()
-
-        when (moneyMode)
-        {
-            Mode.PLAYER -> players.forEach { setMoney(it, startMoneyPerPlayer) }
-            Mode.TEAM ->
-            {
-                PlayerManager.getInGameTeams().forEach { inGameTeam ->
-                    setMoney(inGameTeam, players.filter { playerName -> PlayerManager.getTeam(playerName) == inGameTeam }.size * startMoneyPerPlayer)
-                }
-            }
         }
     }
 

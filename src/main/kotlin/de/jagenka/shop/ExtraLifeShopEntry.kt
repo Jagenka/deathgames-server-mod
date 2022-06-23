@@ -36,4 +36,7 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
         }
         return false
     }
+
+    override val nameForStat: String
+        get() = "EXTRA_LIFE"
 }

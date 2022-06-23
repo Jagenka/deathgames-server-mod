@@ -29,4 +29,7 @@ class LeaveShopEntry : ShopEntry
         ShopTask.exitShop(player)
         return true
     }
+
+    override val nameForStat: String
+        get() = "LEAVE_SHOP"
 }

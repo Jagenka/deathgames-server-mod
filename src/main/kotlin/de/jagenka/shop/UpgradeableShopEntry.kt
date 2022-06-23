@@ -132,4 +132,7 @@ class UpgradeableShopEntry(
 
         Shop.setUpgradeLevel(player.name.string, type, 0)
     }
+
+    override val nameForStat: String
+        get() = type.name
 }

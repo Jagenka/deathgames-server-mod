@@ -6,6 +6,7 @@
   "mixins": [],
   "client": [],
   "server": [
+    "DamageTrackerMixin",
     "ItemStackMixin",
     "MinecraftServerMixin",
     "PlayerEntityMixin",

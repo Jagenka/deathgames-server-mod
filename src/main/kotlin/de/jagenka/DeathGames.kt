@@ -9,6 +9,8 @@ import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.makeInGame
 import de.jagenka.managers.SpawnManager.getSpawnCoordinates
 import de.jagenka.shop.Shop
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.StatsIO
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.fabricmc.api.DedicatedServerModInitializer
@@ -30,9 +32,14 @@ object DeathGames : DedicatedServerModInitializer
     var currentlyStarting = false
     var currentlyEnding = false
 
+    var gameId: Long? = null
+        private set
+
     override fun onInitializeServer()
     {
         registerCommands()
+
+        StatsIO.loadStats()
 
         println("DeathGames Mod initialized!")
     }
@@ -61,6 +68,8 @@ object DeathGames : DedicatedServerModInitializer
 
     fun startGame()
     {
+        gameId = System.currentTimeMillis()
+
         currentlyStarting = false
 
         val teamPlayers = PlayerManager.getTeamPlayers()
@@ -74,7 +83,7 @@ object DeathGames : DedicatedServerModInitializer
         BonusManager.init()
 
         KillManager.initLives()
-        KillManager.initMoney()
+        MoneyManager.initMoney()
 
         teamPlayers.forEach {
             it.clearStatusEffects()
@@ -115,10 +124,11 @@ object DeathGames : DedicatedServerModInitializer
         currentlyEnding = true
 
         val winners = mutableListOf<Text>()
-        PlayerManager.getOnlineInGameTeams().forEach { team ->
+        val onlineInGameTeams = PlayerManager.getOnlineInGameTeams()
+        onlineInGameTeams.forEach { team ->
             winners.add(team.getFormattedText())
         }
-        val winnerCount = winners.count()
+        val winnerCount = onlineInGameTeams.count()
         val winnerPlayers = Texts.join(winners, Text.of(", "))
         winners.clear()
         if (winnerCount != 0)
@@ -128,6 +138,11 @@ object DeathGames : DedicatedServerModInitializer
         }
         PlayerManager.getOnlinePlayers().forEach {
             DisplayManager.sendTitleMessage(it, Text.of("Game Over"), Texts.join(winners, Text.of(": ")), 5.seconds())
+        }
+
+        if (winnerCount == 1)
+        {
+            StatManager.gameStats.winner = onlineInGameTeams.getOrNull(0)
         }
 
         DisplayManager.resetBossBars()
@@ -142,6 +157,9 @@ object DeathGames : DedicatedServerModInitializer
         KillManager.getKDs().forEach { (playerName, kd) ->
             DisplayManager.sendChatMessage("$playerName: $kd")
         }
+        DisplayManager.sendChatMessage("")
+
+        StatManager.saveAllStatsAfterGame()
 
         Timer.schedule({
             PlayerManager.getOnlinePlayers().forEach {
