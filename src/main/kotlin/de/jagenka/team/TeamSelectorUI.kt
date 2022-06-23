@@ -1,7 +1,6 @@
 package de.jagenka.team
 
-import de.jagenka.BlockCuboid
-import de.jagenka.Coordinates
+import de.jagenka.config.Config
 import de.jagenka.toDGCoordinates
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -16,7 +15,7 @@ import net.minecraft.text.Text
 
 object TeamSelectorUI
 {
-    val lobbyBounds = BlockCuboid(Coordinates(-29, 18, -29), Coordinates(29, 34, 29))
+    val lobbyBounds = Config.configEntry.misc.lobbyBounds
 
     @JvmStatic
     fun showInterfaceIfInLobby(player: ServerPlayerEntity): Boolean

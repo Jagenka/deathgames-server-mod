@@ -73,7 +73,8 @@ class MiscConfigEntry(
     var shopCloseTimeAfterReveal: Int = 0,
     var killStreakPenaltyCap: Int = 0,
     var arenaBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
-    var spectatorRadiusPadding: Int = 0
+    var spectatorRadiusPadding: Int = 0,
+    var lobbyBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0))
 )
 
 @Serializable

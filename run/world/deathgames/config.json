@@ -181,7 +181,23 @@
                 "pitch": 0.0
             }
         },
-        "spectatorRadiusPadding": 20
+        "spectatorRadiusPadding": 20,
+        "lobbyBounds": {
+            "firstCorner": {
+                "x": -29,
+                "y": 18,
+                "z": -29,
+                "yaw": 0.0,
+                "pitch": 0.0
+            },
+            "secondCorner": {
+                "x": 29,
+                "y": 34,
+                "z": 29,
+                "yaw": 0.0,
+                "pitch": 0.0
+            }
+        }
     },
     "traps": {
         "triggerRange": 0.5,
