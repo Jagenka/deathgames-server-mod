@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import net.minecraft.text.Text.literal
 
 object ReadyCheck
 {
@@ -41,7 +42,22 @@ interface UIEntry
 class TeamUIEntry(override val team: DGTeam) : UIEntry
 {
     override val displayItemStack: ItemStack
-        get() = team.getColorBlock().asItem().defaultStack.setCustomName(team.getFormattedText())
+        get()
+        {
+            val teamSize = team.getPlayers().size
+
+            val suffix = literal(
+                " (${
+                    if (teamSize == 0) "Empty" else
+                    {
+                        "$teamSize Player${if (teamSize != 1) "s" else ""}"
+                    }
+                })"
+            )
+            return team.getColorBlock().asItem().defaultStack.setCustomName(
+                literal("Join ").append(team.getFormattedText()).append(suffix)
+            )
+        }
 
     override fun onClick(player: ServerPlayerEntity)
     {
@@ -55,7 +71,7 @@ class TeamUIEntry(override val team: DGTeam) : UIEntry
 class SpectatorUIEntry : UIEntry
 {
     override val displayItemStack: ItemStack
-        get() = ItemStack(Items.ENDER_EYE).setCustomName(Text.literal("Spectator"))
+        get() = ItemStack(Items.ENDER_EYE).setCustomName(literal("Spectator"))
 
     override fun onClick(player: ServerPlayerEntity)
     {
@@ -73,10 +89,10 @@ class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
         {
             return if (ReadyCheck.isReady(player.name.string))
             {
-                ItemStack(Items.LIME_DYE).setCustomName(Text.literal("Unready"))
+                ItemStack(Items.LIME_DYE).setCustomName(literal("Unready"))
             } else
             {
-                ItemStack(Items.RED_DYE).setCustomName(Text.literal("Ready"))
+                ItemStack(Items.RED_DYE).setCustomName(literal("Ready"))
             }
         }
 
@@ -98,7 +114,7 @@ class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
 class StartGameUIEntry : UIEntry
 {
     override val displayItemStack: ItemStack
-        get() = ItemStack(Items.AXOLOTL_BUCKET).setCustomName(Text.literal("Start Game"))
+        get() = ItemStack(Items.AXOLOTL_BUCKET).setCustomName(literal("Start Game"))
 
     override fun onClick(player: ServerPlayerEntity)
     {
@@ -109,7 +125,7 @@ class StartGameUIEntry : UIEntry
             ReadyCheck.clear()
         } else
         {
-            DisplayManager.sendChatMessage(Text.literal("Can't start game! Not ready: ${whoIsNotReady.toString().removeSurrounding("[", "]")}"))
+            DisplayManager.sendChatMessage(literal("Can't start game! Not ready: ${whoIsNotReady.toString().removeSurrounding("[", "]")}"))
         }
     }
 }
