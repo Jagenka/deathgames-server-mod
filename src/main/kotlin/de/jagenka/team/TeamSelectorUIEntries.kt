@@ -6,11 +6,13 @@ import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
+import de.jagenka.team.TeamSelectorUI.notReadySpamProtection
+import de.jagenka.timer.Timer
+import de.jagenka.timer.seconds
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
-import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
 import net.minecraft.util.Formatting
 
@@ -127,6 +129,10 @@ class StartGameUIEntry : UIEntry
             ReadyCheck.clear()
         } else
         {
+            if (notReadySpamProtection) return
+            notReadySpamProtection = true
+            Timer.schedule({ notReadySpamProtection = false }, 1.seconds())
+
             val notReadyText = literal("")
             whoIsNotReady.forEachIndexed { index, playerName ->
                 val team = PlayerManager.getTeam(playerName)

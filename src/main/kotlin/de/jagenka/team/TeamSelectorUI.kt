@@ -18,6 +18,8 @@ object TeamSelectorUI
 {
     val lobbyBounds = Config.configEntry.misc.lobbyBounds
 
+    var notReadySpamProtection = false
+
     @JvmStatic
     fun showInterfaceIfInLobby(player: ServerPlayerEntity): Boolean
     {
