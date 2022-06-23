@@ -23,8 +23,6 @@ object Config
 
     lateinit var configEntry: ConfigEntry
 
-    val worldSpawn
-        get() = configEntry.spawns.worldSpawn
 
     val spawnPlatformRadius
         get() = configEntry.spawns.platformRadius

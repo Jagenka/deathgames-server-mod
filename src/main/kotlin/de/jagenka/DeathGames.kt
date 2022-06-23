@@ -73,7 +73,7 @@ object DeathGames : DedicatedServerModInitializer
 
         PlayerManager.getOnlinePlayers().forEach {
             it.closeHandledScreen()
-            val (x, y, z) = Config.worldSpawn
+            val (x, y, z) = Config.lobbySpawn
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
             it.teleport(it.getSpawnCoordinates())
         }

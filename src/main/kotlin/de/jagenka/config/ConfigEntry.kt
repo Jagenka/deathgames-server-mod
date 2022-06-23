@@ -26,7 +26,6 @@ class ConfigEntry(
 class SpawnsConfigEntry(
     var spawnPositions: CoordinateList = CoordinateList(listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f))),
     var platformRadius: Int = 0,
-    var worldSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var shuffleInterval: Int = 0,

@@ -61,13 +61,6 @@
             ]
         },
         "platformRadius": 4,
-        "worldSpawn": {
-            "x": 0,
-            "y": 51,
-            "z": 0,
-            "yaw": 0.0,
-            "pitch": 0.0
-        },
         "spectatorSpawn": {
             "x": 0,
             "y": 80,
