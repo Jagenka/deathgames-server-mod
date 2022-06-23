@@ -28,7 +28,7 @@ object StatsIO
             Files.writeString(pathToStatsFile, serializer.encodeToString(StatsBaseEntry()))
         }
 
-        stats = serializer.decodeFromString(pathToStatsFile.toFile().readText())
+        stats = serializer.decodeFromString(pathToStatsFile.toFile().readText()) //TODO: limit ist 2GB!
     }
 
     fun store()
