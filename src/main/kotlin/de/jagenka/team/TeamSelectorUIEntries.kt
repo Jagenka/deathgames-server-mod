@@ -93,10 +93,10 @@ class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
         {
             return if (ReadyCheck.isReady(player.name.string))
             {
-                ItemStack(Items.LIME_DYE).setCustomName(literal("Unready"))
+                ItemStack(Items.LIME_DYE).setCustomName(literal("READY"))
             } else
             {
-                ItemStack(Items.RED_DYE).setCustomName(literal("Ready"))
+                ItemStack(Items.RED_DYE).setCustomName(literal("Not Ready"))
             }
         }
 
