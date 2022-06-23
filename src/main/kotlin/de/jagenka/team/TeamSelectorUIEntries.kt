@@ -83,12 +83,11 @@ class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
     override fun onClick(player: ServerPlayerEntity)
     {
         val playerName = player.name.string
-        if(ReadyCheck.isReady(playerName))
+        if (ReadyCheck.isReady(playerName))
         {
             ReadyCheck.makeUnready(playerName)
             player.sendPrivateMessage("You are no longer ready.")
-        }
-        else
+        } else
         {
             ReadyCheck.makeReady(playerName)
             player.sendPrivateMessage("You are now ready.")
@@ -106,7 +105,7 @@ class StartGameUIEntry : UIEntry
         val whoIsNotReady = ReadyCheck.whoIsNotReady()
         if (whoIsNotReady.isEmpty())
         {
-            DeathGames.startGame()
+            DeathGames.startGameWithCountdown()
             ReadyCheck.clear()
         } else
         {

@@ -27,6 +27,7 @@ object DeathGames : DedicatedServerModInitializer
 {
     var running = false
 
+    var currentlyStarting = false
     var currentlyEnding = false
 
     override fun onInitializeServer()
@@ -43,8 +44,25 @@ object DeathGames : DedicatedServerModInitializer
         }
     }
 
+    fun startGameWithCountdown()
+    {
+        if (currentlyStarting) return
+        currentlyStarting = true
+
+        PlayerManager.getOnlinePlayers().forEach { player ->
+            player.closeHandledScreen()
+            DisplayManager.sendTitleMessage(player, literal("3"), literal(""), 1.seconds())
+            Timer.schedule({ DisplayManager.sendTitleMessage(player, literal("2"), literal(""), 1.seconds()) }, 1.seconds())
+            Timer.schedule({ DisplayManager.sendTitleMessage(player, literal("1"), literal(""), 1.seconds()) }, 2.seconds())
+        }
+
+        Timer.schedule({ startGame() }, 3.seconds())
+    }
+
     fun startGame()
     {
+        currentlyStarting = false
+
         val teamPlayers = PlayerManager.getTeamPlayers()
 
         KillManager.reset()

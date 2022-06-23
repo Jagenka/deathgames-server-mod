@@ -1,5 +1,6 @@
 package de.jagenka.team
 
+import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.toDGCoordinates
 import net.minecraft.entity.player.PlayerEntity
@@ -20,7 +21,7 @@ object TeamSelectorUI
     @JvmStatic
     fun showInterfaceIfInLobby(player: ServerPlayerEntity): Boolean
     {
-        if (isInLobbyBounds(player))
+        if (isInLobbyBounds(player) && !DeathGames.currentlyStarting)
         {
             showInterface(player)
             return true

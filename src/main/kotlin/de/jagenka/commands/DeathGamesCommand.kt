@@ -27,7 +27,7 @@ object DeathGamesCommand
             .then(literal("start")
                 .requires { it.isOp() }
                 .executes {
-                    if (!DeathGames.running) DeathGames.startGame()
+                    if (!DeathGames.running) DeathGames.startGameWithCountdown()
                     return@executes 0
                 })
             .then(literal("stop")
