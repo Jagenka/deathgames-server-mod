@@ -24,10 +24,12 @@ object DeathGamesCommand
     fun register(dispatcher: CommandDispatcher<ServerCommandSource>)
     {
         val literalArgumentBuilder = literal("deathgames")
-            .then(literal("start").executes {
-                if (!DeathGames.running) DeathGames.startGame()
-                return@executes 0
-            })
+            .then(literal("start")
+                .requires { it.isOp() }
+                .executes {
+                    if (!DeathGames.running) DeathGames.startGame()
+                    return@executes 0
+                })
             .then(literal("stop")
                 .requires { it.isOp() }
                 .executes {

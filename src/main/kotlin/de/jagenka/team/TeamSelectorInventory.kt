@@ -1,57 +1,44 @@
 package de.jagenka.team
 
-import de.jagenka.managers.DisplayManager
-import de.jagenka.managers.PlayerManager.addToDGTeam
-import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemStack.EMPTY
-import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
 
 class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
 {
-    private val slots: Array<DGTeam?> = Array(size()) { null }
+    private val slots: Array<UIEntry> = Array(size()) { EmptyUIEntry() }
 
     init
     {
         val numberOfTeamsHalf = DGTeam.values().size / 2
+
         DGTeam.values().forEachIndexed { index, team ->
             if (index < numberOfTeamsHalf)
             {
-                slots[index + (9 - numberOfTeamsHalf) / 2] = team
+                slots[index + 1] = TeamUIEntry(team)
             } else
             {
-//                slots[9 + index - numberOfTeamsHalf + (9 - numberOfTeamsHalf) / 2] = team
-                slots[index + (9 - numberOfTeamsHalf) * 3 / 2] = team
+                slots[index - numberOfTeamsHalf + 10] = TeamUIEntry(team)
             }
         }
+
+        slots[0] = SpectatorUIEntry()
+        slots[9] = SpectatorUIEntry()
+
+        slots[8] = ReadyUIEntry(player)
+        slots[17] = StartGameUIEntry()
     }
 
     override fun getStack(slotIndex: Int): ItemStack
     {
-        return slots[slotIndex]?.let {
-            it.getColorBlock().asItem().defaultStack.setCustomName(it.getFormattedText())
-        } ?: Items.ENDER_EYE.defaultStack.setCustomName(Text.of("Spectator"))
+        return slots[slotIndex].displayItemStack
     }
 
     fun onClick(slotIndex: Int)
     {
-        val team = slots[slotIndex]
-        team?.let {
-            if (player.addToDGTeam(it))
-            {
-                DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
-            }
-        } ?: if (player.kickFromDGTeam())
-        {
-            DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
-        } else
-        {
-
-        }
+        slots[slotIndex].onClick(player)
     }
 
     override fun clear() = Unit
