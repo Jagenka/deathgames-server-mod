@@ -9,8 +9,10 @@ import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
+import net.minecraft.util.Formatting
 
 object ReadyCheck
 {
@@ -125,7 +127,23 @@ class StartGameUIEntry : UIEntry
             ReadyCheck.clear()
         } else
         {
-            DisplayManager.sendChatMessage(literal("Can't start game! Not ready: ${whoIsNotReady.toString().removeSurrounding("[", "]")}"))
+            val notReadyText = literal("")
+            whoIsNotReady.forEachIndexed { index, playerName ->
+                val team = PlayerManager.getTeam(playerName)
+                if (index != 0)
+                {
+                    if (index == whoIsNotReady.lastIndex)
+                    {
+                        notReadyText.append(" and ")
+                    } else
+                    {
+                        notReadyText.append(", ")
+                    }
+                }
+                notReadyText.append(literal(playerName).getWithStyle(Style.EMPTY.withFormatting(Formatting.byName(team?.name?.lowercase() ?: "white")))[0])
+            }
+
+            DisplayManager.sendChatMessage(literal("Can't start game! Not ready: ").append(notReadyText))
         }
     }
 }
