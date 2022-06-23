@@ -216,7 +216,6 @@ object DisplayManager
         ifServerLoaded { server ->
             server.bossBarManager.ids.toList().forEach { id ->
                 val bossBar = server.bossBarManager.get(id)
-                println(bossBar)
                 bossBar?.clearPlayers()
                 server.bossBarManager.remove(bossBar)
             }

@@ -2,6 +2,7 @@ package de.jagenka.mixin;
 
 import de.jagenka.Testing;
 import de.jagenka.managers.KillManager;
+import de.jagenka.stats.StatManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -20,15 +21,17 @@ public class ServerPlayerEntityMixin
         try
         {
             LivingEntity primeAdversary = ((ServerPlayerEntity) (Object) this).getPrimeAdversary();
-            if (primeAdversary instanceof ServerPlayerEntity)
+            if (primeAdversary instanceof ServerPlayerEntity killer)
             {
-                KillManager.handlePlayerKill((ServerPlayerEntity) primeAdversary, (ServerPlayerEntity) (Object) this);
+                KillManager.handlePlayerKill(killer, (ServerPlayerEntity) (Object) this);
+                StatManager.handleKillType(damageSource, killer.getName().getString(), ((ServerPlayerEntity) (Object) this).getName().getString());
             }
         } catch (ClassCastException ignored)
         {
         }
 
         KillManager.handleDeath((ServerPlayerEntity) (Object) this);
+        StatManager.handleDeathType(damageSource, ((ServerPlayerEntity) (Object) this).getName().getString());
     }
 
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)

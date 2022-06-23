@@ -37,8 +37,8 @@ class GameEntry(
 class PersonalGameEntry(
     var gameId: Long = 0,
     var team: DGTeam? = null,
-    var kills: Int = 0,
-    var deaths: Int = 0,
+    var kills: MutableList<KillEntry> = mutableListOf(),
+    var deaths: MutableList<DamageType> = mutableListOf(),
     var damageDealt: Float = 0f,
     var damageTaken: Float = 0f,
     var highestKillStreak: Int = 0,
@@ -67,6 +67,12 @@ class PersonalGameEntry(
         return gameId.hashCode()
     }
 }
+
+@Serializable
+class KillEntry(
+    var deceased: String,
+    var damageType: DamageType
+)
 
 @Serializable
 class StatsBaseEntry(

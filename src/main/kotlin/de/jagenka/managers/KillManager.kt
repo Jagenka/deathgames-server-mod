@@ -54,8 +54,6 @@ object KillManager
         if (playerKD != null) playerKD.addDeath()
         else kDEntries[playerName] = KD(0, 1)
 
-        StatManager.personalStats.gib(playerName).deaths++
-
         removeOneRespawn(deceased)
 
         val killStreak = getKillStreak(playerName)
@@ -88,8 +86,6 @@ object KillManager
         val playerKD = kDEntries[attackerName]
         if (playerKD != null) playerKD.addKill()
         else kDEntries[attackerName] = KD(1, 0)
-
-        StatManager.personalStats.gib(attackerName).kills++
 
         when (killStreakMode)
         {
