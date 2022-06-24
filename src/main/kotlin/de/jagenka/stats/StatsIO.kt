@@ -1,8 +1,9 @@
 package de.jagenka.stats
 
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import net.fabricmc.loader.api.FabricLoader
 import java.nio.file.Files
 import java.nio.file.Path
@@ -19,6 +20,7 @@ object StatsIO
 
     lateinit var stats: StatsBaseEntry
 
+    @OptIn(ExperimentalSerializationApi::class)
     fun loadStats()
     {
         pathToStatsFile = FabricLoader.getInstance().configDir.resolve("deathgames_stats.json")
@@ -28,7 +30,7 @@ object StatsIO
             Files.writeString(pathToStatsFile, serializer.encodeToString(StatsBaseEntry()))
         }
 
-        stats = serializer.decodeFromString(pathToStatsFile.toFile().readText()) //TODO: limit ist 2GB!
+        stats = serializer.decodeFromStream(pathToStatsFile.toFile().inputStream())
     }
 
     fun store()
