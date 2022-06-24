@@ -11,6 +11,7 @@ class PlayerEntry(
 @Serializable
 class GameEntry(
     var gameId: Long = 0,
+    var gameEnd: Long = 0,
     var captureEnabled: Boolean = false,
     var winner: DGTeam? = null,
 )
@@ -38,12 +39,19 @@ class PersonalGameEntry(
     var gameId: Long = 0,
     var team: DGTeam? = null,
     var kills: MutableList<KillEntry> = mutableListOf(),
-    var deaths: MutableList<DamageType> = mutableListOf(),
+    var deaths: MutableList<DeathEntry> = mutableListOf(),
     var damageDealt: Float = 0f,
     var damageTaken: Float = 0f,
     var highestKillStreak: Int = 0,
     var moneyEarned: Int = 0,
     var moneySpent: Int = 0,
+    var cmMovedOnGround: Long = 0,
+    var cmMovedInWater: Long = 0,
+    var cmFallen: Long = 0,
+    var cmFlown: Long = 0,
+    var cmByElytra: Long = 0,
+    var cmClimbed: Long = 0,
+    var timesJumped: Int = 0,
     var ticksOnBonus: Int = 0,
     var spawnsCaptured: Int = 0,
     var timesCaughtInTrap: Int = 0,
@@ -71,7 +79,14 @@ class PersonalGameEntry(
 @Serializable
 class KillEntry(
     var deceased: String,
-    var damageType: DamageType
+    var damageType: DamageType,
+    var time: Long
+)
+
+@Serializable
+class DeathEntry(
+    var damageType: DamageType,
+    var time: Long
 )
 
 @Serializable

@@ -121,6 +121,8 @@ object DeathGames : DedicatedServerModInitializer
 
     fun stopGame()
     {
+        StatManager.gameStats.gameEnd = System.currentTimeMillis()
+
         currentlyEnding = true
 
         val winners = mutableListOf<Text>()

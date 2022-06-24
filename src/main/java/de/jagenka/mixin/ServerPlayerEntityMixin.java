@@ -6,6 +6,7 @@ import de.jagenka.stats.StatManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.stat.Stat;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -40,5 +41,14 @@ public class ServerPlayerEntityMixin
         cir.setReturnValue(false);
         cir.cancel();
         ((ServerPlayerEntity) (Object) this).playerScreenHandler.updateToClient();
+    }
+
+    @Inject(method = "increaseStat", at = @At("HEAD"))
+    private void increaseStat(Stat<?> stat, int amount, CallbackInfo ci)
+    {
+        if (!((ServerPlayerEntity) (Object) this).isSpectator())
+        {
+            StatManager.handleStatIncrease(((ServerPlayerEntity) (Object) this).getName().getString(), stat, amount);
+        }
     }
 }

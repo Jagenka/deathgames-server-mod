@@ -5,6 +5,9 @@ import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.shop.ShopEntry
 import net.minecraft.entity.damage.DamageSource
+import net.minecraft.stat.Stat
+import net.minecraft.stat.Stats
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 
 object StatManager
 {
@@ -21,13 +24,13 @@ object StatManager
     @JvmStatic
     fun handleKillType(damageSource: DamageSource, killer: String, deceased: String)
     {
-        personalStats.gib(killer).kills.add(KillEntry(deceased, DamageType.from(damageSource)))
+        personalStats.gib(killer).kills.add(KillEntry(deceased, DamageType.from(damageSource), System.currentTimeMillis()))
     }
 
     @JvmStatic
     fun handleDeathType(damageSource: DamageSource, playerName: String)
     {
-        personalStats.gib(playerName).deaths.add(DamageType.from(damageSource))
+        personalStats.gib(playerName).deaths.add(DeathEntry(DamageType.from(damageSource), System.currentTimeMillis()))
     }
 
     @JvmStatic
@@ -44,6 +47,32 @@ object StatManager
         if (!DeathGames.running || DeathGames.currentlyEnding) return
 
         personalStats.gib(playerName).damageDealt += amount
+    }
+
+    @JvmStatic
+    fun handleStatIncrease(playerName: String, stat: Stat<*>, amount: Int)
+    {
+        if (!DeathGames.running || DeathGames.currentlyEnding) return
+
+        when (stat.value)
+        {
+            Stats.WALK_ONE_CM -> personalStats.gib(playerName).cmMovedOnGround += amount
+            Stats.SPRINT_ONE_CM -> personalStats.gib(playerName).cmMovedOnGround += amount
+            Stats.CROUCH_ONE_CM -> personalStats.gib(playerName).cmMovedOnGround += amount
+
+            Stats.FALL_ONE_CM -> personalStats.gib(playerName).cmFallen += amount
+
+            Stats.FLY_ONE_CM -> personalStats.gib(playerName).cmFlown += amount //this tracks any forward and upward movement
+            Stats.AVIATE_ONE_CM -> personalStats.gib(playerName).cmByElytra += amount
+
+            Stats.SWIM_ONE_CM -> personalStats.gib(playerName).cmMovedInWater += amount
+            Stats.WALK_ON_WATER_ONE_CM -> personalStats.gib(playerName).cmMovedInWater += amount
+            Stats.WALK_UNDER_WATER_ONE_CM -> personalStats.gib(playerName).cmMovedInWater += amount
+
+            Stats.CLIMB_ONE_CM -> personalStats.gib(playerName).cmClimbed += amount
+
+            Stats.JUMP -> personalStats.gib(playerName).timesJumped += amount
+        }
     }
 
     /**
