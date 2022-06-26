@@ -4,10 +4,10 @@ import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.shop.ShopEntry
-import de.jagenka.timer.Timer
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.stat.Stat
 import net.minecraft.stat.Stats
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 
 object StatManager
 {
@@ -24,13 +24,7 @@ object StatManager
     @JvmStatic
     fun handleKillType(damageSource: DamageSource, killer: String, deceased: String)
     {
-        personalStats.gib(killer).kills.add(
-            KillEntry(
-                deceased,
-                DamageType.from(damageSource),
-                System.currentTimeMillis()
-            )
-        )
+        personalStats.gib(killer).kills.add(KillEntry(deceased, DamageType.from(damageSource), System.currentTimeMillis()))
     }
 
     @JvmStatic
@@ -79,15 +73,6 @@ object StatManager
 
             Stats.JUMP -> personalStats.gib(playerName).timesJumped += amount
         }
-    }
-
-    fun updateAccountBalanceAverage(playerName: String, currentAccountBalance: Int)
-    {
-        val playerStats = personalStats.gib(playerName)
-        val currentAverage = playerStats.accountBalanceAverage
-        val now = Timer.now()
-        playerStats.accountBalanceAverage =
-            (currentAverage * (now - 1) + currentAccountBalance) / now
     }
 
     /**

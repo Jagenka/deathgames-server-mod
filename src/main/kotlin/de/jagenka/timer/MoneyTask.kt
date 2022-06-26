@@ -5,10 +5,8 @@ import de.jagenka.config.Config.moneyInterval
 import de.jagenka.config.Config.moneyPerInterval
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
-import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.PlayerManager
-import de.jagenka.stats.StatManager
 
 object MoneyTask : TimerTask
 {
@@ -39,8 +37,6 @@ object MoneyTask : TimerTask
             // else -> BonusMoneyTask
 
             moneyTimer[playerName] = moneyTimer.getValue(playerName) + 1
-
-            StatManager.updateAccountBalanceAverage(playerName, MoneyManager.getMoney(playerName))
         }
     }
 
