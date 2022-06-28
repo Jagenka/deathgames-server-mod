@@ -21,10 +21,10 @@ object StatManager
         personalStats.clear()
     }
 
-    fun addBoughtItem(playerName: String, shopEntry: ShopEntry)
+    fun addBoughtItem(playerName: String, shopEntry: ShopEntry, price: Int)
     {
         val itemsBought = personalStats.gib(playerName).itemsBought.toMutableList()
-        itemsBought.add(shopEntry.nameForStat)
+        itemsBought.add(ItemBoughtEntry(shopEntry.nameForStat, price))
         personalStats.gib(playerName).itemsBought = itemsBought
     }
 

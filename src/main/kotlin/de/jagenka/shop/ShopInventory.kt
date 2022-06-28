@@ -58,9 +58,11 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
         val shopEntry = items.getValue(slotIndex)
         if (isNonEmptySlot(slotIndex))
         {
+            val moneySpent = if (shopEntry is RefundShopEntry) -shopEntry.getRefundAmount(player) else shopEntry.getPrice(player)
+
             if (shopEntry.buy(player))
             {
-                StatManager.addBoughtItem(player.name.string, shopEntry)
+                StatManager.addBoughtItem(player.name.string, shopEntry, moneySpent)
             }
         }
     }

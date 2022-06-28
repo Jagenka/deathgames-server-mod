@@ -57,7 +57,7 @@ class PersonalGameEntry(
     var ticksOnBonus: Int = 0,
     var spawnsCaptured: Int = 0,
     var timesCaughtInTrap: Int = 0,
-    var itemsBought: List<String> = listOf(),
+    var itemsBought: List<ItemBoughtEntry> = listOf(),
 )
 {
     override fun equals(other: Any?): Boolean
@@ -89,6 +89,12 @@ class KillEntry(
 class DeathEntry(
     var damageType: DamageType,
     var time: Long
+)
+
+@Serializable
+class ItemBoughtEntry(
+    var name: String,
+    var price: Int
 )
 
 @Serializable

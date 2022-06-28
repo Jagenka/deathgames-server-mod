@@ -5,6 +5,7 @@ import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.getMoney
 import de.jagenka.managers.MoneyManager.moneyMode
+import de.jagenka.managers.MoneyManager.refundMoney
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
@@ -78,6 +79,17 @@ object MoneyManager
         }
     }
 
+    fun refundMoney(playerName: String, amount: Int)
+    {
+        setMoney(playerName, getMoney(playerName) + amount)
+    }
+
+    fun refundMoney(team: DGTeam?, amount: Int)
+    {
+        if (team == null) return
+        setMoney(team, getMoney(team) + amount)
+    }
+
     fun handleMoneyOnPlayerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
     {
         when (moneyMode)
@@ -123,7 +135,7 @@ fun ServerPlayerEntity.deductDGMoney(amount: Int)
     StatManager.personalStats.gib(this.name.string).moneySpent += amount
     when (moneyMode)
     {
-        Mode.PLAYER -> addMoney(this.name.string, -amount)
-        Mode.TEAM -> addMoney(this.getDGTeam(), -amount)
+        Mode.PLAYER -> refundMoney(this.name.string, -amount)
+        Mode.TEAM -> refundMoney(this.getDGTeam(), -amount)
     }
 }
