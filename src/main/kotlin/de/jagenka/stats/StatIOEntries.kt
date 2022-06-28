@@ -42,6 +42,7 @@ class PersonalGameEntry(
     var deaths: MutableList<DeathEntry> = mutableListOf(),
     var damageDealt: Float = 0f,
     var damageTaken: Float = 0f,
+    var healthRegenerated: Float = 0f,
     var highestKillStreak: Int = 0,
     var moneyEarned: Int = 0,
     var moneySpent: Int = 0,

@@ -83,11 +83,21 @@ object StatManager
 
     fun updateAccountBalanceAverage(playerName: String, currentAccountBalance: Int)
     {
+        if (!DeathGames.running || DeathGames.currentlyEnding) return
+
         val playerStats = personalStats.gib(playerName)
         val currentAverage = playerStats.accountBalanceAverage
         val now = Timer.now().coerceAtLeast(1)
         playerStats.accountBalanceAverage =
             (currentAverage * (now - 1) + currentAccountBalance) / now
+    }
+
+    @JvmStatic
+    fun addHealAmount(playerName: String, amount: Float)
+    {
+        if (!DeathGames.running || DeathGames.currentlyEnding) return
+
+        personalStats.gib(playerName).healthRegenerated += amount
     }
 
     /**
