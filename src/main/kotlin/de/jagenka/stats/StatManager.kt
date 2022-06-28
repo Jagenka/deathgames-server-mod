@@ -85,7 +85,7 @@ object StatManager
     {
         val playerStats = personalStats.gib(playerName)
         val currentAverage = playerStats.accountBalanceAverage
-        val now = Timer.now()
+        val now = Timer.now().coerceAtLeast(1)
         playerStats.accountBalanceAverage =
             (currentAverage * (now - 1) + currentAccountBalance) / now
     }
