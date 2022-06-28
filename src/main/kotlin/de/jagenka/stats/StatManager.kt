@@ -11,8 +11,15 @@ import net.minecraft.stat.Stats
 
 object StatManager
 {
-    val gameStats = GameEntry()
+    var gameStats = GameEntry()
+        private set
     val personalStats = mutableMapOf<String, PersonalGameEntry>().withDefault { PersonalGameEntry() }
+
+    fun reset()
+    {
+        gameStats = GameEntry()
+        personalStats.clear()
+    }
 
     fun addBoughtItem(playerName: String, shopEntry: ShopEntry)
     {

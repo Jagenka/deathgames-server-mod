@@ -74,6 +74,7 @@ object DeathGames : DedicatedServerModInitializer
 
         val teamPlayers = PlayerManager.getTeamPlayers()
 
+        StatManager.reset()
         KillManager.reset()
         MoneyManager.reset()
         Timer.reset()
