@@ -45,6 +45,7 @@ class PersonalGameEntry(
     var highestKillStreak: Int = 0,
     var moneyEarned: Int = 0,
     var moneySpent: Int = 0,
+    var accountBalanceAverage: Double = 0.0,
     var cmMovedOnGround: Long = 0,
     var cmMovedInWater: Long = 0,
     var cmFallen: Long = 0,
