@@ -84,48 +84,50 @@
         "captureEnabled": true
     },
     "bonus": {
-        "platforms": [
-            {
-                "name": "Village Corner",
-                "coordinates": {
-                    "x": 119,
-                    "y": 70,
-                    "z": 119,
-                    "yaw": 0.0,
-                    "pitch": 0.0
+        "platforms": {
+            "plats": [
+                {
+                    "name": "Village Corner",
+                    "coordinates": {
+                        "x": 119,
+                        "y": 70,
+                        "z": 119,
+                        "yaw": 0.0,
+                        "pitch": 0.0
+                    }
+                },
+                {
+                    "name": "Nether Corner",
+                    "coordinates": {
+                        "x": -120,
+                        "y": 68,
+                        "z": 119,
+                        "yaw": 0.0,
+                        "pitch": 0.0
+                    }
+                },
+                {
+                    "name": "Desert Corner",
+                    "coordinates": {
+                        "x": -120,
+                        "y": 62,
+                        "z": -120,
+                        "yaw": 0.0,
+                        "pitch": 0.0
+                    }
+                },
+                {
+                    "name": "Water Corner",
+                    "coordinates": {
+                        "x": 119,
+                        "y": 63,
+                        "z": -120,
+                        "yaw": 0.0,
+                        "pitch": 0.0
+                    }
                 }
-            },
-            {
-                "name": "Nether Corner",
-                "coordinates": {
-                    "x": -120,
-                    "y": 68,
-                    "z": 119,
-                    "yaw": 0.0,
-                    "pitch": 0.0
-                }
-            },
-            {
-                "name": "Desert Corner",
-                "coordinates": {
-                    "x": -120,
-                    "y": 62,
-                    "z": -120,
-                    "yaw": 0.0,
-                    "pitch": 0.0
-                }
-            },
-            {
-                "name": "Water Corner",
-                "coordinates": {
-                    "x": 119,
-                    "y": 63,
-                    "z": -120,
-                    "yaw": 0.0,
-                    "pitch": 0.0
-                }
-            }
-        ],
+            ]
+        },
         "radius": 2,
         "spawnInterval": 3600,
         "stayTime": 2400,
