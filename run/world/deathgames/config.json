@@ -159,7 +159,7 @@
             }
         },
         "tpOutOfShopAfter": 600,
-        "refundPercent": 75
+        "refundPercent": 100
     },
     "misc": {
         "revealTimePerPlayer": 2400,
