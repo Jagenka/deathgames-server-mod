@@ -23,7 +23,7 @@ object BasicTpTask : TimerTask
             PlayerManager.getOnlinePlayers().forEach {
                 if (!it.interactionManager.isSurvivalLike)
                 {
-                    if (!DeathGames.running && !it.hasPermissionLevel(2)) it.changeGameMode(GameMode.ADVENTURE)
+                    if (!it.hasPermissionLevel(2)) it.changeGameMode(GameMode.ADVENTURE)
 
                     /* BY RADIUS, OLD CODE
                     val middle = (Config.arenaBounds.firstCorner + Config.arenaBounds.secondCorner) / 2.0

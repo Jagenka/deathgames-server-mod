@@ -32,7 +32,7 @@ object MoneyTask : TimerTask
                 moneyTimer[playerName] = playerTimer - moneyInterval
             }
 
-            if (!BonusManager.isOnActivePlatform(playerName))
+            if (moneyInterval != 0 && !BonusManager.isOnActivePlatform(playerName))
             {
                 DisplayManager.setExpProgress(playerName, playerTimer.toFloat() / moneyInterval.toFloat())
             }

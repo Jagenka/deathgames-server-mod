@@ -34,7 +34,7 @@ class SpawnsConfigEntry(
     var platformRadius: Int = 0,
     var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
-    var shuffleInterval: Int = 0,
+    var shuffleInterval: Int = 20,
     var shuffleDelayAfterKill: Int = 0,
     var captureTimeNeeded: Int = 0,
     var captureEnabled: Boolean = false
@@ -61,7 +61,7 @@ class RespawnsConfigEntry(
 class MoneyConfigEntry(
     var start: Int = 0,
     var amountPerInterval: Int = 0,
-    var interval: Int = 0,
+    var interval: Int = 20,
     var perKill: Int = 0,
     var perKillStreakKill: Int = 0
 )
@@ -77,7 +77,7 @@ class ShopSettingsConfigEntry(
 class MiscConfigEntry(
     var revealTimePerPlayer: Int = 0,
     var shopCloseTimeAfterReveal: Int = 0,
-    var killStreakPenaltyCap: Int = 0,
+    var killStreakPenaltyCap: Int = 1,
     var arenaBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
     var spectatorRadiusPadding: Int = 0,
     var lobbyBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0))

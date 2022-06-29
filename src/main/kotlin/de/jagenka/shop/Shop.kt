@@ -1,5 +1,6 @@
 package de.jagenka.shop
 
+import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.managers.getDGMoney
 import de.jagenka.toDGCoordinates
@@ -25,7 +26,7 @@ object Shop
     @JvmStatic
     fun showInterfaceIfInShop(player: ServerPlayerEntity): Boolean
     {
-        if (isInShopBounds(player))
+        if (DeathGames.running && isInShopBounds(player))
         {
             showInterface(player)
             return true

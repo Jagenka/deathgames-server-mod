@@ -27,7 +27,7 @@ object BonusMoneyTask : TimerTask
                 addMoney(playerName, bonusMoneyAmount)
                 ticks[playerName] = ticks.getValue(playerName) - bonusMoneyInterval
             }
-            if (BonusManager.isOnActivePlatform(playerName))
+            if (bonusMoneyAmount != 0 && BonusManager.isOnActivePlatform(playerName))
             {
                 DisplayManager.setExpProgress(playerName, ticks.getValue(playerName).toFloat() / bonusMoneyInterval.toFloat())
                 ticks[playerName] = ticks.getValue(playerName) + 1
