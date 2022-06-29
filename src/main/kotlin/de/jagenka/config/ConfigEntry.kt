@@ -3,6 +3,7 @@ package de.jagenka.config
 import de.jagenka.BlockCuboid
 import de.jagenka.CoordinateList
 import de.jagenka.Coordinates
+import de.jagenka.PlatformList
 import de.jagenka.managers.Platform
 import de.jagenka.timer.seconds
 import kotlinx.serialization.Serializable
@@ -42,7 +43,7 @@ class SpawnsConfigEntry(
 
 @Serializable
 class BonusPlatformsConfigEntry(
-    var platforms: List<Platform> = listOf(Platform("bonus1", Coordinates(0, 0, 0)), Platform("bonus2", Coordinates(0, 0, 0))),
+    var platforms: PlatformList = PlatformList(listOf(Platform("bonus1", Coordinates(0, 0, 0)), Platform("bonus2", Coordinates(0, 0, 0)))),
     var radius: Int = 0,
     var spawnInterval: Int = 0,
     var stayTime: Int = 0,
