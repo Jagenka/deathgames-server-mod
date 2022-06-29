@@ -134,4 +134,6 @@ object BonusManager
 }
 
 @Serializable
-data class Platform(val name: String, val coordinates: Coordinates, @Transient var active: Boolean = false)
+data class Platform(val name: String, val coordinates: Coordinates, @Transient var active: Boolean = false) {
+    override fun toString() = name + "," + coordinates.toString()
+}

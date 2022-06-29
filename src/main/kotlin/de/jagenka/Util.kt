@@ -3,6 +3,7 @@ package de.jagenka
 import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.DisplayManager
+import de.jagenka.managers.Platform
 import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
@@ -195,6 +196,11 @@ class BlockCuboid
 class CoordinateList(val coords: List<Coordinates>)
 {
     override fun toString() = "[" + coords.joinToString(", ") { it.toString() } + "]"
+}
+@Serializable
+class PlatformList(val plats: List<Platform>)
+{
+    override fun toString() = "[" + plats.joinToString(", ") { it.toString() } + "]"
 }
 
 fun Double.floor() = floor(this).toInt()

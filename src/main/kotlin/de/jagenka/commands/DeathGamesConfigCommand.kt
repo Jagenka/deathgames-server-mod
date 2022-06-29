@@ -2,14 +2,12 @@ package de.jagenka.commands
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import de.jagenka.BlockCuboid
-import de.jagenka.CoordinateList
-import de.jagenka.Coordinates
+import de.jagenka.*
 import de.jagenka.commands.DeathGamesCommand.isOp
 import de.jagenka.config.Config
 import de.jagenka.config.ConfigEntry
+import de.jagenka.managers.Platform
 import de.jagenka.timer.DGUnit
-import de.jagenka.toDGCoordinates
 import de.jagenka.util.getPropertiesFromSection
 import de.jagenka.util.getSectionsFromConfig
 import de.jagenka.util.getStringifiedValueFromProperty
@@ -170,10 +168,35 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
             }
         }
     },
+    Platform::class.java to object : ConfigPropertyTransformer<Platform> {
+        override fun toString(value: Any): String = "Platform" + (value as? Platform)!!.toString()
+        override fun fromString(str: String, source: ServerCommandSource): Platform? {
+            if(str.isBlank()) {
+                source.sendFeedback(Text.of("You have to provide a name"), false)
+                return null
+            }
+
+            return (source.entity as? ServerPlayerEntity)?.toDGCoordinates()?.let { Platform(str, it, false) }
+        }
+    },
     CoordinateList::class.java to object : ConfigPropertyTransformer<CoordinateList> {
         override fun toString(value: Any): String = (value as? CoordinateList)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): CoordinateList? {
             return CoordinateList(ArrayList(DeathGamesConfigCommand.pickedCoordinates))
+        }
+    },
+    PlatformList::class.java to object : ConfigPropertyTransformer<PlatformList> {
+        override fun toString(value: Any): String = (value as? PlatformList)!!.toString()
+        override fun fromString(str: String, source: ServerCommandSource): PlatformList? {
+            val names = str.split(",").map { it.trim() }
+
+            if(names.size != DeathGamesConfigCommand.pickedCoordinates.size) {
+                source.sendFeedback(Text.of("You need to provide the same number of names and coordinates. Names: ${names.size}, Coordinates: ${DeathGamesConfigCommand.pickedCoordinates.size}"), false)
+            }
+
+            val platforms = (0 until names.size).map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it], false) }
+
+            return PlatformList(platforms)
         }
     },
     BlockCuboid::class.java to object : ConfigPropertyTransformer<BlockCuboid> {
