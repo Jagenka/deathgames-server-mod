@@ -1,5 +1,6 @@
 package de.jagenka.mixin;
 
+import de.jagenka.config.Config;
 import de.jagenka.shop.Shop;
 import de.jagenka.team.TeamSelectorUI;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
@@ -20,6 +21,8 @@ public class ServerPlayNetworkHandlerMixin
     @Inject(method = "onPlayerAction", at = @At("HEAD"), cancellable = true)
     private void openShop(PlayerActionC2SPacket packet, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         if (packet.getAction().equals(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND))
         {
             if (Shop.showInterfaceIfInShop(this.player)) ci.cancel();

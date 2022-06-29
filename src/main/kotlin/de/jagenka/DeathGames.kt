@@ -4,6 +4,7 @@ import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.commands.DeathGamesCommand
 import de.jagenka.config.Config
+import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.makeInGame
@@ -53,6 +54,8 @@ object DeathGames : DedicatedServerModInitializer
 
     fun startGameWithCountdown()
     {
+        if (!isEnabled) return
+
         if (currentlyStarting) return
         currentlyStarting = true
 
@@ -68,6 +71,8 @@ object DeathGames : DedicatedServerModInitializer
 
     fun startGame()
     {
+        if (!isEnabled) return
+
         gameId = System.currentTimeMillis()
 
         currentlyStarting = false
@@ -122,6 +127,8 @@ object DeathGames : DedicatedServerModInitializer
 
     fun stopGame()
     {
+        if (!isEnabled) return
+
         StatManager.gameStats.gameEnd = System.currentTimeMillis()
 
         currentlyEnding = true

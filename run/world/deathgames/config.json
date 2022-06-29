@@ -1,4 +1,7 @@
 {
+    "general": {
+        "enabled": true
+    },
     "spawns": {
         "spawnPositions": {
             "coords": [

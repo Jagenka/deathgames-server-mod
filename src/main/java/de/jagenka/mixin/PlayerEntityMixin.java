@@ -1,5 +1,6 @@
 package de.jagenka.mixin;
 
+import de.jagenka.config.Config;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,6 +22,8 @@ public abstract class PlayerEntityMixin
     @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;Z)Lnet/minecraft/entity/ItemEntity;", at = @At("HEAD"))
     private void preventDrop(ItemStack stack, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         this.giveItemStack(stack);
         this.playerScreenHandler.updateToClient();
     }

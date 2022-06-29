@@ -1,5 +1,6 @@
 package de.jagenka.mixin;
 
+import de.jagenka.config.Config;
 import de.jagenka.stats.StatManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -22,6 +23,8 @@ public class DamageTrackerMixin
     @Inject(method = "onDamage", at = @At("TAIL"))
     private void trackPlayerDamage(DamageSource damageSource, float originalHealth, float damage, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         if (!(this.entity instanceof PlayerEntity damagedPlayer)) return;
         StatManager.addDamageTaken(damagedPlayer.getName().getString(), damage);
 

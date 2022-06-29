@@ -13,6 +13,7 @@ annotation class Section(val name: String)
 
 @Serializable
 class ConfigEntry(
+    @Section("general") val general: GeneralConfigEntry = GeneralConfigEntry(),
     @Section("spawns") val spawns: SpawnsConfigEntry = SpawnsConfigEntry(),
     @Section("bonus") val bonus: BonusPlatformsConfigEntry = BonusPlatformsConfigEntry(),
     @Section("respawns") val respawns: RespawnsConfigEntry = RespawnsConfigEntry(),
@@ -20,6 +21,11 @@ class ConfigEntry(
     @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
     @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
     @Section("traps") val traps: TrapConfigEntry = TrapConfigEntry()
+)
+
+@Serializable
+class GeneralConfigEntry(
+    var enabled: Boolean = false
 )
 
 @Serializable

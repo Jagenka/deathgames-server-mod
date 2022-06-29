@@ -23,6 +23,9 @@ object Config
 
     lateinit var configEntry: ConfigEntry
 
+    val isEnabled
+        get() = configEntry.general.enabled
+
 
     val spawnPlatformRadius
         get() = configEntry.spawns.platformRadius

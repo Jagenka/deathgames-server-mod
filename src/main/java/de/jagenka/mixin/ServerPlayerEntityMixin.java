@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.Testing;
+import de.jagenka.config.Config;
 import de.jagenka.managers.KillManager;
 import de.jagenka.stats.StatManager;
 import net.minecraft.entity.LivingEntity;
@@ -19,6 +19,8 @@ public class ServerPlayerEntityMixin
     @Inject(method = "onDeath", at = @At("TAIL"))
     private void onDeath(DamageSource damageSource, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         try
         {
             LivingEntity primeAdversary = ((ServerPlayerEntity) (Object) this).getPrimeAdversary();
@@ -36,8 +38,10 @@ public class ServerPlayerEntityMixin
     }
 
     @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
-    private void dropItem(boolean entireStack, CallbackInfoReturnable<Boolean> cir)
+    private void preventDrop(boolean entireStack, CallbackInfoReturnable<Boolean> cir)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         cir.setReturnValue(false);
         cir.cancel();
         ((ServerPlayerEntity) (Object) this).playerScreenHandler.updateToClient();
@@ -46,6 +50,8 @@ public class ServerPlayerEntityMixin
     @Inject(method = "increaseStat", at = @At("HEAD"))
     private void increaseStat(Stat<?> stat, int amount, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         if (!((ServerPlayerEntity) (Object) this).isSpectator())
         {
             StatManager.handleStatIncrease(((ServerPlayerEntity) (Object) this).getName().getString(), stat, amount);

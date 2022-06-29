@@ -1,5 +1,6 @@
 package de.jagenka.mixin;
 
+import de.jagenka.config.Config;
 import de.jagenka.stats.StatManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,6 +15,8 @@ public class LivingEntityMixin
     @Inject(method = "heal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setHealth(F)V"))
     private void onPlayerHeal(float amount, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         if ((LivingEntity) (Object) this instanceof PlayerEntity player)
         {
             StatManager.addHealAmount(player.getName().getString(), amount);
