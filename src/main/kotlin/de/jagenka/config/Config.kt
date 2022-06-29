@@ -107,7 +107,14 @@ object Config
                 Files.createDirectories(configFolder)
             }
             pathToConfFile = configFolder.resolve("config.json")
+            if (!Files.exists(pathToConfFile))
+            {
+                Files.createFile(pathToConfFile)
+                configEntry = ConfigEntry()
+                store()
+            }
             loadJSON(pathToConfFile.toFile())
+
         } ?: error("Failed loading DeathGames config - Server not loaded yet.")
 
         println("Successfully loaded DeathGames config!")
@@ -117,7 +124,7 @@ object Config
     {
         configEntry = serializer.decodeFromString(jsonConfFile.readText())
 
-        SpawnManager.setSpawns(configEntry.spawns.spawnPositions.coords) // TODO: these won't be change by the config command
+        SpawnManager.setSpawns(configEntry.spawns.spawnPositions.coords) // TODO: these won't be changed by the config command
         BonusManager.setPlatforms(configEntry.bonus.platforms)
     }
 
