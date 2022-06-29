@@ -1,6 +1,7 @@
 package de.jagenka
 
 import de.jagenka.config.Config
+import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
@@ -37,10 +38,10 @@ object Util
     {
         this.minecraftServer = minecraftServer
 
-        ServerLifecycleEvents.SERVER_STARTED
-
-        ifServerLoaded { server ->
+        this.minecraftServer?.let { server ->
             Config.lateLoadConfig()
+
+            if (!isEnabled) return
 
             server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
 
