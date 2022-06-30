@@ -155,7 +155,12 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     Coordinates::class.java to object : ConfigPropertyTransformer<Coordinates> {
         override fun toString(value: Any): String = "Coord" + (value as? Coordinates)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): Coordinates? {
-            if(str == "first") {
+
+            val parsedCoordinate = Util.getCoordinateFromString(str)
+
+            if(parsedCoordinate != null) {
+                return parsedCoordinate
+            } else if(str == "first") {
                 return DeathGamesConfigCommand.pickedCoordinates.firstOrNull()
             } else if(str == "last") {
                 return DeathGamesConfigCommand.pickedCoordinates.lastOrNull()
@@ -182,6 +187,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     CoordinateList::class.java to object : ConfigPropertyTransformer<CoordinateList> {
         override fun toString(value: Any): String = (value as? CoordinateList)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): CoordinateList? {
+            Util.getCoordinateListFromString(str)?.let { return@fromString CoordinateList(it) }
             return CoordinateList(ArrayList(DeathGamesConfigCommand.pickedCoordinates))
         }
     },
@@ -202,6 +208,14 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     BlockCuboid::class.java to object : ConfigPropertyTransformer<BlockCuboid> {
         override fun toString(value: Any): String = (value as? BlockCuboid)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): BlockCuboid? {
+            Util.getCoordinateListFromString(str)?.let {
+                if(it.size != 2) {
+                    source.sendFeedback(Text.of("You need to specify exactly two coordinates for a BlockCuboid."), false)
+                    return@fromString null
+                }
+                return@fromString BlockCuboid(it[0], it[1])
+            }
+
             if(DeathGamesConfigCommand.pickedCoordinates.size != 2) {
                 // This is terribly engineered, but better to have some feedback than none
                 source.sendFeedback(Text.of("You need to pick exactly two coordinates for a BlockCuboid."), false)

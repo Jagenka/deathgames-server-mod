@@ -6,7 +6,6 @@ import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.Platform
 import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.server.MinecraftServer
@@ -18,6 +17,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3f
 import net.minecraft.world.GameRules
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
@@ -139,6 +139,37 @@ object Util
 
     fun getIntTextColor(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
     fun getTextColor(r: Int, g: Int, b: Int) = TextColor.fromRgb(getIntTextColor(r, g, b))
+
+    val coordinatePattern = Pattern.compile("\\((x\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(z\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(p\\s*=\\s*)?(\\d*\\.?\\d+)\\)")
+    fun getCoordinateFromString(str: String): Coordinates? {
+        val matcher = coordinatePattern.matcher(str)
+        if(!matcher.matches()) {
+            return null
+        }
+
+        try {
+            val coordinate = Coordinates(
+                matcher.group(2).toDouble(),
+                matcher.group(4).toDouble(),
+                matcher.group(6).toDouble(),
+                matcher.group(8).toFloat(),
+                matcher.group(10).toFloat()
+            )
+            return coordinate
+        } catch (e: NumberFormatException) {
+            return null
+        }
+    }
+
+    fun getCoordinateListFromString(str: String): List<Coordinates>? {
+        val individualStrings = str.split(";")
+
+        try {
+            return individualStrings.map { getCoordinateFromString(it) }.requireNoNulls().toList()
+        } catch(e: IllegalArgumentException) {
+            return null
+        }
+    }
 }
 
 data class BlockAtCoordinates(val block: Block, val coordinates: Coordinates)
