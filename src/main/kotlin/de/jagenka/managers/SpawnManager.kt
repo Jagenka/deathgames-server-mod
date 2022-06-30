@@ -75,12 +75,12 @@ object SpawnManager
             val team = teamSpawns[spawn]
             if (team == null)
             {
-                Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
+                Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
                     if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
                 }
             } else
             {
-                Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
+                Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
                     if (block.isDGColorBlock()) Util.setBlockAt(coordinates, team.getColorBlock())
                 }
             }
@@ -112,7 +112,7 @@ object SpawnManager
 
 data class DGSpawn(val coordinates: Coordinates)
 {
-    fun getCuboid() = BlockCuboid(coordinates.relative(-platformRadius, 0, -platformRadius), coordinates.relative(platformRadius, 2, platformRadius))
+    fun getCuboid() = BlockCuboid(coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius), coordinates.asBlockPos().relative(platformRadius, 2, platformRadius))
 
     fun containsPlayer(player: ServerPlayerEntity) = getCuboid().contains(player.pos)
 }

@@ -45,7 +45,7 @@ object BasicTpTask : TimerTask
                     if (it.pos.z < negZ - Config.spectatorRadiusPadding) it.teleport(Coordinates(it.pos.x, it.pos.y, negZ.toDouble()))
                     return@forEach
                 }
-                if (!TeamSelectorUI.lobbyBounds.contains(it.pos.toDGCoordinates())) it.teleport(Config.lobbySpawn)
+                if (!TeamSelectorUI.lobbyBounds.contains(it.pos)) it.teleport(Config.lobbySpawn)
             }
         }
     }

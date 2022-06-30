@@ -58,5 +58,5 @@ object TeamSelectorUI
         }
     }
 
-    fun isInLobbyBounds(player: ServerPlayerEntity): Boolean = lobbyBounds.contains(player.pos.toDGCoordinates())
+    fun isInLobbyBounds(player: ServerPlayerEntity): Boolean = lobbyBounds.contains(player.pos)
 }

@@ -7,7 +7,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Serializable
-data class Coordinates(val x: Int, val y: Int, val z: Int, val yaw: Float = 0f, val pitch: Float = 0f)
+data class Coordinates(val x: Int, val y: Int, val z: Int, val yaw: Float, val pitch: Float)
 {
     constructor(pos: Vec3d) : this(pos.x, pos.y, pos.z)
     constructor(x: Double, y: Double, z: Double, yaw: Float = 0f, pitch: Float = 0f) : this(x.floor(), y.floor(), z.floor(), yaw, pitch)
@@ -21,6 +21,8 @@ data class Coordinates(val x: Int, val y: Int, val z: Int, val yaw: Float = 0f, 
     fun relative(x: Int, y: Int, z: Int) = relative(x.toDouble(), y.toDouble(), z.toDouble())
 
     fun toVec3d() = Vec3d(x.toCenter(), y.toDouble(), z.toCenter())
+
+    fun asBlockPos() = BlockPos(x, y, z)
 
     override fun toString() = "($x, $y, $z, y=%.2f, p=%.2f)".format(yaw, pitch)
 }

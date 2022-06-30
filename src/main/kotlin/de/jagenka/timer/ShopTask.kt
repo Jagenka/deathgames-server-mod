@@ -1,5 +1,6 @@
 package de.jagenka.timer
 
+import de.jagenka.BlockPos
 import de.jagenka.Util
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
@@ -78,7 +79,7 @@ object ShopTask : TimerTask
 
             if (playerName !in currentlyInShop && serverPlayerEntity.isOnGround)
             {
-                if (!Util.getBlockAt(serverPlayerEntity.pos.toDGCoordinates().relative(0, -1, 0)).isSame(Blocks.AIR))
+                if (!Util.getBlockAt(BlockPos.from(serverPlayerEntity.pos).relative(0, -1, 0)).isSame(Blocks.AIR))
                 {
                     lastPosOutOfShop[playerName] = TPPos(serverPlayerEntity.pos, serverPlayerEntity.yaw, serverPlayerEntity.pitch)
                 }

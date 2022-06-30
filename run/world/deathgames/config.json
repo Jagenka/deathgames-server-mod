@@ -88,42 +88,34 @@
             "plats": [
                 {
                     "name": "Village Corner",
-                    "coordinates": {
+                    "pos": {
                         "x": 119,
                         "y": 70,
-                        "z": 119,
-                        "yaw": 0.0,
-                        "pitch": 0.0
+                        "z": 119
                     }
                 },
                 {
                     "name": "Nether Corner",
-                    "coordinates": {
+                    "pos": {
                         "x": -120,
                         "y": 68,
-                        "z": 119,
-                        "yaw": 0.0,
-                        "pitch": 0.0
+                        "z": 119
                     }
                 },
                 {
                     "name": "Desert Corner",
-                    "coordinates": {
+                    "pos": {
                         "x": -120,
                         "y": 62,
-                        "z": -120,
-                        "yaw": 0.0,
-                        "pitch": 0.0
+                        "z": -120
                     }
                 },
                 {
                     "name": "Water Corner",
-                    "coordinates": {
+                    "pos": {
                         "x": 119,
                         "y": 63,
-                        "z": -120,
-                        "yaw": 0.0,
-                        "pitch": 0.0
+                        "z": -120
                     }
                 }
             ]
@@ -151,16 +143,12 @@
             "firstCorner": {
                 "x": -5,
                 "y": 57,
-                "z": -5,
-                "yaw": 0.0,
-                "pitch": 0.0
+                "z": -5
             },
             "secondCorner": {
                 "x": 5,
                 "y": 62,
-                "z": 5,
-                "yaw": 0.0,
-                "pitch": 0.0
+                "z": 5
             }
         },
         "tpOutOfShopAfter": 600,
@@ -174,16 +162,12 @@
             "firstCorner": {
                 "x": -128,
                 "y": 48,
-                "z": -128,
-                "yaw": 0.0,
-                "pitch": 0.0
+                "z": -128
             },
             "secondCorner": {
                 "x": 127,
                 "y": 152,
-                "z": 127,
-                "yaw": 0.0,
-                "pitch": 0.0
+                "z": 127
             }
         },
         "spectatorRadiusPadding": 20,
@@ -191,16 +175,12 @@
             "firstCorner": {
                 "x": -29,
                 "y": 18,
-                "z": -29,
-                "yaw": 0.0,
-                "pitch": 0.0
+                "z": -29
             },
             "secondCorner": {
                 "x": 29,
                 "y": 34,
-                "z": 29,
-                "yaw": 0.0,
-                "pitch": 0.0
+                "z": 29
             }
         }
     },

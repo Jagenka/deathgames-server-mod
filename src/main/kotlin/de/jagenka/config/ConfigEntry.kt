@@ -1,9 +1,6 @@
 package de.jagenka.config
 
-import de.jagenka.BlockCuboid
-import de.jagenka.CoordinateList
-import de.jagenka.Coordinates
-import de.jagenka.PlatformList
+import de.jagenka.*
 import de.jagenka.managers.Platform
 import de.jagenka.timer.seconds
 import kotlinx.serialization.Serializable
@@ -43,7 +40,7 @@ class SpawnsConfigEntry(
 
 @Serializable
 class BonusPlatformsConfigEntry(
-    var platforms: PlatformList = PlatformList(listOf(Platform("bonus1", Coordinates(0, 0, 0)), Platform("bonus2", Coordinates(0, 0, 0)))),
+    var platforms: PlatformList = PlatformList(listOf(Platform("bonus1", BlockPos(0, 0, 0)))),
     var radius: Int = 0,
     var spawnInterval: Int = 0,
     var stayTime: Int = 0,
@@ -69,7 +66,7 @@ class MoneyConfigEntry(
 
 @Serializable
 class ShopSettingsConfigEntry(
-    var shopBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
+    var shopBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
     var tpOutOfShopAfter: Int = 0,
     var refundPercent: Int = 0
 )
@@ -79,9 +76,9 @@ class MiscConfigEntry(
     var revealTimePerPlayer: Int = 0,
     var shopCloseTimeAfterReveal: Int = 0,
     var killStreakPenaltyCap: Int = 1,
-    var arenaBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
+    var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
     var spectatorRadiusPadding: Int = 0,
-    var lobbyBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0))
+    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0))
 )
 
 @Serializable

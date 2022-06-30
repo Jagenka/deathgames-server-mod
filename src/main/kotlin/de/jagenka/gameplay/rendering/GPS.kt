@@ -21,7 +21,7 @@ object GPS
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayerEntity ->
                 BonusManager.getSelectedPlatforms().forEach platforms@{
                     val arrow = VertexTreeElement(origin)
-                    var lookDirection = it.coordinates.toVec3d().subtract(player.pos.add(origin))
+                    var lookDirection = it.pos.toVec3d().subtract(player.pos.add(origin))
                     if (lookDirection.length() < 10) return@platforms
                     lookDirection = lookDirection.normalize()
                     val lookDirectionXZImage = Vec3d(lookDirection.x, 0.0, lookDirection.z).rotateY(90f.toRadians()).normalize()

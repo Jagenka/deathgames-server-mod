@@ -1,14 +1,11 @@
 package de.jagenka.managers
 
-import de.jagenka.Coordinates
-import de.jagenka.Util
+import de.jagenka.*
 import de.jagenka.config.Config
 import de.jagenka.config.Config.bonusPlatformInitialSpawn
 import de.jagenka.config.Config.bonusPlatformRadius
-import de.jagenka.isSame
 import de.jagenka.timer.ScheduledTask
 import de.jagenka.timer.Timer
-import de.jagenka.toCenter
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.minecraft.block.Blocks
@@ -65,16 +62,16 @@ object BonusManager
 
     fun isOnActivePlatform(playerName: String) = getActivePlatforms().any {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return false
-        val dx = abs(it.coordinates.x.toCenter() - player.pos.x)
-        val dy = abs(it.coordinates.y.toDouble() - player.pos.y)
-        val dz = abs(it.coordinates.z.toCenter() - player.pos.z)
+        val dx = abs(it.pos.x.toCenter() - player.pos.x)
+        val dy = abs(it.pos.y.toDouble() - player.pos.y)
+        val dz = abs(it.pos.z.toCenter() - player.pos.z)
         dy < 2 && dx <= bonusPlatformRadius + 0.5 && dz <= bonusPlatformRadius + 0.5
     }
 
     private fun colorPlatforms()
     {
         platforms.forEach { platform ->
-            Util.getBlocksInSquareRadiusAtFixY(platform.coordinates, bonusPlatformRadius).forEach { (block, coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(platform.pos, bonusPlatformRadius).forEach { (block, coordinates) ->
                 if (block isSame inactiveBlock || block isSame activeBlock)
                 {
                     Util.setBlockAt(coordinates, if (platform.active) activeBlock else inactiveBlock)
@@ -134,6 +131,6 @@ object BonusManager
 }
 
 @Serializable
-data class Platform(val name: String, val coordinates: Coordinates, @Transient var active: Boolean = false) {
-    override fun toString() = name + "," + coordinates.toString()
+data class Platform(val name: String, val pos: BlockPos, @Transient var active: Boolean = false) {
+    override fun toString() = "$name,$pos"
 }

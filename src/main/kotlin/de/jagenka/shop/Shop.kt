@@ -81,7 +81,7 @@ object Shop
         this.upgrades.clear()
     }
 
-    fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.contains(player.pos.toDGCoordinates())
+    fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.contains(player.pos)
 }
 
 enum class UpgradeType

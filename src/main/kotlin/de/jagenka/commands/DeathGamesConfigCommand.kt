@@ -181,7 +181,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
                 return null
             }
 
-            return (source.entity as? ServerPlayerEntity)?.toDGCoordinates()?.let { Platform(str, it, false) }
+            return (source.entity as? ServerPlayerEntity)?.pos?.let { Platform(str, BlockPos.from(it), false) }
         }
     },
     CoordinateList::class.java to object : ConfigPropertyTransformer<CoordinateList> {
@@ -200,7 +200,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
                 source.sendFeedback(Text.of("You need to provide the same number of names and coordinates. Names: ${names.size}, Coordinates: ${DeathGamesConfigCommand.pickedCoordinates.size}"), false)
             }
 
-            val platforms = (0 until names.size).map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it], false) }
+            val platforms = (0 until names.size).map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it].asBlockPos(), false) }
 
             return PlatformList(platforms)
         }
@@ -208,7 +208,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     BlockCuboid::class.java to object : ConfigPropertyTransformer<BlockCuboid> {
         override fun toString(value: Any): String = (value as? BlockCuboid)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): BlockCuboid? {
-            Util.getCoordinateListFromString(str)?.let {
+            Util.getBlockPosListFromString(str)?.let {
                 if(it.size != 2) {
                     source.sendFeedback(Text.of("You need to specify exactly two coordinates for a BlockCuboid."), false)
                     return@fromString null
@@ -221,7 +221,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
                 source.sendFeedback(Text.of("You need to pick exactly two coordinates for a BlockCuboid."), false)
                 return null
             } else {
-                return BlockCuboid(DeathGamesConfigCommand.pickedCoordinates[0], DeathGamesConfigCommand.pickedCoordinates[1])
+                return BlockCuboid(DeathGamesConfigCommand.pickedCoordinates[0].asBlockPos(), DeathGamesConfigCommand.pickedCoordinates[1].asBlockPos())
             }
         }
     },
