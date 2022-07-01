@@ -111,12 +111,14 @@ object Config
                 configEntry = ConfigEntry()
                 store()
             }
-            loadJSON(pathToConfFile.toFile())
+            load()
 
         } ?: error("Failed loading DeathGames config - Server not loaded yet.")
 
         println("Successfully loaded DeathGames config!")
     }
+
+    fun load() = loadJSON(pathToConfFile.toFile())
 
     fun loadJSON(jsonConfFile: File)
     {

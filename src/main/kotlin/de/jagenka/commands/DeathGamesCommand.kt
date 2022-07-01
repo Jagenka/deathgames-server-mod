@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.getDGTeam
@@ -114,6 +115,21 @@ object DeathGamesCommand
                     .executes {
                         if (DeathGames.running) SpawnManager.shuffleSpawns()
                         else it.source.sendError(Text.of("Game is not running!"))
+                        return@executes 0
+                    }
+            )
+            .then(
+                literal("reloadConfig")
+                    .requires { it.isOp() }
+                    .executes {
+                        try
+                        {
+                            Config.load()
+                            it.source.sendFeedback(Text.literal("config reloaded"), true)
+                        } catch (e: Exception)
+                        {
+                            it.source.sendError(Text.literal("error reloading config"))
+                        }
                         return@executes 0
                     }
             )
