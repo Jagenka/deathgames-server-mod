@@ -77,6 +77,15 @@ object SpawnManager
         }
     }
 
+    fun resetSpawnColoring()
+    {
+        spawns.forEach { (coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
+                if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
+            }
+        }
+    }
+
     fun getUnassignedSpawns() = spawns.filter { teamSpawns[it] == null }.toList()
 
     /**

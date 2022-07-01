@@ -160,6 +160,8 @@ object DeathGames : DedicatedServerModInitializer
         MoneyManager.reset()
         DisplayManager.updateLevelDisplay()
 
+        BonusManager.disableAllPlatforms()
+
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
         DisplayManager.sendChatMessage("")
@@ -179,6 +181,8 @@ object DeathGames : DedicatedServerModInitializer
                 it.health = 20f //set max hearts
                 it.hungerManager.add(20, 1f) //set max food and saturation
             }
+
+            SpawnManager.resetSpawnColoring()
 
             PlayerManager.clearInGameStatusForEveryone()
             running = false
