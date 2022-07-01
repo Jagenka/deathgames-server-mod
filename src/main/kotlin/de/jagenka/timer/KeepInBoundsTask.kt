@@ -2,7 +2,6 @@ package de.jagenka.timer
 
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
-import de.jagenka.toDGCoordinates
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 

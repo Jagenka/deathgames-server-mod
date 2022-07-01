@@ -8,12 +8,12 @@
   "server": [
     "DamageTrackerMixin",
     "ItemStackMixin",
+    "LivingEntityMixin",
     "MinecraftServerMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
-    "ServerPlayNetworkHandlerMixin",
-    "LivingEntityMixin"
+    "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -2,7 +2,6 @@ package de.jagenka.team
 
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
-import de.jagenka.toDGCoordinates
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack

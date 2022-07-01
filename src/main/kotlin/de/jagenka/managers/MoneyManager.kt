@@ -2,7 +2,6 @@ package de.jagenka.managers
 
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
-import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.getMoney
 import de.jagenka.managers.MoneyManager.moneyMode
 import de.jagenka.managers.MoneyManager.refundMoney

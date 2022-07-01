@@ -6,7 +6,6 @@ import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.team.TeamSelectorUI
-import de.jagenka.toDGCoordinates
 import net.minecraft.world.GameMode
 
 object BasicTpTask : TimerTask

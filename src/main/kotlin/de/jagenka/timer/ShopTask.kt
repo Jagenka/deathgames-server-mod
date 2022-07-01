@@ -10,7 +10,6 @@ import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.shop.Shop
-import de.jagenka.toDGCoordinates
 import net.minecraft.block.Blocks
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
