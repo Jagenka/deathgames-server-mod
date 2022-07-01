@@ -15,7 +15,6 @@ import de.jagenka.team.DGTeam
 import de.jagenka.util.I18n
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.server.network.ServerPlayerEntity
-import de.jagenka.team.DGTeam
 import net.minecraft.text.Text.literal
 
 object CaptureSpawnTask : TimerTask

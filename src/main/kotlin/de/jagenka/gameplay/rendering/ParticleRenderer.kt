@@ -49,7 +49,7 @@ object ParticleRenderer {
         return vertices
     }
 
-    fun drawParticlesFromVertexStructure(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, edges: VertexStructure)
+    private fun drawParticlesFromVertexStructure(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, edges: VertexStructure)
     {
         edges.getSet().forEach { edge ->
             drawMultipleParticles(server, player, particle, generateLine(edge.point1, edge.point2, 0.1))
@@ -66,12 +66,12 @@ object ParticleRenderer {
         }
     }
 
-    fun drawMultipleParticles(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertices: Collection<Vec3d>)
+    private fun drawMultipleParticles(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertices: Collection<Vec3d>)
     {
         val baseX = player.pos.x
         val baseY = player.pos.y
         val baseZ = player.pos.z
-        vertices.forEach {vertex: Vec3d ->
+        vertices.forEach { vertex: Vec3d ->
             server.overworld.spawnParticles(player, particle, true, baseX + vertex.x, baseY + vertex.y, baseZ + vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
     }
@@ -131,11 +131,12 @@ object ParticleRenderer {
 
         fun up(): VertexTreeElement
         {
-            return parent?:this
+            return parent ?: this
         }
     }
 
-    data class Edge(val point1: Vec3d, val point2: Vec3d) {
+    data class Edge(val point1: Vec3d, val point2: Vec3d)
+    {
         fun equals(other: Edge): Boolean
         {
             return (point1 == other.point1) && (point2 == other.point2) || (point1 == other.point2) && (point2 == other.point1)
@@ -166,5 +167,4 @@ object ParticleRenderer {
             return edges.isEmpty()
         }
     }
-
 }
