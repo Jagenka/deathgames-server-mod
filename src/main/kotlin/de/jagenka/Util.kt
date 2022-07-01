@@ -35,11 +35,18 @@ object Util
     {
         this.minecraftServer = minecraftServer
 
-        this.minecraftServer?.let { server ->
+        ifServerLoaded {
             Config.lateLoadConfig()
+        }
 
-            if (!isEnabled) return
+        if (!isEnabled) return
 
+        initOnServerStart()
+    }
+
+    fun initOnServerStart()
+    {
+        this.minecraftServer?.let { server ->
             server.scoreboard.teams.toList().forEach { team -> server.scoreboard.removeTeam(team) }
 
             server.gameRules[GameRules.SPECTATORS_GENERATE_CHUNKS].set(false, server)
