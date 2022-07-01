@@ -14,7 +14,8 @@ import kotlin.math.sin
 object CaptureAnimation
 {
 
-    const val RADIUS = 4.8
+    val RADIUS
+        get() = Config.configEntry.spawns.platformRadius + 0.8
     const val VISIBILITY_RANGE = 60.0
 
     fun render(captureProgress: Map<DGSpawn, Int>)
@@ -25,8 +26,7 @@ object CaptureAnimation
         }
 
         ifServerLoaded { server ->
-
-            captureProgress.filterValues { it > 0 }.forEach { (spawn, progress) ->
+            captureProgress.forEach { (spawn, progress) ->
                 val angle = (System.currentTimeMillis() % 6000).toDouble() / 6000.0 * Math.PI * 2.0
                 val captureDistance = (1.0 - (Config.captureTimeNeeded - progress).toFloat() / Config.captureTimeNeeded.toFloat()) * RADIUS
 

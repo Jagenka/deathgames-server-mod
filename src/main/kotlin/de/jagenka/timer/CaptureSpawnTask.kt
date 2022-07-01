@@ -78,7 +78,8 @@ object CaptureSpawnTask : TimerTask
             .filter { player -> player !in playersOnAnySpawn.map { pair -> pair.first } }
             .forEach { player -> DisplayManager.removeBossBarForPlayer(player, idSuffix = "capture") }
 
-        CaptureAnimation.render(captureProgress)
+        val underAttackSpawnProgress = captureProgress.filterKeys { it in playersOnAnySpawn.map { (_, spawn) -> spawn }.toSet() }
+        CaptureAnimation.render(underAttackSpawnProgress)
     }
 
     fun sendCaptureMessage(oldTeam: DGTeam?, newTeam: DGTeam)
