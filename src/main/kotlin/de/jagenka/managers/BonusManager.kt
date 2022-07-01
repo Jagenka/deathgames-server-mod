@@ -7,7 +7,6 @@ import de.jagenka.config.Config.bonusPlatformRadius
 import de.jagenka.timer.ScheduledTask
 import de.jagenka.timer.Timer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import net.minecraft.block.Blocks
 import kotlin.math.abs
 
@@ -16,6 +15,8 @@ object BonusManager
     val platforms
         get() = Config.configEntry.bonus.platforms.plats
     val selectedPlatforms = mutableListOf<Platform>()
+
+    val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }
 
     val inactiveBlock = Blocks.RED_CONCRETE
     val activeBlock = Blocks.LIME_CONCRETE
@@ -34,7 +35,7 @@ object BonusManager
 
     fun activateSelectedPlatforms()
     {
-        selectedPlatforms.forEach { it.active = true }
+        selectedPlatforms.forEach { activePlatforms[it] = true }
         colorPlatforms()
     }
 
@@ -47,11 +48,11 @@ object BonusManager
 
     fun disableAllPlatforms()
     {
-        platforms.forEach { it.active = false }
+        platforms.forEach { activePlatforms.clear() }
         colorPlatforms()
     }
 
-    fun getActivePlatforms() = platforms.filter { it.active }
+    fun getActivePlatforms() = activePlatforms.keys.filter { activePlatforms.getValue(it) == true }
 
     fun isOnActivePlatform(playerName: String) = getActivePlatforms().any {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return false
@@ -67,7 +68,7 @@ object BonusManager
             Util.getBlocksInSquareRadiusAtFixY(platform.pos, bonusPlatformRadius).forEach { (block, coordinates) ->
                 if (block isSame inactiveBlock || block isSame activeBlock)
                 {
-                    Util.setBlockAt(coordinates, if (platform.active) activeBlock else inactiveBlock)
+                    Util.setBlockAt(coordinates, if (platform.isActive()) activeBlock else inactiveBlock)
                 }
             }
         }
@@ -121,10 +122,12 @@ object BonusManager
         }, Config.bonusPlatformSpawnInterval)
         currentDespawnTask = null
     }
+
+    fun Platform.isActive() = activePlatforms.getValue(this)
 }
 
 @Serializable
-data class Platform(val name: String, val pos: BlockPos, @Transient var active: Boolean = false)
+data class Platform(val name: String, val pos: BlockPos)
 {
     override fun toString() = "$name,$pos"
 }

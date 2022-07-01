@@ -181,7 +181,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
                 return null
             }
 
-            return (source.entity as? ServerPlayerEntity)?.pos?.let { Platform(str, BlockPos.from(it), false) }
+            return (source.entity as? ServerPlayerEntity)?.pos?.let { Platform(str, BlockPos.from(it)) }
         }
     },
     CoordinateList::class.java to object : ConfigPropertyTransformer<CoordinateList> {
@@ -200,7 +200,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
                 source.sendFeedback(Text.of("You need to provide the same number of names and coordinates. Names: ${names.size}, Coordinates: ${DeathGamesConfigCommand.pickedCoordinates.size}"), false)
             }
 
-            val platforms = (0 until names.size).map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it].asBlockPos(), false) }
+            val platforms = (0 until names.size).map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it].asBlockPos()) }
 
             return PlatformList(platforms)
         }
