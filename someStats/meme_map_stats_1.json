@@ -1,0 +1,2480 @@
+{
+    "playedGames": [
+        {
+            "gameId": 1656546619855,
+            "gameEnd": 1656546619906,
+            "map": "meme",
+            "captureEnabled": true,
+            "winner": "GREEN"
+        },
+        {
+            "gameId": 1656546639956,
+            "gameEnd": 1656546640005,
+            "map": "meme",
+            "captureEnabled": true,
+            "winner": "RED"
+        },
+        {
+            "gameId": 1656546666255,
+            "gameEnd": 1656546666309,
+            "map": "meme",
+            "captureEnabled": true,
+            "winner": "YELLOW"
+        },
+        {
+            "gameId": 1656624071006,
+            "gameEnd": 1656624519557,
+            "map": "meme",
+            "captureEnabled": true,
+            "winner": "DARK_RED"
+        },
+        {
+            "gameId": 1656625028274,
+            "gameEnd": 1656625592525,
+            "map": "meme",
+            "captureEnabled": false,
+            "winner": "AQUA"
+        },
+        {
+            "gameId": 1656626582621,
+            "gameEnd": 1656626980422,
+            "map": "meme",
+            "captureEnabled": false,
+            "winner": "DARK_RED"
+        },
+        {
+            "gameId": 1656627012721,
+            "gameEnd": 1656627506472,
+            "map": "meme",
+            "captureEnabled": false,
+            "winner": "GOLD"
+        },
+        {
+            "gameId": 1656694408975,
+            "gameEnd": 1656694409026,
+            "map": "meme",
+            "captureEnabled": false,
+            "winner": "DARK_PURPLE"
+        },
+        {
+            "gameId": 1656694469925,
+            "gameEnd": 1656694657424,
+            "map": "meme",
+            "captureEnabled": false,
+            "winner": null
+        }
+    ],
+    "playerEntries": {
+        "Geosearchef": {
+            "games": [
+                {
+                    "gameId": 1656546619855,
+                    "team": "GREEN",
+                    "kills": [
+                    ],
+                    "deaths": [
+                    ],
+                    "damageDealt": 0.0,
+                    "damageTaken": 0.0,
+                    "healthRegenerated": 0.0,
+                    "highestKillStreak": 0,
+                    "moneyEarned": 100,
+                    "moneySpent": 0,
+                    "accountBalanceAverage": 100.0,
+                    "cmMovedOnGround": 0,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 0,
+                    "cmFlown": 0,
+                    "cmByElytra": 0,
+                    "cmClimbed": 0,
+                    "timesJumped": 0,
+                    "ticksOnBonus": 0,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                    ]
+                },
+                {
+                    "gameId": 1656546639956,
+                    "team": "RED",
+                    "kills": [
+                    ],
+                    "deaths": [
+                    ],
+                    "damageDealt": 0.0,
+                    "damageTaken": 0.0,
+                    "healthRegenerated": 0.0,
+                    "highestKillStreak": 0,
+                    "moneyEarned": 100,
+                    "moneySpent": 0,
+                    "accountBalanceAverage": 100.0,
+                    "cmMovedOnGround": 0,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 0,
+                    "cmFlown": 0,
+                    "cmByElytra": 0,
+                    "cmClimbed": 0,
+                    "timesJumped": 0,
+                    "ticksOnBonus": 0,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                    ]
+                },
+                {
+                    "gameId": 1656546666255,
+                    "team": "YELLOW",
+                    "kills": [
+                    ],
+                    "deaths": [
+                    ],
+                    "damageDealt": 0.0,
+                    "damageTaken": 0.0,
+                    "healthRegenerated": 0.0,
+                    "highestKillStreak": 0,
+                    "moneyEarned": 100,
+                    "moneySpent": 0,
+                    "accountBalanceAverage": 100.0,
+                    "cmMovedOnGround": 7,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 0,
+                    "cmFlown": 0,
+                    "cmByElytra": 0,
+                    "cmClimbed": 0,
+                    "timesJumped": 0,
+                    "ticksOnBonus": 0,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                    ]
+                },
+                {
+                    "gameId": 1656624071006,
+                    "team": "RED",
+                    "kills": [
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656624118666
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656624239312
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656624279178
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624111789
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624126417
+                        },
+                        {
+                            "damageType": "WITHER",
+                            "time": 1656624178564
+                        },
+                        {
+                            "damageType": "WITHER",
+                            "time": 1656624202011
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624230337
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624246812
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624263763
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624279910
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624360486
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624412461
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624447937
+                        }
+                    ],
+                    "damageDealt": 86.14256,
+                    "damageTaken": 544.02277,
+                    "healthRegenerated": 48.433342,
+                    "highestKillStreak": 1,
+                    "moneyEarned": 260,
+                    "moneySpent": 215,
+                    "accountBalanceAverage": 36.940833112231516,
+                    "cmMovedOnGround": 35534,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 38456,
+                    "cmFlown": 73433,
+                    "cmByElytra": 0,
+                    "cmClimbed": 0,
+                    "timesJumped": 286,
+                    "ticksOnBonus": 338,
+                    "spawnsCaptured": 14,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 40
+                        },
+                        {
+                            "name": "8 Melon",
+                            "price": 5
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 60
+                        },
+                        {
+                            "name": "2 Ender Pearls",
+                            "price": 10
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656625028274,
+                    "team": "AQUA",
+                    "kills": [
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656625144803
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "WITHER",
+                            "time": 1656625170327
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656625271085
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656625308585
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625346855
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625386996
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "FALLING",
+                            "time": 1656625399684
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625414698
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625449597
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625475895
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625556848
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625592499
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625071852
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625122352
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625171129
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625203604
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625276273
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625297078
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625327653
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625405347
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625461428
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625554622
+                        }
+                    ],
+                    "damageDealt": 292.2395,
+                    "damageTaken": 493.0118,
+                    "healthRegenerated": 72.899994,
+                    "highestKillStreak": 3,
+                    "moneyEarned": 1185,
+                    "moneySpent": 1145,
+                    "accountBalanceAverage": 94.57421355782003,
+                    "cmMovedOnGround": 41162,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 39125,
+                    "cmFlown": 90158,
+                    "cmByElytra": 0,
+                    "cmClimbed": 10803,
+                    "timesJumped": 420,
+                    "ticksOnBonus": 3069,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "ARMOR",
+                            "price": 40
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "8 Melon",
+                            "price": 5
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 60
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 80
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 100
+                        },
+                        {
+                            "name": "1 Gold Apple",
+                            "price": 150
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 120
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Gold Apple",
+                            "price": 150
+                        },
+                        {
+                            "name": "1 Gold Apple",
+                            "price": 150
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656626582621,
+                    "team": "GREEN",
+                    "kills": [
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656626678887
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "FALLING",
+                            "time": 1656626704962
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "PROJECTILE",
+                            "time": 1656626791576
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656626830925
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656626881625
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656626966975
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626621784
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626667314
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626684481
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626697233
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626723064
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626781057
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626812161
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626864157
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626906606
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626949411
+                        },
+                        {
+                            "damageType": "WITHER",
+                            "time": 1656626980375
+                        }
+                    ],
+                    "damageDealt": 172.2752,
+                    "damageTaken": 444.78616,
+                    "healthRegenerated": 63.86668,
+                    "highestKillStreak": 1,
+                    "moneyEarned": 400,
+                    "moneySpent": 380,
+                    "accountBalanceAverage": 29.94657448145825,
+                    "cmMovedOnGround": 39749,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 21317,
+                    "cmFlown": 43595,
+                    "cmByElytra": 0,
+                    "cmClimbed": 3922,
+                    "timesJumped": 192,
+                    "ticksOnBonus": 18,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "BOW",
+                            "price": 75
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "SWORD_REFUND",
+                            "price": -100
+                        },
+                        {
+                            "name": "BOW",
+                            "price": 100
+                        },
+                        {
+                            "name": "4 Poison Arrow",
+                            "price": 25
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 40
+                        },
+                        {
+                            "name": "2 Ender Pearls",
+                            "price": 10
+                        },
+                        {
+                            "name": "2 Ender Pearls",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        },
+                        {
+                            "name": "1 Speed",
+                            "price": 30
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656627012721,
+                    "team": "GOLD",
+                    "kills": [
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627088876
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627124725
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627196126
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627256026
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627281775
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627383925
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627454425
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627506425
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656627084103
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627133676
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627175925
+                        },
+                        {
+                            "damageType": "FIRE",
+                            "time": 1656627212375
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656627248602
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627269825
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627301875
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656627438753
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656627501404
+                        }
+                    ],
+                    "damageDealt": 224.304,
+                    "damageTaken": 273.67374,
+                    "healthRegenerated": 74.60002,
+                    "highestKillStreak": 2,
+                    "moneyEarned": 370,
+                    "moneySpent": 340,
+                    "accountBalanceAverage": 13.147341772151862,
+                    "cmMovedOnGround": 50518,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 2077,
+                    "cmFlown": 46742,
+                    "cmByElytra": 0,
+                    "cmClimbed": 4786,
+                    "timesJumped": 233,
+                    "ticksOnBonus": 6,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "BOW",
+                            "price": 75
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "1 Speed",
+                            "price": 30
+                        },
+                        {
+                            "name": "1 Fire Res",
+                            "price": 20
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Poison Arrow",
+                            "price": 25
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        }
+                    ]
+                }
+            ]
+        },
+        "_Neroxis": {
+            "games": [
+                {
+                    "gameId": 1656624071006,
+                    "team": "DARK_RED",
+                    "kills": [
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656624126416
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656624230336
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656624252230
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656624263763
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656624279910
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656624311878
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656624330621
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656624360486
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656624365481
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656624390311
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656624412460
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656624447937
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656624465243
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656624492129
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656624519530
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624118666
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624266234
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624352989
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624454278
+                        }
+                    ],
+                    "damageDealt": 285.15347,
+                    "damageTaken": 265.00598,
+                    "healthRegenerated": 74.90001,
+                    "highestKillStreak": 5,
+                    "moneyEarned": 880,
+                    "moneySpent": 765,
+                    "accountBalanceAverage": 64.04024077583327,
+                    "cmMovedOnGround": 58413,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 13139,
+                    "cmFlown": 78857,
+                    "cmByElytra": 0,
+                    "cmClimbed": 0,
+                    "timesJumped": 302,
+                    "ticksOnBonus": 1732,
+                    "spawnsCaptured": 18,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "8 Melon",
+                            "price": 5
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 40
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 60
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 80
+                        },
+                        {
+                            "name": "2 Ender Pearls",
+                            "price": 10
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 100
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "2 Ender Pearls",
+                            "price": 10
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 120
+                        },
+                        {
+                            "name": "1 Shield",
+                            "price": 50
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656625028274,
+                    "team": "DARK_RED",
+                    "kills": [
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656625074928
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656625122352
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656625171129
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656625200004
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656625203604
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656625220128
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656625238078
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656625276273
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656625297078
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656625355718
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656625410567
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656625425400
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656625461428
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656625554621
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625161586
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625244235
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625346855
+                        },
+                        {
+                            "damageType": "WITHER",
+                            "time": 1656625369478
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625386996
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625399684
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625414698
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625449597
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625475895
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625556848
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625592499
+                        }
+                    ],
+                    "damageDealt": 298.7994,
+                    "damageTaken": 376.5183,
+                    "healthRegenerated": 95.39999,
+                    "highestKillStreak": 5,
+                    "moneyEarned": 475,
+                    "moneySpent": 460,
+                    "accountBalanceAverage": 33.33569656150294,
+                    "cmMovedOnGround": 70032,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 19741,
+                    "cmFlown": 78853,
+                    "cmByElytra": 0,
+                    "cmClimbed": 15084,
+                    "timesJumped": 404,
+                    "ticksOnBonus": 26,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 40
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 60
+                        },
+                        {
+                            "name": "1 Harming",
+                            "price": 20
+                        },
+                        {
+                            "name": "1 The Abyss",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Harming",
+                            "price": 20
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656626582621,
+                    "team": "DARK_RED",
+                    "kills": [
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656626608434
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656626621784
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656626627203
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656626642070
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656626663111
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656626667314
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656626684481
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656626697232
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656626700471
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656626723063
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656626734635
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656626756460
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656626781057
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "MELEE",
+                            "time": 1656626811359
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656626812160
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656626864157
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656626906606
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656626949411
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "WITHER",
+                            "time": 1656626980375
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626704963
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656626830925
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656626881626
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656626966975
+                        }
+                    ],
+                    "damageDealt": 282.78458,
+                    "damageTaken": 233.58882,
+                    "healthRegenerated": 89.5667,
+                    "highestKillStreak": 9,
+                    "moneyEarned": 550,
+                    "moneySpent": 500,
+                    "accountBalanceAverage": 41.1726998491704,
+                    "cmMovedOnGround": 69974,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 6724,
+                    "cmFlown": 78679,
+                    "cmByElytra": 0,
+                    "cmClimbed": 3945,
+                    "timesJumped": 356,
+                    "ticksOnBonus": 42,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "1 420 Blaze it",
+                            "price": 40
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 120
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 40
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 40
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 40
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 40
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 40
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 60
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656627012721,
+                    "team": "DARK_RED",
+                    "kills": [
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627041466
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656627084103
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627123699
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627168931
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627207896
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FIRE",
+                            "time": 1656627212375
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627221664
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627240697
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656627248601
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627257180
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627284231
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627332263
+                        },
+                        {
+                            "deceased": "Wokitronics",
+                            "damageType": "FALLING",
+                            "time": 1656627349845
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656627438752
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656627501404
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627049675
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627124725
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627141275
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627196126
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627238625
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627256026
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627281775
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627324575
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627383925
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627454425
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627506425
+                        }
+                    ],
+                    "damageDealt": 220.5445,
+                    "damageTaken": 353.30402,
+                    "healthRegenerated": 115.63332,
+                    "highestKillStreak": 3,
+                    "moneyEarned": 500,
+                    "moneySpent": 460,
+                    "accountBalanceAverage": 48.14968604415636,
+                    "cmMovedOnGround": 63991,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 2441,
+                    "cmFlown": 112490,
+                    "cmByElytra": 0,
+                    "cmClimbed": 5922,
+                    "timesJumped": 480,
+                    "ticksOnBonus": 12,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "1 420 Blaze it",
+                            "price": 40
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 120
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 40
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 40
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 40
+                        },
+                        {
+                            "name": "AXE",
+                            "price": 40
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Harming",
+                            "price": 20
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Speed",
+                            "price": 30
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        },
+                        {
+                            "name": "1 Beef",
+                            "price": 10
+                        }
+                    ]
+                }
+            ]
+        },
+        "Wokitronics": {
+            "games": [
+                {
+                    "gameId": 1656624071006,
+                    "team": "AQUA",
+                    "kills": [
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "MELEE",
+                            "time": 1656624111787
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656624246812
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "FALLING",
+                            "time": 1656624266234
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "FALLING",
+                            "time": 1656624352989
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656624454277
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624239312
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624252230
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624279178
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624311878
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624330621
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624365481
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624390311
+                        },
+                        {
+                            "damageType": "WITHER",
+                            "time": 1656624413363
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656624465243
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624492130
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656624519531
+                        }
+                    ],
+                    "damageDealt": 67.77483,
+                    "damageTaken": 612.0422,
+                    "healthRegenerated": 47.000008,
+                    "highestKillStreak": 1,
+                    "moneyEarned": 665,
+                    "moneySpent": 535,
+                    "accountBalanceAverage": 74.28706800445869,
+                    "cmMovedOnGround": 54941,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 50787,
+                    "cmFlown": 64570,
+                    "cmByElytra": 0,
+                    "cmClimbed": 0,
+                    "timesJumped": 255,
+                    "ticksOnBonus": 1341,
+                    "spawnsCaptured": 63,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "8 Melon",
+                            "price": 5
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 40
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 60
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 80
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 100
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656625028274,
+                    "team": "GOLD",
+                    "kills": [
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656625071852
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625161586
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "MELEE",
+                            "time": 1656625244235
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656625327653
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "FALLING",
+                            "time": 1656625405346
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625074928
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625144803
+                        },
+                        {
+                            "damageType": "WITHER",
+                            "time": 1656625170328
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625200004
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625220128
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656625238078
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625271085
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625308585
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625355718
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625410567
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656625425401
+                        }
+                    ],
+                    "damageDealt": 53.66442,
+                    "damageTaken": 623.6342,
+                    "healthRegenerated": 40.666668,
+                    "highestKillStreak": 1,
+                    "moneyEarned": 700,
+                    "moneySpent": 530,
+                    "accountBalanceAverage": 77.69768320322368,
+                    "cmMovedOnGround": 32087,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 53641,
+                    "cmFlown": 40664,
+                    "cmByElytra": 0,
+                    "cmClimbed": 2837,
+                    "timesJumped": 181,
+                    "ticksOnBonus": 1561,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 40
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 60
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 80
+                        },
+                        {
+                            "name": "ARMOR",
+                            "price": 100
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656626582621,
+                    "team": "GOLD",
+                    "kills": [
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626608436
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626627203
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626642070
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626663112
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626678887
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626700471
+                        },
+                        {
+                            "damageType": "OUT_OF_WORLD",
+                            "time": 1656626721926
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656626734636
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626756460
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656626791576
+                        },
+                        {
+                            "damageType": "MELEE",
+                            "time": 1656626811360
+                        }
+                    ],
+                    "damageDealt": 6.3136,
+                    "damageTaken": 527.4225,
+                    "healthRegenerated": 32.83333,
+                    "highestKillStreak": 0,
+                    "moneyEarned": 100,
+                    "moneySpent": 100,
+                    "accountBalanceAverage": 4.142982072584177,
+                    "cmMovedOnGround": 22279,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 44661,
+                    "cmFlown": 29951,
+                    "cmByElytra": 0,
+                    "cmClimbed": 642,
+                    "timesJumped": 117,
+                    "ticksOnBonus": 11,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "SWORD",
+                            "price": 50
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        }
+                    ]
+                },
+                {
+                    "gameId": 1656627012721,
+                    "team": "LIGHT_PURPLE",
+                    "kills": [
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627049675
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627133675
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627141275
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627175925
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627238625
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627269825
+                        },
+                        {
+                            "deceased": "Geosearchef",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627301875
+                        },
+                        {
+                            "deceased": "_Neroxis",
+                            "damageType": "PROJECTILE",
+                            "time": 1656627324575
+                        }
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627041466
+                        },
+                        {
+                            "damageType": "PROJECTILE",
+                            "time": 1656627088876
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627123699
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627168931
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627207897
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627221664
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627240697
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627257180
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627284231
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627332264
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656627349846
+                        }
+                    ],
+                    "damageDealt": 230.0,
+                    "damageTaken": 749.41473,
+                    "healthRegenerated": 36.33333,
+                    "highestKillStreak": 2,
+                    "moneyEarned": 395,
+                    "moneySpent": 300,
+                    "accountBalanceAverage": 43.3194897656482,
+                    "cmMovedOnGround": 45802,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 64250,
+                    "cmFlown": 27732,
+                    "cmByElytra": 0,
+                    "cmClimbed": 154,
+                    "timesJumped": 134,
+                    "ticksOnBonus": 179,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "BOW",
+                            "price": 75
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "BOW",
+                            "price": 100
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "4 Arrows",
+                            "price": 5
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        },
+                        {
+                            "name": "LEAVE_SHOP",
+                            "price": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        "HideoTurismo": {
+            "games": [
+                {
+                    "gameId": 1656694408975,
+                    "team": "DARK_PURPLE",
+                    "kills": [
+                    ],
+                    "deaths": [
+                    ],
+                    "damageDealt": 0.0,
+                    "damageTaken": 0.0,
+                    "healthRegenerated": 0.0,
+                    "highestKillStreak": 0,
+                    "moneyEarned": 100,
+                    "moneySpent": 0,
+                    "accountBalanceAverage": 100.0,
+                    "cmMovedOnGround": 0,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 0,
+                    "cmFlown": 0,
+                    "cmByElytra": 0,
+                    "cmClimbed": 0,
+                    "timesJumped": 0,
+                    "ticksOnBonus": 0,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                    ]
+                },
+                {
+                    "gameId": 1656694469925,
+                    "team": "DARK_RED",
+                    "kills": [
+                    ],
+                    "deaths": [
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656694605517
+                        },
+                        {
+                            "damageType": "WITHER",
+                            "time": 1656694628731
+                        },
+                        {
+                            "damageType": "FALLING",
+                            "time": 1656694649217
+                        }
+                    ],
+                    "damageDealt": 0.0,
+                    "damageTaken": 174.0,
+                    "healthRegenerated": 16.5,
+                    "highestKillStreak": 0,
+                    "moneyEarned": 100,
+                    "moneySpent": 0,
+                    "accountBalanceAverage": 100.0,
+                    "cmMovedOnGround": 342,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 18757,
+                    "cmFlown": 400,
+                    "cmByElytra": 0,
+                    "cmClimbed": 0,
+                    "timesJumped": 5,
+                    "ticksOnBonus": 0,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                    ]
+                }
+            ]
+        },
+        "Jagenka": {
+            "games": [
+                {
+                    "gameId": 1656694469925,
+                    "team": "YELLOW",
+                    "kills": [
+                        {
+                            "deceased": "HideoTurismo",
+                            "damageType": "FALLING",
+                            "time": 1656694605516
+                        },
+                        {
+                            "deceased": "HideoTurismo",
+                            "damageType": "WITHER",
+                            "time": 1656694628731
+                        },
+                        {
+                            "deceased": "HideoTurismo",
+                            "damageType": "FALLING",
+                            "time": 1656694649217
+                        }
+                    ],
+                    "deaths": [
+                    ],
+                    "damageDealt": 29.0,
+                    "damageTaken": 0.0,
+                    "healthRegenerated": 0.0,
+                    "highestKillStreak": 3,
+                    "moneyEarned": 205,
+                    "moneySpent": 150,
+                    "accountBalanceAverage": 82.2699386503068,
+                    "cmMovedOnGround": 23410,
+                    "cmMovedInWater": 0,
+                    "cmFallen": 0,
+                    "cmFlown": 13681,
+                    "cmByElytra": 0,
+                    "cmClimbed": 944,
+                    "timesJumped": 31,
+                    "ticksOnBonus": 180,
+                    "spawnsCaptured": 0,
+                    "timesCaughtInTrap": 0,
+                    "itemsBought": [
+                        {
+                            "name": "BOW",
+                            "price": 75
+                        },
+                        {
+                            "name": "4 Poison Arrow",
+                            "price": 25
+                        },
+                        {
+                            "name": "4 Poison Arrow",
+                            "price": 25
+                        },
+                        {
+                            "name": "4 Poison Arrow",
+                            "price": 25
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
