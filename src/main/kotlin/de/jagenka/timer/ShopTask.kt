@@ -40,6 +40,8 @@ object ShopTask : TimerTask
 
             clearIllegalItems(serverPlayerEntity)
 
+            if (PlayerManager.isCurrentlyDead(playerName)) return@forEach
+
             if (PlayerManager.isInGame(playerName) && Shop.isInShopBounds(serverPlayerEntity))
             {
                 if (InactivePlayersTask.hasShopClosed(playerName))
