@@ -139,18 +139,20 @@
         "perKillStreakKill": 10
     },
     "shopSettings": {
-        "shopBounds": {
-            "firstCorner": {
-                "x": -5,
-                "y": 57,
-                "z": -5
-            },
-            "secondCorner": {
-                "x": 5,
-                "y": 62,
-                "z": 5
+        "shopBounds": [
+            {
+                "firstCorner": {
+                    "x": -5,
+                    "y": 57,
+                    "z": -5
+                },
+                "secondCorner": {
+                    "x": 5,
+                    "y": 62,
+                    "z": 5
+                }
             }
-        },
+        ],
         "tpOutOfShopAfter": 600,
         "refundPercent": 100
     },

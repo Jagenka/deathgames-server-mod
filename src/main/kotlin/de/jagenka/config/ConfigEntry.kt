@@ -66,7 +66,7 @@ class MoneyConfigEntry(
 
 @Serializable
 class ShopSettingsConfigEntry(
-    var shopBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
+    var shopBounds: List<BlockCuboid> = listOf(BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0))),
     var tpOutOfShopAfter: Int = 0,
     var refundPercent: Int = 0
 )
