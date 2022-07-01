@@ -1,6 +1,6 @@
 package de.jagenka.managers
 
-import de.jagenka.Coordinates
+import de.jagenka.BlockPos
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
@@ -37,6 +37,9 @@ object PlayerManager
     }
 
     fun getOnlineInGamePlayers() = getOnlinePlayers().filter { inGameMap.getValue(it.name.string) }
+
+    fun getOnlinePlayersAround(pos: BlockPos, radius: Double) = getOnlinePlayers().filter { pos.hasInRange(it.pos, radius) }
+    fun getOnlineInGamePlayersAround(pos: BlockPos, radius: Double) = getOnlineInGamePlayers().filter { pos.hasInRange(it.pos, radius) }
 
     fun getPlayers(): Set<String>
     {
@@ -156,14 +159,6 @@ object PlayerManager
 
     fun getInGameTeams() = DGTeam.values().filter { getInGamePlayersInTeam(it).isNotEmpty() }
     fun getOnlineInGameTeams() = DGTeam.values().filter { it.getOnlineInGamePlayers().isNotEmpty() }
-
-    fun Coordinates.getInGamePlayersInRange(range: Double) = getOnlinePlayersInRange(range).filter { player ->
-        inGameMap.getValue(player.name.string)
-    }
-
-    fun Coordinates.getOnlinePlayersInRange(range: Double) = getOnlinePlayers().filter { player ->
-        this distanceTo player.pos <= range
-    }
 
     @JvmStatic
     fun onPlayerJoin(player: ServerPlayerEntity)

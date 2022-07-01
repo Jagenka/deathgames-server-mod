@@ -20,32 +20,21 @@ object BasicTpTask : TimerTask
     {
         if (!DeathGames.running)
         {
-            PlayerManager.getOnlinePlayers().forEach {
-                if (!it.interactionManager.isSurvivalLike)
+            PlayerManager.getOnlinePlayers().forEach { player ->
+                if (!player.interactionManager.isSurvivalLike)
                 {
-                    if (!it.hasPermissionLevel(2)) it.changeGameMode(GameMode.ADVENTURE)
+                    if (!player.hasPermissionLevel(2)) player.changeGameMode(GameMode.ADVENTURE)
 
-                    /* BY RADIUS, OLD CODE
-                    val middle = (Config.arenaBounds.firstCorner + Config.arenaBounds.secondCorner) / 2.0
-                    val maxRadius = (Config.arenaBounds.firstCorner - middle).toVec3d().length()
-                    val allowedRadius = maxRadius + Config.spectatorRadiusPadding
-                    val playerCoords3D = Coordinates(it.pos)
-                    var playerCoords2D = Coordinates(it.pos.x, middle.y.toDouble(), it.pos.z)
-                    // 0.9 safety boundary to prevent getting a seizure when flying outwards
-                    if ((playerCoords2D - middle).toVec3d().length() > allowedRadius) {
-                        playerCoords2D *= (allowedRadius * 0.9) / playerCoords2D.toVec3d().length()
-                        it.teleport(it.getWorld(), playerCoords2D.x.toDouble(), playerCoords3D.y.toDouble(), playerCoords2D.z.toDouble(), it.yaw, it.pitch)
-                    }
-                     */
-                    val (posX, negX) = listOf<Int>(Config.arenaBounds.secondCorner.x, Config.arenaBounds.firstCorner.x).sortedDescending()
-                    val (posZ, negZ) = listOf<Int>(Config.arenaBounds.secondCorner.z, Config.arenaBounds.firstCorner.z).sortedDescending()
-                    if (it.pos.x > posX + Config.spectatorRadiusPadding) it.teleport(Coordinates(posX.toDouble(), it.pos.y, it.pos.z))
-                    if (it.pos.x < negX - Config.spectatorRadiusPadding) it.teleport(Coordinates(negX.toDouble(), it.pos.y, it.pos.z))
-                    if (it.pos.z > posZ + Config.spectatorRadiusPadding) it.teleport(Coordinates(it.pos.x, it.pos.y, posZ.toDouble()))
-                    if (it.pos.z < negZ - Config.spectatorRadiusPadding) it.teleport(Coordinates(it.pos.x, it.pos.y, negZ.toDouble()))
+                    //tp spectators back to arena
+                    val (posX, negX) = listOf(Config.arenaBounds.secondCorner.x, Config.arenaBounds.firstCorner.x).sortedDescending()
+                    val (posZ, negZ) = listOf(Config.arenaBounds.secondCorner.z, Config.arenaBounds.firstCorner.z).sortedDescending()
+                    if (player.pos.x > posX + Config.spectatorRadiusPadding) player.teleport(Coordinates(posX.toDouble(), player.pos.y, player.pos.z, player.yaw, player.pitch))
+                    if (player.pos.x < negX - Config.spectatorRadiusPadding) player.teleport(Coordinates(negX.toDouble(), player.pos.y, player.pos.z, player.yaw, player.pitch))
+                    if (player.pos.z > posZ + Config.spectatorRadiusPadding) player.teleport(Coordinates(player.pos.x, player.pos.y, posZ.toDouble(), player.yaw, player.pitch))
+                    if (player.pos.z < negZ - Config.spectatorRadiusPadding) player.teleport(Coordinates(player.pos.x, player.pos.y, negZ.toDouble(), player.yaw, player.pitch))
                     return@forEach
                 }
-                if (!TeamSelectorUI.lobbyBounds.contains(it.pos)) it.teleport(Config.lobbySpawn)
+                if (!TeamSelectorUI.lobbyBounds.contains(player.pos)) player.teleport(Config.lobbySpawn)
             }
         }
     }

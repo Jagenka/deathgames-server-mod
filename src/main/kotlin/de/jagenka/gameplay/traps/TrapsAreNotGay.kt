@@ -1,12 +1,13 @@
 package de.jagenka.gameplay.traps
 
+import de.jagenka.BlockPos
 import de.jagenka.Coordinates
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
-import de.jagenka.managers.PlayerManager.getInGamePlayersInRange
-import de.jagenka.managers.PlayerManager.getOnlinePlayersInRange
+import de.jagenka.managers.PlayerManager.getOnlineInGamePlayersAround
+import de.jagenka.managers.PlayerManager.getOnlinePlayersAround
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.timer.CustomTimer
@@ -51,14 +52,14 @@ enum class TrapItems(val item: ItemStack)
 data class Trap(
     val displayName: String,                            // name shown in shop
     val gaynessRange: Double = 0.5,                     // trigger range
-    val setupTime: Int = 10.seconds(),                  // time, until trap can be triggered. shows particles in the meantime
+    val setupTime: Int  ,                               // time, until trap can be triggered. shows particles in the meantime
     val gaynessTriggerVisibleRange: Double = 30.0,      // range, in which trigger particles can be seen
     val gaynessVisibilityRange: Double = 10.0,          // range, in which preparation particles can be seen
     val affectedGayRange: Double = 1.5,                 // range, in which players are affected upon trigger
     private var triggerDuration: Int = 6.seconds(),     // how long effects are applied
     val snares: Boolean = false,                        // if the trap holds player in place
-    val effects: List<DGStatusEffect>
-)                  // what effects to apply
+    val effects: List<DGStatusEffect>                   // what effects to apply
+)
 
 object TrapsAreNotGay
 {
@@ -73,12 +74,13 @@ object TrapsAreNotGay
     private val notGayness = mutableSetOf<NotGay>()
 
     private fun addLessGay(
-        x: Int, y: Int, z: Int, gaynessRange: Double = 0.5,
-        setupTime: Int = 10.seconds(),
-        gaynessTriggerVisibleRange: Double = 30.0,
-        gaynessVisibilityRange: Double = 10.0,
-        affectedGayRange: Double = 1.5,
-        triggerDuration: Int = 6.seconds(),
+        x: Int, y: Int, z: Int,
+        gaynessRange: Double = Config.trapConfig.triggerRange,
+        setupTime: Int = Config.trapConfig.setupTime,
+        gaynessTriggerVisibleRange: Double  = Config.trapConfig.triggerVisibilityRange,
+        gaynessVisibilityRange: Double = Config.trapConfig.visibilityRange,
+        affectedGayRange: Double = Config.trapConfig.affectedRange,
+        triggerDuration: Int = Config.trapConfig.triggerDuration,
         snares: Boolean = false,
         effectsString: List<DGStatusEffect>
     ): Boolean
@@ -88,7 +90,7 @@ object TrapsAreNotGay
             effects.add(jaysMom.statusEffectInstance)
         }
         val notGay = NotGay(
-            Coordinates(x.toDouble() + 0.5, y.toDouble(), z.toDouble() + 0.5), 0.ticks(),
+            BlockPos(x, y, z),
             gaynessRange = gaynessRange,
             setupTime = setupTime,
             gaynessTriggerVisibleRange = gaynessTriggerVisibleRange,
@@ -107,10 +109,10 @@ object TrapsAreNotGay
 
     private fun handleNotGay(it: NotGay)
     {
-        val gayTriggerSpectator = it.pos.getOnlinePlayersInRange(it.gaynessTriggerVisibleRange)
-        val gayPrepareSpectator = it.pos.getOnlinePlayersInRange(it.gaynessVisibilityRange)
-        val affectedPlayers = it.pos.getInGamePlayersInRange(it.affectedGayRange)
-        val triggered = it.pos.getInGamePlayersInRange(it.gaynessRange).isNotEmpty()
+        val gayTriggerSpectator = getOnlinePlayersAround(it.pos, it.gaynessTriggerVisibleRange)//it.pos.getOnlinePlayersInRange(it.gaynessTriggerVisibleRange)
+        val gayPrepareSpectator = getOnlinePlayersAround(it.pos, it.gaynessVisibilityRange)//it.pos.getOnlinePlayersInRange(it.gaynessVisibilityRange)
+        val affectedPlayers = getOnlineInGamePlayersAround(it.pos, it.affectedGayRange)//it.pos.getInGamePlayersInRange(it.affectedGayRange)
+        val triggered = getOnlineInGamePlayersAround(it.pos, it.gaynessRange).isNotEmpty()//it.pos.getInGamePlayersInRange(it.gaynessRange).isNotEmpty()
         ifServerLoaded { server ->
             if (it.getAge() < it.setupTime)
             {
@@ -264,13 +266,13 @@ object TrapsAreNotGay
 data class DisabledPlayerCoordinateFetch(var flag: Boolean, var coordinates: Coordinates? = null)
 
 data class NotGay(
-    val pos: Coordinates, private var age: Int,
-    val gaynessRange: Double = Config.trapConfig.triggerRange,
-    val setupTime: Int = Config.trapConfig.setupTime,
-    val gaynessTriggerVisibleRange: Double = Config.trapConfig.triggerVisibilityRange,
-    val gaynessVisibilityRange: Double = Config.trapConfig.visibilityRange,
-    val affectedGayRange: Double = Config.trapConfig.affectedRange,
-    private var triggerDuration: Int = Config.trapConfig.triggerDuration,
+    val pos: BlockPos, private var age: Int = 0.ticks(),
+    val gaynessRange: Double,
+    val setupTime: Int,
+    val gaynessTriggerVisibleRange: Double,
+    val gaynessVisibilityRange: Double,
+    val affectedGayRange: Double,
+    private var triggerDuration: Int,
     val snares: Boolean = false,
     val effects: List<StatusEffectInstance>
 )
