@@ -12,6 +12,7 @@ class PlayerEntry(
 class GameEntry(
     var gameId: Long = 0,
     var gameEnd: Long = 0,
+    var map: String = "",
     var captureEnabled: Boolean = false,
     var winner: DGTeam? = null,
 )

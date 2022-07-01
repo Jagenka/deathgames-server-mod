@@ -1,6 +1,7 @@
 package de.jagenka.stats
 
 import de.jagenka.DeathGames
+import de.jagenka.Util.minecraftServer
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.shop.ShopEntry
@@ -8,6 +9,7 @@ import de.jagenka.timer.Timer
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.stat.Stat
 import net.minecraft.stat.Stats
+import net.minecraft.util.WorldSavePath
 
 object StatManager
 {
@@ -116,6 +118,7 @@ object StatManager
 
         gameStats.gameId = DeathGames.gameId ?: return false
         gameStats.captureEnabled = Config.captureEnabled
+        gameStats.map = minecraftServer?.getSavePath(WorldSavePath.ROOT)?.parent?.fileName.toString()
 
         StatsIO.stats.playedGames.add(gameStats)
 
