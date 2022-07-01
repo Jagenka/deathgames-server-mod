@@ -28,7 +28,8 @@ object BonusDisplayTask : TimerTask
             {
                 val (name) = selectedPlatforms[0]
                 DisplayManager.showTimeToBonusMessage(
-                    Text.of("Bonus Money Platform: $name in ${timeToSpawn / DGUnit.SECONDS.factor}sec").getWithStyle(Style.EMPTY.withColor(Formatting.DARK_RED).withBold(true))[0]
+                    Text.of("Bonus Money Platform: ${name.ifEmpty { "Spawning" }} in ${timeToSpawn / DGUnit.SECONDS.factor}sec")
+                        .getWithStyle(Style.EMPTY.withColor(Formatting.DARK_RED).withBold(true))[0]
                 )
             }
         } else if (timeToDespawn != null)
@@ -38,7 +39,7 @@ object BonusDisplayTask : TimerTask
             {
                 val (name) = activePlatforms[0]
                 DisplayManager.showTimeToBonusMessage(
-                    Text.of("Bonus Money Platform: $name for another ${timeToDespawn / DGUnit.SECONDS.factor}sec")
+                    Text.of("Bonus Money Platform: ${name.ifEmpty { "Active" }} for another ${timeToDespawn / DGUnit.SECONDS.factor}sec")
                         .getWithStyle(Style.EMPTY.withColor(Formatting.DARK_GREEN).withBold(true))[0]
                 )
             }
