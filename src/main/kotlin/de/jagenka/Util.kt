@@ -14,6 +14,7 @@ import net.minecraft.text.TextColor
 import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3f
+import net.minecraft.world.Difficulty
 import net.minecraft.world.GameRules
 import java.util.*
 import java.util.regex.Pattern
@@ -28,8 +29,6 @@ object Util
 {
     var minecraftServer: MinecraftServer? = null
         private set
-
-    val modUUID: UUID = UUID.randomUUID()
 
     @JvmStatic
     fun onServerLoaded(minecraftServer: MinecraftServer)
@@ -55,6 +54,7 @@ object Util
             server.gameRules[GameRules.DO_WEATHER_CYCLE].set(false, server)
             server.overworld.setWeather(Int.MAX_VALUE, 0, false, false)
             server.overworld.timeOfDay = 6000 // noon
+            server.setDifficulty(Difficulty.NORMAL, false)
         }
 
         PlayerManager.prepareTeams()
