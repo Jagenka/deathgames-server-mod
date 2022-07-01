@@ -31,7 +31,7 @@ object CaptureSpawnTask : TimerTask
 
         val playersOnAnySpawn = mutableListOf<Pair<ServerPlayerEntity, DGSpawn>>()
 
-        SpawnManager.getSpawns().forEach forEachSpawn@{ spawn ->
+        SpawnManager.spawns.forEach forEachSpawn@{ spawn ->
             val playersOnSpawn = PlayerManager.getOnlineInGamePlayers().filter { spawn.containsPlayer(it) }
             val teamsOnSpawn = playersOnSpawn.map { it.getDGTeam() }.toSet()
             if (teamsOnSpawn.count { it != null } == 1)

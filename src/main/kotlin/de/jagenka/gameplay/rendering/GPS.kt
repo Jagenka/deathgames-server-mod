@@ -19,7 +19,7 @@ object GPS
         val origin = Vec3d(0.0, 4.0, 0.0)
         ifServerLoaded { server: MinecraftServer ->
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayerEntity ->
-                BonusManager.getSelectedPlatforms().forEach platforms@{
+                BonusManager.selectedPlatforms.forEach platforms@{
                     val arrow = VertexTreeElement(origin)
                     var lookDirection = it.pos.toVec3d().subtract(player.pos.add(origin))
                     if (lookDirection.length() < 10) return@platforms
@@ -99,7 +99,7 @@ object GPS
         val baseX = player.pos.x
         val baseY = player.pos.y
         val baseZ = player.pos.z
-        vertices.forEach {vertex: Vec3d ->
+        vertices.forEach { vertex: Vec3d ->
             server.overworld.spawnParticles(player, particle, true, baseX + vertex.x, baseY + vertex.y, baseZ + vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
     }
@@ -152,11 +152,12 @@ object GPS
 
         fun up(): VertexTreeElement
         {
-            return parent?:this
+            return parent ?: this
         }
     }
 
-    data class Edge(val point1: Vec3d, val point2: Vec3d) {
+    data class Edge(val point1: Vec3d, val point2: Vec3d)
+    {
         fun equals(other: Edge): Boolean
         {
             return (point1 == other.point1) && (point2 == other.point2) || (point1 == other.point2) && (point2 == other.point1)

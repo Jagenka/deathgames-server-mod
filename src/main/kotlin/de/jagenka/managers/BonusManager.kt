@@ -13,20 +13,15 @@ import kotlin.math.abs
 
 object BonusManager
 {
-    private val platforms = mutableListOf<Platform>()
-    private val selectedPlatforms = mutableListOf<Platform>()
+    val platforms
+        get() = Config.configEntry.bonus.platforms.plats
+    val selectedPlatforms = mutableListOf<Platform>()
 
-    private val inactiveBlock = Blocks.RED_CONCRETE
-    private val activeBlock = Blocks.LIME_CONCRETE
+    val inactiveBlock = Blocks.RED_CONCRETE
+    val activeBlock = Blocks.LIME_CONCRETE
 
     private var currentSpawnTask: ScheduledTask? = null
     private var currentDespawnTask: ScheduledTask? = null
-
-    fun setPlatforms(platforms: List<Platform>)
-    {
-        BonusManager.platforms.clear()
-        BonusManager.platforms.addAll(platforms)
-    }
 
     fun queueRandomPlatforms(howMany: Int)
     {
@@ -42,8 +37,6 @@ object BonusManager
         selectedPlatforms.forEach { it.active = true }
         colorPlatforms()
     }
-
-    fun getSelectedPlatforms() = selectedPlatforms.toList()
 
     @Deprecated("use queueRandomPlatforms and activateSelectedPlatforms instead", ReplaceWith("", ""), DeprecationLevel.WARNING)
     fun activateRandomPlatforms(howMany: Int)
@@ -131,6 +124,7 @@ object BonusManager
 }
 
 @Serializable
-data class Platform(val name: String, val pos: BlockPos, @Transient var active: Boolean = false) {
+data class Platform(val name: String, val pos: BlockPos, @Transient var active: Boolean = false)
+{
     override fun toString() = "$name,$pos"
 }

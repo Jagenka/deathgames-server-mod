@@ -23,7 +23,7 @@ object BonusDisplayTask : TimerTask
 
         if (timeToSpawn != null)
         {
-            val selectedPlatforms = BonusManager.getSelectedPlatforms()
+            val selectedPlatforms = BonusManager.selectedPlatforms
             if (selectedPlatforms.isNotEmpty())
             {
                 val (name) = selectedPlatforms[0]

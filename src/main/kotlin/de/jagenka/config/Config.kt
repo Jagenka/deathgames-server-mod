@@ -123,9 +123,6 @@ object Config
     fun loadJSON(jsonConfFile: File)
     {
         configEntry = serializer.decodeFromString(jsonConfFile.readText())
-
-        SpawnManager.setSpawns(configEntry.spawns.spawnPositions.coords) // TODO: these won't be changed by the config command
-        BonusManager.setPlatforms(configEntry.bonus.platforms.plats)
     }
 
     fun store()

@@ -5,6 +5,7 @@ import de.jagenka.Coordinates
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.teleport
+import de.jagenka.config.Config
 import de.jagenka.config.Config.defaultSpawn
 import de.jagenka.managers.DisplayManager.sendChatMessage
 import de.jagenka.team.DGTeam
@@ -16,23 +17,12 @@ import de.jagenka.config.Config.spawnPlatformRadius as platformRadius
 
 object SpawnManager
 {
-    private val spawns = ArrayList<DGSpawn>()
+    val spawns
+        get() = Config.configEntry.spawns.spawnPositions.coords.map { DGSpawn(it) }
+
     private val teamSpawns = BiMap<DGSpawn, DGTeam>()
 
-    private fun addSpawns(spawns: Collection<Coordinates>)
-    {
-        SpawnManager.spawns.addAll(spawns.map { DGSpawn(it) })
-    }
-
-    internal fun setSpawns(spawns: Collection<Coordinates>)
-    {
-        SpawnManager.spawns.clear()
-        addSpawns(spawns)
-    }
-
     fun getTeam(spawn: DGSpawn) = teamSpawns[spawn]
-
-    fun getSpawns() = spawns.toList()
 
     fun ServerPlayerEntity.getSpawnCoordinates(): Coordinates
     {
