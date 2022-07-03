@@ -66,6 +66,8 @@ object DeathGamesConfigCommand {
                 argumentLiteral.executes {
                     val newValue = it.getArgument("newValue", String::class.java)
 
+                    // TODO: suggest based on transformer
+
                     val result = setPropertyFromString(newValue, Config.configEntry, sectionField, property, configPropertyTransformers, it.source)
                     val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
                     if(result) {
@@ -148,15 +150,15 @@ fun <T: Number> transformNumber(str: String, numeralParser: (String) -> T): T? {
 
 interface ConfigPropertyTransformer<T> {
     fun toString(value: Any): String
-    fun fromString(str: String, source: ServerCommandSource): T?
+    fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): T?
 }
 
-val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer<out Any>>(
+val configPropertyTransformers = mapOf(
     Coordinates::class.java to object : ConfigPropertyTransformer<Coordinates> {
         override fun toString(value: Any): String = "Coord" + (value as? Coordinates)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Coordinates? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Coordinates? {
 
-            val parsedCoordinate = Util.getCoordinateFromString(str)
+            val parsedCoordinate = Util.getComplexConfigOptionFromString(str, Coordinates::class.java)
 
             if(parsedCoordinate != null) {
                 return parsedCoordinate
@@ -165,39 +167,58 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
             } else if(str == "last") {
                 return DeathGamesConfigCommand.pickedCoordinates.lastOrNull()
             } else if(str == "pick") {
-                return (source.entity as? ServerPlayerEntity)?.toDGCoordinates()
+                return (source?.entity as? ServerPlayerEntity)?.toDGCoordinates()
             } else {
                 // This is terribly engineered, but better to have some feedback than none
-                source.sendFeedback(Text.of("Value has to be one of [first, last, pick], to obtain the first or last argument from the args list or to pick the current position."), false)
+                source?.sendFeedback(Text.of("Value has to be one of [first, last, pick], to obtain the first or last argument from the args list or to pick the current position."), false)
                 return null
             }
         }
     },
     Platform::class.java to object : ConfigPropertyTransformer<Platform> {
         override fun toString(value: Any): String = "Platform" + (value as? Platform)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Platform? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Platform? {
             if(str.isBlank()) {
-                source.sendFeedback(Text.of("You have to provide a name"), false)
+                source?.sendFeedback(Text.of("You have to provide a name"), false)
                 return null
             }
 
-            return (source.entity as? ServerPlayerEntity)?.pos?.let { Platform(str, BlockPos.from(it)) }
+            return (source?.entity as? ServerPlayerEntity)?.pos?.let { Platform(str, BlockPos.from(it)) }
         }
     },
     CoordinateList::class.java to object : ConfigPropertyTransformer<CoordinateList> {
         override fun toString(value: Any): String = (value as? CoordinateList)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): CoordinateList? {
-            Util.getCoordinateListFromString(str)?.let { return@fromString CoordinateList(it) }
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): CoordinateList? {
+            Util.getConfigOptionListFromString(str, Coordinates::class.java)?.let { return@fromString CoordinateList(it) }
+
+            if(str.startsWith("remove")) {
+                try
+                {
+                    val i = str.replace("remove ", "").trim().toInt()
+                    val newList = ArrayList((currentValue as CoordinateList).coords)
+                    newList.remove(newList[i])
+                    return CoordinateList(ArrayList(newList))
+                }
+                catch(e: NumberFormatException)
+                {
+                    source?.sendFeedback(Text.of("The position you specified is invalid"), false)
+                }
+                catch(e: IndexOutOfBoundsException) // TODO: unify
+                {
+                    source?.sendFeedback(Text.of("The position you specified is invalid"), false)
+                }
+            }
+
             return CoordinateList(ArrayList(DeathGamesConfigCommand.pickedCoordinates))
         }
     },
     PlatformList::class.java to object : ConfigPropertyTransformer<PlatformList> {
         override fun toString(value: Any): String = (value as? PlatformList)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): PlatformList? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): PlatformList? {
             val names = str.split(",").map { it.trim() }
 
             if(names.size != DeathGamesConfigCommand.pickedCoordinates.size) {
-                source.sendFeedback(Text.of("You need to provide the same number of names and coordinates. Names: ${names.size}, Coordinates: ${DeathGamesConfigCommand.pickedCoordinates.size}"), false)
+                source?.sendFeedback(Text.of("You need to provide the same number of names and coordinates. Names: ${names.size}, Coordinates: ${DeathGamesConfigCommand.pickedCoordinates.size}"), false)
             }
 
             val platforms = (0 until names.size).map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it].asBlockPos()) }
@@ -207,10 +228,10 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     },
     BlockCuboid::class.java to object : ConfigPropertyTransformer<BlockCuboid> {
         override fun toString(value: Any): String = (value as? BlockCuboid)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): BlockCuboid? {
-            Util.getBlockPosListFromString(str)?.let {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): BlockCuboid? {
+            Util.getConfigOptionListFromString(str, BlockPos::class.java)?.let {
                 if(it.size != 2) {
-                    source.sendFeedback(Text.of("You need to specify exactly two coordinates for a BlockCuboid."), false)
+                    source?.sendFeedback(Text.of("You need to specify exactly two coordinates for a BlockCuboid."), false)
                     return@fromString null
                 }
                 return@fromString BlockCuboid(it[0], it[1])
@@ -218,7 +239,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
 
             if(DeathGamesConfigCommand.pickedCoordinates.size != 2) {
                 // This is terribly engineered, but better to have some feedback than none
-                source.sendFeedback(Text.of("You need to pick exactly two coordinates for a BlockCuboid."), false)
+                source?.sendFeedback(Text.of("You need to pick exactly two coordinates for a BlockCuboid."), false)
                 return null
             } else {
                 return BlockCuboid(DeathGamesConfigCommand.pickedCoordinates[0].asBlockPos(), DeathGamesConfigCommand.pickedCoordinates[1].asBlockPos())
@@ -227,11 +248,11 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     },
     String::class.java to object : ConfigPropertyTransformer<String> {
         override fun toString(value: Any): String = (value as? String)!!
-        override fun fromString(str: String, source: ServerCommandSource): String? = str
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): String? = str
     },
     Boolean::class.java to object : ConfigPropertyTransformer<Boolean> {
         override fun toString(value: Any): String = (value as? Boolean)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Boolean? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Boolean? {
             try {
                 return str.toBooleanStrict()
             } catch (e: NumberFormatException) {
@@ -241,7 +262,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     },
     Int::class.java to object : ConfigPropertyTransformer<Int> {
         override fun toString(value: Any): String = (value as? Int)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Int? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Int? {
             try {
                 return transformNumber(str) { it.toInt() }
             } catch (e: NumberFormatException) {
@@ -251,7 +272,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     },
     Long::class.java to object : ConfigPropertyTransformer<Long> {
         override fun toString(value: Any): String = (value as? Long)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Long? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Long? {
             try {
                 return transformNumber(str) { it.toLong() }
             } catch (e: NumberFormatException) {
@@ -261,7 +282,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     },
     Short::class.java to object : ConfigPropertyTransformer<Short> {
         override fun toString(value: Any): String = (value as? Short)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Short? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Short? {
             try {
                 return transformNumber(str) { it.toShort() }
             } catch (e: NumberFormatException) {
@@ -271,7 +292,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     },
     Byte::class.java to object : ConfigPropertyTransformer<Byte> {
         override fun toString(value: Any): String = (value as? Byte)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Byte? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Byte? {
             try {
                 return transformNumber(str) { it.toByte() }
             } catch (e: NumberFormatException) {
@@ -281,7 +302,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     },
     Float::class.java to object : ConfigPropertyTransformer<Float> {
         override fun toString(value: Any): String = (value as? Float)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Float? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Float? {
             try {
                 return str.toFloat()
             } catch (e: NumberFormatException) {
@@ -291,7 +312,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
     },
     Double::class.java to object : ConfigPropertyTransformer<Double> {
         override fun toString(value: Any): String = (value as? Double)!!.toString()
-        override fun fromString(str: String, source: ServerCommandSource): Double? {
+        override fun fromString(str: String, source: ServerCommandSource?, currentValue: Any?): Double? {
             try {
                 return str.toDouble()
             } catch (e: NumberFormatException) {

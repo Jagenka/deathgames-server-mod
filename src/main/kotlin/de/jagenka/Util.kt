@@ -1,29 +1,6 @@
 package de.jagenka
 
-import de.jagenka.config.Config
-import de.jagenka.config.Config.isEnabled
-import de.jagenka.managers.DisplayManager
-import de.jagenka.managers.Platform
-import de.jagenka.managers.PlayerManager
-import kotlinx.serialization.Serializable
-import net.minecraft.block.Block
-import net.minecraft.block.Blocks
-import net.minecraft.server.MinecraftServer
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.TextColor
-import net.minecraft.util.math.Quaternion
-import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3f
-import net.minecraft.world.Difficulty
-import net.minecraft.world.GameRules
-import java.util.*
-import java.util.regex.Pattern
-import kotlin.math.floor
-
-fun log(message: String)
-{
-    println(message)
-}
+import de.jagenka.commands.configPropertyTransformers
 
 object Util
 {
@@ -135,80 +112,122 @@ object Util
     fun getIntTextColor(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
     fun getTextColor(r: Int, g: Int, b: Int) = TextColor.fromRgb(getIntTextColor(r, g, b))
 
-    val coordinatePattern =
-        Pattern.compile("\\((x\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(z\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(p\\s*=\\s*)?(\\d*\\.?\\d+)\\)")
+    // TODO: extract this to different file
 
-    fun getCoordinateFromString(str: String): Coordinates?
-    {
-        val matcher = coordinatePattern.matcher(str)
-        if (!matcher.matches())
-        {
-            return null
-        }
-
-        try
-        {
-            val coordinate = Coordinates(
-                matcher.group(2).toDouble(),
-                matcher.group(4).toDouble(),
-                matcher.group(6).toDouble(),
-                matcher.group(8).toFloat(),
-                matcher.group(10).toFloat()
+    val complexConfigOptionPatterns = listOf<ConfigOptionPattern<*>>(
+        ConfigOptionPattern(
+            Coordinates::class.java,
+            Pattern.compile("(Coord)?\\((x\\s*=\\s*)?(\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d+)\\s*,\\s*(z\\s*=\\s*)?(\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(p\\s*=\\s*)?(\\d*\\.?\\d+)\\)"),
+            listOf<Pair<Int, Class<*>>>(
+                3 to Int::class.java,
+                5 to Int::class.java,
+                7 to Int::class.java,
+                9 to Float::class.java,
+                11 to Float::class.java
             )
-            return coordinate
-        } catch (e: NumberFormatException)
-        {
-            return null
-        }
-    }
-
-    fun getBlockPosFromString(str: String): BlockPos?
-    {
-        val matcher = coordinatePattern.matcher(str)
-        if (!matcher.matches())
-        {
-            return null
-        }
-
-        try
-        {
-            return BlockPos(
-                matcher.group(2).toInt(),
-                matcher.group(4).toInt(),
-                matcher.group(6).toInt()
+        ),
+        ConfigOptionPattern(
+            Coordinates::class.java,
+            Pattern.compile("\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d*\\.?\\d+)\\s+(\\d*\\.?\\d+)\\s*"),
+            listOf<Pair<Int, Class<*>>>(
+                3 to Int::class.java,
+                1 to Int::class.java,
+                2 to Int::class.java,
+                3 to Float::class.java,
+                4 to Float::class.java
             )
-        } catch (e: NumberFormatException)
-        {
-            return null
+        ),
+        ConfigOptionPattern(
+            BlockPos::class.java,
+            Pattern.compile("(Coord)?\\((x\\s*=\\s*)?(\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d+)\\s*,\\s*(z\\s*=\\s*)?(\\d+)\\s*\\)"),
+            listOf<Pair<Int, Class<*>>>(
+                3 to Int::class.java,
+                5 to Int::class.java,
+                7 to Int::class.java,
+            )
+        ),
+        ConfigOptionPattern(
+            BlockPos::class.java,
+            Pattern.compile("\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d*\\.?\\d+)\\s+(\\d*\\.?\\d+)\\s*"),
+            listOf<Pair<Int, Class<*>>>(
+                1 to Int::class.java,
+                2 to Int::class.java,
+                3 to Int::class.java,
+            )
+        )
+    )
+
+    data class ConfigOptionPattern<T>(val returnType: Class<T>, val pattern: Pattern, val parameters: List<Pair<Int, Class<*>>>)
+
+    fun <T> getComplexConfigOptionFromString(str: String, desiredType: Class<T>): T?
+    {
+        complexConfigOptionPatterns.forEach { configOptionPattern ->
+            val matcher = configOptionPattern.pattern.matcher(str)
+            if (!matcher.matches())
+            {
+                return@forEach
+            }
+
+            val stringParametersToType = configOptionPattern.parameters.map { matcher.group(it.first) to it.second }
+
+            val parameters: List<*> = stringParametersToType.map { (str, type) ->
+                val simpleTransformer = configPropertyTransformers.entries.find { it.key == type }?.value ?: return@getComplexConfigOptionFromString null
+                return@map simpleTransformer.fromString(str, null, null)
+            }
+
+            if(parameters.any { it == null }) {
+                return@getComplexConfigOptionFromString null
+            }
+
+            val constructor = configOptionPattern.returnType::class.java.getDeclaredConstructor(*(configOptionPattern.parameters.map { it.second }.toTypedArray())) ?: return@getComplexConfigOptionFromString null
+
+            val newObject = constructor.newInstance(*parameters.toTypedArray()) as T
+
+            return@getComplexConfigOptionFromString newObject
         }
+
+        return null
     }
 
-    fun getCoordinateListFromString(str: String): List<Coordinates>?
+    fun <T> getConfigOptionListFromString(str: String, type: Class<T>): List<T>?
     {
-        val individualStrings = str.split(";")
+        val individualStrings = str.split(if(str.contains(";")) ";" else " ")
 
         try
         {
-            return individualStrings.map { getCoordinateFromString(it) }.requireNoNulls().toList()
-        } catch (e: IllegalArgumentException)
-        {
-            return null
+            return individualStrings.map { getComplexConfigOptionFromString(it, type) }.requireNoNulls().toList()
         }
-    }
-
-    fun getBlockPosListFromString(str: String): List<BlockPos>?
-    {
-        val individualStrings = str.split(";")
-
-        try
-        {
-            return individualStrings.map { getBlockPosFromString(it) }.requireNoNulls().toList()
-        } catch (e: IllegalArgumentException)
+        catch (e: IllegalArgumentException)
         {
             return null
         }
     }
 }
+
+import de.jagenka.config.Config
+import de.jagenka.config.Config.isEnabled
+import de.jagenka.managers.DisplayManager
+import de.jagenka.managers.Platform
+import de.jagenka.managers.PlayerManager
+import kotlinx.serialization.Serializable
+import net.minecraft.block.Block
+import net.minecraft.block.Blocks
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.TextColor
+import net.minecraft.util.math.Quaternion
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3f
+import net.minecraft.world.Difficulty
+import net.minecraft.world.GameRules
+import java.util.regex.Pattern
+import kotlin.math.floor
+
+fun log(message: String)
+{
+    println(message)
+}
+
 
 data class BlockAtPos(val block: Block, val pos: BlockPos)
 

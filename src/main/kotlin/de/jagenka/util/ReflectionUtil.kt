@@ -47,10 +47,10 @@ fun setPropertyFromString(
         propertyField.isAccessible = true
 
         val currentSection: Any = sectionField.get(Config.configEntry)
-//        val currentValue = propertyField.get(currentSection)
+        val currentValue = propertyField.get(currentSection)
 
         val transformer = getConfigPropertyTransformer(propertyField.type, transformers) ?: return false
-        val newValueObject = transformer.fromString(newValue, source)
+        val newValueObject = transformer.fromString(newValue, source, currentValue)
 
         if(newValueObject != null) {
             propertyField.set(currentSection, newValueObject)
