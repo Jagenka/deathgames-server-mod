@@ -36,14 +36,14 @@ object GPS
         }
     }
 
-    private val model = PlyImporter.parsePlyFromFile("C:/Programming Projects/deathgames-server-mod/src/main/resources/models/Squirtle.ply")
+    private val model = PlyImporter.parsePlyFromFile("C:/Programming Projects/deathgames-server-mod/src/main/resources/models/festung.ply")
 
     fun renderCube()
     {
         ifServerLoaded { server ->
             PlayerManager.getOnlinePlayers().forEach { player ->
                 val lookDirection = player.rotationVector.normalize()
-                val offset = Vec3d(lookDirection.x, 0.0, lookDirection.z).multiply(3.0)
+                val offset = Vec3d(0.0, -15.0, 0.0).multiply(1.0)
                 val finalStructure = VertexStructure()
                 if (model.isEmpty()) return@ifServerLoaded
                 model.getSet().forEach { edge ->
@@ -64,11 +64,10 @@ object GPS
         vertices.add(iterationVector)
         var steps = (magnitude / vertexSpacing).floor() + 1
         val stepLength = magnitude / steps
-        while (steps >= 1)
+        repeat(steps)
         {
             iterationVector = iterationVector.add(direction.multiply(stepLength))
             vertices.add(iterationVector)
-            steps--
         }
         return vertices
     }
@@ -76,7 +75,7 @@ object GPS
     private fun drawParticlesFromVertexStructure(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, edges: VertexStructure)
     {
         edges.getSet().forEach { edge ->
-            drawMultipleParticles(server, player, particle, generateLine(edge.point1, edge.point2, 0.1))
+            drawMultipleParticles(server, player, particle, generateLine(edge.point1, edge.point2, 1.0))
         }
     }
 
