@@ -193,5 +193,18 @@
         "visibilityRange": 10.0,
         "affectedRange": 1.5,
         "triggerDuration": 120
+    },
+    "displayedText": {
+        "startTitle": "Good Luck",
+        "startSubtitle": "and have fun",
+        "endTitle": "Game Over",
+        "winnerSingular": "Winner",
+        "winnerPlural": "Winners",
+        "forceRespawned": "You have been force-respawned.",
+        "shutdown": "Shutdown! %deceased was on a kill streak of %killStreak.",
+        "receiveMoneyPlayer": "You receive %amount.",
+        "receiveMoneyTeam": "Your team receives %amount.",
+        "currency": "$%amount",
+        "notEnoughMoney": "You do not have the required %amount."
     }
 }

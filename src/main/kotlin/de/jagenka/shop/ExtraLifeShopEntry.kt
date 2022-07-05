@@ -3,6 +3,7 @@ package de.jagenka.shop
 import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.KillManager
+import de.jagenka.managers.MoneyManager.getCurrencyString
 import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
@@ -15,7 +16,7 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
     override fun getPrice(player: ServerPlayerEntity): Int = price
 
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack = displayItemStack.copy().setCustomName(
-        Text.of("${Shop.SHOP_UNIT}$price: $name").getWithStyle(
+        Text.of("${getCurrencyString(price)}: $name").getWithStyle(
             Style.EMPTY.withColor(
                 if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
                 else Util.getTextColor(255, 255, 255)
@@ -32,7 +33,7 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
             return true
         } else
         {
-            player.sendPrivateMessage("You do not have the required ${Shop.SHOP_UNIT}$price")
+            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(price))
         }
         return false
     }

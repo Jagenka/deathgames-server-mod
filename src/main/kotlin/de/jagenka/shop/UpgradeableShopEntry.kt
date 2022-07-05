@@ -2,6 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
+import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.entity.EquipmentSlot
@@ -52,7 +53,7 @@ class UpgradeableShopEntry(
         if (level !in prices.indices) return ItemStack.EMPTY
         val price = prices[level]
         return boughtItemStacks[level][0].copy().setCustomName(
-            Text.of("${Shop.SHOP_UNIT}$price: $name").getWithStyle(
+            Text.of("${MoneyManager.getCurrencyString(price)}: $name").getWithStyle(
                 Style.EMPTY.withColor(
                     if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
                     else Util.getTextColor(255, 255, 255)
@@ -100,7 +101,7 @@ class UpgradeableShopEntry(
             return true
         } else
         {
-            player.sendPrivateMessage("You do not have the required ${Shop.SHOP_UNIT}${prices[nextLevel]}")
+            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(prices[nextLevel]))
         }
         return false
     }

@@ -17,6 +17,7 @@ import de.jagenka.timer.seconds
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.world.GameMode
+import de.jagenka.config.Config.configEntry as config
 
 object KillManager
 {
@@ -44,7 +45,7 @@ object KillManager
         Timer.schedule({
             if (PlayerManager.requestRespawn(deceased))
             {
-                deceased.sendPrivateMessage("You have been force-respawned.")
+                deceased.sendPrivateMessage(config.displayedText.forceRespawned)
             }
         }, 5.seconds())
 
@@ -59,10 +60,7 @@ object KillManager
         val killStreak = getKillStreak(playerName)
         if (killStreak >= 3)
         {
-            val shutdownText = Text.literal("Shutdown! ")
-            shutdownText.append(DisplayManager.getFormattedPlayerName(playerName))
-            shutdownText.append(Text.of(" was on a kill streak of $killStreak."))
-            DisplayManager.sendChatMessage(shutdownText)
+            DisplayManager.sendChatMessage(getShutdownText(playerName, killStreak))
         }
 
         resetKillStreak(deceased)
@@ -71,6 +69,21 @@ object KillManager
         DisplayManager.updateKillStreakDisplay()
 
         InactivePlayersTask.resetForPlayer(playerName)
+    }
+
+    private fun getShutdownText(deceasedName: String, killStreak: Int): Text
+    {
+        val text = Text.literal("")
+
+        val configString = config.displayedText.shutdown
+        configString.split("%deceased").forEach { str ->
+            text.append(Text.literal(str.replace("%killStreak", killStreak.toString())))
+            if (!configString.endsWith(str))
+            {
+                text.append(DisplayManager.getFormattedPlayerName(deceasedName))
+            }
+        }
+        return text
     }
 
     @JvmStatic

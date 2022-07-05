@@ -18,7 +18,8 @@ class ConfigEntry(
     @Section("money") val money: MoneyConfigEntry = MoneyConfigEntry(),
     @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
     @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
-    @Section("traps") val traps: TrapConfigEntry = TrapConfigEntry()
+    @Section("traps") val traps: TrapConfigEntry = TrapConfigEntry(),
+    @Section("displayedText") val displayedText: DisplayedTextConfigEntry = DisplayedTextConfigEntry()
 )
 
 @Serializable
@@ -90,4 +91,30 @@ class TrapConfigEntry(
     var visibilityRange: Double = 10.0,
     var affectedRange: Double = 1.5,
     var triggerDuration: Int = 6.seconds()
+)
+
+@Serializable
+class DisplayedTextConfigEntry(
+    var startTitle: String = "Good Luck",
+    var startSubtitle: String = "and have fun",
+    var endTitle: String = "Game Over",
+    var winnerSingular: String = "Winner",
+    var winnerPlural: String = "Winners",
+    var forceRespawned: String = "You have been force-respawned.",
+    var shutdown: String = "Shutdown! %deceased was on a kill streak of %killStreak.",
+    var receiveMoneyPlayer: String = "You receive %amount.",
+    var receiveMoneyTeam: String = "Your team receives %amount.",
+    var currency: String = "$%amount",
+    var notEnoughMoney: String = "You do not have the required %amount.",
+    var shopWindowTitle: String = "SHOP",
+    var shopEnteredTitle: String = "Welcome to the shop!",
+    var shopEnteredSubtitle: String = "Press F to pay money.",
+    var shopClosedTitle: String = "Shop's closed!",
+    var shopClosedSubtitle: String = "a K/D change might help",
+    var shopTpOut: String = "You will be teleported out in %seconds seconds.",
+    var refundItemText: String = "Refund %item for %amount",
+    var bonusInactive: String = "Bonus Money Platform: Spawning in %timesec",
+    var bonusInactiveWithName: String = "Bonus Money Platform: %name in %timesec",
+    var bonusActive: String = "Bonus Money Platform: Active for another %timesec",
+    var bonusActiveWithName: String = "Bonus Money Platform: %name for another %timesec"
 )

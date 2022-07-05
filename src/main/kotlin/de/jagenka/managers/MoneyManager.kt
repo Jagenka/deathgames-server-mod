@@ -6,11 +6,11 @@ import de.jagenka.managers.MoneyManager.getMoney
 import de.jagenka.managers.MoneyManager.moneyMode
 import de.jagenka.managers.MoneyManager.refundMoney
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
 import net.minecraft.server.network.ServerPlayerEntity
+import de.jagenka.config.Config.configEntry as config
 
 object MoneyManager
 {
@@ -96,17 +96,19 @@ object MoneyManager
             Mode.PLAYER ->
             {
                 val killStreakAmount = KillManager.getKillStreak(deceased.name.string)
-                addMoney(attacker.name.string, Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount)
+                val amount = Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount
+                addMoney(attacker.name.string, amount)
 //                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.sendPrivateMessage("You receive ${Shop.SHOP_UNIT}${Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount}.")
+                attacker.sendPrivateMessage(config.displayedText.receiveMoneyPlayer.replace("%amount", getCurrencyString(amount)))
             }
             Mode.TEAM ->
             {
                 val killStreakAmount = KillManager.getKillStreak(deceased.name.string)
-                addMoney(attacker.getDGTeam(), Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount)
+                val amount = Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount
+                addMoney(attacker.getDGTeam(), amount)
 //                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.getDGTeam()?.getOnlinePlayers()
-                    ?.forEach { it.sendPrivateMessage("Your team receives ${Shop.SHOP_UNIT}${Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount}.") }
+                    ?.forEach { it.sendPrivateMessage(config.displayedText.receiveMoneyTeam.replace("%amount", getCurrencyString(amount))) }
             }
         }
 
@@ -118,6 +120,8 @@ object MoneyManager
         playerMoney.clear()
         teamMoney.clear()
     }
+
+    fun getCurrencyString(amount: Int) = config.displayedText.currency.replace("%amount", amount.toString())
 }
 
 fun ServerPlayerEntity.getDGMoney(): Int

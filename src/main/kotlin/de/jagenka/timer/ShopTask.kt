@@ -17,6 +17,7 @@ import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
+import de.jagenka.config.Config.configEntry as config
 
 object ShopTask : TimerTask
 {
@@ -47,7 +48,12 @@ object ShopTask : TimerTask
                 {
                     lastPosOutOfShop[playerName]?.let {
                         serverPlayerEntity.teleport(it.pos, it.yaw, it.pitch)
-                        DisplayManager.sendTitleMessage(serverPlayerEntity, Text.literal("Shop's closed!"), Text.literal("a K/D change might help"), 3.seconds())
+                        DisplayManager.sendTitleMessage(
+                            serverPlayerEntity,
+                            Text.literal(config.displayedText.shopClosedTitle),
+                            Text.literal(config.displayedText.shopClosedSubtitle),
+                            3.seconds()
+                        )
                     }
                     return@forEach
                 }
@@ -59,7 +65,12 @@ object ShopTask : TimerTask
                     currentlyInShop.add(playerName)
                     timeInShop[playerName] = 0
 
-                    DisplayManager.sendTitleMessage(serverPlayerEntity, Text.of("Welcome to the shop!"), Text.of("Press F to pay money."), 3.seconds())
+                    DisplayManager.sendTitleMessage(
+                        serverPlayerEntity,
+                        Text.of(config.displayedText.shopEnteredTitle),
+                        Text.of(config.displayedText.shopEnteredSubtitle),
+                        3.seconds()
+                    )
                 }
 
                 timeInShop[playerName] = timeInShop.getValue(playerName) + 1
@@ -92,7 +103,7 @@ object ShopTask : TimerTask
     {
         if (secondsLeft > 0 && currentlyInShop.contains(player.name.string))
         {
-            player.sendPrivateMessage("You will be teleported out in $secondsLeft seconds.")
+            player.sendPrivateMessage(config.displayedText.shopTpOut.replace("%seconds", secondsLeft.toString()))
             Timer.schedule({ sendTpOutMessage(player, secondsLeft - 1) }, 1.seconds())
         }
     }

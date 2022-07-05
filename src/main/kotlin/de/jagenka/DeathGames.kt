@@ -25,6 +25,7 @@ import net.minecraft.text.Text.literal
 import net.minecraft.text.Texts
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
+import de.jagenka.config.Config.configEntry as config
 
 object DeathGames : DedicatedServerModInitializer
 {
@@ -116,7 +117,7 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         PlayerManager.getOnlinePlayers().forEach { player ->
-            DisplayManager.sendTitleMessage(player, Text.of("Good Luck"), Text.of("and have fun"), 5.seconds())
+            DisplayManager.sendTitleMessage(player, Text.of(config.displayedText.startTitle), Text.of(config.displayedText.startSubtitle), 5.seconds())
         }
 
         DisplayManager.showSidebar()
@@ -143,11 +144,13 @@ object DeathGames : DedicatedServerModInitializer
         winners.clear()
         if (winnerCount != 0)
         {
-            winners.add(Text.of("Winner${if (winnerCount != 1) "s" else ""}"))
+            winners.add(
+                Text.of(if (winnerCount != 1) config.displayedText.winnerPlural else config.displayedText.winnerSingular)
+            )
             winners.add(winnerPlayers)
         }
         PlayerManager.getOnlinePlayers().forEach {
-            DisplayManager.sendTitleMessage(it, Text.of("Game Over"), Texts.join(winners, Text.of(": ")), 5.seconds())
+            DisplayManager.sendTitleMessage(it, Text.of(config.displayedText.endTitle), Texts.join(winners, Text.of(": ")), 5.seconds())
         }
 
         if (winnerCount == 1)
