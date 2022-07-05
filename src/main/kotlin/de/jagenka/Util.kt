@@ -1,6 +1,24 @@
 package de.jagenka
 
 import de.jagenka.commands.configPropertyTransformers
+import de.jagenka.config.Config
+import de.jagenka.config.Config.isEnabled
+import de.jagenka.managers.DisplayManager
+import de.jagenka.managers.Platform
+import de.jagenka.managers.PlayerManager
+import kotlinx.serialization.Serializable
+import net.minecraft.block.Block
+import net.minecraft.block.Blocks
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.TextColor
+import net.minecraft.util.math.Quaternion
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3f
+import net.minecraft.world.Difficulty
+import net.minecraft.world.GameRules
+import java.util.regex.Pattern
+import kotlin.math.floor
 
 object Util
 {
@@ -203,25 +221,6 @@ object Util
         }
     }
 }
-
-import de.jagenka.config.Config
-import de.jagenka.config.Config.isEnabled
-import de.jagenka.managers.DisplayManager
-import de.jagenka.managers.Platform
-import de.jagenka.managers.PlayerManager
-import kotlinx.serialization.Serializable
-import net.minecraft.block.Block
-import net.minecraft.block.Blocks
-import net.minecraft.server.MinecraftServer
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.TextColor
-import net.minecraft.util.math.Quaternion
-import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3f
-import net.minecraft.world.Difficulty
-import net.minecraft.world.GameRules
-import java.util.regex.Pattern
-import kotlin.math.floor
 
 fun log(message: String)
 {
