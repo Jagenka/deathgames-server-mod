@@ -81,7 +81,7 @@
         },
         "shuffleInterval": 2400,
         "shuffleDelayAfterKill": 200,
-        "captureTimeNeeded": 10,
+        "captureTimeNeeded": 400,
         "captureEnabled": true
     },
     "bonus": {
@@ -158,7 +158,7 @@
         "refundPercent": 100
     },
     "misc": {
-        "revealTimePerPlayer": 2440,
+        "revealTimePerPlayer": 2400,
         "shopCloseTimeAfterReveal": 2400,
         "killStreakPenaltyCap": 10,
         "arenaBounds": {
