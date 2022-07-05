@@ -2,6 +2,7 @@ package de.jagenka.team
 
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
+import de.jagenka.util.I18n
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -51,7 +52,7 @@ object TeamSelectorUI
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of("SELECT TEAM")
+            override fun getDisplayName(): Text = Text.of(I18n.get("teamSelectWindowTitle"))
         }.let {
             serverPlayerEntity.openHandledScreen(it)
         }

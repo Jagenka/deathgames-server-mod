@@ -7,13 +7,11 @@ import de.jagenka.config.Config.shopCloseTimeAfterReveal
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.KillManager
 import de.jagenka.managers.PlayerManager
+import de.jagenka.util.I18n
 import net.minecraft.entity.boss.BossBar.Color.*
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
-import net.minecraft.text.Style
-import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
-import net.minecraft.util.Formatting
 
 object InactivePlayersTask : TimerTask
 {
@@ -41,23 +39,23 @@ object InactivePlayersTask : TimerTask
                         val fillAmount = time.toDouble() / personalRevealTime.toDouble()
                         if (fillAmount < 0.75)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Kill someone to prevent being revealed!"), GREEN, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer0")), GREEN, idSuffix = "reveal")
                         } else if (fillAmount < 1)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("You are about to be revealed..."), YELLOW, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer1")), YELLOW, idSuffix = "reveal")
                         }
                     } else if (time in personalRevealTime + 1..personalRevealTime + personalShopCloseTime)
                     {
                         val fillAmount = (time - personalRevealTime).toDouble() / personalShopCloseTime.toDouble()
                         if (fillAmount < 0.75)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("You are glowing!"), RED, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer2")), RED, idSuffix = "reveal")
                         } else if (fillAmount < 1)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Shop is about to close for you!"), PINK, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer3")), PINK, idSuffix = "reveal")
                         } else
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal("Shop's closed!"), PURPLE, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer4")), PURPLE, idSuffix = "reveal")
                         }
                     }
                 }
@@ -66,10 +64,12 @@ object InactivePlayersTask : TimerTask
             {
                 if (playerName !in highlightedPlayers)
                 {
-                    val base = literal("")
-                    base.append(Text.of(playerName).getWithStyle(Style.EMPTY.withColor(Formatting.byName(PlayerManager.getTeam(playerName)?.name?.lowercase())))[0])
-                    base.append(Text.of(" is now glowing!"))
-                    DisplayManager.sendChatMessage(base)
+                    DisplayManager.sendChatMessage(
+                        DisplayManager.getTextWithPlayersAndTeamsColored(
+                            I18n.get("nowGlowing", mapOf("playerName" to "%playerName")),
+                            mapOf("%playerName" to playerName)
+                        )
+                    )
                 }
 
                 highlightedPlayers.add(playerName)

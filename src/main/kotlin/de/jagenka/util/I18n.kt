@@ -12,8 +12,8 @@ object I18n {
     val locale: String
     val messages = HashMap<String, String>()
 
-    init {
-        var locale = Config.configEntry.general.locale
+    init { //TODO: init again after change
+        var locale = Config.configEntry.general.locale //TODO das wird zu bald geladen
 
         I18n::class.java.getResourceAsStream(messagesFilePath.format(locale)).use { stream ->
             if(locale.isBlank() || stream == null) {

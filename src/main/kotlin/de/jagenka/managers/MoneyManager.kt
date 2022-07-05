@@ -9,6 +9,7 @@ import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
+import de.jagenka.util.I18n
 import net.minecraft.server.network.ServerPlayerEntity
 import de.jagenka.config.Config.configEntry as config
 
@@ -99,7 +100,7 @@ object MoneyManager
                 val amount = Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount
                 addMoney(attacker.name.string, amount)
 //                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.sendPrivateMessage(config.displayedText.receiveMoneyPlayer.replace("%amount", getCurrencyString(amount)))
+                attacker.sendPrivateMessage(I18n.get("receiveMoneyPlayer", mapOf("amount" to getCurrencyString(amount))))
             }
             Mode.TEAM ->
             {
@@ -108,7 +109,7 @@ object MoneyManager
                 addMoney(attacker.getDGTeam(), amount)
 //                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.getDGTeam()?.getOnlinePlayers()
-                    ?.forEach { it.sendPrivateMessage(config.displayedText.receiveMoneyTeam.replace("%amount", getCurrencyString(amount))) }
+                    ?.forEach { it.sendPrivateMessage(I18n.get("receiveMoneyTeam", mapOf("amount" to getCurrencyString(amount)))) }
             }
         }
 

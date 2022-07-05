@@ -14,6 +14,7 @@ import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
+import de.jagenka.util.I18n
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.entity.Entity
@@ -25,7 +26,6 @@ import net.minecraft.text.Text.literal
 import net.minecraft.text.Texts
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
-import de.jagenka.config.Config.configEntry as config
 
 object DeathGames : DedicatedServerModInitializer
 {
@@ -117,7 +117,7 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         PlayerManager.getOnlinePlayers().forEach { player ->
-            DisplayManager.sendTitleMessage(player, Text.of(config.displayedText.startTitle), Text.of(config.displayedText.startSubtitle), 5.seconds())
+            DisplayManager.sendTitleMessage(player, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
 
         DisplayManager.showSidebar()
@@ -145,12 +145,12 @@ object DeathGames : DedicatedServerModInitializer
         if (winnerCount != 0)
         {
             winners.add(
-                Text.of(if (winnerCount != 1) config.displayedText.winnerPlural else config.displayedText.winnerSingular)
+                Text.of(if (winnerCount != 1) I18n.get("winnerPlural") else I18n.get("winnerSingular")) //TODO: change
             )
             winners.add(winnerPlayers)
         }
         PlayerManager.getOnlinePlayers().forEach {
-            DisplayManager.sendTitleMessage(it, Text.of(config.displayedText.endTitle), Texts.join(winners, Text.of(": ")), 5.seconds())
+            DisplayManager.sendTitleMessage(it, Text.of(I18n.get("endTitle")), Texts.join(winners, Text.of(": ")), 5.seconds())
         }
 
         if (winnerCount == 1)

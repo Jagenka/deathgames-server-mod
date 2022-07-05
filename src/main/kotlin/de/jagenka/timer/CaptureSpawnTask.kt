@@ -10,6 +10,8 @@ import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
+import de.jagenka.team.DGTeam
+import de.jagenka.util.I18n
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text.literal
@@ -42,21 +44,9 @@ object CaptureSpawnTask : TimerTask
                     {
                         val newTeam = teamsOnSpawn.find { it != null } ?: return@forEachSpawn // das sollte nie passieren
                         captureProgress[spawn] = 0
-                        val teamPreviouslyAssigned = SpawnManager.reassignSpawn(spawn, newTeam)
-                        val captureMessage = literal("")
-                        captureMessage.append(newTeam.getFormattedText())
-                        captureMessage.append(literal(" captured "))
+                        val oldTeam = SpawnManager.reassignSpawn(spawn, newTeam)
 
-                        if (teamPreviouslyAssigned != null)
-                        {
-                            captureMessage.append(teamPreviouslyAssigned.getFormattedText())
-                            captureMessage.append(literal("'s spawn!"))
-                        } else
-                        {
-                            captureMessage.append(literal("a spawn!"))
-                        }
-
-                        DisplayManager.sendChatMessage(captureMessage)
+                        sendCaptureMessage(oldTeam, newTeam)
 
                         playersOnSpawn.filter { it.getDGTeam() == newTeam }.forEach { StatManager.personalStats.gib(it.name.string).spawnsCaptured++ }
                     } else
@@ -80,12 +70,28 @@ object CaptureSpawnTask : TimerTask
         playersOnAnySpawn.forEach forEachPlayer@{ (playerOnSpawn, spawn) ->
             val progress = captureProgress.getValue(spawn)
             val fillAmount = progress.toFloat() / captureTimeNeeded.toFloat()
-            DisplayManager.setBossBarForPlayer(playerOnSpawn, fillAmount, text = literal("capture progress..."), color = BossBar.Color.BLUE, idSuffix = "capture")
+            DisplayManager.setBossBarForPlayer(playerOnSpawn, fillAmount, text = literal(I18n.get("captureProgress")), color = BossBar.Color.BLUE, idSuffix = "capture")
         }
 
         PlayerManager.getOnlinePlayers()
             .filter { player -> player !in playersOnAnySpawn.map { pair -> pair.first } }
             .forEach { player -> DisplayManager.removeBossBarForPlayer(player, idSuffix = "capture") }
+    }
+
+    fun sendCaptureMessage(oldTeam: DGTeam?, newTeam: DGTeam)
+    {
+        val replaceMap = mapOf("newTeam" to "%newTeam", "oldTeam" to "%oldTeam")
+
+        val baseString = if (oldTeam != null)
+        {
+            I18n.get("captureTeamSpawn", replaceMap)
+        } else
+        {
+            I18n.get("captureASpawn", replaceMap)
+        }
+        val mapThingie = mutableMapOf("%newTeam" to newTeam)
+        if(oldTeam != null) mapThingie["%oldTeam"] = oldTeam
+        DisplayManager.sendChatMessage(DisplayManager.getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapThingie))
     }
 
     override fun reset()

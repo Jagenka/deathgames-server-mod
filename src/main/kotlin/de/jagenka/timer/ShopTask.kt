@@ -10,6 +10,7 @@ import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.shop.Shop
+import de.jagenka.util.I18n
 import net.minecraft.block.Blocks
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
@@ -17,7 +18,6 @@ import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
-import de.jagenka.config.Config.configEntry as config
 
 object ShopTask : TimerTask
 {
@@ -50,8 +50,8 @@ object ShopTask : TimerTask
                         serverPlayerEntity.teleport(it.pos, it.yaw, it.pitch)
                         DisplayManager.sendTitleMessage(
                             serverPlayerEntity,
-                            Text.literal(config.displayedText.shopClosedTitle),
-                            Text.literal(config.displayedText.shopClosedSubtitle),
+                            Text.literal(I18n.get("shopClosedTitle")),
+                            Text.literal(I18n.get("shopClosedSubtitle")),
                             3.seconds()
                         )
                     }
@@ -67,8 +67,8 @@ object ShopTask : TimerTask
 
                     DisplayManager.sendTitleMessage(
                         serverPlayerEntity,
-                        Text.of(config.displayedText.shopEnteredTitle),
-                        Text.of(config.displayedText.shopEnteredSubtitle),
+                        Text.of(I18n.get("shopEnteredTitle")),
+                        Text.of(I18n.get("shopEnteredSubtitle")),
                         3.seconds()
                     )
                 }
@@ -103,7 +103,7 @@ object ShopTask : TimerTask
     {
         if (secondsLeft > 0 && currentlyInShop.contains(player.name.string))
         {
-            player.sendPrivateMessage(config.displayedText.shopTpOut.replace("%seconds", secondsLeft.toString()))
+            player.sendPrivateMessage(I18n.get("shopTpOut", mapOf("seconds" to secondsLeft)))
             Timer.schedule({ sendTpOutMessage(player, secondsLeft - 1) }, 1.seconds())
         }
     }

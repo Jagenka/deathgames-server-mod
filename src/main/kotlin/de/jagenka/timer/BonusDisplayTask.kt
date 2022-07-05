@@ -3,10 +3,10 @@ package de.jagenka.timer
 import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
+import de.jagenka.util.I18n
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import de.jagenka.config.Config.configEntry as config
 
 object BonusDisplayTask : TimerTask
 {
@@ -49,14 +49,14 @@ object BonusDisplayTask : TimerTask
 
     fun getInactiveString(name: String, timeToSpawn: Int): String
     {
-        val baseString = if (name.isEmpty()) config.displayedText.bonusInactive else config.displayedText.bonusInactiveWithName
-        return baseString.replace("%name", name).replace("%time", (timeToSpawn / DGUnit.SECONDS.factor).toString())
+        val replaceMap = mapOf<String, Any>("name" to name, "time" to timeToSpawn / DGUnit.SECONDS.factor)
+        return if (name.isEmpty()) I18n.get("bonusInactive", replaceMap) else I18n.get("bonusInactiveWithName", replaceMap)
     }
 
     fun getActiveString(name: String, timeToDespawn: Int): String
     {
-        val baseString = if (name.isEmpty()) config.displayedText.bonusActive else config.displayedText.bonusActiveWithName
-        return baseString.replace("%name", name).replace("%time", (timeToDespawn / DGUnit.SECONDS.factor).toString())
+        val replaceMap = mapOf<String, Any>("name" to name, "time" to timeToDespawn / DGUnit.SECONDS.factor)
+        return if (name.isEmpty()) I18n.get("bonusActive", replaceMap) else I18n.get("bonusActiveWithName", replaceMap)
     }
 
     override fun reset()

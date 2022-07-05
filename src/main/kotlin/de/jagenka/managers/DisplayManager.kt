@@ -4,6 +4,7 @@ package de.jagenka.managers
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.ticks
+import de.jagenka.util.I18n
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.network.message.MessageType
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
@@ -18,6 +19,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
+import java.util.regex.Pattern
 
 object DisplayManager
 {
@@ -28,12 +30,18 @@ object DisplayManager
     {
         ifServerLoaded { server ->
             if (!DisplayManager::sidebarObjective.isInitialized) sidebarObjective =
-                ScoreboardObjective(server.scoreboard, "sidebar", ScoreboardCriterion.DUMMY, Text.of("Respawns"), ScoreboardCriterion.RenderType.INTEGER)
+                ScoreboardObjective(
+                    server.scoreboard,
+                    "sidebar",
+                    ScoreboardCriterion.DUMMY,
+                    Text.of(I18n.get("respawns")),
+                    ScoreboardCriterion.RenderType.INTEGER
+                ) // TODO does not update on ingame locale change
             server.scoreboard.objectives.toList().forEach { server.scoreboard.removeObjective(it) }
             server.scoreboard.addScoreboardObjective(sidebarObjective)
 
             if (!DisplayManager::tabListObjective.isInitialized) tabListObjective =
-                ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of("Kill-streak"), ScoreboardCriterion.RenderType.INTEGER)
+                ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of(I18n.get("kill-streak")), ScoreboardCriterion.RenderType.INTEGER)
             server.scoreboard.addScoreboardObjective(tabListObjective)
             server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, tabListObjective)
         }
@@ -72,7 +80,8 @@ object DisplayManager
                 {
                     DGTeam.values().forEach { team ->
                         val lives = KillManager.getRespawns(team)
-                        if (lives != null && PlayerManager.isParticipating(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score = lives
+                        if (lives != null && PlayerManager.isParticipating(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score =
+                            lives
                         else server.scoreboard.resetPlayerScore(team.getPrettyName(), sidebarObjective)
                     }
                 }
@@ -171,13 +180,11 @@ object DisplayManager
     {
         if (team == null)
         {
-            sendChatMessage(Text.of("${player.name.string} wants to spectate."))
+            sendChatMessage(Text.of(I18n.get("playerLeaveTeam", mapOf("playerName" to player.name.string))))
         } else
         {
-            val base = Text.literal("")
-            base.append(Text.of("${player.name.string} joined Team "))
-            base.append(team.getFormattedText())
-            sendChatMessage(base)
+            val baseString = I18n.get("playerJoinTeam", mapOf("playerName" to player.name.string, "teamName" to "%teamName")) //TODO: geht das anders?
+            sendChatMessage(getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapOf("%teamName" to team)))
         }
     }
 
@@ -229,5 +236,44 @@ object DisplayManager
             return Text.of(playerName).getWithStyle(Style.EMPTY.withFormatting(Formatting.byName(team.name.lowercase())))[0]
         }
         return Text.of(playerName)
+    }
+
+    fun getTextWithPlayersAndTeamsColored(string: String, idToPlayer: Map<String, String> = emptyMap(), idToTeam: Map<String, DGTeam> = emptyMap()): Text
+    {
+        val textAndSubStringIndexRange = mutableListOf<Pair<Text, Pair<Int, Int>>>()
+
+        idToPlayer.forEach { (id, playerName) ->
+            val matcher = Pattern.compile(id).matcher(string)
+            while (matcher.find())
+            {
+                textAndSubStringIndexRange.add(
+                    getFormattedPlayerName(playerName) to (matcher.start() to matcher.end())
+                )
+            }
+        }
+
+        idToTeam.forEach { (id, team) ->
+            val matcher = Pattern.compile(id).matcher(string)
+            while (matcher.find())
+            {
+                textAndSubStringIndexRange.add(team.getFormattedText() to (matcher.start() to matcher.end()))
+            }
+        }
+
+        textAndSubStringIndexRange.sortBy { it.second.first }
+
+        val base = Text.literal("")
+
+        var currentIndex = 0
+        for (i in 0 until textAndSubStringIndexRange.size)
+        {
+            val currentEntry = textAndSubStringIndexRange[i]
+            base.append(Text.of(string.substring(currentIndex until currentEntry.second.first)))
+            base.append(currentEntry.first)
+            currentIndex = currentEntry.second.second
+        }
+        base.append(Text.of(string.substring(currentIndex until string.length)))
+
+        return base
     }
 }

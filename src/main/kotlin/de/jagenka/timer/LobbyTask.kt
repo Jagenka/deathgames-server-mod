@@ -4,6 +4,7 @@ import de.jagenka.DeathGames
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.team.TeamSelectorUI
+import de.jagenka.util.I18n
 import net.minecraft.text.Text
 
 object LobbyTask : TimerTask
@@ -28,7 +29,7 @@ object LobbyTask : TimerTask
             {
                 if (!DeathGames.currentlyStarting)
                 {
-                    DisplayManager.sendMessageToHotbar(Text.of("Press F to choose your team."))
+                    DisplayManager.sendMessageToHotbar(Text.of(I18n.get("openTeamUI")))
                 }
 
                 player.health = 20f //set max hearts

@@ -14,10 +14,10 @@ import de.jagenka.team.DGTeam
 import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
+import de.jagenka.util.I18n
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.world.GameMode
-import de.jagenka.config.Config.configEntry as config
 
 object KillManager
 {
@@ -45,7 +45,7 @@ object KillManager
         Timer.schedule({
             if (PlayerManager.requestRespawn(deceased))
             {
-                deceased.sendPrivateMessage(config.displayedText.forceRespawned)
+                deceased.sendPrivateMessage(I18n.get("forceRespawned"))
             }
         }, 5.seconds())
 
@@ -73,17 +73,8 @@ object KillManager
 
     private fun getShutdownText(deceasedName: String, killStreak: Int): Text
     {
-        val text = Text.literal("")
-
-        val configString = config.displayedText.shutdown
-        configString.split("%deceased").forEach { str ->
-            text.append(Text.literal(str.replace("%killStreak", killStreak.toString())))
-            if (!configString.endsWith(str))
-            {
-                text.append(DisplayManager.getFormattedPlayerName(deceasedName))
-            }
-        }
-        return text
+        val configString = I18n.get("shutdown", mapOf("killStreak" to killStreak, "deceased" to "%deceased")) //TODO kann man das ändern?
+        return DisplayManager.getTextWithPlayersAndTeamsColored(configString, idToPlayer = mapOf("%deceased" to deceasedName))
     }
 
     @JvmStatic

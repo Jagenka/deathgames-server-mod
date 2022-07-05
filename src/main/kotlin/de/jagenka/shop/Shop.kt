@@ -3,6 +3,7 @@ package de.jagenka.shop
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.managers.MoneyManager
+import de.jagenka.util.I18n
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -52,7 +53,7 @@ object Shop
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of(Config.configEntry.displayedText.shopWindowTitle)
+            override fun getDisplayName(): Text = Text.of(I18n.get("shopWindowTitle"))
         }.let {
             serverPlayerEntity.openHandledScreen(it)
         }
@@ -78,7 +79,7 @@ object Shop
 
     fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.any { it.contains(player.pos) }
 
-    fun getNotEnoughMoneyString(price: Int) = Config.configEntry.displayedText.notEnoughMoney.replace("%amount", MoneyManager.getCurrencyString(price))
+    fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
 }
 
 enum class UpgradeType

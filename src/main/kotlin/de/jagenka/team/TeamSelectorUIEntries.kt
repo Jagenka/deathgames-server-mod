@@ -9,12 +9,12 @@ import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import de.jagenka.team.TeamSelectorUI.notReadySpamProtection
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
+import de.jagenka.util.I18n
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Style
+import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
-import net.minecraft.util.Formatting
 
 object ReadyCheck
 {
@@ -49,18 +49,8 @@ class TeamUIEntry(override val team: DGTeam) : UIEntry
         get()
         {
             val teamSize = team.getPlayers().size
-
-            val suffix = literal(
-                " (${
-                    if (teamSize == 0) "Empty" else
-                    {
-                        "$teamSize Player${if (teamSize != 1) "s" else ""}"
-                    }
-                })"
-            )
-            return team.getColorBlock().asItem().defaultStack.setCustomName(
-                literal("Join ").append(team.getFormattedText()).append(suffix)
-            )
+            val baseString = I18n.get("teamSelectUIHover", mapOf("teamSize" to teamSize, "teamName" to "%teamName")) //TODO: geht das besser?
+            return team.getColorBlock().asItem().defaultStack.setCustomName(DisplayManager.getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapOf("%teamName" to team)))
         }
 
     override fun onClick(player: ServerPlayerEntity)
@@ -75,7 +65,7 @@ class TeamUIEntry(override val team: DGTeam) : UIEntry
 class SpectatorUIEntry : UIEntry
 {
     override val displayItemStack: ItemStack
-        get() = ItemStack(Items.ENDER_EYE).setCustomName(literal("Spectator"))
+        get() = ItemStack(Items.ENDER_EYE).setCustomName(Text.of(I18n.get("spectator")))
 
     override fun onClick(player: ServerPlayerEntity)
     {
@@ -93,10 +83,10 @@ class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
         {
             return if (ReadyCheck.isReady(player.name.string))
             {
-                ItemStack(Items.LIME_DYE).setCustomName(literal("READY"))
+                ItemStack(Items.LIME_DYE).setCustomName(literal(I18n.get("ready")))
             } else
             {
-                ItemStack(Items.RED_DYE).setCustomName(literal("Not Ready"))
+                ItemStack(Items.RED_DYE).setCustomName(literal(I18n.get("notReady")))
             }
         }
 
@@ -106,11 +96,11 @@ class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
         if (ReadyCheck.isReady(playerName))
         {
             ReadyCheck.makeUnready(playerName)
-            player.sendPrivateMessage("You are no longer ready.")
+            player.sendPrivateMessage(I18n.get("noLongerReady"))
         } else
         {
             ReadyCheck.makeReady(playerName)
-            player.sendPrivateMessage("You are now ready.")
+            player.sendPrivateMessage(I18n.get("nowReady"))
         }
     }
 }
@@ -118,7 +108,7 @@ class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
 class StartGameUIEntry : UIEntry
 {
     override val displayItemStack: ItemStack
-        get() = ItemStack(Items.AXOLOTL_BUCKET).setCustomName(literal("Start Game"))
+        get() = ItemStack(Items.AXOLOTL_BUCKET).setCustomName(literal(I18n.get("startGame")))
 
     override fun onClick(player: ServerPlayerEntity)
     {
@@ -133,23 +123,26 @@ class StartGameUIEntry : UIEntry
             notReadySpamProtection = true
             Timer.schedule({ notReadySpamProtection = false }, 1.seconds())
 
-            val notReadyText = literal("")
-            whoIsNotReady.forEachIndexed { index, playerName ->
-                val team = PlayerManager.getTeam(playerName)
+            var whoIsNotReadyString = ""
+            repeat(whoIsNotReady.size) { index ->
                 if (index != 0)
                 {
-                    if (index == whoIsNotReady.lastIndex)
-                    {
-                        notReadyText.append(" and ")
-                    } else
-                    {
-                        notReadyText.append(", ")
-                    }
+                    whoIsNotReadyString +=
+                        if (index == whoIsNotReady.lastIndex)
+                        {
+                            " ${I18n.get("and")} "
+                        } else
+                        {
+                            ", "
+                        }
                 }
-                notReadyText.append(literal(playerName).getWithStyle(Style.EMPTY.withFormatting(Formatting.byName(team?.name?.lowercase() ?: "white")))[0])
+                whoIsNotReadyString += "%playerName$index"
             }
 
-            DisplayManager.sendChatMessage(literal("Can't start game! Not ready: ").append(notReadyText))
+            val notReadyString = I18n.get("cantStartGame", mapOf("players" to whoIsNotReadyString)) //TODO: besser?
+            val idToPlayer = whoIsNotReady.mapIndexed { index, playerName -> index to playerName }.associate { (index, playerName) -> "%playerName$index" to playerName }
+            println(idToPlayer)
+            DisplayManager.sendChatMessage(DisplayManager.getTextWithPlayersAndTeamsColored(notReadyString, idToPlayer = idToPlayer))
         }
     }
 }

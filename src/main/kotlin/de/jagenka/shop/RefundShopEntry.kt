@@ -5,6 +5,7 @@ import de.jagenka.config.Config
 import de.jagenka.floor
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.deductDGMoney
+import de.jagenka.util.I18n
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
@@ -22,9 +23,7 @@ class RefundShopEntry(private val shopEntryToRefund: ShopEntry) : ShopEntry
         return itemStackToDisplay
             .setCustomName(//"Refund ${shopEntryToRefund.getDisplayName()} for ${MoneyManager.getCurrencyString(getRefundAmount(player))}"
                 Text.of(
-                    Config.configEntry.displayedText.refundItemText
-                        .replace("%item", shopEntryToRefund.getDisplayName())
-                        .replace("%amount", MoneyManager.getCurrencyString(getRefundAmount(player)))
+                    I18n.get("refundItemText", mapOf("item" to shopEntryToRefund.getDisplayName(), "amount" to MoneyManager.getCurrencyString(getRefundAmount(player))))
                 ).getWithStyle(
                     Style.EMPTY.withColor(
                         Util.getTextColor(255, 255, 255)
