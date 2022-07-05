@@ -64,7 +64,7 @@ object DisplayManager
                 {
                     PlayerManager.getPlayers().forEach { playerName ->
                         val lives = KillManager.getRespawns(playerName)
-                        if (lives != null && PlayerManager.isInGame(playerName) && lives >= 0) server.scoreboard.getPlayerScore(playerName, sidebarObjective).score = lives
+                        if (lives != null && PlayerManager.isParticipating(playerName) && lives >= 0) server.scoreboard.getPlayerScore(playerName, sidebarObjective).score = lives
                         else server.scoreboard.resetPlayerScore(playerName, sidebarObjective)
                     }
                 }
@@ -72,7 +72,7 @@ object DisplayManager
                 {
                     DGTeam.values().forEach { team ->
                         val lives = KillManager.getRespawns(team)
-                        if (lives != null && PlayerManager.isInGame(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score = lives
+                        if (lives != null && PlayerManager.isParticipating(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score = lives
                         else server.scoreboard.resetPlayerScore(team.getPrettyName(), sidebarObjective)
                     }
                 }

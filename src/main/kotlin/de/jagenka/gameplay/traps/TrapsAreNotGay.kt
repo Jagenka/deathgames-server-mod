@@ -6,7 +6,7 @@ import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
-import de.jagenka.managers.PlayerManager.getOnlineInGamePlayersAround
+import de.jagenka.managers.PlayerManager.getOnlineParticipatingPlayersAround
 import de.jagenka.managers.PlayerManager.getOnlinePlayersAround
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
@@ -111,8 +111,8 @@ object TrapsAreNotGay
     {
         val gayTriggerSpectator = getOnlinePlayersAround(it.pos, it.gaynessTriggerVisibleRange)//it.pos.getOnlinePlayersInRange(it.gaynessTriggerVisibleRange)
         val gayPrepareSpectator = getOnlinePlayersAround(it.pos, it.gaynessVisibilityRange)//it.pos.getOnlinePlayersInRange(it.gaynessVisibilityRange)
-        val affectedPlayers = getOnlineInGamePlayersAround(it.pos, it.affectedGayRange)//it.pos.getInGamePlayersInRange(it.affectedGayRange)
-        val triggered = getOnlineInGamePlayersAround(it.pos, it.gaynessRange).isNotEmpty()//it.pos.getInGamePlayersInRange(it.gaynessRange).isNotEmpty()
+        val affectedPlayers = getOnlineParticipatingPlayersAround(it.pos, it.affectedGayRange)//it.pos.getInGamePlayersInRange(it.affectedGayRange)
+        val triggered = getOnlineParticipatingPlayersAround(it.pos, it.gaynessRange).isNotEmpty()//it.pos.getInGamePlayersInRange(it.gaynessRange).isNotEmpty()
         ifServerLoaded { server ->
             if (it.getAge() < it.setupTime)
             {

@@ -9,7 +9,7 @@ import net.minecraft.world.GameMode
 
 object GameOverTask : TimerTask
 {
-    private val inGameTeams = mutableSetOf<DGTeam>()
+    private val participatingTeams = mutableSetOf<DGTeam>()
 
     private var gameEnded = false
 
@@ -27,18 +27,18 @@ object GameOverTask : TimerTask
 
         if (gameEnded) return
 
-        val onlineInGameTeams = PlayerManager.getOnlineInGameTeams()
-        onlineInGameTeams.toList().forEach { if (it !in inGameTeams) inGameTeams.add(it) }
+        val onlineParticipatingTeams = PlayerManager.getOnlineParticipatingTeams()
+        onlineParticipatingTeams.toList().forEach { if (it !in participatingTeams) participatingTeams.add(it) }
 
-        inGameTeams.toList().forEach {
-            if (it !in onlineInGameTeams)
+        participatingTeams.toList().forEach {
+            if (it !in onlineParticipatingTeams)
             {
                 handleTeamGameOver(it)
-                inGameTeams.remove(it)
+                participatingTeams.remove(it)
             }
         }
 
-        if (onlineInGameTeams.size <= 1)
+        if (onlineParticipatingTeams.size <= 1)
         {
             DeathGames.stopGame()
             gameEnded = true
@@ -47,7 +47,7 @@ object GameOverTask : TimerTask
 
     fun handleTeamGameOver(team: DGTeam)
     {
-        if (team !in PlayerManager.getInGameTeams())
+        if (team !in PlayerManager.getParticipatingTeams())
         {
             val prefix = literal("Game Over for Team ")
             val teamText = team.getFormattedText()
@@ -59,7 +59,7 @@ object GameOverTask : TimerTask
 
     override fun reset()
     {
-        inGameTeams.clear()
+        participatingTeams.clear()
         gameEnded = false
     }
 }

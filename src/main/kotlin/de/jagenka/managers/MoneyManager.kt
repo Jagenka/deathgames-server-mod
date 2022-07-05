@@ -35,10 +35,10 @@ object MoneyManager
             }
             Mode.TEAM ->
             {
-                PlayerManager.getInGameTeams().forEach { inGameTeam ->
-                    val teamSize = inGameTeam.getPlayers().size
-                    setMoney(inGameTeam, teamSize * Config.startMoneyPerPlayer)
-                    inGameTeam.getPlayers().forEach { StatManager.personalStats.gib(it).moneyEarned += teamSize * Config.startMoneyPerPlayer }
+                PlayerManager.getParticipatingTeams().forEach { participatingTeam ->
+                    val teamSize = participatingTeam.getPlayers().size
+                    setMoney(participatingTeam, teamSize * Config.startMoneyPerPlayer)
+                    participatingTeam.getPlayers().forEach { StatManager.personalStats.gib(it).moneyEarned += teamSize * Config.startMoneyPerPlayer }
                 }
             }
         }

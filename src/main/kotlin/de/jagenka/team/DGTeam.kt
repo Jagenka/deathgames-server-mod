@@ -2,7 +2,7 @@ package de.jagenka.team
 
 import de.jagenka.isSame
 import de.jagenka.managers.PlayerManager
-import de.jagenka.managers.PlayerManager.isInGame
+import de.jagenka.managers.PlayerManager.isParticipating
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.text.Style
@@ -38,7 +38,7 @@ enum class DGTeam
 
     fun getOnlinePlayers() = PlayerManager.getOnlinePlayersInTeam(this)
 
-    fun getOnlineInGamePlayers() = getOnlinePlayers().filter { it.isInGame() }
+    fun getOnlineParticipatingPlayers() = getOnlinePlayers().filter { it.isParticipating() }
 
     fun getPrettyName(): String
     {
