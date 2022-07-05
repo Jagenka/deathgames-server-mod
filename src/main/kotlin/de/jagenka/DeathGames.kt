@@ -7,7 +7,7 @@ import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.managers.PlayerManager.makeInGame
+import de.jagenka.managers.PlayerManager.makeParticipating
 import de.jagenka.managers.SpawnManager.getSpawnCoordinates
 import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
@@ -96,7 +96,7 @@ object DeathGames : DedicatedServerModInitializer
             it.inventory.clear()
             it.health = 20f //set max hearts
             it.hungerManager.add(20, 1f) //set max food and saturation
-            it.makeInGame()
+            it.makeParticipating()
             it.changeGameMode(GameMode.ADVENTURE)
         }
 
@@ -134,11 +134,11 @@ object DeathGames : DedicatedServerModInitializer
         currentlyEnding = true
 
         val winners = mutableListOf<Text>()
-        val onlineInGameTeams = PlayerManager.getOnlineInGameTeams()
-        onlineInGameTeams.forEach { team ->
+        val onlineParticipatingTeams = PlayerManager.getOnlineParticipatingTeams()
+        onlineParticipatingTeams.forEach { team ->
             winners.add(team.getFormattedText())
         }
-        val winnerCount = onlineInGameTeams.count()
+        val winnerCount = onlineParticipatingTeams.count()
         val winnerPlayers = Texts.join(winners, Text.of(", "))
         winners.clear()
         if (winnerCount != 0)
@@ -152,7 +152,7 @@ object DeathGames : DedicatedServerModInitializer
 
         if (winnerCount == 1)
         {
-            StatManager.gameStats.winner = onlineInGameTeams.getOrNull(0)
+            StatManager.gameStats.winner = onlineParticipatingTeams.getOrNull(0)
         }
 
         DisplayManager.resetBossBars()
@@ -184,7 +184,7 @@ object DeathGames : DedicatedServerModInitializer
 
             SpawnManager.resetSpawnColoring()
 
-            PlayerManager.clearInGameStatusForEveryone()
+            PlayerManager.clearParticipatingStatusForEveryone()
             running = false
             currentlyEnding = false
         }, 10.seconds())

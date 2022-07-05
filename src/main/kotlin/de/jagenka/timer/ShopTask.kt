@@ -41,7 +41,7 @@ object ShopTask : TimerTask
 
             if (PlayerManager.isCurrentlyDead(playerName)) return@forEach
 
-            if (PlayerManager.isInGame(playerName) && Shop.isInShopBounds(serverPlayerEntity))
+            if (PlayerManager.isParticipating(playerName) && Shop.isInShopBounds(serverPlayerEntity))
             {
                 if (InactivePlayersTask.hasShopClosed(playerName))
                 {

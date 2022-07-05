@@ -14,7 +14,7 @@ object KeepInBoundsTask : TimerTask
 
     override fun run()
     {
-        PlayerManager.getOnlineInGamePlayers().forEach { player ->
+        PlayerManager.getOnlineParticipatingPlayers().forEach { player ->
             if (!Config.arenaBounds.contains(player.pos))
             {
                 player.addStatusEffect(StatusEffectInstance(StatusEffects.WITHER, 1.seconds(), 9))

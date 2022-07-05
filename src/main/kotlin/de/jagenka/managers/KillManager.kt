@@ -7,7 +7,7 @@ import de.jagenka.gameplay.traps.TrapsAreNotGay
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.managers.PlayerManager.makeInGame
+import de.jagenka.managers.PlayerManager.makeParticipating
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
@@ -179,8 +179,8 @@ object KillManager
     {
         getRespawns(team)?.let { if (it < 1) return } ?: return
 
-        team.getOnlinePlayers().filter { !PlayerManager.isInGame(it.name.string) }.randomOrNull()?.let { player ->
-            player.makeInGame()
+        team.getOnlinePlayers().filter { !PlayerManager.isParticipating(it.name.string) }.randomOrNull()?.let { player ->
+            player.makeParticipating()
             player.changeGameMode(GameMode.ADVENTURE)
             SpawnManager.teleportPlayerToSpawn(player)
             removeOneRespawn(player)

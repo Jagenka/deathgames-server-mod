@@ -23,7 +23,7 @@ object MoneyTask : TimerTask
     {
         if (currentlyEnding) return
 
-        PlayerManager.getInGamePlayers().forEach { playerName ->
+        PlayerManager.getParticipatingPlayers().forEach { playerName ->
             val playerTimer = moneyTimer.getValue(playerName)
 
             if (playerTimer >= moneyInterval)
