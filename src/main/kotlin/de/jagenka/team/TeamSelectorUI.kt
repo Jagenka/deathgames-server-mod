@@ -1,8 +1,8 @@
 package de.jagenka.team
 
-import de.jagenka.BlockCuboid
-import de.jagenka.Coordinates
-import de.jagenka.toDGCoordinates
+import de.jagenka.DeathGames
+import de.jagenka.config.Config
+import de.jagenka.util.I18n
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -16,12 +16,14 @@ import net.minecraft.text.Text
 
 object TeamSelectorUI
 {
-    val lobbyBounds = BlockCuboid(Coordinates(-29, 18, -29), Coordinates(29, 34, 29))
+    val lobbyBounds = Config.configEntry.misc.lobbyBounds
+
+    var notReadySpamProtection = false
 
     @JvmStatic
     fun showInterfaceIfInLobby(player: ServerPlayerEntity): Boolean
     {
-        if (isInLobbyBounds(player))
+        if (!DeathGames.running &&!DeathGames.currentlyStarting && isInLobbyBounds(player))
         {
             showInterface(player)
             return true
@@ -50,11 +52,11 @@ object TeamSelectorUI
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of("SELECT TEAM")
+            override fun getDisplayName(): Text = Text.of(I18n.get("teamSelectWindowTitle"))
         }.let {
             serverPlayerEntity.openHandledScreen(it)
         }
     }
 
-    fun isInLobbyBounds(player: ServerPlayerEntity): Boolean = lobbyBounds.contains(player.pos.toDGCoordinates())
+    fun isInLobbyBounds(player: ServerPlayerEntity): Boolean = lobbyBounds.contains(player.pos)
 }

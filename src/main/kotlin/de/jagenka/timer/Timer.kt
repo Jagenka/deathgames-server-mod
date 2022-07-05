@@ -29,13 +29,16 @@ object Timer
             add(KeepInBoundsTask)
             add(LobbyTask)
             add(GPSTask)
+            add(CaptureSpawnTask)
         }
     }
 
     @JvmStatic
     fun tick()
     {
-        if (!running) return
+        if (!this.running) return
+
+        if (!DeathGames.running) DeathGames.currentlyEnding = false
 
         ticks++
 

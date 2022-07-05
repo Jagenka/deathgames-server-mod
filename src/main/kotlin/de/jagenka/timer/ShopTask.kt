@@ -1,21 +1,30 @@
 package de.jagenka.timer
 
+import de.jagenka.BlockPos
+import de.jagenka.Util
+import de.jagenka.Util.teleport
 import de.jagenka.config.Config
+import de.jagenka.isSame
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.shop.Shop
+import de.jagenka.util.I18n
+import net.minecraft.block.Blocks
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import net.minecraft.util.math.Vec3d
 
 object ShopTask : TimerTask
 {
     private val currentlyInShop = mutableSetOf<String>()
     private val timeInShop = mutableMapOf<String, Int>().withDefault { 0 } // time in ticks
+
+    private val lastPosOutOfShop = mutableMapOf<String, TPPos>()
 
     private const val countdownStartingWithSecondsLeft = 5 // configurable
 
@@ -31,8 +40,24 @@ object ShopTask : TimerTask
 
             clearIllegalItems(serverPlayerEntity)
 
-            if (PlayerManager.isInGame(playerName) && Shop.isInShopBounds(serverPlayerEntity))
+            if (PlayerManager.isCurrentlyDead(playerName)) return@forEach
+
+            if (PlayerManager.isParticipating(playerName) && Shop.isInShopBounds(serverPlayerEntity))
             {
+                if (InactivePlayersTask.hasShopClosed(playerName))
+                {
+                    lastPosOutOfShop[playerName]?.let {
+                        serverPlayerEntity.teleport(it.pos, it.yaw, it.pitch)
+                        DisplayManager.sendTitleMessage(
+                            serverPlayerEntity,
+                            Text.literal(I18n.get("shopClosedTitle")),
+                            Text.literal(I18n.get("shopClosedSubtitle")),
+                            3.seconds()
+                        )
+                    }
+                    return@forEach
+                }
+
                 serverPlayerEntity.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 1.seconds(), 255))
 
                 if (playerName !in currentlyInShop)
@@ -40,7 +65,12 @@ object ShopTask : TimerTask
                     currentlyInShop.add(playerName)
                     timeInShop[playerName] = 0
 
-                    DisplayManager.sendTitleMessage(serverPlayerEntity, Text.of("Welcome to the shop!"), Text.of("Press F to pay money."), 3.seconds())
+                    DisplayManager.sendTitleMessage(
+                        serverPlayerEntity,
+                        Text.of(I18n.get("shopEnteredTitle")),
+                        Text.of(I18n.get("shopEnteredSubtitle")),
+                        3.seconds()
+                    )
                 }
 
                 timeInShop[playerName] = timeInShop.getValue(playerName) + 1
@@ -58,6 +88,14 @@ object ShopTask : TimerTask
                 }
 
             } else currentlyInShop.remove(playerName)
+
+            if (playerName !in currentlyInShop && serverPlayerEntity.isOnGround)
+            {
+                if (!Util.getBlockAt(BlockPos.from(serverPlayerEntity.pos).relative(0, -1, 0)).isSame(Blocks.AIR))
+                {
+                    lastPosOutOfShop[playerName] = TPPos(serverPlayerEntity.pos, serverPlayerEntity.yaw, serverPlayerEntity.pitch)
+                }
+            }
         }
     }
 
@@ -65,7 +103,7 @@ object ShopTask : TimerTask
     {
         if (secondsLeft > 0 && currentlyInShop.contains(player.name.string))
         {
-            player.sendPrivateMessage("You will be teleported out in $secondsLeft seconds.")
+            player.sendPrivateMessage(I18n.get("shopTpOut", mapOf("seconds" to secondsLeft)))
             Timer.schedule({ sendTpOutMessage(player, secondsLeft - 1) }, 1.seconds())
         }
     }
@@ -89,3 +127,5 @@ object ShopTask : TimerTask
         timeInShop.clear()
     }
 }
+
+data class TPPos(val pos: Vec3d, val yaw: Float, val pitch: Float)

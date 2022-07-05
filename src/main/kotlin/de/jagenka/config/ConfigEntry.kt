@@ -1,8 +1,8 @@
 package de.jagenka.config
 
-import de.jagenka.BlockCuboid
-import de.jagenka.Coordinates
+import de.jagenka.*
 import de.jagenka.managers.Platform
+import de.jagenka.timer.seconds
 import kotlinx.serialization.Serializable
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -11,40 +11,38 @@ annotation class Section(val name: String)
 
 @Serializable
 class ConfigEntry(
+    @Section("general") val general: GeneralConfigEntry = GeneralConfigEntry(),
     @Section("spawns") val spawns: SpawnsConfigEntry = SpawnsConfigEntry(),
     @Section("bonus") val bonus: BonusPlatformsConfigEntry = BonusPlatformsConfigEntry(),
-    @Section("lives") val lives: LivesConfigEntry = LivesConfigEntry(),
+    @Section("respawns") val respawns: RespawnsConfigEntry = RespawnsConfigEntry(),
     @Section("money") val money: MoneyConfigEntry = MoneyConfigEntry(),
     @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
-    @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry()
+    @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
+    @Section("traps") val traps: TrapConfigEntry = TrapConfigEntry(),
+    @Section("displayedText") val displayedText: DisplayedTextConfigEntry = DisplayedTextConfigEntry()
 )
-{
-    companion object
-    {
-        val dummy = ConfigEntry()
-    }
-}
+
+@Serializable
+class GeneralConfigEntry(
+    var enabled: Boolean = false,
+    var locale: String = "en"
+)
 
 @Serializable
 class SpawnsConfigEntry(
-    var spawnPositions: List<Coordinates> = listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f)),
+    var spawnPositions: CoordinateList = CoordinateList(listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f))),
     var platformRadius: Int = 0,
-    var worldSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
     var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
-    var shuffleInterval: Int = 0,
-    var shuffleDelayAfterKill: Int = 0
+    var shuffleInterval: Int = 20,
+    var shuffleDelayAfterKill: Int = 0,
+    var captureTimeNeeded: Int = 0,
+    var captureEnabled: Boolean = false
 )
-{
-    companion object
-    {
-        val dummy = SpawnsConfigEntry()
-    }
-}
 
 @Serializable
 class BonusPlatformsConfigEntry(
-    var platforms: List<Platform> = listOf(Platform("bonus1", Coordinates(0, 0, 0)), Platform("bonus2", Coordinates(0, 0, 0))),
+    var platforms: PlatformList = PlatformList(listOf(Platform("bonus1", BlockPos(0, 0, 0)))),
     var radius: Int = 0,
     var spawnInterval: Int = 0,
     var stayTime: Int = 0,
@@ -52,62 +50,50 @@ class BonusPlatformsConfigEntry(
     var moneyAmount: Int = 0,
     var moneyInterval: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = BonusPlatformsConfigEntry()
-    }
-}
 
 @Serializable
-class LivesConfigEntry(
+class RespawnsConfigEntry(
     var perPlayer: Int = 0,
     var perTeam: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = LivesConfigEntry()
-    }
-}
 
 @Serializable
 class MoneyConfigEntry(
     var start: Int = 0,
     var amountPerInterval: Int = 0,
-    var interval: Int = 0,
+    var interval: Int = 20,
     var perKill: Int = 0,
     var perKillStreakKill: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = MoneyConfigEntry()
-    }
-}
 
 @Serializable
 class ShopSettingsConfigEntry(
-    var shopBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
+    var shopBounds: List<BlockCuboid> = listOf(BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0))),
     var tpOutOfShopAfter: Int = 0,
     var refundPercent: Int = 0
 )
-{
-    companion object
-    {
-        val dummy = ShopSettingsConfigEntry()
-    }
-}
 
 @Serializable
 class MiscConfigEntry(
     var revealTimePerPlayer: Int = 0,
-    var arenaBounds: BlockCuboid = BlockCuboid(Coordinates(0, 0, 0), Coordinates(0, 0, 0)),
-    var spectatorRadiusPadding: Int = 0
+    var shopCloseTimeAfterReveal: Int = 0,
+    var killStreakPenaltyCap: Int = 1,
+    var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
+    var spectatorRadiusPadding: Int = 0,
+    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0))
 )
-{
-    companion object
-    {
-        val dummy = MiscConfigEntry()
-    }
-}
+
+@Serializable
+class TrapConfigEntry(
+    var triggerRange: Double = 0.5,
+    var setupTime: Int = 10.seconds(),
+    var triggerVisibilityRange: Double = 30.0,
+    var visibilityRange: Double = 10.0,
+    var affectedRange: Double = 1.5,
+    var triggerDuration: Int = 6.seconds()
+)
+
+@Serializable
+class DisplayedTextConfigEntry(
+    var currency: String = "$%amount"
+)

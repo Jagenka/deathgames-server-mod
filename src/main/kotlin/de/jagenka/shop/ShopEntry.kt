@@ -5,6 +5,8 @@ import net.minecraft.server.network.ServerPlayerEntity
 
 interface ShopEntry
 {
+    val nameForStat: String
+
     fun getPrice(player: ServerPlayerEntity): Int
     fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
     fun buy(player: ServerPlayerEntity): Boolean

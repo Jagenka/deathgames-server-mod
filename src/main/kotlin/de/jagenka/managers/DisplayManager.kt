@@ -4,6 +4,7 @@ package de.jagenka.managers
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.ticks
+import de.jagenka.util.I18n
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.network.message.MessageType
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
@@ -13,12 +14,12 @@ import net.minecraft.network.packet.s2c.play.TitleS2CPacket
 import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
 import net.minecraft.scoreboard.ScoreboardObjective
-import net.minecraft.scoreboard.Team
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
+import java.util.regex.Pattern
 
 object DisplayManager
 {
@@ -29,18 +30,25 @@ object DisplayManager
     {
         ifServerLoaded { server ->
             if (!DisplayManager::sidebarObjective.isInitialized) sidebarObjective =
-                ScoreboardObjective(server.scoreboard, "sidebar", ScoreboardCriterion.DUMMY, Text.of("Lives"), ScoreboardCriterion.RenderType.INTEGER)
+                ScoreboardObjective(
+                    server.scoreboard,
+                    "sidebar",
+                    ScoreboardCriterion.DUMMY,
+                    Text.of(I18n.get("respawns")),
+                    ScoreboardCriterion.RenderType.INTEGER
+                ) // TODO does not update on ingame locale change
             server.scoreboard.objectives.toList().forEach { server.scoreboard.removeObjective(it) }
             server.scoreboard.addScoreboardObjective(sidebarObjective)
 
             if (!DisplayManager::tabListObjective.isInitialized) tabListObjective =
-                ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of("Kill-streak"), ScoreboardCriterion.RenderType.INTEGER)
+                ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of(I18n.get("kill-streak")), ScoreboardCriterion.RenderType.INTEGER)
             server.scoreboard.addScoreboardObjective(tabListObjective)
             server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, tabListObjective)
         }
 
         resetLevelDisplay()
         resetBossBars()
+        resetKillStreakDisplay()
     }
 
     fun prepareTeams()
@@ -63,16 +71,17 @@ object DisplayManager
                 Mode.PLAYER ->
                 {
                     PlayerManager.getPlayers().forEach { playerName ->
-                        val lives = KillManager.getLives(playerName)
-                        if (lives != null && lives > 0) server.scoreboard.getPlayerScore(playerName, sidebarObjective).score = lives
+                        val lives = KillManager.getRespawns(playerName)
+                        if (lives != null && PlayerManager.isParticipating(playerName) && lives >= 0) server.scoreboard.getPlayerScore(playerName, sidebarObjective).score = lives
                         else server.scoreboard.resetPlayerScore(playerName, sidebarObjective)
                     }
                 }
                 Mode.TEAM ->
                 {
                     DGTeam.values().forEach { team ->
-                        val lives = KillManager.getLives(team)
-                        if (lives != null && lives > 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score = lives
+                        val lives = KillManager.getRespawns(team)
+                        if (lives != null && PlayerManager.isParticipating(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score =
+                            lives
                         else server.scoreboard.resetPlayerScore(team.getPrettyName(), sidebarObjective)
                     }
                 }
@@ -86,6 +95,15 @@ object DisplayManager
             PlayerManager.getPlayers().forEach { playerName ->
                 val killStreak = KillManager.getKillStreak(playerName)
                 server.scoreboard.getPlayerScore(playerName, tabListObjective).score = killStreak
+            }
+        }
+    }
+
+    fun resetKillStreakDisplay()
+    {
+        ifServerLoaded { server ->
+            PlayerManager.getPlayers().forEach { playerName ->
+                server.scoreboard.getPlayerScore(playerName, tabListObjective).score = 0
             }
         }
     }
@@ -111,6 +129,13 @@ object DisplayManager
         PlayerManager.getOnlinePlayers().forEach { player ->
             player.setExperiencePoints(0)
             player.setExperienceLevel(player.getDGMoney())
+        }
+    }
+
+    fun setExpProgress(playerName: String, progress: Float)
+    {
+        PlayerManager.getOnlinePlayer(playerName)?.let { player ->
+            player.setExperiencePoints((progress.coerceAtLeast(0f).coerceAtMost(1f) * player.nextLevelExperience).toInt())
         }
     }
 
@@ -155,21 +180,18 @@ object DisplayManager
     {
         if (team == null)
         {
-            sendChatMessage(Text.of("${player.name.string} wants to spectate."))
+            sendChatMessage(Text.of(I18n.get("playerLeaveTeam", mapOf("playerName" to player.name.string))))
         } else
         {
-            val base = Text.literal("")
-            base.append(Text.of("${player.name.string} joined Team "))
-            base.append(Text.of(team.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
-            sendChatMessage(base)
+            val baseString = I18n.get("playerJoinTeam", mapOf("playerName" to player.name.string, "teamName" to "%teamName")) //TODO: geht das anders?
+            sendChatMessage(getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapOf("%teamName" to team)))
         }
     }
 
-    fun updateBossBarForPlayer(player: ServerPlayerEntity, percent: Int)
+    fun setBossBarForPlayer(player: ServerPlayerEntity, fillAmount: Float, text: Text, color: BossBar.Color, idSuffix: String = "main")
     {
         ifServerLoaded { server ->
-
-            val bossBarId = Identifier(player.name.string.lowercase())
+            val bossBarId = Identifier(player.name.string.lowercase() + "_$idSuffix")
             var bossBar = server.bossBarManager.get(bossBarId)
             if (bossBar == null)
             {
@@ -178,25 +200,20 @@ object DisplayManager
 
             bossBar?.let {
                 it.addPlayer(player)
-                it.percent = (percent.toFloat() / 100f).coerceAtMost(1f)
+                it.percent = fillAmount
+                it.color = color
+                it.name = text
+            }
+        }
+    }
 
-                if (percent <= 33)
-                {
-                    it.color = BossBar.Color.GREEN
-                    it.name = Text.of("Time to kill someone!")
-                } else if (percent <= 66)
-                {
-                    it.color = BossBar.Color.YELLOW
-                    it.name = Text.of("Better kill someone soon...")
-                } else if (percent < 100)
-                {
-                    it.color = BossBar.Color.RED
-                    it.name = Text.of("You are about to be revealed!")
-                } else
-                {
-                    it.color = BossBar.Color.RED
-                    it.name = Text.of("You can no longer hide! `o´")
-                }
+    fun removeBossBarForPlayer(player: ServerPlayerEntity, idSuffix: String)
+    {
+        ifServerLoaded { server ->
+            val bossBarId = Identifier(player.name.string.lowercase() + "_$idSuffix")
+            server.bossBarManager.get(bossBarId)?.let {
+                it.removePlayer(player)
+                server.bossBarManager.remove(it)
             }
         }
     }
@@ -204,11 +221,10 @@ object DisplayManager
     fun resetBossBars()
     {
         ifServerLoaded { server ->
-            server.bossBarManager.all.toList().forEach { commandBossBar ->
-                commandBossBar.players.toList().forEach { player ->
-                    commandBossBar.removePlayer(player)
-                }
-                server.bossBarManager.remove(commandBossBar)
+            server.bossBarManager.ids.toList().forEach { id ->
+                val bossBar = server.bossBarManager.get(id)
+                bossBar?.clearPlayers()
+                server.bossBarManager.remove(bossBar)
             }
         }
     }
@@ -220,5 +236,44 @@ object DisplayManager
             return Text.of(playerName).getWithStyle(Style.EMPTY.withFormatting(Formatting.byName(team.name.lowercase())))[0]
         }
         return Text.of(playerName)
+    }
+
+    fun getTextWithPlayersAndTeamsColored(string: String, idToPlayer: Map<String, String> = emptyMap(), idToTeam: Map<String, DGTeam> = emptyMap()): Text
+    {
+        val textAndSubStringIndexRange = mutableListOf<Pair<Text, Pair<Int, Int>>>()
+
+        idToPlayer.forEach { (id, playerName) ->
+            val matcher = Pattern.compile(id).matcher(string)
+            while (matcher.find())
+            {
+                textAndSubStringIndexRange.add(
+                    getFormattedPlayerName(playerName) to (matcher.start() to matcher.end())
+                )
+            }
+        }
+
+        idToTeam.forEach { (id, team) ->
+            val matcher = Pattern.compile(id).matcher(string)
+            while (matcher.find())
+            {
+                textAndSubStringIndexRange.add(team.getFormattedText() to (matcher.start() to matcher.end()))
+            }
+        }
+
+        textAndSubStringIndexRange.sortBy { it.second.first }
+
+        val base = Text.literal("")
+
+        var currentIndex = 0
+        for (i in 0 until textAndSubStringIndexRange.size)
+        {
+            val currentEntry = textAndSubStringIndexRange[i]
+            base.append(Text.of(string.substring(currentIndex until currentEntry.second.first)))
+            base.append(currentEntry.first)
+            currentIndex = currentEntry.second.second
+        }
+        base.append(Text.of(string.substring(currentIndex until string.length)))
+
+        return base
     }
 }

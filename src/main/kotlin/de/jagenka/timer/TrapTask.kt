@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.TrapsAreNotGay
+import de.jagenka.gameplay.traps.TrapsAreNotGay
 
 object TrapTask: TimerTask
 {

@@ -1,6 +1,6 @@
 package de.jagenka.managers
 
-import de.jagenka.Coordinates
+import de.jagenka.BlockPos
 import de.jagenka.Util
 import de.jagenka.config.Config
 import de.jagenka.config.Config.bonusPlatformInitialSpawn
@@ -11,25 +11,21 @@ import de.jagenka.timer.Timer
 import de.jagenka.toCenter
 import kotlinx.serialization.Serializable
 import net.minecraft.block.Blocks
-import net.minecraft.server.network.ServerPlayerEntity
 import kotlin.math.abs
 
 object BonusManager
 {
-    private val platforms = mutableListOf<Platform>()
-    private val selectedPlatforms = mutableListOf<Platform>()
+    val platforms
+        get() = Config.configEntry.bonus.platforms.plats
+    val selectedPlatforms = mutableListOf<Platform>()
 
-    private val inactiveBlock = Blocks.RED_CONCRETE
-    private val activeBlock = Blocks.LIME_CONCRETE
+    val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }
+
+    val inactiveBlock = Blocks.RED_CONCRETE
+    val activeBlock = Blocks.LIME_CONCRETE
 
     private var currentSpawnTask: ScheduledTask? = null
     private var currentDespawnTask: ScheduledTask? = null
-
-    fun setPlatforms(platforms: List<Platform>)
-    {
-        BonusManager.platforms.clear()
-        BonusManager.platforms.addAll(platforms)
-    }
 
     fun queueRandomPlatforms(howMany: Int)
     {
@@ -42,11 +38,9 @@ object BonusManager
 
     fun activateSelectedPlatforms()
     {
-        selectedPlatforms.forEach { it.active = true }
+        selectedPlatforms.forEach { activePlatforms[it] = true }
         colorPlatforms()
     }
-
-    fun getSelectedPlatforms() = selectedPlatforms.toList()
 
     @Deprecated("use queueRandomPlatforms and activateSelectedPlatforms instead", ReplaceWith("", ""), DeprecationLevel.WARNING)
     fun activateRandomPlatforms(howMany: Int)
@@ -57,27 +51,27 @@ object BonusManager
 
     fun disableAllPlatforms()
     {
-        platforms.forEach { it.active = false }
+        platforms.forEach { activePlatforms.clear() }
         colorPlatforms()
     }
 
-    fun getActivePlatforms() = platforms.filter { it.active }
+    fun getActivePlatforms() = activePlatforms.keys.filter { activePlatforms.getValue(it) == true }
 
     fun isOnActivePlatform(playerName: String) = getActivePlatforms().any {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return false
-        val dx = abs(it.coordinates.x.toCenter() - player.pos.x)
-        val dy = abs(it.coordinates.y.toDouble() - player.pos.y)
-        val dz = abs(it.coordinates.z.toCenter() - player.pos.z)
+        val dx = abs(it.pos.x.toCenter() - player.pos.x)
+        val dy = abs(it.pos.y.toDouble() - player.pos.y)
+        val dz = abs(it.pos.z.toCenter() - player.pos.z)
         dy < 2 && dx <= bonusPlatformRadius + 0.5 && dz <= bonusPlatformRadius + 0.5
     }
 
     private fun colorPlatforms()
     {
         platforms.forEach { platform ->
-            Util.getBlocksInSquareRadiusAtFixY(platform.coordinates, bonusPlatformRadius).forEach { (block, coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(platform.pos, bonusPlatformRadius).forEach { (block, coordinates) ->
                 if (block isSame inactiveBlock || block isSame activeBlock)
                 {
-                    Util.setBlockAt(coordinates, if (platform.active) activeBlock else inactiveBlock)
+                    Util.setBlockAt(coordinates, if (platform.isActive()) activeBlock else inactiveBlock)
                 }
             }
         }
@@ -131,7 +125,12 @@ object BonusManager
         }, Config.bonusPlatformSpawnInterval)
         currentDespawnTask = null
     }
+
+    fun Platform.isActive() = activePlatforms.getValue(this)
 }
 
 @Serializable
-data class Platform(val name: String, val coordinates: Coordinates, var active: Boolean = false)
+data class Platform(val name: String, val pos: BlockPos)
+{
+    override fun toString() = "$name,$pos"
+}

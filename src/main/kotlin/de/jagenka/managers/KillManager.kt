@@ -1,36 +1,34 @@
 package de.jagenka.managers
 
 import de.jagenka.DeathGames
-import de.jagenka.config.Config.livesPerPlayer
-import de.jagenka.config.Config.livesPerTeam
-import de.jagenka.config.Config.moneyBonusPerKillStreakKill
-import de.jagenka.config.Config.moneyPerKill
-import de.jagenka.config.Config.startMoneyPerPlayer
+import de.jagenka.config.Config.respawnsPerPlayer
+import de.jagenka.config.Config.respawnsPerTeam
+import de.jagenka.gameplay.traps.TrapsAreNotGay
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
-import de.jagenka.managers.MoneyManager.addMoney
-import de.jagenka.managers.MoneyManager.setMoney
 import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.shop.Shop
+import de.jagenka.managers.PlayerManager.makeParticipating
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
+import de.jagenka.util.I18n
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import net.minecraft.world.GameMode
 
 object KillManager
 {
-    private val playerLives = mutableMapOf<String, Int>().withDefault { 0 }
-    private val teamLives = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
+    private val playerRespawns = mutableMapOf<String, Int>().withDefault { 0 }
+    private val teamRespawns = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
     private val playerKillStreak = mutableMapOf<String, Int>().withDefault { 0 }
     private val teamKillStreak = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
-    private val totalKills = mutableMapOf<String, Int>().withDefault { 0 }
-    private val totalDeaths = mutableMapOf<String, Int>().withDefault { 0 }
+    private val kDEntries = mutableMapOf<String, KD>()
 
-    var moneyMode = Mode.PLAYER
     var livesMode = Mode.TEAM
     var killStreakMode = Mode.PLAYER
 
@@ -42,25 +40,27 @@ object KillManager
 
         PlayerManager.registerAsCurrentlyDead(playerName)
 
+        TrapsAreNotGay.onPlayerDeath(playerName)
+
         Timer.schedule({
             if (PlayerManager.requestRespawn(deceased))
             {
-                deceased.sendPrivateMessage("You have been force-respawned.")
+                deceased.sendPrivateMessage(I18n.get("forceRespawned"))
             }
         }, 5.seconds())
 
         if (!DeathGames.running) return
 
-        totalDeaths[playerName] = totalDeaths.getValue(playerName) + 1
-        removeOneLife(deceased)
+        val playerKD = kDEntries[playerName]
+        if (playerKD != null) playerKD.addDeath()
+        else kDEntries[playerName] = KD(0, 1)
+
+        removeOneRespawn(deceased)
 
         val killStreak = getKillStreak(playerName)
         if (killStreak >= 3)
         {
-            val shutdownText = Text.literal("Shutdown! ")
-            shutdownText.append(DisplayManager.getFormattedPlayerName(playerName))
-            shutdownText.append(Text.of(" was on a kill streak of $killStreak."))
-            DisplayManager.sendChatMessage(shutdownText)
+            DisplayManager.sendChatMessage(getShutdownText(playerName, killStreak))
         }
 
         resetKillStreak(deceased)
@@ -71,46 +71,41 @@ object KillManager
         InactivePlayersTask.resetForPlayer(playerName)
     }
 
+    private fun getShutdownText(deceasedName: String, killStreak: Int): Text
+    {
+        val configString = I18n.get("shutdown", mapOf("killStreak" to killStreak, "deceased" to "%deceased")) //TODO kann man das ändern?
+        return DisplayManager.getTextWithPlayersAndTeamsColored(configString, idToPlayer = mapOf("%deceased" to deceasedName))
+    }
+
     @JvmStatic
     fun handlePlayerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
     {
         if (!DeathGames.running) return
 
-        totalKills[attacker.name.string] = totalKills.getValue(attacker.name.string) + 1
+        if (attacker == deceased) return
+        if (attacker.getDGTeam() == deceased.getDGTeam()) return
+
+        val attackerName = attacker.name.string
+
+        val playerKD = kDEntries[attackerName]
+        if (playerKD != null) playerKD.addKill()
+        else kDEntries[attackerName] = KD(1, 0)
+
         when (killStreakMode)
         {
-            Mode.PLAYER -> playerKillStreak[attacker.name.string] = playerKillStreak.getValue(attacker.name.string) + 1
+            Mode.PLAYER -> playerKillStreak[attackerName] = playerKillStreak.getValue(attackerName) + 1
             Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
         }
-        handleMoney(attacker, deceased)
-        InactivePlayersTask.resetForPlayer(attacker.name.string)
+        if (getKillStreak(attackerName) > StatManager.personalStats.gib(attackerName).highestKillStreak)
+        {
+            StatManager.personalStats.gib(attackerName).highestKillStreak = getKillStreak(attackerName)
+        }
+
+        MoneyManager.handleMoneyOnPlayerKill(attacker, deceased)
+        InactivePlayersTask.resetForPlayer(attackerName)
 
         DisplayManager.updateLivesDisplay()
         DisplayManager.updateKillStreakDisplay()
-    }
-
-    private fun handleMoney(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity) // TODO raus
-    {
-        when (moneyMode)
-        {
-            Mode.PLAYER ->
-            {
-                val killStreakAmount = getKillStreak(deceased.name.string)
-                addMoney(attacker.name.string, moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
-//                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.sendPrivateMessage("You receive ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.")
-            }
-            Mode.TEAM ->
-            {
-                val killStreakAmount = getKillStreak(deceased.name.string)
-                addMoney(attacker.getDGTeam(), moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount)
-//                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
-                attacker.getDGTeam()?.getOnlinePlayers()
-                    ?.forEach { it.sendPrivateMessage("Your team receives ${Shop.SHOP_UNIT}${moneyPerKill + moneyBonusPerKillStreakKill * killStreakAmount}.") }
-            }
-        }
-
-        DisplayManager.updateLevelDisplay()
     }
 
     fun getKillStreak(playerName: String): Int
@@ -124,30 +119,32 @@ object KillManager
 
     private fun resetKillStreak(deceased: ServerPlayerEntity)
     {
+        val playerName = deceased.name.string
+
         when (killStreakMode)
         {
-            Mode.PLAYER -> playerKillStreak[deceased.name.string] = 0
+            Mode.PLAYER -> playerKillStreak[playerName] = 0
             Mode.TEAM -> teamKillStreak[deceased.getDGTeam()] = 0
         }
 
         DisplayManager.updateKillStreakDisplay()
     }
 
-    fun removeOneLife(deceased: ServerPlayerEntity)
+    fun removeOneRespawn(deceased: ServerPlayerEntity)
     {
         when (livesMode)
         {
             Mode.PLAYER ->
             {
-                val livesAmount = playerLives.getValue(deceased.name.string)
-                if (livesAmount > 0) playerLives[deceased.name.string] = livesAmount - 1
-                if (livesAmount - 1 < 1) deceased.eliminate()
+                val respawnsAmount = playerRespawns.getValue(deceased.name.string)
+                if (respawnsAmount > 0) playerRespawns[deceased.name.string] = respawnsAmount - 1
+                if (respawnsAmount <= 0) deceased.eliminate()
             }
             Mode.TEAM ->
             {
-                val livesAmount = teamLives.getValue(deceased.getDGTeam())
-                if (livesAmount > 0) teamLives[deceased.getDGTeam()] = livesAmount - 1
-                if (livesAmount - 1 < 1) deceased.eliminate()
+                val respawnsAmount = teamRespawns.getValue(deceased.getDGTeam())
+                if (respawnsAmount > 0) teamRespawns[deceased.getDGTeam()] = respawnsAmount - 1
+                if (respawnsAmount <= 0) deceased.eliminate()
             }
         }
 
@@ -159,52 +156,63 @@ object KillManager
         val players = PlayerManager.getPlayers()
         when (livesMode)
         {
-            Mode.PLAYER -> players.forEach { playerLives[it] = livesPerPlayer }
-            Mode.TEAM -> players.forEach { teamLives[PlayerManager.getTeam(it)] = livesPerTeam }
+            Mode.PLAYER -> players.forEach { playerRespawns[it] = respawnsPerPlayer }
+            Mode.TEAM -> players.forEach { teamRespawns[PlayerManager.getTeam(it)] = respawnsPerTeam }
         }
     }
 
-    fun initMoney()
-    {
-        val players = PlayerManager.getPlayers()
-
-        when (moneyMode)
-        {
-            Mode.PLAYER -> players.forEach { setMoney(it, startMoneyPerPlayer) }
-            Mode.TEAM ->
-            {
-                PlayerManager.getInGameTeams().forEach { inGameTeam ->
-                    setMoney(inGameTeam, players.filter { playerName -> PlayerManager.getTeam(playerName) == inGameTeam }.size * startMoneyPerPlayer)
-                }
-            }
-        }
-    }
-
-    fun getLives(playerName: String) = playerLives[playerName]
-    fun getLives(team: DGTeam) = teamLives[team]
+    fun getRespawns(playerName: String) = playerRespawns[playerName]
+    fun getRespawns(team: DGTeam) = teamRespawns[team]
 
     fun addLives(playerName: String, amount: Int)
     {
         when (livesMode)
         {
-            Mode.PLAYER -> playerLives[playerName] = playerLives.getValue(playerName) + amount
-            Mode.TEAM -> teamLives[PlayerManager.getTeam(playerName)] = teamLives.getValue(PlayerManager.getTeam(playerName)) + amount
+            Mode.PLAYER -> playerRespawns[playerName] = playerRespawns.getValue(playerName) + amount
+            Mode.TEAM ->
+            {
+                val team = PlayerManager.getTeam(playerName)
+                teamRespawns[team] = teamRespawns.getValue(team) + amount
+                team?.let { tryToRespawnDeadTeamPlayer(it) }
+            }
         }
         DisplayManager.updateLivesDisplay()
     }
 
-    fun getNonZeroLifePlayers() = playerLives.filter { it.value > 0 }
+    fun tryToRespawnDeadTeamPlayer(team: DGTeam)
+    {
+        getRespawns(team)?.let { if (it < 1) return } ?: return
 
-    fun getNonZeroLifeTeams() = teamLives.filter { it.value > 0 }
+        team.getOnlinePlayers().filter { !PlayerManager.isParticipating(it.name.string) }.randomOrNull()?.let { player ->
+            player.makeParticipating()
+            player.changeGameMode(GameMode.ADVENTURE)
+            SpawnManager.teleportPlayerToSpawn(player)
+            removeOneRespawn(player)
+        }
+    }
+
+    fun getKDs() = kDEntries.toList().sortedByDescending { (_, kd) -> kd.getRatio() }
 
     fun reset()
     {
-        playerLives.clear()
-        teamLives.clear()
+        playerRespawns.clear()
+        teamRespawns.clear()
         playerKillStreak.clear()
         teamKillStreak.clear()
-        totalKills.clear()
-        totalDeaths.clear()
+        kDEntries.clear()
+    }
+}
+
+data class KD(var kills: Int, var deaths: Int)
+{
+    fun addKill() = kills++
+    fun addDeath() = deaths++
+
+    fun getRatio() = kills.toDouble() / deaths.coerceAtLeast(1).toDouble()
+
+    override fun toString(): String
+    {
+        return "$kills / $deaths"
     }
 }
 

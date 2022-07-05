@@ -4,6 +4,7 @@ import de.jagenka.DeathGames
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.team.TeamSelectorUI
+import de.jagenka.util.I18n
 import net.minecraft.text.Text
 
 object LobbyTask : TimerTask
@@ -15,15 +16,21 @@ object LobbyTask : TimerTask
 
     override fun run()
     {
+        if (DeathGames.running) return
+
+        DisplayManager.resetBossBars()
+
         PlayerManager.getOnlinePlayers().forEach { player ->
-            if (!DeathGames.running && !player.hasPermissionLevel(2))
+            if (!player.hasPermissionLevel(2))
             {
                 player.inventory.clear()
-                DisplayManager.resetBossBars()
             }
             if (TeamSelectorUI.isInLobbyBounds(player))
             {
-                DisplayManager.sendMessageToHotbar(Text.of("Press F to choose your team."))
+                if (!DeathGames.currentlyStarting)
+                {
+                    DisplayManager.sendMessageToHotbar(Text.of(I18n.get("openTeamUI")))
+                }
 
                 player.health = 20f //set max hearts
                 player.hungerManager.add(20, 1f) //set max food and saturation

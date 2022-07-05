@@ -1,8 +1,9 @@
 package de.jagenka.shop
 
+import de.jagenka.DeathGames
 import de.jagenka.config.Config
-import de.jagenka.managers.getDGMoney
-import de.jagenka.toDGCoordinates
+import de.jagenka.managers.MoneyManager
+import de.jagenka.util.I18n
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -16,8 +17,6 @@ import net.minecraft.text.Text
 
 object Shop
 {
-    const val SHOP_UNIT = "$"
-
     private val upgrades = mutableMapOf<String, MutableMap<UpgradeType, Int>>().withDefault { mutableMapOf<UpgradeType, Int>().withDefault { 0 } }
 
     const val slotAmount = 9 * 6
@@ -25,7 +24,7 @@ object Shop
     @JvmStatic
     fun showInterfaceIfInShop(player: ServerPlayerEntity): Boolean
     {
-        if (isInShopBounds(player))
+        if (DeathGames.running && isInShopBounds(player))
         {
             showInterface(player)
             return true
@@ -54,7 +53,7 @@ object Shop
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of("SHOP")
+            override fun getDisplayName(): Text = Text.of(I18n.get("shopWindowTitle"))
         }.let {
             serverPlayerEntity.openHandledScreen(it)
         }
@@ -73,14 +72,14 @@ object Shop
         setUpgradeLevel(playerName, upgradeType, getUpgradeLevel(playerName, upgradeType) + 1)
     }
 
-    fun getBalanceString(player: ServerPlayerEntity) = "You have $SHOP_UNIT${player.getDGMoney()} to spend."
-
     fun reset()
     {
         this.upgrades.clear()
     }
 
-    fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.contains(player.pos.toDGCoordinates())
+    fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.any { it.contains(player.pos) }
+
+    fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
 }
 
 enum class UpgradeType

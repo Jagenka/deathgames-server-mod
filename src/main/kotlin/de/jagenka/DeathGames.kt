@@ -4,13 +4,17 @@ import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.commands.DeathGamesCommand
 import de.jagenka.config.Config
+import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.managers.PlayerManager.makeInGame
-import de.jagenka.managers.SpawnManager.getSpawn
+import de.jagenka.managers.PlayerManager.makeParticipating
+import de.jagenka.managers.SpawnManager.getSpawnCoordinates
 import de.jagenka.shop.Shop
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.StatsIO
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
+import de.jagenka.util.I18n
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.entity.Entity
@@ -20,20 +24,24 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
 import net.minecraft.text.Texts
-import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
-import net.minecraft.world.GameRules
 
 object DeathGames : DedicatedServerModInitializer
 {
     var running = false
 
+    var currentlyStarting = false
+    var currentlyEnding = false
+
+    var gameId: Long? = null
+        private set
+
     override fun onInitializeServer()
     {
-        Config.loadJSON()
-
         registerCommands()
+
+        StatsIO.loadStats()
 
         println("DeathGames Mod initialized!")
     }
@@ -45,10 +53,34 @@ object DeathGames : DedicatedServerModInitializer
         }
     }
 
+    fun startGameWithCountdown()
+    {
+        if (!isEnabled) return
+
+        if (currentlyStarting) return
+        currentlyStarting = true
+
+        PlayerManager.getOnlinePlayers().forEach { player ->
+            player.closeHandledScreen()
+            DisplayManager.sendTitleMessage(player, literal("3"), literal(""), 1.seconds())
+            Timer.schedule({ DisplayManager.sendTitleMessage(player, literal("2"), literal(""), 1.seconds()) }, 1.seconds())
+            Timer.schedule({ DisplayManager.sendTitleMessage(player, literal("1"), literal(""), 1.seconds()) }, 2.seconds())
+        }
+
+        Timer.schedule({ startGame() }, 3.seconds())
+    }
+
     fun startGame()
     {
+        if (!isEnabled) return
+
+        gameId = System.currentTimeMillis()
+
+        currentlyStarting = false
+
         val teamPlayers = PlayerManager.getTeamPlayers()
 
+        StatManager.reset()
         KillManager.reset()
         MoneyManager.reset()
         Timer.reset()
@@ -58,16 +90,14 @@ object DeathGames : DedicatedServerModInitializer
         BonusManager.init()
 
         KillManager.initLives()
-        KillManager.initMoney()
-
-        DisplayManager.showSidebar()
+        MoneyManager.initMoney()
 
         teamPlayers.forEach {
             it.clearStatusEffects()
             it.inventory.clear()
             it.health = 20f //set max hearts
             it.hungerManager.add(20, 1f) //set max food and saturation
-            it.makeInGame()
+            it.makeParticipating()
             it.changeGameMode(GameMode.ADVENTURE)
         }
 
@@ -77,9 +107,9 @@ object DeathGames : DedicatedServerModInitializer
 
         PlayerManager.getOnlinePlayers().forEach {
             it.closeHandledScreen()
-            val (x, y, z) = Config.worldSpawn
+            val (x, y, z) = Config.lobbySpawn
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
-            it.teleport(it.getSpawn())
+            it.teleport(it.getSpawnCoordinates())
         }
 
         ifServerLoaded { server ->
@@ -87,8 +117,10 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         PlayerManager.getOnlinePlayers().forEach { player ->
-            DisplayManager.sendTitleMessage(player, Text.of("Good Luck"), Text.of("and have fun"), 5.seconds())
+            DisplayManager.sendTitleMessage(player, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
+
+        DisplayManager.showSidebar()
 
         Timer.start()
         running = true
@@ -96,20 +128,34 @@ object DeathGames : DedicatedServerModInitializer
 
     fun stopGame()
     {
+        if (!isEnabled) return
+
+        StatManager.gameStats.gameEnd = System.currentTimeMillis()
+
+        currentlyEnding = true
+
         val winners = mutableListOf<Text>()
-        PlayerManager.getOnlineInGameTeams().forEach { team ->
-            winners.add(literal(team.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(team.name.lowercase())))[0])
+        val onlineParticipatingTeams = PlayerManager.getOnlineParticipatingTeams()
+        onlineParticipatingTeams.forEach { team ->
+            winners.add(team.getFormattedText())
         }
-        val winnerCount = winners.count()
+        val winnerCount = onlineParticipatingTeams.count()
         val winnerPlayers = Texts.join(winners, Text.of(", "))
         winners.clear()
         if (winnerCount != 0)
         {
-            winners.add(Text.of("Winner${if (winnerCount != 1) "s" else ""}"))
+            winners.add(
+                Text.of(if (winnerCount != 1) I18n.get("winnerPlural") else I18n.get("winnerSingular")) //TODO: change
+            )
             winners.add(winnerPlayers)
         }
         PlayerManager.getOnlinePlayers().forEach {
-            DisplayManager.sendTitleMessage(it, Text.of("Game Over"), Texts.join(winners, Text.of(": ")), 5.seconds())
+            DisplayManager.sendTitleMessage(it, Text.of(I18n.get("endTitle")), Texts.join(winners, Text.of(": ")), 5.seconds())
+        }
+
+        if (winnerCount == 1)
+        {
+            StatManager.gameStats.winner = onlineParticipatingTeams.getOrNull(0)
         }
 
         DisplayManager.resetBossBars()
@@ -117,7 +163,18 @@ object DeathGames : DedicatedServerModInitializer
         MoneyManager.reset()
         DisplayManager.updateLevelDisplay()
 
+        BonusManager.disableAllPlatforms()
+
         PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
+
+        DisplayManager.sendChatMessage("")
+        DisplayManager.sendChatMessage(literal("Player K/Ds:").getWithStyle(Style.EMPTY.withBold(true))[0])
+        KillManager.getKDs().forEach { (playerName, kd) ->
+            DisplayManager.sendChatMessage("$playerName: $kd")
+        }
+        DisplayManager.sendChatMessage("")
+
+        StatManager.saveAllStatsAfterGame()
 
         Timer.schedule({
             PlayerManager.getOnlinePlayers().forEach {
@@ -128,8 +185,11 @@ object DeathGames : DedicatedServerModInitializer
                 it.hungerManager.add(20, 1f) //set max food and saturation
             }
 
-            PlayerManager.clearInGameStatusForEveryone()
+            SpawnManager.resetSpawnColoring()
+
+            PlayerManager.clearParticipatingStatusForEveryone()
             running = false
+            currentlyEnding = false
         }, 10.seconds())
     }
 }

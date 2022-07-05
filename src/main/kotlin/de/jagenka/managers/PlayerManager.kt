@@ -1,6 +1,6 @@
 package de.jagenka.managers
 
-import de.jagenka.Coordinates
+import de.jagenka.BlockPos
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
@@ -20,7 +20,7 @@ import net.minecraft.world.World
 object PlayerManager
 {
     private val playerNames = mutableSetOf<String>()
-    private val inGameMap = mutableMapOf<String, Boolean>().withDefault { false } // TODO participating
+    private val participatingMap = mutableMapOf<String, Boolean>().withDefault { false }
     private val teamRegistry = mutableMapOf<String, DGTeam>()
 
     private val currentlyDead = mutableSetOf<String>()
@@ -36,7 +36,10 @@ object PlayerManager
         return allPlayers.toSet()
     }
 
-    fun getOnlineInGamePlayers() = getOnlinePlayers().filter { inGameMap.getValue(it.name.string) }
+    fun getOnlineParticipatingPlayers() = getOnlinePlayers().filter { participatingMap.getValue(it.name.string) }
+
+    fun getOnlinePlayersAround(pos: BlockPos, radius: Double) = getOnlinePlayers().filter { pos.hasInRange(it.pos, radius) }
+    fun getOnlineParticipatingPlayersAround(pos: BlockPos, radius: Double) = getOnlineParticipatingPlayers().filter { pos.hasInRange(it.pos, radius) }
 
     fun getPlayers(): Set<String>
     {
@@ -133,37 +136,29 @@ object PlayerManager
         return getOnlinePlayers().filter { it.getDGTeam() == team }
     }
 
-    fun getInGamePlayers(): List<String>
+    fun getParticipatingPlayers(): List<String>
     {
-        return playerNames.filter { inGameMap.getValue(it) }.toList()
+        return playerNames.filter { participatingMap.getValue(it) }.toList()
     }
 
-    fun getInGamePlayersInTeam(team: DGTeam): List<String> = getInGamePlayers().filter { teamRegistry[it] == team }
+    fun getParticipatingPlayersInTeam(team: DGTeam): List<String> = getParticipatingPlayers().filter { teamRegistry[it] == team }
 
-    fun ServerPlayerEntity.isInGame() = getInGamePlayers().contains(this.name.string)
+    fun ServerPlayerEntity.isParticipating() = getParticipatingPlayers().contains(this.name.string)
 
 
-    fun ServerPlayerEntity.makeInGame()
+    fun ServerPlayerEntity.makeParticipating()
     {
-        inGameMap[this.name.string] = true
+        participatingMap[this.name.string] = true
     }
 
     fun ServerPlayerEntity.eliminate()
     {
-        inGameMap[this.name.string] = false
+        participatingMap[this.name.string] = false
         this.changeGameMode(GameMode.SPECTATOR)
     }
 
-    fun getInGameTeams() = DGTeam.values().filter { getInGamePlayersInTeam(it).isNotEmpty() }
-    fun getOnlineInGameTeams() = DGTeam.values().filter { it.getOnlineInGamePlayers().isNotEmpty() }
-
-    fun Coordinates.getInGamePlayersInRange(range: Double) = getOnlinePlayersInRange(range).filter { player ->
-        inGameMap.getValue(player.name.string)
-    }
-
-    fun Coordinates.getOnlinePlayersInRange(range: Double) = getOnlinePlayers().filter { player ->
-        this distanceTo player.pos <= range
-    }
+    fun getParticipatingTeams() = DGTeam.values().filter { getParticipatingPlayersInTeam(it).isNotEmpty() }
+    fun getOnlineParticipatingTeams() = DGTeam.values().filter { it.getOnlineParticipatingPlayers().isNotEmpty() }
 
     @JvmStatic
     fun onPlayerJoin(player: ServerPlayerEntity)
@@ -210,12 +205,14 @@ object PlayerManager
         currentlyDead.remove(player.name.string)
     }
 
-    fun clearInGameStatusForEveryone()
+    fun clearParticipatingStatusForEveryone()
     {
-        inGameMap.clear()
+        participatingMap.clear()
     }
 
-    fun isInGame(playerName: String) = inGameMap.getValue(playerName)
+    fun isParticipating(playerName: String) = participatingMap.getValue(playerName)
+
+    fun isParticipating(team: DGTeam) = getParticipatingTeams().contains(team)
 
     /**
      * @return is player was able to respawn (not currently alive)

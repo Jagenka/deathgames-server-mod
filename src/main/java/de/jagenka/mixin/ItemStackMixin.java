@@ -1,6 +1,7 @@
 package de.jagenka.mixin;
 
-import de.jagenka.TrapsAreNotGay;
+import de.jagenka.config.Config;
+import de.jagenka.gameplay.traps.TrapsAreNotGay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
@@ -15,6 +16,8 @@ public class ItemStackMixin
     @Inject(method = "useOnBlock", at = @At("HEAD"), cancellable = true)
     public void useOnBlock(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         if (TrapsAreNotGay.handleTrapPlacement(context))
         {
             cir.setReturnValue(ActionResult.PASS);

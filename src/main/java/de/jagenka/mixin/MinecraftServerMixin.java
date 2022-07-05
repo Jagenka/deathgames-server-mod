@@ -1,6 +1,7 @@
 package de.jagenka.mixin;
 
 import de.jagenka.Util;
+import de.jagenka.config.Config;
 import de.jagenka.timer.Timer;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,6 +23,8 @@ public class MinecraftServerMixin
     @Inject(method = "tick", at = @At("HEAD"))
     private void tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         Timer.tick();
     }
 }

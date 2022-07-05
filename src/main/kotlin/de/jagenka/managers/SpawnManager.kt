@@ -1,74 +1,117 @@
 package de.jagenka.managers
 
-import de.jagenka.*
+import de.jagenka.BlockCuboid
+import de.jagenka.Coordinates
+import de.jagenka.DeathGames
+import de.jagenka.Util
 import de.jagenka.Util.teleport
+import de.jagenka.config.Config
 import de.jagenka.config.Config.defaultSpawn
-import de.jagenka.config.Config.spawnPlatformRadius
 import de.jagenka.managers.DisplayManager.sendChatMessage
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
+import de.jagenka.util.BiMap
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
+import de.jagenka.config.Config.spawnPlatformRadius as platformRadius
 
 object SpawnManager
 {
-    private val spawns = ArrayList<Coordinates>()
-    private val teamSpawns = mutableMapOf<DGTeam?, Coordinates>().withDefault { defaultSpawn }
+    val spawns
+        get() = Config.configEntry.spawns.spawnPositions.coords.map { DGSpawn(it) }
 
-    private fun addSpawns(spawns: Collection<Coordinates>)
+    private val teamSpawns = BiMap<DGSpawn, DGTeam>()
+
+    fun getTeam(spawn: DGSpawn) = teamSpawns[spawn]
+
+    fun ServerPlayerEntity.getSpawnCoordinates(): Coordinates
     {
-        SpawnManager.spawns.addAll(spawns)
+        return PlayerManager.getTeam(this)?.let { team ->
+            teamSpawns.getKeyForValue(team)?.coordinates
+        } ?: defaultSpawn
     }
-
-    internal fun setSpawns(spawns: Collection<Coordinates>)
-    {
-        SpawnManager.spawns.clear()
-        addSpawns(spawns)
-    }
-
-    private fun getSpawn(team: DGTeam?) = teamSpawns.getValue(team)
-
-    fun getSpawns() = spawns.toList()
-
-    fun ServerPlayerEntity.getSpawn() = getSpawn(PlayerManager.getTeam(this))
 
     fun teleportPlayerToSpawn(player: ServerPlayerEntity)
     {
-        val spawn = player.getSpawn()
-        player.teleport(spawn)
-        player.yaw = spawn.yaw
-        if (spawn == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
+        val spawnCoordinates = player.getSpawnCoordinates()
+        player.teleport(spawnCoordinates)
+        player.yaw = spawnCoordinates.yaw
+        if (spawnCoordinates == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
     }
 
     fun shuffleSpawns()
     {
-        spawns.forEach { coordinates ->
-            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), spawnPlatformRadius).forEach { (block, coordinates) ->
-                if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
-            }
-        }
-        shuffleSpawns(PlayerManager.getNonEmptyTeams())
+        shuffleSpawns(PlayerManager.getNonEmptyTeams().toList())
     }
 
-    private fun shuffleSpawns(teams: Collection<DGTeam>)
+    fun shuffleSpawns(teams: List<DGTeam>)
     {
-        val shuffledSpawns = spawns.shuffled()
+        check(teams.size <= spawns.size)
+
         teamSpawns.clear()
-        teams.forEachIndexed { index, team ->
-            if (index >= shuffledSpawns.size) return
-            teamSpawns[team] = shuffledSpawns[index]
-            colorTeamSpawn(team)
+
+        teams.forEach { team ->
+            teamSpawns[getUnassignedSpawns().random()] = team
         }
+
+        colorSpawns()
 
         if (DeathGames.running) sendChatMessage("Spawns shuffled!")
     }
 
-    fun colorTeamSpawn(team: DGTeam)
+    fun colorSpawns()
     {
-        teamSpawns[team]?.let { coordinates ->
-            Util.getBlocksInSquareRadiusAtFixY(coordinates.relative(0, -1, 0), spawnPlatformRadius).forEach { (block, coordinates) ->
-                if (block.isDGColorBlock()) Util.setBlockAt(coordinates, team.getColorBlock())
+        spawns.forEach { spawn ->
+            val team = teamSpawns[spawn]
+            if (team == null)
+            {
+                Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
+                    if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
+                }
+            } else
+            {
+                Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
+                    if (block.isDGColorBlock()) Util.setBlockAt(coordinates, team.getColorBlock())
+                }
             }
         }
     }
+
+    fun resetSpawnColoring()
+    {
+        spawns.forEach { (coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
+                if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
+            }
+        }
+    }
+
+    fun getUnassignedSpawns() = spawns.filter { teamSpawns[it] == null }.toList()
+
+    /**
+     * @return who owned the spawn before
+     */
+    fun reassignSpawn(spawn: DGSpawn, team: DGTeam): DGTeam?
+    {
+        teamSpawns.removeForValue(team)
+
+        val teamPreviouslyAssignedToSpawn = getTeam(spawn)
+        if (teamPreviouslyAssignedToSpawn != null)
+        {
+            teamSpawns[getUnassignedSpawns().random()] = teamPreviouslyAssignedToSpawn
+        }
+
+        teamSpawns[spawn] = team
+
+        colorSpawns()
+
+        return teamPreviouslyAssignedToSpawn
+    }
+}
+
+data class DGSpawn(val coordinates: Coordinates)
+{
+    fun getCuboid() = BlockCuboid(coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius), coordinates.asBlockPos().relative(platformRadius, 2, platformRadius))
+
+    fun containsPlayer(player: ServerPlayerEntity) = getCuboid().contains(player.pos)
 }

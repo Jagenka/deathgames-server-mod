@@ -1,13 +1,22 @@
 package de.jagenka.managers
 
-import de.jagenka.managers.MoneyManager.addMoney
+import de.jagenka.config.Config
+import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.getMoney
+import de.jagenka.managers.MoneyManager.moneyMode
+import de.jagenka.managers.MoneyManager.refundMoney
 import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.stats.StatManager
+import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
+import de.jagenka.util.I18n
 import net.minecraft.server.network.ServerPlayerEntity
+import de.jagenka.config.Config.configEntry as config
 
 object MoneyManager
 {
+    var moneyMode = Mode.PLAYER
+
     private val playerMoney = mutableMapOf<String, Int>().withDefault { 0 }
     private val teamMoney = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
@@ -15,13 +24,34 @@ object MoneyManager
     fun getMoney(player: ServerPlayerEntity) = getMoney(player.name.string)
     fun getMoney(team: DGTeam?) = teamMoney.getValue(team)
 
-    fun setMoney(playerName: String, amount: Int)
+    fun initMoney()
+    {
+        val players = PlayerManager.getPlayers()
+
+        when (moneyMode)
+        {
+            Mode.PLAYER -> players.forEach {
+                setMoney(it, Config.startMoneyPerPlayer)
+                StatManager.personalStats.gib(it).moneyEarned += Config.startMoneyPerPlayer
+            }
+            Mode.TEAM ->
+            {
+                PlayerManager.getParticipatingTeams().forEach { participatingTeam ->
+                    val teamSize = participatingTeam.getPlayers().size
+                    setMoney(participatingTeam, teamSize * Config.startMoneyPerPlayer)
+                    participatingTeam.getPlayers().forEach { StatManager.personalStats.gib(it).moneyEarned += teamSize * Config.startMoneyPerPlayer }
+                }
+            }
+        }
+    }
+
+    private fun setMoney(playerName: String, amount: Int)
     {
         playerMoney[playerName] = amount
         DisplayManager.updateLevelDisplay()
     }
 
-    fun setMoney(team: DGTeam?, amount: Int)
+    private fun setMoney(team: DGTeam?, amount: Int)
     {
         if (team == null) return
         teamMoney[team] = amount
@@ -31,12 +61,59 @@ object MoneyManager
     fun addMoney(playerName: String, amount: Int)
     {
         setMoney(playerName, getMoney(playerName) + amount)
+        if (amount >= 0)
+        {
+            StatManager.personalStats.gib(playerName).moneyEarned += amount
+        }
     }
 
     fun addMoney(team: DGTeam?, amount: Int)
     {
         if (team == null) return
         setMoney(team, getMoney(team) + amount)
+        if (amount >= 0)
+        {
+            team.getPlayers().forEach { playerName ->
+                StatManager.personalStats.gib(playerName).moneyEarned += amount
+            }
+        }
+    }
+
+    fun refundMoney(playerName: String, amount: Int)
+    {
+        setMoney(playerName, getMoney(playerName) + amount)
+    }
+
+    fun refundMoney(team: DGTeam?, amount: Int)
+    {
+        if (team == null) return
+        setMoney(team, getMoney(team) + amount)
+    }
+
+    fun handleMoneyOnPlayerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    {
+        when (moneyMode)
+        {
+            Mode.PLAYER ->
+            {
+                val killStreakAmount = KillManager.getKillStreak(deceased.name.string)
+                val amount = Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount
+                addMoney(attacker.name.string, amount)
+//                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
+                attacker.sendPrivateMessage(I18n.get("receiveMoneyPlayer", mapOf("amount" to getCurrencyString(amount))))
+            }
+            Mode.TEAM ->
+            {
+                val killStreakAmount = KillManager.getKillStreak(deceased.name.string)
+                val amount = Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount
+                addMoney(attacker.getDGTeam(), amount)
+//                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
+                attacker.getDGTeam()?.getOnlinePlayers()
+                    ?.forEach { it.sendPrivateMessage(I18n.get("receiveMoneyTeam", mapOf("amount" to getCurrencyString(amount)))) }
+            }
+        }
+
+        DisplayManager.updateLevelDisplay()
     }
 
     fun reset()
@@ -44,11 +121,13 @@ object MoneyManager
         playerMoney.clear()
         teamMoney.clear()
     }
+
+    fun getCurrencyString(amount: Int) = config.displayedText.currency.replace("%amount", amount.toString())
 }
 
 fun ServerPlayerEntity.getDGMoney(): Int
 {
-    return when (KillManager.moneyMode)
+    return when (moneyMode)
     {
         Mode.PLAYER -> getMoney(this)
         Mode.TEAM -> this.getDGTeam()?.let { getMoney(it) } ?: 0
@@ -57,9 +136,10 @@ fun ServerPlayerEntity.getDGMoney(): Int
 
 fun ServerPlayerEntity.deductDGMoney(amount: Int)
 {
-    when (KillManager.moneyMode)
+    StatManager.personalStats.gib(this.name.string).moneySpent += amount
+    when (moneyMode)
     {
-        Mode.PLAYER -> addMoney(this.name.string, -amount)
-        Mode.TEAM -> addMoney(this.getDGTeam(), -amount)
+        Mode.PLAYER -> refundMoney(this.name.string, -amount)
+        Mode.TEAM -> refundMoney(this.getDGTeam(), -amount)
     }
 }

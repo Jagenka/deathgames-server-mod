@@ -1,5 +1,6 @@
 package de.jagenka.mixin;
 
+import de.jagenka.config.Config;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,6 +16,8 @@ public class PlayerManagerMixin
     @Inject(method = "respawnPlayer", at = @At("TAIL"))
     private void respawnPlayer(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         ServerPlayerEntity newPlayer = cir.getReturnValue();
         de.jagenka.managers.PlayerManager.handleRespawn(newPlayer);
     }
@@ -22,12 +25,16 @@ public class PlayerManagerMixin
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         de.jagenka.managers.PlayerManager.onPlayerJoin(player);
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
     private void onPlayerLeave(ServerPlayerEntity player, CallbackInfo ci)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         de.jagenka.managers.PlayerManager.onPlayerLeave(player);
     }
 }

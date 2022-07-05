@@ -3,14 +3,15 @@ package de.jagenka.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import de.jagenka.team.DGTeam
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import de.jagenka.managers.SpawnManager
+import de.jagenka.team.DGTeam
 import de.jagenka.timer.Timer
 import net.minecraft.command.CommandSource
 import net.minecraft.server.command.CommandManager.argument
@@ -24,10 +25,12 @@ object DeathGamesCommand
     fun register(dispatcher: CommandDispatcher<ServerCommandSource>)
     {
         val literalArgumentBuilder = literal("deathgames")
-            .then(literal("start").executes {
-                if (!DeathGames.running) DeathGames.startGame()
-                return@executes 0
-            })
+            .then(literal("start")
+                .requires { it.isOp() }
+                .executes {
+                    if (!DeathGames.running) DeathGames.startGameWithCountdown()
+                    return@executes 0
+                })
             .then(literal("stop")
                 .requires { it.isOp() }
                 .executes {
@@ -112,6 +115,21 @@ object DeathGamesCommand
                     .executes {
                         if (DeathGames.running) SpawnManager.shuffleSpawns()
                         else it.source.sendError(Text.of("Game is not running!"))
+                        return@executes 0
+                    }
+            )
+            .then(
+                literal("reloadConfig")
+                    .requires { it.isOp() }
+                    .executes {
+                        try
+                        {
+                            Config.load()
+                            it.source.sendFeedback(Text.literal("config reloaded"), true)
+                        } catch (e: Exception)
+                        {
+                            it.source.sendError(Text.literal("error reloading config"))
+                        }
                         return@executes 0
                     }
             )

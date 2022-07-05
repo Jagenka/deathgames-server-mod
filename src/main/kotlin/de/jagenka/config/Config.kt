@@ -1,23 +1,29 @@
 package de.jagenka.config
 
-import de.jagenka.managers.BonusManager
-import de.jagenka.managers.SpawnManager
+import de.jagenka.Util
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.util.WorldSavePath
+import java.io.File
 import java.nio.file.Files
+import java.nio.file.Path
 
 object Config
 {
-    private const val CONF_FILE = "deathgames"
+    private lateinit var pathToConfFile: Path
 
-    private val serializer = Json { prettyPrint = true }
+    private val serializer = Json {
+        prettyPrint = true
+        ignoreUnknownKeys = true
+        encodeDefaults = true // WHO EVEN THOUGHT THIS WOULD BE A GOOD IDEA AS FALSE BY DEFAULT? WTF? WHAT IF I SEND A MESSAGE OVER THE NETWORK?
+    }
 
     lateinit var configEntry: ConfigEntry
 
-    val worldSpawn
-        get() = configEntry.spawns.worldSpawn
+    val isEnabled
+        get() = configEntry.general.enabled
+
 
     val spawnPlatformRadius
         get() = configEntry.spawns.platformRadius
@@ -40,10 +46,10 @@ object Config
     val bonusMoneyInterval
         get() = configEntry.bonus.moneyInterval
 
-    val livesPerPlayer
-        get() = configEntry.lives.perPlayer
-    val livesPerTeam
-        get() = configEntry.lives.perTeam
+    val respawnsPerPlayer
+        get() = configEntry.respawns.perPlayer
+    val respawnsPerTeam
+        get() = configEntry.respawns.perTeam
 
     val shuffleSpawnsInterval
         get() = configEntry.spawns.shuffleInterval
@@ -77,18 +83,52 @@ object Config
     val refundPercent
         get() = configEntry.shopSettings.refundPercent
 
-    fun loadJSON()
-    {
-        configEntry = Json.decodeFromString(FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json").toFile().readText())
+    val captureTimeNeeded
+        get() = configEntry.spawns.captureTimeNeeded
+    val captureEnabled
+        get() = configEntry.spawns.captureEnabled
 
-        SpawnManager.setSpawns(configEntry.spawns.spawnPositions)
-        BonusManager.setPlatforms(configEntry.bonus.platforms)
+    val trapConfig
+        get() = configEntry.traps
+
+    val shopCloseTimeAfterReveal
+        get() = configEntry.misc.shopCloseTimeAfterReveal
+    val killStreakPenaltyCap
+        get() = configEntry.misc.killStreakPenaltyCap
+
+    fun lateLoadConfig()
+    {
+        Util.minecraftServer?.let { server ->
+            val configFolder = server.getSavePath(WorldSavePath.ROOT).resolve("deathgames")
+            if (!Files.exists(configFolder))
+            {
+                Files.createDirectories(configFolder)
+            }
+            pathToConfFile = configFolder.resolve("config.json")
+            if (!Files.exists(pathToConfFile))
+            {
+                Files.createFile(pathToConfFile)
+                configEntry = ConfigEntry()
+                store()
+            }
+            load()
+
+        } ?: error("Failed loading DeathGames config - Server not loaded yet.")
+
+        println("Successfully loaded DeathGames config!")
     }
 
-    fun store() {
-        val json = serializer.encodeToString(configEntry)
-        val path = FabricLoader.getInstance().configDir.resolve("$CONF_FILE.json")
+    fun load() = loadJSON(pathToConfFile.toFile())
 
-        Files.writeString(path, json)
+    fun loadJSON(jsonConfFile: File)
+    {
+        configEntry = serializer.decodeFromString(jsonConfFile.readText())
+    }
+
+    fun store()
+    {
+        val json = serializer.encodeToString(configEntry)
+
+        Files.writeString(pathToConfFile, json)
     }
 }

@@ -2,6 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
+import de.jagenka.managers.MoneyManager.getCurrencyString
 import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
@@ -17,7 +18,7 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
     {
         return boughtItemStack.copy()
             .setCustomName(
-                Text.of("${Shop.SHOP_UNIT}$price: $name x${boughtItemStack.count}").getWithStyle(
+                Text.of("${getCurrencyString(price)}: $name x${boughtItemStack.count}").getWithStyle(
                     Style.EMPTY.withColor(
                         if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
                         else Util.getTextColor(255, 255, 255)
@@ -35,7 +36,7 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
             return true
         } else
         {
-            player.sendPrivateMessage("You do not have the required ${Shop.SHOP_UNIT}$price")
+            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(price))
         }
         return false
     }
@@ -58,4 +59,7 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
             itemStackInInventory.item == boughtItemStack.item
         }, amount, player.playerScreenHandler.craftingInput)
     }
+
+    override val nameForStat: String
+        get() = "${boughtItemStack.count} $name"
 }
