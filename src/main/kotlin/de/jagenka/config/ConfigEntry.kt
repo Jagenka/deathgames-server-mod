@@ -23,7 +23,8 @@ class ConfigEntry(
 
 @Serializable
 class GeneralConfigEntry(
-    var enabled: Boolean = false
+    var enabled: Boolean = false,
+    var locale: String = "en"
 )
 
 @Serializable

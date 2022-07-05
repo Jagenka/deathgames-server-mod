@@ -1,0 +1,1 @@
+test-message: This is a test message with {count} test{count?s}, some more test{count?s}, and even more {count?cookie,cookies}!

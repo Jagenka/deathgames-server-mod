@@ -1,0 +1,1 @@
+test-message: Dies ist eine Test-Nachricht mit {count} {count?Test,Tests}.
