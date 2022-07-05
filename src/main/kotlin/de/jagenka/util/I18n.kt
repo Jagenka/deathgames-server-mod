@@ -30,8 +30,13 @@ object I18n {
                     val lines = bufferedReader.lines()
 
                     lines.forEach {
-                        val split = it.split(":").map { it.trim() }
-                        messages[split[0]] = split[1]
+                        if(":" !in it) {
+                            throw RuntimeException("Malformed messages.yaml")
+                        }
+
+                        val key = it.substring(0, it.indexOfFirst { it == ':' }).trim()
+                        val value = it.substring(it.indexOfFirst { it == ':' }, it.length).trim()
+                        messages[key] = value
                     }
                 }
             }
