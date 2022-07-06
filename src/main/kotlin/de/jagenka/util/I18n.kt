@@ -2,6 +2,7 @@ package de.jagenka.util
 
 import de.jagenka.config.Config
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.regex.Pattern
 
@@ -25,7 +26,7 @@ object I18n {
 
         // Read messages file
         I18n::class.java.getResourceAsStream(messagesFilePath.format(locale))!!.use { stream ->
-            InputStreamReader(stream).use { inputReader ->
+            InputStreamReader(stream, Charsets.UTF_8).use { inputReader ->
                 BufferedReader(inputReader).use { bufferedReader ->
                     val lines = bufferedReader.lines()
 
