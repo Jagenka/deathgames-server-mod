@@ -1,0 +1,45 @@
+startTitle: 頑張って！
+startSubtitle: 楽しんでください！
+endTitle: ゲームは終わった。
+winnerSingular: 勝者
+winnerPlural: 勝者
+forceRespawned: 転生した！
+shutdown: シャットダウン! {deceased}は{killStreak}人を殺した！
+receiveMoneyPlayer: {amount}　ゲット。
+receiveMoneyTeam: チームは{amount}　ゲット。
+notEnoughMoney: 所要のお金「{amount}」は持たない。
+shopWindowTitle: 店
+shopEnteredTitle: いらっしゃいませ!
+shopEnteredSubtitle: 「F」を押してください。
+shopClosedTitle: 休業
+shopClosedSubtitle: 人を殺してみてください！
+shopTpOut: {seconds}秒後にテレポート。。。
+refundItemText: {item}を売りた！ {amount}　ゲット。
+bonusInactive: ボーナス・プラットホーム: {time}秒後にスポーンする。
+bonusInactiveWithName: ボーナス・プラットホーム: {name}は{time}秒後にスポーンする。
+bonusActive: ボーナス・プラットホーム: {time}秒後に消える。
+bonusActiveWithName: ボーナス・プラットホーム: {name}は{time}秒後に消える。
+revealTimer0: 人を殺さなければ、君はマークさられる
+revealTimer1: 君は間もなくマークさられる
+revealTimer2: 君はマークした
+revealTimer3: 店は間もなく閉まっている
+revealTimer4: 店は閉まっている
+respawns: 天性の分量
+kill-streak: キルストリーク
+playerLeaveTeam: {playerName}は見りたい。
+playerJoinTeam: {playerName}は{teamName}・チームに入った。
+teamSelectWindowTitle: チームを選びてください。
+teamSelectUIHover: {teamName}・チームに入る ({teamSize}人)
+spectator: 観客
+ready: 整う
+notReady: 整ない
+nowReady: 今は整う！
+noLongerReady: 整ない。
+startGame: ゲーム　スタート！
+cantStartGame: ゲームをスタートできない! {players}は整ない。
+and: と
+openTeamUI: 「F」を押してください。
+nowGlowing: {playerName}はマークさられている。
+captureTeamSpawn: {newTeam}は{oldTeam}のスポーンを打ち勝った！
+captureASpawn: {newTeam}はスポーンを打ち勝った！
+captureProgress: スポーンは打ち勝たれている。。。
