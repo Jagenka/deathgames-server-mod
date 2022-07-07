@@ -6,6 +6,7 @@ import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.PlayerManager
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3f
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.pow
@@ -27,30 +28,36 @@ object CaptureAnimation
 
         ifServerLoaded { server ->
             captureProgress.forEach { (spawn, progress) ->
-                val angle = (System.currentTimeMillis() % 6000).toDouble() / 6000.0 * Math.PI * 2.0
+                // Get teams on spawn for particle colors
+                val playersOnSpawn = PlayerManager.getOnlineInGamePlayers().filter { spawn.containsPlayer(it) }
+                val teamsOnSpawn = playersOnSpawn.map { it.getDGTeam() }.toSet()
+
+                val globalRotation = (System.currentTimeMillis() % 18000).toDouble() / 18000.0 * Math.PI * 2.0
+
+                val angle = (System.currentTimeMillis() % 6000).toDouble() / 6000.0 * Math.PI * 2.0 + globalRotation
+                val height = (System.currentTimeMillis() % 2000).toDouble() / 2000.0 * 6.0
                 val captureDistance = (1.0 - (Config.captureTimeNeeded - progress).toFloat() / Config.captureTimeNeeded.toFloat()) * RADIUS
 
                 val angles = if ((Config.captureTimeNeeded - progress).absoluteValue > 0.5)
-                    listOf(angle, angle + Math.PI * 2.0 / 3.0, angle + Math.PI * 2.0 / 3.0 * 2.0)
+                    listOf(angle, angle + Math.PI * 2.0 * 1.0 / 6.0, angle + Math.PI * 2.0 * 2.0 / 6.0, angle + Math.PI * 2.0 * 1.0 / 6.0, angle + Math.PI * 2.0 * 3.0 / 6.0, angle + Math.PI * 2.0 * 4.0 / 6.0, angle + Math.PI * 2.0 * 5.0 / 6.0)
                 else
                     (0 until 360).map { it.toDouble() / 360.0 * Math.PI * 2.0 }
 
                 val particles = angles.map {
                     val offsetX = cos(it) * RADIUS
-                    val offsetY = sin(it) * RADIUS
-                    val pos = spawn.coordinates.toVec3d().add(Vec3d(offsetX, 2.0, offsetY))
+                    val offsetZ = sin(it) * RADIUS
 
                     return@map listOf(
-                        spawn.coordinates.toVec3d().add(Vec3d(offsetX, 0.25 + Math.random() / 2.0, offsetY)),
-                        spawn.coordinates.toVec3d().add(Vec3d(offsetX, 0.75 + Math.random() / 2.0, offsetY)),
+                        spawn.coordinates.toVec3d().add(Vec3d(offsetX, height, offsetZ)),
+//                        spawn.coordinates.toVec3d().add(Vec3d(offsetX, 0.75 + Math.random() / 2.0, offsetZ)),
                     )
                 }.flatten().toMutableList()
 
-                repeat((captureDistance.pow(2.0) * 2.5).toInt()) {
+                repeat((captureDistance.pow(2.0) * 1.0).toInt()) {
                     val randomAngle = Math.random() * Math.PI * 2.0
                     val offsetX = cos(randomAngle) * Math.random() * captureDistance
-                    val offsetY = sin(randomAngle) * Math.random() * captureDistance
-                    particles.add(spawn.coordinates.toVec3d().add(Vec3d(offsetX, 0.1, offsetY)))
+                    val offsetZ = sin(randomAngle) * Math.random() * captureDistance
+                    particles.add(spawn.coordinates.toVec3d().add(Vec3d(offsetX, 0.1, offsetZ)))
                 }
 
                 PlayerManager.getOnlinePlayers().forEach { player ->
