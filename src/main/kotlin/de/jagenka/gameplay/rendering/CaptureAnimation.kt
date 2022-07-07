@@ -4,7 +4,9 @@ import de.jagenka.Util.ifServerLoaded
 import de.jagenka.config.Config
 import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.PlayerManager
-import net.minecraft.particle.ParticleTypes
+import de.jagenka.managers.PlayerManager.getDGTeam
+import de.jagenka.managers.SpawnManager
+import net.minecraft.particle.DustParticleEffect
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3f
 import kotlin.math.absoluteValue
@@ -60,14 +62,15 @@ object CaptureAnimation
                     particles.add(spawn.coordinates.toVec3d().add(Vec3d(offsetX, 0.1, offsetZ)))
                 }
 
-                PlayerManager.getOnlinePlayers().forEach { player ->
+                PlayerManager.getOnlinePlayers().forEach inner@{ player ->
                     // we're using force on the particle, this makes the default range 512 blocks (instead of 32), so let's trim that
                     if (player.pos.subtract(spawn.coordinates.toVec3d()).lengthSquared() > VISIBILITY_RANGE.pow(2.0))
                     {
-                        return@forEach
+                        return@inner
                     }
 
-                    ParticleRenderer.drawMultipleParticlesWorld(server, player, ParticleTypes.WAX_OFF, particles)
+                    val rgbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorVector() ?: Vec3f(0f, 0f, 0f), 4f)
+                    ParticleRenderer.drawMultipleParticlesWorld(server, player, rgbParticle, particles)
                 }
 
             }
