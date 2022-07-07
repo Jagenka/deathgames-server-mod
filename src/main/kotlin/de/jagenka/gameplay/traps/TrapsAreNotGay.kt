@@ -173,8 +173,8 @@ object TrapsAreNotGay
             // Handles snaring player
             if (notGay.isTriggered() && notGay.getRemainingDuration() > 0)
             {
-                notGay.disabledJumpPlayers.forEach { (playerName, coordinatesMaybe) ->
-                    val player = PlayerManager.getOnlinePlayer(playerName) ?: return@forEach
+                notGay.disabledJumpPlayers.forEach inner@{ (playerName, coordinatesMaybe) ->
+                    val player = PlayerManager.getOnlinePlayer(playerName) ?: return@inner
                     if (notGay.snares)
                     {
                         if (coordinatesMaybe.flag && player.isOnGround)
