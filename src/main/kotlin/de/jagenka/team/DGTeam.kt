@@ -1,5 +1,6 @@
 package de.jagenka.team
 
+import de.jagenka.Util
 import de.jagenka.isSame
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isParticipating
@@ -35,26 +36,8 @@ enum class DGTeam
         }
     }
 
-    fun getColorVector(): Vec3f
-    {
-        return when (this)
-        {
-            BLACK -> Vec3f(1f, 1f, 1f)
-            DARK_GREEN -> Vec3f(0.12f, 0.3f, 0.17f)
-            DARK_AQUA -> Vec3f(0f, 0.42f, 0.5f)
-            DARK_RED -> Vec3f(0.4f, 0f, 0f)
-            DARK_PURPLE -> Vec3f(0.5f, 0f, 0.5f)
-            GOLD -> Vec3f(0.85f, 0.57f, 0f)
-            GRAY -> Vec3f(0.66f, 0.66f, 0.66f)
-            DARK_GRAY -> Vec3f(0.33f, 0.33f, 0.33f)
-            BLUE -> Vec3f(0.2f, 0.2f, 0.6f)
-            GREEN -> Vec3f(0.12f, 0.3f, 0.17f)
-            AQUA -> Vec3f(0f, 0.67f, 1f)
-            RED -> Vec3f(0.67f, 0.29f, 0.32f)
-            LIGHT_PURPLE -> Vec3f(0.69f,0.61f,0.85f)
-            YELLOW -> Vec3f(1f, 0.83f, 0f)
-        }
-    }
+    fun getColorVector(): Vec3f = Util.getRGBVec3fForInt(Formatting.byName(this.name.lowercase())?.colorValue ?: 0xFFFFFF)
+
 
     fun getPlayers() = PlayerManager.getPlayersInTeam(this)
 

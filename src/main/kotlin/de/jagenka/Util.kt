@@ -16,7 +16,6 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3f
 import net.minecraft.world.Difficulty
 import net.minecraft.world.GameRules
-import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.floor
 
@@ -130,6 +129,13 @@ object Util
         }
 
         return result.toList()
+    }
+
+    fun getRGBTripleForInt(rgb: Int): Triple<Int, Int, Int> = Triple((rgb shr 16) and 0xFF, (rgb shr 8) and 0xFF, rgb and 0xFF)
+    fun getRGBVec3fForInt(rgb: Int): Vec3f
+    {
+        val (r, g, b) = getRGBTripleForInt(rgb)
+        return Vec3f(r.toFloat() / 0xFF.toFloat(), g.toFloat() / 0xFF.toFloat(), b.toFloat() / 0xFF.toFloat())
     }
 
     fun getIntTextColor(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
