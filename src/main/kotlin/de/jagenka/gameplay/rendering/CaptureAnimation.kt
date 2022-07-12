@@ -31,7 +31,7 @@ object CaptureAnimation
         ifServerLoaded { server ->
             captureProgress.forEach { (spawn, progress) ->
                 // Get teams on spawn for particle colors
-                val playersOnSpawn = PlayerManager.getOnlineInGamePlayers().filter { spawn.containsPlayer(it) }
+                val playersOnSpawn = PlayerManager.getOnlineParticipatingPlayers().filter { spawn.containsPlayer(it) }
                 val teamsOnSpawn = playersOnSpawn.map { it.getDGTeam() }.toSet()
 
                 val globalRotation = (System.currentTimeMillis() % 18000).toDouble() / 18000.0 * Math.PI * 2.0
