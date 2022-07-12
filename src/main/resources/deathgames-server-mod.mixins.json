@@ -13,7 +13,8 @@
     "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
-    "ServerPlayNetworkHandlerMixin"
+    "ServerPlayNetworkHandlerMixin",
+    "TestingMixin"
   ],
   "injectors": {
     "defaultRequire": 1
