@@ -11,7 +11,7 @@ object GPSTask: TimerTask
     override val isGameMechanic: Boolean
         get() = true
     override val runEvery: Int
-        get() = 2
+        get() = 10.ticks()
 
     override fun run()
     {
@@ -19,7 +19,7 @@ object GPSTask: TimerTask
 
         if (currentlyEnding) return
 
-        GPS.showArrowToNextBonusPlatform()
+        GPS.drawPathToPlatformForAllPlayers()
     }
 
     override fun reset()

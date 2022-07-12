@@ -9,6 +9,7 @@ import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
+import net.minecraft.block.FluidBlock
 import net.minecraft.command.argument.ItemStringReader
 import net.minecraft.component.ComponentMap
 import net.minecraft.component.DataComponentTypes
@@ -118,6 +119,12 @@ object Util
         ifServerLoaded { block = it.overworld.getBlockState(pos.asMinecraftBlockPos()).block }
         return block
     }
+
+    fun canPlayerStandIn(pos: BlockPos): Boolean = minecraftServer?.let { server ->
+        val blockState = server.overworld.getBlockState(pos.asMinecraftBlockPos())
+        blockState.block !is FluidBlock &&
+                blockState.getCollisionShape(server.overworld, pos.asMinecraftBlockPos()).isEmpty
+    } ?: false
 
     fun getBlocksInCubeRadius(pos: BlockPos, radius: Int): List<BlockAtPos>
     {

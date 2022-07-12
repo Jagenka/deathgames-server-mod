@@ -43,6 +43,22 @@ class BlockCuboid
                 && (pos.z in firstCorner.z.toFloat().rangeTo((secondCorner.z + 1).toFloat()))
     }
 
+    fun containingBlockPositions(): Set<BlockPos>
+    {
+        val result = mutableSetOf<BlockPos>()
+        for (x in firstCorner.x..secondCorner.x)
+        {
+            for (y in firstCorner.y..secondCorner.y)
+            {
+                for (z in firstCorner.z..secondCorner.z)
+                {
+                    result.add(BlockPos(x, y, z))
+                }
+            }
+        }
+        return result
+    }
+
     override fun equals(other: Any?): Boolean
     {
         if (this === other) return true
