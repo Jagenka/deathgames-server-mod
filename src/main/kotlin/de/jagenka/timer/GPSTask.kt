@@ -8,13 +8,13 @@ object GPSTask: TimerTask
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
-        get() = 1.seconds()
+        get() = 10.ticks()
 
     override fun run()
     {
         if (currentlyEnding) return
 
-        GPS.makeArrowGoBrrr()
+        GPS.drawPathToPlatformForAllPlayers()
     }
 
     override fun reset()

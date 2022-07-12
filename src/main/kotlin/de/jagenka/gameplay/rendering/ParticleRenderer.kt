@@ -1,5 +1,6 @@
 package de.jagenka.gameplay.rendering
 
+import de.jagenka.BlockPos
 import de.jagenka.Util
 import de.jagenka.floor
 import de.jagenka.managers.PlayerManager
@@ -9,7 +10,8 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
 
-object ParticleRenderer {
+object ParticleRenderer
+{
 
     private val model =
         PlyImporter.parsePlyFromFile("C:/Programming Projects/deathgames-server-mod/src/main/resources/models/Squirtle.ply")
@@ -76,9 +78,23 @@ object ParticleRenderer {
         }
     }
 
+    fun drawParticleAtBlockPos(particle: ParticleEffect, pos: BlockPos)
+    {
+        PlayerManager.getOnlinePlayers().forEach { player ->
+            drawParticleAtBlockPosForPlayer(player, particle, pos)
+        }
+    }
+
+    fun drawParticleAtBlockPosForPlayer(player: ServerPlayerEntity, particle: ParticleEffect, pos: BlockPos)
+    {
+        val vertex = pos.toVec3d()
+        Util.minecraftServer?.overworld?.spawnParticles(player, particle, true, vertex.x, vertex.y + .1, vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
+    }
+
+
     fun drawMultipleParticlesWorld(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertices: Collection<Vec3d>)
     {
-        vertices.forEach {vertex: Vec3d ->
+        vertices.forEach { vertex: Vec3d ->
             server.overworld.spawnParticles(player, particle, true, vertex.x, vertex.y, vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
     }
