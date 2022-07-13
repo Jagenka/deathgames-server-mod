@@ -58,7 +58,7 @@ class AStar(val start: BlockPos, val goal: BlockPos)
             from.manhattanDistanceTo(to).toDouble()
         } else
         {
-            (from.manhattanDistanceTo(to) + max(0, dy - 2)).toDouble()
+            (from.manhattanDistanceTo(to) + max(0, dy - 3)).toDouble()
         }
     }
 
