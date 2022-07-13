@@ -42,12 +42,12 @@ class AStar(val start: BlockPos, val goal: BlockPos)
         }
     }
 
-    fun heuristic(pos: BlockPos): Double
+    private fun heuristic(pos: BlockPos): Double
     {
         return pos.distanceTo(goal.toVec3d())
     }
 
-    fun cost(from: BlockPos, to: BlockPos): Double
+    private fun cost(from: BlockPos, to: BlockPos): Double
     {
         val (dx, dy, dz) = to - from
         return if (dy == 0)
@@ -62,7 +62,7 @@ class AStar(val start: BlockPos, val goal: BlockPos)
         }
     }
 
-    fun reconstructPath(): List<BlockPos>
+    private fun reconstructPath(): List<BlockPos>
     {
         val path = mutableListOf<BlockPos>()
         var current: BlockPos? = goal
