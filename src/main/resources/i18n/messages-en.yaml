@@ -43,3 +43,17 @@ nowGlowing: {playerName} is now glowing.
 captureTeamSpawn: {newTeam} captured {oldTeam}'s spawn!
 captureASpawn: {newTeam} captured a spawn!
 captureProgress: capture progress...
+teamBlack: Black
+teamDarkGreen: Dark Green
+teamDarkAqua: Dark Aqua
+teamDarkRed: Dark Red
+teamDarkPurple: Dark Purple
+teamGold: Gold
+teamGray: Gray
+teamDarkGray: Dark Gray
+teamBlue: Blue
+teamGreen: Green
+teamAqua: Aqua
+teamRed: Red
+teamLightPurple: Light Purple
+teamYellow: Yellow

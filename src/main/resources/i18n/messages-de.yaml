@@ -43,3 +43,17 @@ nowGlowing: {playerName} leuchtet jetzt.
 captureTeamSpawn: {newTeam} hat den Auferstehungspunkt von {oldTeam} eingenommen!
 captureASpawn: {newTeam} hat einen Auferstehungspunkt eingenommen!
 captureProgress: Einnahmefortschritt...
+teamBlack: Schwarz
+teamDarkGreen: Dunkelgrün
+teamDarkAqua: Dunkelaqua
+teamDarkRed: Dunkelrot
+teamDarkPurple: Dunkellila
+teamGold: Gold
+teamGray: Grau
+teamDarkGray: Dunkelgrau
+teamBlue: Blau
+teamGreen: Grün
+teamAqua: Aqua
+teamRed: Rot
+teamLightPurple: Helllila
+teamYellow: Gelb

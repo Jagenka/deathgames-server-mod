@@ -3,6 +3,7 @@ package de.jagenka.team
 import de.jagenka.isSame
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isParticipating
+import de.jagenka.util.I18n
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.text.Style
@@ -42,7 +43,7 @@ enum class DGTeam
 
     fun getPrettyName(): String
     {
-        return this.name.replace('_', ' ').lowercase().capitalizeWords()
+        return I18n.get("team${this.name.replace('_', ' ').lowercase().capitalizeWords().replace(" ", "")}")
     }
 
     fun getFormattedText() = Text.literal(this.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(this.name.lowercase())))[0]
