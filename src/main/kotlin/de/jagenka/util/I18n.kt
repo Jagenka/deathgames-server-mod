@@ -2,27 +2,40 @@ package de.jagenka.util
 
 import de.jagenka.config.Config
 import java.io.BufferedReader
-import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.regex.Pattern
 
-object I18n {
+object I18n
+{
 
     const val messagesFilePath = "/i18n/messages-%s.yaml"
 
     val locale: String
-    val messages = HashMap<String, String>()
+    var messages = mapOf<String, String>()
+        private set
+    var defaultLang = mapOf<String, String>()
+        private set
 
-    init { //TODO: init again after change
-        var locale = Config.configEntry.general.locale //TODO das wird zu bald geladen
+    init
+    { //TODO: init again after change
+        var locale = Config.configEntry.general.locale //TODO das wird zu bald geladen ? lazy load
 
         I18n::class.java.getResourceAsStream(messagesFilePath.format(locale)).use { stream ->
-            if(locale.isBlank() || stream == null) {
+            if (locale.isBlank() || stream == null)
+            {
                 locale = "en"
             }
         }
 
         I18n.locale = locale
+
+        if(locale != "en") defaultLang = readLocale("en")
+        messages = readLocale(locale)
+    }
+
+    fun readLocale(locale: String): Map<String, String>
+    {
+        val result = mutableMapOf<String, String>()
 
         // Read messages file
         I18n::class.java.getResourceAsStream(messagesFilePath.format(locale))!!.use { stream ->
@@ -31,21 +44,25 @@ object I18n {
                     val lines = bufferedReader.lines()
 
                     lines.forEach {
-                        if(":" !in it) {
+                        if (":" !in it)
+                        {
                             throw RuntimeException("Malformed messages.yaml")
                         }
 
                         val key = it.substring(0, it.indexOfFirst { it == ':' }).trim()
                         val value = it.substring(it.indexOfFirst { it == ':' } + 1, it.length).trim()
-                        messages[key] = value
+                        result[key] = value
                     }
                 }
             }
         }
+
+        return result.toMap()
     }
 
-    fun get(key: String, args: Map<String, Any> = emptyMap()): String {
-        var message = messages[key] ?: return ""
+    fun get(key: String, args: Map<String, Any> = emptyMap()): String
+    {
+        var message = messages[key] ?: defaultLang[key] ?: "ERROR"
 
         args.entries.forEach { (key, value) ->
             message = message.replace("{${key}}", value.toString())
@@ -53,21 +70,23 @@ object I18n {
             repeat(100) {
                 val matcher = Pattern.compile("\\{$key\\?([\\w']+)\\}").matcher(message)
 
-                if(! matcher.find()) {
+                if (!matcher.find())
+                {
                     return@repeat
                 }
 
-                message = message.replace(matcher.group(0), if(value.toString().toLong() == 1L) "" else matcher.group(1))
+                message = message.replace(matcher.group(0), if (value.toString().toLong() == 1L) "" else matcher.group(1))
             }
 
             repeat(100) {
                 val matcher = Pattern.compile("\\{$key\\?([\\w']+),([\\w']+)\\}").matcher(message)
 
-                if(! matcher.find()) {
+                if (!matcher.find())
+                {
                     return@repeat
                 }
 
-                message = message.replace(matcher.group(0), if(value.toString().toLong() == 1L) matcher.group(1) else matcher.group(2))
+                message = message.replace(matcher.group(0), if (value.toString().toLong() == 1L) matcher.group(1) else matcher.group(2))
             }
         }
 
