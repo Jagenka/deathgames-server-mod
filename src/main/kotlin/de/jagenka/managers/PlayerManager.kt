@@ -7,6 +7,7 @@ import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.team.DGTeam
+import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.minecraft.advancement.criterion.Criteria
@@ -189,6 +190,7 @@ object PlayerManager
     fun onPlayerLeave(player: ServerPlayerEntity)
     {
         if (!DeathGames.running) player.kickFromDGTeam()
+        ReadyCheck.makeUnready(player.name.string)
     }
 
     fun registerAsCurrentlyDead(playerName: String) = currentlyDead.add(playerName)
