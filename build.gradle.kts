@@ -29,6 +29,11 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
     implementation("io.netty:netty-all:4.1.24.Final")
+
+    modImplementation("org.jetbrains.exposed:exposed-core:0.38.2")
+    modImplementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
+    modImplementation("org.xerial:sqlite-jdbc:3.36.0.3")
+
 }
 
 tasks.remapJar {

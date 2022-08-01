@@ -1,14 +1,11 @@
 package de.jagenka.stats
 
 import de.jagenka.team.DGTeam
-import kotlinx.serialization.Serializable
 
-@Serializable
 class PlayerEntry(
     var games: MutableSet<PersonalGameEntry> = mutableSetOf()
 )
 
-@Serializable
 class GameEntry(
     var gameId: Long = 0,
     var gameEnd: Long = 0,
@@ -35,7 +32,6 @@ class GameEntry(
     }
 }
 
-@Serializable
 class PersonalGameEntry(
     var gameId: Long = 0,
     var team: DGTeam? = null,
@@ -47,7 +43,7 @@ class PersonalGameEntry(
     var highestKillStreak: Int = 0,
     var moneyEarned: Int = 0,
     var moneySpent: Int = 0,
-    var accountBalanceAverage: Double = 0.0,
+    var accountBalanceAverage: Float = 0f,
     var cmMovedOnGround: Long = 0,
     var cmMovedInWater: Long = 0,
     var cmFallen: Long = 0,
@@ -79,26 +75,23 @@ class PersonalGameEntry(
     }
 }
 
-@Serializable
 class KillEntry(
     var deceased: String,
     var damageType: DamageType,
     var time: Long
 )
 
-@Serializable
 class DeathEntry(
     var damageType: DamageType,
     var time: Long
 )
 
-@Serializable
 class ItemBoughtEntry(
     var name: String,
-    var price: Int
+    var price: Int,
+    var time: Long
 )
 
-@Serializable
 class StatsBaseEntry(
     var playedGames: MutableSet<GameEntry> = mutableSetOf(),
     var playerEntries: MutableMap<String, PlayerEntry> = mutableMapOf()

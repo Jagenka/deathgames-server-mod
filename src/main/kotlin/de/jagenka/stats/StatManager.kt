@@ -26,7 +26,7 @@ object StatManager
     fun addBoughtItem(playerName: String, shopEntry: ShopEntry, price: Int)
     {
         val itemsBought = personalStats.gib(playerName).itemsBought.toMutableList()
-        itemsBought.add(ItemBoughtEntry(shopEntry.nameForStat, price))
+        itemsBought.add(ItemBoughtEntry(shopEntry.nameForStat, price, System.currentTimeMillis()))
         personalStats.gib(playerName).itemsBought = itemsBought
     }
 
@@ -120,15 +120,14 @@ object StatManager
         gameStats.captureEnabled = Config.captureEnabled
         gameStats.map = minecraftServer?.getSavePath(WorldSavePath.ROOT)?.parent?.fileName.toString()
 
-        StatsIO.stats.playedGames.add(gameStats)
+        StatsIO.storeGame(gameStats)
 
         PlayerManager.getPlayers().forEach { playerName ->
             personalStats.gib(playerName).gameId = DeathGames.gameId ?: return false
             personalStats.gib(playerName).team = PlayerManager.getTeam(playerName)
-            StatsIO.stats.playerEntries.getOrPut(playerName) { PlayerEntry() }.games.add(personalStats.gib(playerName))
+            StatsIO.storePlayer(playerName, personalStats.gib(playerName))
         }
 
-        StatsIO.store()
         return true
     }
 }
