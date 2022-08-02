@@ -37,6 +37,7 @@ nowReady: Du bist jetzt bereit.
 noLongerReady: Du bist nicht mehr bereit.
 startGame: Starte das Spiel
 cantStartGame: Das Spiel kann nicht gestartet werden! Nicht bereit sind: {players}
+notEnoughTeams: Das Spiel kann nicht mit weniger als 2 Teams gestartet werden!
 and: und
 openTeamUI: Drücke F um dein Team auszuwählen.
 nowGlowing: {playerName} leuchtet jetzt.

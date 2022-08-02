@@ -24,6 +24,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
 import net.minecraft.text.Texts
+import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
 
@@ -56,8 +57,13 @@ object DeathGames : DedicatedServerModInitializer
     fun startGameWithCountdown()
     {
         if (!isEnabled) return
-
         if (currentlyStarting) return
+        if (PlayerManager.getNonEmptyTeams().size < 2)
+        {
+            DisplayManager.sendChatMessage(literal(I18n.get("notEnoughTeams")).getWithStyle(Style.EMPTY.withColor(Formatting.RED))[0])
+            return
+        }
+
         currentlyStarting = true
 
         PlayerManager.getOnlinePlayers().forEach { player ->
