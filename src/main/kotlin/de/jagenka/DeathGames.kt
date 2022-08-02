@@ -169,8 +169,8 @@ object DeathGames : DedicatedServerModInitializer
 
         DisplayManager.sendChatMessage("")
         DisplayManager.sendChatMessage(literal("Player K/Ds:").getWithStyle(Style.EMPTY.withBold(true))[0])
-        KillManager.getKDs().forEach { (playerName, kd) ->
-            DisplayManager.sendChatMessage("$playerName: $kd")
+        StatManager.getKDs().forEach { (playerName, kills, deaths) ->
+            DisplayManager.sendChatMessage("$playerName: $kills / $deaths")
         }
         DisplayManager.sendChatMessage("")
 

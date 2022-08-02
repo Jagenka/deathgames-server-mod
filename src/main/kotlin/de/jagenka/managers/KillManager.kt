@@ -27,8 +27,6 @@ object KillManager
     private val playerKillStreak = mutableMapOf<String, Int>().withDefault { 0 }
     private val teamKillStreak = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
-    private val kDEntries = mutableMapOf<String, KD>()
-
     var livesMode = Mode.TEAM
     var killStreakMode = Mode.PLAYER
 
@@ -50,10 +48,6 @@ object KillManager
         }, 5.seconds())
 
         if (!DeathGames.running) return
-
-        val playerKD = kDEntries[playerName]
-        if (playerKD != null) playerKD.addDeath()
-        else kDEntries[playerName] = KD(0, 1)
 
         removeOneRespawn(deceased)
 
@@ -86,10 +80,6 @@ object KillManager
         if (attacker.getDGTeam() == deceased.getDGTeam()) return
 
         val attackerName = attacker.name.string
-
-        val playerKD = kDEntries[attackerName]
-        if (playerKD != null) playerKD.addKill()
-        else kDEntries[attackerName] = KD(1, 0)
 
         when (killStreakMode)
         {
@@ -191,28 +181,12 @@ object KillManager
         }
     }
 
-    fun getKDs() = kDEntries.toList().sortedByDescending { (_, kd) -> kd.getRatio() }
-
     fun reset()
     {
         playerRespawns.clear()
         teamRespawns.clear()
         playerKillStreak.clear()
         teamKillStreak.clear()
-        kDEntries.clear()
-    }
-}
-
-data class KD(var kills: Int, var deaths: Int)
-{
-    fun addKill() = kills++
-    fun addDeath() = deaths++
-
-    fun getRatio() = kills.toDouble() / deaths.coerceAtLeast(1).toDouble()
-
-    override fun toString(): String
-    {
-        return "$kills / $deaths"
     }
 }
 

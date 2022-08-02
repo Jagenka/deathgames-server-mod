@@ -110,6 +110,21 @@ object StatManager
     }
 
     /**
+     * @return list of tracked KDs sorted by ration. a list element is a triple of (playerName, kills, deaths)
+     */
+    fun getKDs(): List<Triple<String, Int, Int>>
+    {
+        val result = mutableListOf<Triple<String, Int, Int>>()
+        personalStats.forEach { (playerName, personalGameEntry) ->
+            result.add(Triple(playerName, personalGameEntry.kills.count(), personalGameEntry.deaths.count()))
+        }
+        return result.sortedByDescending {
+            (it.second.toDouble() / it.third.coerceAtLeast(1).toDouble()) +
+                    if (it.third == 0) 1 else 0 // zero deaths is better than one death
+        }
+    }
+
+    /**
      * @return if saving was successful
      */
     fun saveAllStatsAfterGame(): Boolean
