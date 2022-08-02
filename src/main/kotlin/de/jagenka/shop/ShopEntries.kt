@@ -83,7 +83,7 @@ object ShopEntries
                 slot(1, 8) to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
                 slot(3, 7) to ItemShopEntry(TrapItems.SNARE_TRAP.item, 10, "Stop right there, criminal scum!"),
                 slot(3, 8) to ItemShopEntry(TrapItems.VOID_TRAP.item, 10, "The Abyss"),
-                slot(0, 3) to ItemShopEntry(ItemStack(SHIELD).withDamage(217), 50, "Shield"),
+                slot(0, 3) to ShieldShopEntry(),
                 slot(4, 1) to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
                 slot(4, 8) to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),
                 slot(2, 8) to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
@@ -162,27 +162,27 @@ object ShopEntries
             return entries.toMap()
         }
 
-    private fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()
+    fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()
 
-    private fun ItemStack.makeUnbreakable(): ItemStack
+    fun ItemStack.makeUnbreakable(): ItemStack
     {
         this.orCreateNbt.putInt("Unbreakable", 1)
         return this
     }
 
-    private fun ItemStack.withEnchantment(enchantment: Enchantment, level: Int): ItemStack
+    fun ItemStack.withEnchantment(enchantment: Enchantment, level: Int): ItemStack
     {
         this.addEnchantment(enchantment, level)
         return this
     }
 
-    private fun ItemStack.withName(name: String): ItemStack
+    fun ItemStack.withName(name: String): ItemStack
     {
         this.setCustomName(Text.of(name))
         return this
     }
 
-    private fun ItemStack.withDamage(damage: Int): ItemStack
+    fun ItemStack.withDamage(damage: Int): ItemStack
     {
         this.damage = damage
         return this
