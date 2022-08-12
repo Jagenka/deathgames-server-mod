@@ -6,7 +6,6 @@ import de.jagenka.team.DGTeam
 import de.jagenka.timer.ticks
 import de.jagenka.util.I18n
 import net.minecraft.entity.boss.BossBar
-import net.minecraft.network.message.MessageType
 import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket
 import net.minecraft.network.packet.s2c.play.TitleFadeS2CPacket
@@ -167,7 +166,7 @@ object DisplayManager
     fun sendChatMessage(text: Text)
     {
         ifServerLoaded {
-            it.playerManager.broadcast(text, MessageType.TELLRAW_COMMAND)
+            it.playerManager.broadcast(text, false)
         }
     }
 
