@@ -6,13 +6,13 @@ import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager
+import de.jagenka.rotateAroundVector
 import net.minecraft.particle.DustParticleEffect
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3f
-import kotlin.math.absoluteValue
-import kotlin.math.cos
-import kotlin.math.pow
-import kotlin.math.sin
+import java.net.URLDecoder
+import kotlin.math.*
+import kotlin.random.Random
 
 object CaptureAnimation
 {
@@ -20,8 +20,9 @@ object CaptureAnimation
     val RADIUS
         get() = Config.configEntry.spawns.platformRadius + 0.8
     const val VISIBILITY_RANGE = 60.0
+    val orbModel = PlyImporter.parsePlyFromFile(URLDecoder.decode(CaptureAnimation::class.java.getResource("/models/OrbV2.ply").path, "UTF-8"))
 
-    fun render(captureProgress: Map<DGSpawn, Int>)
+    fun renderSpiral(captureProgress: Map<DGSpawn, Int>)
     {
         if (!Config.captureEnabled)
         {
@@ -34,10 +35,10 @@ object CaptureAnimation
                 val playersOnSpawn = PlayerManager.getOnlineParticipatingPlayers().filter { spawn.containsPlayer(it) }
                 val teamsOnSpawn = playersOnSpawn.map { it.getDGTeam() }.toSet()
 
-                val globalRotation = (System.currentTimeMillis() % 18000).toDouble() / 18000.0 * Math.PI * 2.0
+                val globalRotation = Gradient.globalGradient(18000) * Math.PI * 2.0
 
-                val angle = (System.currentTimeMillis() % 6000).toDouble() / 6000.0 * Math.PI * 2.0 + globalRotation
-                val height = (System.currentTimeMillis() % 2000).toDouble() / 2000.0 * 6.0
+                val angle = Gradient.globalGradient(6000) * Math.PI * 2.0 + globalRotation
+                val height = Gradient.globalGradient(2000) * 6.0
                 val captureDistance = (1.0 - (Config.captureTimeNeeded - progress).toFloat() / Config.captureTimeNeeded.toFloat()) * RADIUS
 
                 val angles = if ((Config.captureTimeNeeded - progress).absoluteValue > 0.5)
@@ -79,5 +80,78 @@ object CaptureAnimation
 
     }
 
+    fun renderOrb(captureProgress: Map<DGSpawn, Int>)
+    {
+        if (!Config.captureEnabled)
+        {
+            return
+        }
 
+        ifServerLoaded { server ->
+            captureProgress.forEach { (spawn, progress) ->
+                // Get teams on spawn for particle colors
+                val playersOnSpawn = PlayerManager.getOnlineParticipatingPlayers().filter { spawn.containsPlayer(it) }
+                val teamsOnSpawn = playersOnSpawn.map { it.getDGTeam() }.toSet()
+
+                val orb = spawn.coordinates.toVec3d().add(Vec3d(0.0, 6.0, 0.0))
+                val orbM = orbModel.clone()
+                // This is just volume for a sphere solved for radius, using max radius 5.0 (max Volume is 268.1)
+                val orbSize = ((progress.toDouble() / Config.captureTimeNeeded.toDouble()) * 268.1 * (3.0 / 4.0) / PI).pow(1.0/3.0)
+                orbM.translate(orb)
+                orbM.scale(orbSize/1.5, orb)
+                orbM.rotate(Vec3d(0.0, 1.0, 0.0), Gradient.globalGradient(9000) * 360, orb)
+
+                val beamOrigin = spawn.coordinates.toVec3d().add(Vec3d(1.0, 0.0, 0.0).multiply(Config.spawnPlatformRadius.toDouble()))
+                val beamLine = ParticleRenderer.generateLine(beamOrigin, orb, 0.2)
+
+                val particles = mutableSetOf<Vec3d>()
+                particles.addAll(orbM.getVertices())
+
+                (0 until 8).forEach random@{ vertex ->
+                    if (Random.nextDouble() < 0.5) return@random
+                    particles.add(beamLine.map { point ->
+                        point.subtract(orb).rotateAroundVector(Vec3d(0.0, 1.0, 0.0), 45f * vertex).add(orb)
+                    }[round(Gradient.globalGradient(2000) * beamLine.lastIndex).toInt()])
+                }
+
+                PlayerManager.getOnlinePlayers().forEach inner@{ player ->
+                    // we're using force on the particle, this makes the default range 512 blocks (instead of 32), so let's trim that
+                    if (player.pos.subtract(spawn.coordinates.toVec3d()).lengthSquared() > VISIBILITY_RANGE.pow(2.0))
+                    {
+                        return@inner
+                    }
+
+                    val orbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorVector() ?: Vec3f(0f, 0f, 0f), 1f)
+                    ParticleRenderer.drawMultipleParticlesWorld(server, player, orbParticle, particles)
+                }
+            }
+        }
+    }
+
+    class Gradient
+    {
+        companion object {
+            val data: Map<Vec3d, Int> = mutableMapOf()
+
+            /**
+             * Calculates the percentage of passed rotation based on given rotation time. This synchronizes all animations using this function.
+             * @return Percentage of the gradient.
+             */
+            fun globalGradient(rotationTimeInMillis: Int): Double
+            {
+                return (System.currentTimeMillis() % rotationTimeInMillis).toDouble() / rotationTimeInMillis.toDouble()
+            }
+
+            /**
+             * Calculates the percentage of passed rotation based on given rotation time and an offset, which enables you to have asynchronous animations.
+             * @return Percentage of the gradient.
+             */
+//            fun gradient(startTime: Long, rotationTimeInMillis: Int): Double
+//            {
+//                val diff = System.currentTimeMillis() % rotationTimeInMillis
+//                val returnVal = (currentTime - lastTime % rotationTimeInMillis).toDouble() / rotationTimeInMillis.toDouble()
+//                return returnVal
+//            }
+        }
+    }
 }
