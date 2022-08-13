@@ -12,7 +12,10 @@ object PlyImporter
 
     fun parsePlyFromFile(path: String): ParticleRenderer.VertexStructure
     {
+        reading = false
         edges = ParticleRenderer.VertexStructure()
+        vertexList.clear()
+        faceList.clear()
         // Fill lists
         val file = File(path)
         if (!file.exists())
