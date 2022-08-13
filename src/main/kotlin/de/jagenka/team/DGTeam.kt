@@ -1,5 +1,6 @@
 package de.jagenka.team
 
+import de.jagenka.Util
 import de.jagenka.isSame
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isParticipating
@@ -9,6 +10,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import net.minecraft.util.math.Vec3f
 
 enum class DGTeam
 {
@@ -34,6 +36,8 @@ enum class DGTeam
             YELLOW -> Blocks.YELLOW_CONCRETE
         }
     }
+
+    fun getColorVector(): Vec3f = Util.getRGBVec3fForInt(Formatting.byName(this.name.lowercase())?.colorValue ?: 0xFFFFFF)
 
     fun getPlayers() = PlayerManager.getPlayersInTeam(this)
 
