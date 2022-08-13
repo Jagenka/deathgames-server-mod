@@ -3,11 +3,17 @@ package de.jagenka.gameplay.rendering
 import de.jagenka.Util
 import de.jagenka.floor
 import de.jagenka.managers.PlayerManager
+import de.jagenka.rotateAroundVector
 import net.minecraft.particle.ParticleEffect
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
+import kotlin.math.PI
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.random.Random
 
 object ParticleRenderer {
 
@@ -30,7 +36,7 @@ object ParticleRenderer {
         }
     }
 
-    private fun generateLine(point1: Vec3d, point2: Vec3d, vertexSpacing: Double): List<Vec3d>
+    fun generateLine(point1: Vec3d, point2: Vec3d, vertexSpacing: Double): List<Vec3d>
     {
         val vertices: MutableList<Vec3d> = mutableListOf()
         val vector: Vec3d = point2.subtract(point1)
@@ -49,11 +55,31 @@ object ParticleRenderer {
         return vertices
     }
 
-    private fun drawParticlesFromVertexStructure(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, edges: VertexStructure)
+    fun drawParticlesFromVertexStructure(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, edges: VertexStructure)
     {
         edges.getSet().forEach { edge ->
-            drawMultipleParticles(server, player, particle, generateLine(edge.point1, edge.point2, 0.1))
+            drawMultipleParticlesWorld(server, player, particle, generateLine(edge.point1, edge.point2, 0.1))
         }
+    }
+
+    fun drawParticlesFromVertexStructures(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, structures: Collection<VertexStructure>)
+    {
+        structures.forEach {
+            drawParticlesFromVertexStructure(server, player, particle, it)
+        }
+    }
+
+    fun getRandomNormalVector(): Vec3d
+    {
+        val phi = Random.nextDouble(0.0, 2 * PI)
+        val cosTheta = Random.nextDouble(-1.0, 1.0)
+
+        val theta = acos(cosTheta)
+        val x = sin(theta) * cos(phi)
+        val y = sin(theta) * sin(phi)
+
+        // z is cosTheta
+        return Vec3d(x, y, cosTheta)
     }
 
     fun drawParticlesFromVertexTreeElement(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertex: VertexTreeElement)
@@ -81,11 +107,6 @@ object ParticleRenderer {
         vertices.forEach {vertex: Vec3d ->
             server.overworld.spawnParticles(player, particle, true, vertex.x, vertex.y, vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
-    }
-
-    private fun packVertices(vararg vertex: Vec3d): List<Vec3d>
-    {
-        return vertex.toList()
     }
 
     class VertexTreeElement(val position: Vec3d, var parent: VertexTreeElement? = null, val children: MutableList<VertexTreeElement> = mutableListOf())
@@ -137,15 +158,30 @@ object ParticleRenderer {
 
     data class Edge(val point1: Vec3d, val point2: Vec3d)
     {
-        fun equals(other: Edge): Boolean
+        override fun equals(other: Any?): Boolean
         {
-            return (point1 == other.point1) && (point2 == other.point2) || (point1 == other.point2) && (point2 == other.point1)
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as Edge
+
+            if (point1 != other.point1) return false
+            if (point2 != other.point2) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int
+        {
+            var result = point1.hashCode()
+            result = 31 * result + point2.hashCode()
+            return result
         }
     }
 
     class VertexStructure
     {
-        private val edges: MutableSet<Edge> = mutableSetOf()
+        private var edges: MutableSet<Edge> = mutableSetOf()
 
         fun add(edge: Edge): Boolean
         {
@@ -162,9 +198,49 @@ object ParticleRenderer {
             return edges
         }
 
+        fun getVertices(): List<Vec3d>
+        {
+            return edges.flatMap { listOf(it.point1, it.point2) }
+        }
+
+        fun scale(value: Double, origin: Vec3d = Vec3d.ZERO)
+        {
+            edges = edges.map {
+                val newP1 = it.point1.subtract(origin).multiply(value).add(origin)
+                val newP2 = it.point2.subtract(origin).multiply(value).add(origin)
+                Edge(newP1, newP2)
+            }.toMutableSet()
+        }
+
+        fun rotate(vector: Vec3d, degrees: Double, origin: Vec3d = Vec3d.ZERO)
+        {
+            edges = edges.map {
+                val newP1 = it.point1.subtract(origin).rotateAroundVector(vector, degrees.toFloat()).add(origin)
+                val newP2 = it.point2.subtract(origin).rotateAroundVector(vector, degrees.toFloat()).add(origin)
+                Edge(newP1, newP2)
+            }.toMutableSet()
+        }
+
+        fun translate(vector: Vec3d)
+        {
+            edges = edges.map {
+                val newP1 = it.point1.add(vector)
+                val newP2 = it.point2.add(vector)
+                Edge(newP1, newP2)
+            }.toMutableSet()
+        }
+
         fun isEmpty(): Boolean
         {
             return edges.isEmpty()
+        }
+
+        fun clone(): VertexStructure {
+            val newVS = VertexStructure()
+            edges.map {
+                newVS.add(it)
+            }
+            return newVS
         }
     }
 }
