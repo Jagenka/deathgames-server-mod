@@ -34,3 +34,4 @@ bin/
 
 run/
 /logs/latest.log
+/remappedSrc/
