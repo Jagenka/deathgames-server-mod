@@ -3,6 +3,7 @@ package de.jagenka.timer
 import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config.captureEnabled
 import de.jagenka.config.Config.captureTimeNeeded
+import de.jagenka.gameplay.rendering.CaptureAnimation
 import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
@@ -76,6 +77,9 @@ object CaptureSpawnTask : TimerTask
         PlayerManager.getOnlinePlayers()
             .filter { player -> player !in playersOnAnySpawn.map { pair -> pair.first } }
             .forEach { player -> DisplayManager.removeBossBarForPlayer(player, idSuffix = "capture") }
+
+        val underAttackSpawnProgress = captureProgress.filterKeys { it in playersOnAnySpawn.map { (_, spawn) -> spawn }.toSet() }
+        CaptureAnimation.renderOrb(underAttackSpawnProgress)
     }
 
     fun sendCaptureMessage(oldTeam: DGTeam?, newTeam: DGTeam)

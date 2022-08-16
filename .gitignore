@@ -35,3 +35,4 @@ bin/
 run/
 /logs/latest.log
 /remappedSrc/
+/src/main/resources/models/festung.ply

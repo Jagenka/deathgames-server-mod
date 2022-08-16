@@ -6,13 +6,16 @@ import java.io.File
 object PlyImporter
 {
     private var reading: Boolean = false
-    private var edges: GPS.VertexStructure = GPS.VertexStructure()
-    private val vertexList: MutableList<GPS.VertexTreeElement> = mutableListOf()
+    private var edges: ParticleRenderer.VertexStructure = ParticleRenderer.VertexStructure()
+    private val vertexList: MutableList<ParticleRenderer.VertexTreeElement> = mutableListOf()
     private val faceList: MutableList<MutableList<Int>> = mutableListOf()
 
-    fun parsePlyFromFile(path: String): GPS.VertexStructure
+    fun parsePlyFromFile(path: String): ParticleRenderer.VertexStructure
     {
-        edges = GPS.VertexStructure()
+        reading = false
+        edges = ParticleRenderer.VertexStructure()
+        vertexList.clear()
+        faceList.clear()
         // Fill lists
         val file = File(path)
         if (!file.exists())
@@ -43,7 +46,7 @@ object PlyImporter
             if (vertex_count > 0)
             {
                 vertexList.add(
-                    GPS.VertexTreeElement(
+                    ParticleRenderer.VertexTreeElement(
                         Vec3d(
                             elements[0].toDouble(),
                             elements[1].toDouble(),
@@ -66,7 +69,7 @@ object PlyImporter
             polygon.forEachIndexed { index, vertexIndex ->
                 val derEineVertex = vertexList[vertexIndex].position
                 val derAndereVertex = vertexList[polygon[(index + 1).mod(polygon.size)]].position
-                edges.add(GPS.Edge(derEineVertex, derAndereVertex))
+                edges.add(ParticleRenderer.Edge(derEineVertex, derAndereVertex))
             }
         }
         return edges
