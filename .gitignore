@@ -36,5 +36,3 @@ run/
 /logs/latest.log
 /remappedSrc/
 /src/main/resources/models/festung.ply
-/gradle.properties
-/src/main/resources/fabric.mod.json
