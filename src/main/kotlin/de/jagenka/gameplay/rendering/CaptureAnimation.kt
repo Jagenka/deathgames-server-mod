@@ -20,7 +20,14 @@ object CaptureAnimation
     val RADIUS
         get() = Config.configEntry.spawns.platformRadius + 0.8
     const val VISIBILITY_RANGE = 60.0
-    val orbModel = PlyImporter.parsePlyFromFile(URLDecoder.decode(CaptureAnimation::class.java.getResource("/models/OrbV2.ply").path, "UTF-8"))
+    private val orbModel: ParticleRenderer.VertexStructure
+
+    init
+    {
+        CaptureAnimation::class.java.getResourceAsStream("/models/OrbV2.ply").use { stream ->
+            orbModel = PlyImporter.parsePlyFromStream(stream!!)
+        }
+    }
 
     fun renderSpiral(captureProgress: Map<DGSpawn, Int>)
     {
@@ -42,7 +49,15 @@ object CaptureAnimation
                 val captureDistance = (1.0 - (Config.captureTimeNeeded - progress).toFloat() / Config.captureTimeNeeded.toFloat()) * RADIUS
 
                 val angles = if ((Config.captureTimeNeeded - progress).absoluteValue > 0.5)
-                    listOf(angle, angle + Math.PI * 2.0 * 1.0 / 6.0, angle + Math.PI * 2.0 * 2.0 / 6.0, angle + Math.PI * 2.0 * 1.0 / 6.0, angle + Math.PI * 2.0 * 3.0 / 6.0, angle + Math.PI * 2.0 * 4.0 / 6.0, angle + Math.PI * 2.0 * 5.0 / 6.0)
+                    listOf(
+                        angle,
+                        angle + Math.PI * 2.0 * 1.0 / 6.0,
+                        angle + Math.PI * 2.0 * 2.0 / 6.0,
+                        angle + Math.PI * 2.0 * 1.0 / 6.0,
+                        angle + Math.PI * 2.0 * 3.0 / 6.0,
+                        angle + Math.PI * 2.0 * 4.0 / 6.0,
+                        angle + Math.PI * 2.0 * 5.0 / 6.0
+                    )
                 else
                     (0 until 360).map { it.toDouble() / 360.0 * Math.PI * 2.0 }
 
@@ -96,9 +111,9 @@ object CaptureAnimation
                 val orb = spawn.coordinates.toVec3d().add(Vec3d(0.0, 6.0, 0.0))
                 val orbM = orbModel.clone()
                 // This is just volume for a sphere solved for radius, using max radius 5.0 (max Volume is 268.1)
-                val orbSize = ((progress.toDouble() / Config.captureTimeNeeded.toDouble()) * 268.1 * (3.0 / 4.0) / PI).pow(1.0/3.0)
+                val orbSize = ((progress.toDouble() / Config.captureTimeNeeded.toDouble()) * 268.1 * (3.0 / 4.0) / PI).pow(1.0 / 3.0)
                 orbM.translate(orb)
-                orbM.scale(orbSize/1.5, orb)
+                orbM.scale(orbSize / 1.5, orb)
                 orbM.rotate(Vec3d(0.0, 1.0, 0.0), Gradient.globalGradient(9000) * 360, orb)
 
                 val beamOrigin = spawn.coordinates.toVec3d().add(Vec3d(1.0, 0.0, 0.0).multiply(Config.spawnPlatformRadius.toDouble()))
@@ -130,7 +145,8 @@ object CaptureAnimation
 
     class Gradient
     {
-        companion object {
+        companion object
+        {
             val data: Map<Vec3d, Int> = mutableMapOf()
 
             /**

@@ -15,27 +15,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
-object ParticleRenderer {
-
-    private val model =
-        PlyImporter.parsePlyFromFile("C:/Programming Projects/deathgames-server-mod/src/main/resources/models/Squirtle.ply")
-
-    fun renderCube()
-    {
-        Util.ifServerLoaded { server ->
-            PlayerManager.getOnlinePlayers().forEach { player ->
-                val lookDirection = player.rotationVector.normalize()
-                val offset = Vec3d(lookDirection.x, 0.0, lookDirection.z).multiply(3.0)
-                val finalStructure = VertexStructure()
-                if (model.isEmpty()) return@ifServerLoaded
-                model.getSet().forEach { edge ->
-                    finalStructure.add(Edge(edge.point1.add(offset), edge.point2.add(offset)))
-                }
-                drawParticlesFromVertexStructure(server, player, ParticleTypes.WAX_OFF, finalStructure)
-            }
-        }
-    }
-
+object ParticleRenderer
+{
     fun generateLine(point1: Vec3d, point2: Vec3d, vertexSpacing: Double): List<Vec3d>
     {
         val vertices: MutableList<Vec3d> = mutableListOf()
@@ -104,7 +85,7 @@ object ParticleRenderer {
 
     fun drawMultipleParticlesWorld(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertices: Collection<Vec3d>)
     {
-        vertices.forEach {vertex: Vec3d ->
+        vertices.forEach { vertex: Vec3d ->
             server.overworld.spawnParticles(player, particle, true, vertex.x, vertex.y, vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
     }
@@ -235,7 +216,8 @@ object ParticleRenderer {
             return edges.isEmpty()
         }
 
-        fun clone(): VertexStructure {
+        fun clone(): VertexStructure
+        {
             val newVS = VertexStructure()
             edges.map {
                 newVS.add(it)
