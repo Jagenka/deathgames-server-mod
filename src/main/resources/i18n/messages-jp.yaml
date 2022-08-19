@@ -43,3 +43,17 @@ nowGlowing: {playerName}はマークさられている。
 captureTeamSpawn: {newTeam}は{oldTeam}のスポーンを打ち勝った！
 captureASpawn: {newTeam}はスポーンを打ち勝った！
 captureProgress: スポーンは打ち勝たれている。。。
+teamBlack: 黒色
+teamDarkGreen: 緑色
+teamDarkAqua: 青緑色
+teamDarkRed: 赤色
+teamDarkPurple: 紫色
+teamGold: 金色
+teamGray: 薄灰色
+teamDarkGray: 灰色
+teamBlue: 青色
+teamGreen: 黄緑色
+teamAqua: 空青色
+teamRed: 薄赤色
+teamLightPurple: 赤紫色
+teamYellow: 黄色
