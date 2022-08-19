@@ -10,7 +10,6 @@ import de.jagenka.rotateAroundVector
 import net.minecraft.particle.DustParticleEffect
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3f
-import java.net.URLDecoder
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -49,15 +48,7 @@ object CaptureAnimation
                 val captureDistance = (1.0 - (Config.captureTimeNeeded - progress).toFloat() / Config.captureTimeNeeded.toFloat()) * RADIUS
 
                 val angles = if ((Config.captureTimeNeeded - progress).absoluteValue > 0.5)
-                    listOf(
-                        angle,
-                        angle + Math.PI * 2.0 * 1.0 / 6.0,
-                        angle + Math.PI * 2.0 * 2.0 / 6.0,
-                        angle + Math.PI * 2.0 * 1.0 / 6.0,
-                        angle + Math.PI * 2.0 * 3.0 / 6.0,
-                        angle + Math.PI * 2.0 * 4.0 / 6.0,
-                        angle + Math.PI * 2.0 * 5.0 / 6.0
-                    )
+                    listOf(angle, angle + Math.PI * 2.0 * 1.0 / 6.0, angle + Math.PI * 2.0 * 2.0 / 6.0, angle + Math.PI * 2.0 * 1.0 / 6.0, angle + Math.PI * 2.0 * 3.0 / 6.0, angle + Math.PI * 2.0 * 4.0 / 6.0, angle + Math.PI * 2.0 * 5.0 / 6.0)
                 else
                     (0 until 360).map { it.toDouble() / 360.0 * Math.PI * 2.0 }
 
@@ -111,9 +102,9 @@ object CaptureAnimation
                 val orb = spawn.coordinates.toVec3d().add(Vec3d(0.0, 6.0, 0.0))
                 val orbM = orbModel.clone()
                 // This is just volume for a sphere solved for radius, using max radius 5.0 (max Volume is 268.1)
-                val orbSize = ((progress.toDouble() / Config.captureTimeNeeded.toDouble()) * 268.1 * (3.0 / 4.0) / PI).pow(1.0 / 3.0)
+                val orbSize = ((progress.toDouble() / Config.captureTimeNeeded.toDouble()) * 268.1 * (3.0 / 4.0) / PI).pow(1.0/3.0)
                 orbM.translate(orb)
-                orbM.scale(orbSize / 1.5, orb)
+                orbM.scale(orbSize/1.5, orb)
                 orbM.rotate(Vec3d(0.0, 1.0, 0.0), Gradient.globalGradient(9000) * 360, orb)
 
                 val beamOrigin = spawn.coordinates.toVec3d().add(Vec3d(1.0, 0.0, 0.0).multiply(Config.spawnPlatformRadius.toDouble()))
@@ -123,7 +114,8 @@ object CaptureAnimation
                 particles.addAll(orbM.getVertices())
 
                 (0 until 8).forEach random@{ vertex ->
-                    if (Random.nextDouble() < 0.5) return@random
+                    if (Random.nextDouble() < 0.1) return@random
+                    Gradient.gradient(vertex, Random.nextInt(500, 3000))
                     particles.add(beamLine.map { point ->
                         point.subtract(orb).rotateAroundVector(Vec3d(0.0, 1.0, 0.0), 45f * vertex).add(orb)
                     }[round(Gradient.globalGradient(2000) * beamLine.lastIndex).toInt()])
@@ -145,9 +137,10 @@ object CaptureAnimation
 
     class Gradient
     {
-        companion object
-        {
-            val data: Map<Vec3d, Int> = mutableMapOf()
+        companion object {
+            private val refTime = System.currentTimeMillis()
+            //Index - Offset|Length
+            private val timingData: MutableMap<Int, Pair<Long, Int>> = mutableMapOf()
 
             /**
              * Calculates the percentage of passed rotation based on given rotation time. This synchronizes all animations using this function.
@@ -162,12 +155,28 @@ object CaptureAnimation
              * Calculates the percentage of passed rotation based on given rotation time and an offset, which enables you to have asynchronous animations.
              * @return Percentage of the gradient.
              */
-//            fun gradient(startTime: Long, rotationTimeInMillis: Int): Double
-//            {
-//                val diff = System.currentTimeMillis() % rotationTimeInMillis
-//                val returnVal = (currentTime - lastTime % rotationTimeInMillis).toDouble() / rotationTimeInMillis.toDouble()
-//                return returnVal
-//            }
+            fun gradient(index: Int, cycle: Int): Double
+            {
+                if (!isPresent(index)) timingData[index] = Pair(System.currentTimeMillis() - refTime, cycle)
+                val curData = timingData[index]
+                return if (curData != null)
+                {
+                    (System.currentTimeMillis() + curData.first % curData.second).toDouble() / curData.second.toDouble()
+                } else
+                {
+                    println("No entry found, using global gradient with default animation duration.")
+                    globalGradient(2000)
+                }
+            }
+
+            /**
+             * Checks, if key is present in the collection.
+             * @return True, if value is present, false otherwise.
+             */
+            fun isPresent(key: Int): Boolean
+            {
+                return timingData.contains(key)
+            }
         }
     }
 }
