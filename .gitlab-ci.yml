@@ -41,4 +41,4 @@ release_job:
     assets:
       links:
       - name: 'Mod Files'
-        url: 'https://gitlab.jagenka.de/jagenka/deathgames-server-mod/-/jobs/317/artifacts/file/build/libs/'
+        url: 'https://gitlab.jagenka.de/jagenka/deathgames-server-mod/-/jobs/$CI_JOB_ID/artifacts/file/build/libs/'
