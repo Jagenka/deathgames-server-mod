@@ -121,7 +121,7 @@ object StatManager
         return result.sortedByDescending {
             (it.second.toDouble() / it.third.coerceAtLeast(1).toDouble()) +
                     if (it.third == 0) 1 else 0 // zero deaths is better than one death
-        }
+        }.filter { PlayerManager.getOnlinePlayer(it.first)?.isSpectator != true }
     }
 
     /**
