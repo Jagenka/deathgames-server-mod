@@ -10,15 +10,21 @@ object I18n
 
     const val messagesFilePath = "/i18n/messages-%s.yaml"
 
-    val locale: String
+    var locale: String = "en"
+        private set
     var messages = mapOf<String, String>()
         private set
     var defaultLang = mapOf<String, String>()
         private set
 
     init
-    { //TODO: init again after change
-        var locale = Config.configEntry.general.locale //TODO das wird zu bald geladen ? lazy load
+    {
+        loadI18n()
+    }
+
+    fun loadI18n()
+    {
+        var locale = Config.configEntry.general.locale
 
         I18n::class.java.getResourceAsStream(messagesFilePath.format(locale)).use { stream ->
             if (locale.isBlank() || stream == null)
@@ -29,7 +35,7 @@ object I18n
 
         I18n.locale = locale
 
-        if(locale != "en") defaultLang = readLocale("en")
+        if (locale != "en") defaultLang = readLocale("en")
         messages = readLocale(locale)
     }
 

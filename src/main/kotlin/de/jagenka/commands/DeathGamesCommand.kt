@@ -13,6 +13,7 @@ import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.Timer
+import de.jagenka.util.I18n
 import net.minecraft.command.CommandSource
 import net.minecraft.server.command.CommandManager.argument
 import net.minecraft.server.command.CommandManager.literal
@@ -125,6 +126,7 @@ object DeathGamesCommand
                         try
                         {
                             Config.load()
+                            I18n.loadI18n()
                             it.source.sendFeedback(Text.literal("config reloaded"), true)
                         } catch (e: Exception)
                         {
