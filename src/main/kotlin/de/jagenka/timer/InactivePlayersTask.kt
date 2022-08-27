@@ -73,7 +73,10 @@ object InactivePlayersTask : TimerTask
                 }
 
                 highlightedPlayers.add(playerName)
-                PlayerManager.getOnlinePlayer(playerName)?.addStatusEffect(StatusEffectInstance(StatusEffects.GLOWING, 2.seconds(), 0, false, false))
+                if(PlayerManager.getOnlinePlayer(playerName)?.activeStatusEffects?.contains(StatusEffects.INVISIBILITY) != true)
+                {
+                    PlayerManager.getOnlinePlayer(playerName)?.addStatusEffect(StatusEffectInstance(StatusEffects.GLOWING, 2.seconds(), 0, false, false))
+                }
             } else
             {
                 highlightedPlayers.remove(playerName)
