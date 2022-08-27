@@ -117,6 +117,7 @@ object ShopTask : TimerTask
     fun exitShop(player: ServerPlayerEntity)
     {
         SpawnManager.teleportPlayerToSpawn(player)
+        player.extinguish()
         timeInShop[player.name.string] = 0
         player.closeHandledScreen()
     }
