@@ -9,8 +9,7 @@ import de.jagenka.managers.SpawnManager
 import de.jagenka.rotateAroundVector
 import net.minecraft.particle.DustParticleEffect
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3f
-import java.net.URLDecoder
+import org.joml.Vector3f
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -85,7 +84,7 @@ object CaptureAnimation
                         return@inner
                     }
 
-                    val rgbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorVector() ?: Vec3f(0f, 0f, 0f), 4f)
+                    val rgbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorVector() ?: Vector3f(0f, 0f, 0f), 4f)
                     ParticleRenderer.drawMultipleParticlesWorld(server, player, rgbParticle, particles)
                 }
 
@@ -114,7 +113,7 @@ object CaptureAnimation
                 val orbSize = ((progress.toDouble() / Config.captureTimeNeeded.toDouble()) * 268.1 * (3.0 / 4.0) / PI).pow(1.0 / 3.0)
                 orbM.translate(orb)
                 orbM.scale(orbSize / 1.5, orb)
-                orbM.rotate(Vec3d(0.0, 1.0, 0.0), Gradient.globalGradient(9000) * 360, orb)
+                orbM.rotate(Vector3f(0f, 1f, 0f), Gradient.globalGradient(9000) * 360, orb)
 
                 val beamOrigin = spawn.coordinates.toVec3d().add(Vec3d(1.0, 0.0, 0.0).multiply(Config.spawnPlatformRadius.toDouble()))
                 val beamLine = ParticleRenderer.generateLine(beamOrigin, orb, 0.2)
@@ -126,7 +125,7 @@ object CaptureAnimation
                     if (Random.nextDouble() < 0.1) return@random
                     Gradient.gradient(vertex, Random.nextInt(500, 3000))
                     particles.add(beamLine.map { point ->
-                        point.subtract(orb).rotateAroundVector(Vec3d(0.0, 1.0, 0.0), 45f * vertex).add(orb)
+                        point.subtract(orb).rotateAroundVector(Vector3f(0f, 1f, 0f), 45f * vertex).add(orb)
                     }[round(Gradient.globalGradient(2000) * beamLine.lastIndex).toInt()])
                 }
 
@@ -137,7 +136,7 @@ object CaptureAnimation
                         return@inner
                     }
 
-                    val orbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorVector() ?: Vec3f(0f, 0f, 0f), 1f)
+                    val orbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorVector() ?: Vector3f(0f, 0f, 0f), 1f)
                     ParticleRenderer.drawMultipleParticlesWorld(server, player, orbParticle, particles)
                 }
             }
