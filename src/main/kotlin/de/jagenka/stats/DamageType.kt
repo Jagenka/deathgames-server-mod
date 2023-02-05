@@ -1,6 +1,7 @@
 package de.jagenka.stats
 
 import net.minecraft.entity.damage.DamageSource
+import net.minecraft.entity.damage.EntityDamageSource
 
 enum class DamageType
 {
@@ -34,13 +35,13 @@ enum class DamageType
             else if (damageSource == DamageSource.GENERIC) GENERIC
             else if (damageSource == DamageSource.MAGIC) MAGIC
             else if (damageSource == DamageSource.WITHER) WITHER
-            else if (damageSource == DamageSource.ANVIL) ANVIL
-            else if (damageSource == DamageSource.FALLING_BLOCK) FALLING_BLOCK
+            else if (damageSource is EntityDamageSource && damageSource.name == "anvil") ANVIL
+            else if (damageSource is EntityDamageSource && damageSource.name == "fallingBlock") FALLING_BLOCK
             else if (damageSource == DamageSource.DRAGON_BREATH) DRAGON_BREATH
             else if (damageSource == DamageSource.DRYOUT) DRYOUT
             else if (damageSource == DamageSource.SWEET_BERRY_BUSH) SWEET_BERRY_BUSH
             else if (damageSource == DamageSource.FREEZE) FREEZE
-            else if (damageSource == DamageSource.FALLING_STALACTITE) FALLING_STALACTITE
+            else if (damageSource is EntityDamageSource && damageSource.name == "fallingStalactite") FALLING_STALACTITE
             else if (damageSource == DamageSource.STALAGMITE) STALAGMITE
             else MELEE
         }

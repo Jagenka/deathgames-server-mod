@@ -42,7 +42,7 @@ object Shop
                 val screenHandler =
                     object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, serverPlayerEntity.inventory, inventory, 6)
                     {
-                        override fun transferSlot(player: PlayerEntity?, index: Int): ItemStack = ItemStack.EMPTY
+                        override fun quickMove(player: PlayerEntity?, slot: Int): ItemStack = ItemStack.EMPTY
 
                         override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
                         {

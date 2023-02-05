@@ -28,9 +28,9 @@ object GPS
                         .makeChildByOffset(lookDirection.multiply(-1.0))
                         .up()
                         .makeChildByOffset(lookDirection.multiply(4.0))
-                        .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, 135f).multiply(1.0))
+                        .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis.toVector3f(), 135f).multiply(1.0))
                         .up()
-                        .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis, -135f).multiply(1.0))
+                        .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis.toVector3f(), -135f).multiply(1.0))
                     ParticleRenderer.drawParticlesFromVertexTreeElement(server, player, ParticleTypes.WAX_OFF, arrow)
                 }
             }

@@ -41,7 +41,7 @@ object TeamSelectorUI
                 val screenHandler =
                     object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X2, syncId, serverPlayerEntity.inventory, inventory, 2)
                     {
-                        override fun transferSlot(player: PlayerEntity?, index: Int): ItemStack = ItemStack.EMPTY
+                        override fun quickMove(player: PlayerEntity?, slot: Int): ItemStack = ItemStack.EMPTY
 
                         override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
                         {

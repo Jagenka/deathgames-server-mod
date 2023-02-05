@@ -11,11 +11,12 @@ import net.minecraft.block.Blocks
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.TextColor
-import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3f
 import net.minecraft.world.Difficulty
 import net.minecraft.world.GameRules
+import org.joml.AxisAngle4f
+import org.joml.Quaternionf
+import org.joml.Vector3f
 import java.util.regex.Pattern
 import kotlin.math.floor
 
@@ -132,10 +133,10 @@ object Util
     }
 
     fun getRGBTripleForInt(rgb: Int): Triple<Int, Int, Int> = Triple((rgb shr 16) and 0xFF, (rgb shr 8) and 0xFF, rgb and 0xFF)
-    fun getRGBVec3fForInt(rgb: Int): Vec3f
+    fun getRGBVector3fForInt(rgb: Int): Vector3f
     {
         val (r, g, b) = getRGBTripleForInt(rgb)
-        return Vec3f(r.toFloat() / 0xFF.toFloat(), g.toFloat() / 0xFF.toFloat(), b.toFloat() / 0xFF.toFloat())
+        return Vector3f(r.toFloat() / 0xFF.toFloat(), g.toFloat() / 0xFF.toFloat(), b.toFloat() / 0xFF.toFloat())
     }
 
     fun getIntTextColor(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
@@ -241,17 +242,17 @@ fun Float.toRadians(): Float = (this / 180f) * Math.PI.toFloat()
 
 fun Float.toDegree(): Float = (this * 180f) / Math.PI.toFloat()
 
-fun Vec3d.pureQuarternion(): Quaternion = Quaternion(this.x.toFloat(), this.y.toFloat(), this.z.toFloat(), 0f)
+fun Vec3d.pureQuarternion(): Quaternionf = Quaternionf(this.x.toFloat(), this.y.toFloat(), this.z.toFloat(), 0f)
 
-fun Vec3d.rotateAroundVector(axis: Vec3d, degrees: Float): Vec3d
+fun Vec3d.rotateAroundVector(axis: Vector3f, degrees: Float): Vec3d
 {
-    val rotationQuaternion = Quaternion(Vec3f(axis), degrees, true)
+    val rotationQuaternion = Quaternionf(AxisAngle4f(degrees.toRadians(), axis.x, axis.y, axis.z))
     val vectorQuaternion = this.pureQuarternion()
-    val finalQuaternion = rotationQuaternion.copy()
+    val finalQuaternion = Quaternionf(rotationQuaternion)
 
-    finalQuaternion.hamiltonProduct(vectorQuaternion)
+    finalQuaternion.mul(vectorQuaternion)
     rotationQuaternion.conjugate()
-    finalQuaternion.hamiltonProduct(rotationQuaternion)
+    finalQuaternion.mul(rotationQuaternion)
 
     return Vec3d(finalQuaternion.x.toDouble(), finalQuaternion.y.toDouble(), finalQuaternion.z.toDouble())
 }

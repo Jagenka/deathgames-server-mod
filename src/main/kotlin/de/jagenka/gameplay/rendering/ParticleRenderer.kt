@@ -1,14 +1,12 @@
 package de.jagenka.gameplay.rendering
 
-import de.jagenka.Util
 import de.jagenka.floor
-import de.jagenka.managers.PlayerManager
 import de.jagenka.rotateAroundVector
 import net.minecraft.particle.ParticleEffect
-import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
+import org.joml.Vector3f
 import kotlin.math.PI
 import kotlin.math.acos
 import kotlin.math.cos
@@ -193,7 +191,7 @@ object ParticleRenderer
             }.toMutableSet()
         }
 
-        fun rotate(vector: Vec3d, degrees: Double, origin: Vec3d = Vec3d.ZERO)
+        fun rotate(vector: Vector3f, degrees: Double, origin: Vec3d = Vec3d.ZERO)
         {
             edges = edges.map {
                 val newP1 = it.point1.subtract(origin).rotateAroundVector(vector, degrees.toFloat()).add(origin)

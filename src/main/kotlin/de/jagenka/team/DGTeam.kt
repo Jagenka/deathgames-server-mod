@@ -10,7 +10,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import net.minecraft.util.math.Vec3f
+import org.joml.Vector3f
 
 enum class DGTeam
 {
@@ -37,7 +37,7 @@ enum class DGTeam
         }
     }
 
-    fun getColorVector(): Vec3f = Util.getRGBVec3fForInt(Formatting.byName(this.name.lowercase())?.colorValue ?: 0xFFFFFF)
+    fun getColorVector(): Vector3f = Util.getRGBVector3fForInt(Formatting.byName(this.name.lowercase())?.colorValue ?: 0xFFFFFF)
 
     fun getPlayers() = PlayerManager.getPlayersInTeam(this)
 
