@@ -26,7 +26,7 @@ object StatManager
     fun addBoughtItem(playerName: String, shopEntry: ShopEntry, price: Int)
     {
         val itemsBought = personalStats.gib(playerName).itemsBought.toMutableList()
-        itemsBought.add(ItemBoughtEntry(shopEntry.nameForStat, price, System.currentTimeMillis()))
+        itemsBought.add(ItemBoughtEntry(shopEntry.nameForStat, price, Timer.now().toLong()))
         personalStats.gib(playerName).itemsBought = itemsBought
     }
 
@@ -37,7 +37,7 @@ object StatManager
             KillEntry(
                 deceased,
                 DamageType.from(damageSource),
-                System.currentTimeMillis()
+                Timer.now().toLong()
             )
         )
     }
@@ -45,7 +45,7 @@ object StatManager
     @JvmStatic
     fun handleDeathType(damageSource: DamageSource, playerName: String)
     {
-        personalStats.gib(playerName).deaths.add(DeathEntry(DamageType.from(damageSource), System.currentTimeMillis()))
+        personalStats.gib(playerName).deaths.add(DeathEntry(DamageType.from(damageSource), Timer.now().toLong()))
     }
 
     @JvmStatic
