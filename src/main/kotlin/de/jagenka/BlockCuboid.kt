@@ -11,6 +11,20 @@ class BlockCuboid
     val firstCorner: BlockPos
     val secondCorner: BlockPos
 
+    val center: Coordinates
+        get()
+        {
+            val (x, y, z) = size
+            return Coordinates(firstCorner.x.toCenter() + x / 2, firstCorner.y + y / 2, firstCorner.z.toCenter() + z / 2, 0f, 0f)
+        }
+
+    val size: Triple<Double, Double, Double>
+        get() = Triple(
+            secondCorner.x.toCenter() - firstCorner.x.toCenter(),
+            (secondCorner.y - firstCorner.y).toDouble(),
+            secondCorner.z.toCenter() - firstCorner.z.toCenter()
+        )
+
     constructor(firstCorner: BlockPos, secondCorner: BlockPos)
     {
         this.firstCorner = BlockPos(min(firstCorner.x, secondCorner.x), min(firstCorner.y, secondCorner.y), min(firstCorner.z, secondCorner.z))

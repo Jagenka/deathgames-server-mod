@@ -12,6 +12,7 @@ object TrapTask: TimerTask
 
     override fun run()
     {
+        if (Timer.gameMechsPaused) return
         TrapsAreNotGay.tick()
     }
 

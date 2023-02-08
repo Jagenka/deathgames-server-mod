@@ -28,6 +28,8 @@ object ShopTask : TimerTask
 
     private const val countdownStartingWithSecondsLeft = 5 // configurable
 
+    var tpOutActive: Boolean = true
+
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
@@ -73,20 +75,22 @@ object ShopTask : TimerTask
                     )
                 }
 
-                timeInShop[playerName] = timeInShop.getValue(playerName) + 1
-
-                val ticksToTpOut = Config.tpOutOfShopAfter - timeInShop.getValue(playerName)
-
-                if (ticksToTpOut == countdownStartingWithSecondsLeft.seconds())
+                if (tpOutActive)
                 {
-                    sendTpOutMessage(serverPlayerEntity, countdownStartingWithSecondsLeft)
-                }
+                    timeInShop[playerName] = timeInShop.getValue(playerName) + 1
 
-                if (ticksToTpOut < 0)
-                {
-                    exitShop(serverPlayerEntity)
-                }
+                    val ticksToTpOut = Config.tpOutOfShopAfter - timeInShop.getValue(playerName)
 
+                    if (ticksToTpOut == countdownStartingWithSecondsLeft.seconds())
+                    {
+                        sendTpOutMessage(serverPlayerEntity, countdownStartingWithSecondsLeft)
+                    }
+
+                    if (ticksToTpOut < 0)
+                    {
+                        exitShop(serverPlayerEntity)
+                    }
+                }
             } else currentlyInShop.remove(playerName)
 
             if (playerName !in currentlyInShop && serverPlayerEntity.isOnGround)
@@ -99,7 +103,7 @@ object ShopTask : TimerTask
         }
     }
 
-    private fun sendTpOutMessage(player: ServerPlayerEntity, secondsLeft: Int)
+    fun sendTpOutMessage(player: ServerPlayerEntity, secondsLeft: Int)
     {
         if (secondsLeft > 0 && currentlyInShop.contains(player.name.string))
         {

@@ -1,7 +1,9 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
+import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.timer.ShopTask
+import de.jagenka.timer.Timer
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
@@ -26,6 +28,11 @@ class LeaveShopEntry : ShopEntry
 
     override fun buy(player: ServerPlayerEntity): Boolean
     {
+        if (Timer.gameMechsPaused)
+        {
+            player.sendPrivateMessage("Cannot leave right now!")
+            return false
+        }
         ShopTask.exitShop(player)
         return true
     }

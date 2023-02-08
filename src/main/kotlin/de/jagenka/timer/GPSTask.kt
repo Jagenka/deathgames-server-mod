@@ -14,6 +14,8 @@ object GPSTask: TimerTask
     {
         if (currentlyEnding) return
 
+        if (Timer.gameMechsPaused) return
+
         GPS.makeArrowGoBrrr()
     }
 

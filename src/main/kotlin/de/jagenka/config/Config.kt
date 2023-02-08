@@ -95,6 +95,10 @@ object Config
         get() = configEntry.misc.shopCloseTimeAfterReveal
     val killStreakPenaltyCap
         get() = configEntry.misc.killStreakPenaltyCap
+    val startInShop
+        get() = configEntry.misc.startInShop
+    val startInShopTpAfterSeconds
+        get() = configEntry.misc.startInShopTpAfterSeconds
 
     fun lateLoadConfig()
     {

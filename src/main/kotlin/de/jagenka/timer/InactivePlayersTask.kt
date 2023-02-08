@@ -28,6 +28,8 @@ object InactivePlayersTask : TimerTask
     {
         if (currentlyEnding) return
 
+        if (Timer.gameMechsPaused) return
+
         inactiveTimer.forEach { (playerName, time) ->
             val personalRevealTime = getPersonalRevealTime(playerName).toInt()
             val personalShopCloseTime = getPersonalShopCloseTime(playerName).toInt()

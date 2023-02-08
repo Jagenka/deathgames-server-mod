@@ -32,6 +32,8 @@ object CaptureSpawnTask : TimerTask
 
         if (!captureEnabled) return
 
+        if (Timer.gameMechsPaused) return
+
         val playersOnAnySpawn = mutableListOf<Pair<ServerPlayerEntity, DGSpawn>>()
 
         SpawnManager.spawns.forEach forEachSpawn@{ spawn ->

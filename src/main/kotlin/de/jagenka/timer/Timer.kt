@@ -13,6 +13,8 @@ object Timer
 
     private val customTimers = mutableListOf<CustomTimer>()
 
+    var gameMechsPaused: Boolean = false
+
     init
     {
         with(tasks)
@@ -30,6 +32,7 @@ object Timer
             add(LobbyTask)
             add(GPSTask)
             add(CaptureSpawnTask)
+            add(BonusSpawnTask)
         }
     }
 
@@ -132,6 +135,7 @@ object Timer
     {
         running = false
         ticks = 0
+        gameMechsPaused = true
         tasks.forEach { it.reset() }
         scheduledTasks.clear()
         scheduledIntervalTasks.clear()
