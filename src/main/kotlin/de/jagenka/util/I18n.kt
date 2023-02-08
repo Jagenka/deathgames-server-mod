@@ -68,7 +68,7 @@ object I18n
 
     fun get(key: String, args: Map<String, Any> = emptyMap()): String
     {
-        var message = messages[key] ?: defaultLang[key] ?: "ERROR"
+        var message = messages[key] ?: defaultLang[key] ?: "missing value for $key"
 
         args.entries.forEach { (key, value) ->
             message = message.replace("{${key}}", value.toString())
