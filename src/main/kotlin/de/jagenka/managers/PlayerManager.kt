@@ -67,6 +67,7 @@ object PlayerManager
     {
         if (DeathGames.running) return false
         val playerName = player.name.string
+        if(teamRegistry[playerName] == team) return false
         if (canPlayerJoin.getValue(playerName))
         {
             ifServerLoaded {
