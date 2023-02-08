@@ -19,8 +19,8 @@ object BonusDisplayTask : TimerTask
     {
         if (currentlyEnding) return
 
-        val timeToSpawn = BonusManager.getTimeToSpawn()
-        val timeToDespawn = BonusManager.getTimeToDespawn()
+        val timeToSpawn = BonusSpawnTask.getTimeToSpawn()
+        val timeToDespawn = BonusSpawnTask.getTimeToDespawn()
 
         if (timeToSpawn != null)
         {

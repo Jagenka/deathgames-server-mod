@@ -14,6 +14,7 @@ shopEnteredSubtitle: Drücke F um Geld auszugeben.
 shopClosedTitle: Es ist Sonntag!
 shopClosedSubtitle: auch die Tanke hat zu
 shopTpOut: Du wirst in {seconds} Sekunden heraus teleportiert.
+tpShopToSpawnGameStart: Teleportation zum Auferstehungspunkt in {time} Sekunden.
 refundItemText: Tausche {item} für {amount} um
 bonusInactive: Zusatz Geld Plattform: Erscheint in {time} Sekunden
 bonusInactiveWithName: Zusatz Geld Plattform: {name} in {time} Sekunden

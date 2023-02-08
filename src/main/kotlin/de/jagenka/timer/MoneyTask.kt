@@ -23,6 +23,8 @@ object MoneyTask : TimerTask
     {
         if (currentlyEnding) return
 
+        if (Timer.gameMechsPaused) return
+
         PlayerManager.getParticipatingPlayers().forEach { playerName ->
             val playerTimer = moneyTimer.getValue(playerName)
 

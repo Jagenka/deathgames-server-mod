@@ -185,7 +185,9 @@
                 "y": 34,
                 "z": 29
             }
-        }
+        },
+        "startInShop": true,
+        "startInShopTpAfterSeconds": 30
     },
     "traps": {
         "triggerRange": 0.5,

@@ -14,6 +14,7 @@ shopEnteredSubtitle: Press F to pay money.
 shopClosedTitle: Shop's closed!
 shopClosedSubtitle: a K/D change might help
 shopTpOut: You will be teleported out in {seconds} seconds.
+tpShopToSpawnGameStart: Teleporting to spawn in {time} seconds.
 refundItemText: Refund {item} for {amount}
 bonusInactive: Bonus Money Platform: Spawning in {time}sec
 bonusInactiveWithName: Bonus Money Platform: {name} in {time}sec

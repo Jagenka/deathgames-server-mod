@@ -80,7 +80,9 @@ class MiscConfigEntry(
     var killStreakPenaltyCap: Int = 1,
     var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
     var spectatorRadiusPadding: Int = 0,
-    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0))
+    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
+    var startInShop: Boolean = false,
+    var startInShopTpAfterSeconds: Int = 0
 )
 
 @Serializable

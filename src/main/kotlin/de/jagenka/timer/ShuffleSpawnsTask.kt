@@ -23,6 +23,8 @@ object ShuffleSpawnsTask : TimerTask
 
         if (currentlyEnding) return
 
+        if (Timer.gameMechsPaused) return
+
         Timer.scheduleAt({ SpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
     }
 

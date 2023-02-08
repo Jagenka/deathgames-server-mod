@@ -12,6 +12,7 @@ import de.jagenka.managers.SpawnManager.getSpawnCoordinates
 import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
+import de.jagenka.timer.ShopTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
@@ -93,7 +94,6 @@ object DeathGames : DedicatedServerModInitializer
 
         DisplayManager.reset()
         Shop.reset()
-        BonusManager.init()
 
         KillManager.initLives()
         MoneyManager.initMoney()
@@ -107,29 +107,53 @@ object DeathGames : DedicatedServerModInitializer
             it.changeGameMode(GameMode.ADVENTURE)
         }
 
+        ifServerLoaded { server ->
+            server.overworld.iterateEntities().toList().filter { it is ItemEntity || it is ProjectileEntity }.forEach { it.remove(Entity.RemovalReason.KILLED) }
+        }
+
         PlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
         SpawnManager.shuffleSpawns()
+
+        val secondsToSpawnTp = Config.startInShopTpAfterSeconds
 
         PlayerManager.getOnlinePlayers().forEach {
             it.closeHandledScreen()
             val (x, y, z) = Config.lobbySpawn
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
+
+            if (Config.startInShop)
+            {
+                it.teleport(Config.shopBounds.random().center)
+                Timer.schedule({ ShopTask.sendTpOutMessage(it, 5) }, (secondsToSpawnTp - 5).coerceAtLeast(0).seconds())
+            }
+        }
+
+        if (Config.startInShop)
+        {
+            ShopTask.tpOutActive = false
+            DisplayManager.sendChatMessage(I18n.get("tpShopToSpawnGameStart", mapOf("time" to secondsToSpawnTp)))
+            Timer.schedule({ postPrep() }, secondsToSpawnTp.seconds())
+        } else
+        {
+            postPrep()
+        }
+
+        Timer.start()
+        running = true
+    }
+
+    private fun postPrep()
+    {
+        PlayerManager.getOnlinePlayers().forEach {
             it.teleport(it.getSpawnCoordinates())
-        }
-
-        ifServerLoaded { server ->
-            server.overworld.iterateEntities().toList().filter { it is ItemEntity || it is ProjectileEntity }.forEach { it.remove(Entity.RemovalReason.KILLED) }
-        }
-
-        PlayerManager.getOnlinePlayers().forEach { player ->
-            DisplayManager.sendTitleMessage(player, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
+            DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
 
         DisplayManager.showSidebar()
 
-        Timer.start()
-        running = true
+        ShopTask.tpOutActive = true
+        Timer.gameMechsPaused = false
     }
 
     fun stopGame()
