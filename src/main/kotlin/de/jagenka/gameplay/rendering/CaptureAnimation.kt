@@ -10,6 +10,7 @@ import de.jagenka.rotateAroundVector
 import net.minecraft.particle.DustParticleEffect
 import net.minecraft.util.math.Vec3d
 import org.joml.Vector3f
+import java.net.URLDecoder
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -181,7 +182,7 @@ object CaptureAnimation
              * Checks, if key is present in the collection.
              * @return True, if value is present, false otherwise.
              */
-            fun isPresent(key: Int): Boolean
+            private fun isPresent(key: Int): Boolean
             {
                 return timingData.contains(key)
             }
