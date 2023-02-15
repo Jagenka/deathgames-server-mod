@@ -19,7 +19,8 @@ class ConfigEntry(
     @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
     @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
     @Section("traps") val traps: TrapConfigEntry = TrapConfigEntry(),
-    @Section("displayedText") val displayedText: DisplayedTextConfigEntry = DisplayedTextConfigEntry()
+    @Section("displayedText") val displayedText: DisplayedTextConfigEntry = DisplayedTextConfigEntry(),
+    @Section("shop") val shop: ShopConfig = ShopConfig()
 )
 
 @Serializable
