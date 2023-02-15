@@ -13,7 +13,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 
 class UpgradeableShopEntry(
-    private val type: UpgradeType,
+    val type: String,
     private val boughtItemStacks: MutableList<MutableList<ItemStack>>,
     private val prices: MutableList<Int>,
     private val name: String
@@ -135,5 +135,5 @@ class UpgradeableShopEntry(
     }
 
     override val nameForStat: String
-        get() = type.name
+        get() = "${type}_UPGRADE"
 }

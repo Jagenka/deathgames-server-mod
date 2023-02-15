@@ -89,7 +89,7 @@ object ShopEntries
                 slot(2, 8) to ItemShopEntry(ItemStack(MILK_BUCKET), 5, "An Lüter Mülsch"),
 
                 slot(0, 0) to UpgradeableShopEntry(
-                    UpgradeType.ARMOR,
+                    "armor",
                     mutableListOf(
                         mutableListOf(LEATHER_HELMET.unbreakable(), LEATHER_CHESTPLATE.unbreakable(), LEATHER_LEGGINGS.unbreakable(), LEATHER_BOOTS.unbreakable()),
                         mutableListOf(IRON_HELMET.unbreakable(), IRON_LEGGINGS.unbreakable()),
@@ -101,7 +101,7 @@ object ShopEntries
                     "Armor Upgrade"
                 ),
                 slot(0, 1) to UpgradeableShopEntry(
-                    UpgradeType.SWORD,
+                    "sword",
                     mutableListOf(
                         mutableListOf(WOODEN_SWORD.unbreakable()),
                         mutableListOf(STONE_SWORD.unbreakable()),
@@ -113,7 +113,7 @@ object ShopEntries
                     "Sword Upgrade"
                 ),
                 slot(0, 2) to UpgradeableShopEntry(
-                    UpgradeType.AXE,
+                    "axe",
                     mutableListOf(
                         mutableListOf(WOODEN_AXE.unbreakable()),
                         mutableListOf(STONE_AXE.unbreakable()),
@@ -125,7 +125,7 @@ object ShopEntries
                     "Axe Upgrade"
                 ),
                 slot(0, 6) to UpgradeableShopEntry(
-                    UpgradeType.BOW,
+                    "bow",
                     mutableListOf(
                         mutableListOf(BOW.unbreakable()),
                         mutableListOf(BOW.unbreakable().withEnchantment(Enchantments.POWER, 1)),
@@ -138,7 +138,7 @@ object ShopEntries
                     "Bow Upgrade"
                 ),
                 slot(0, 7) to UpgradeableShopEntry(
-                    UpgradeType.CROSSBOW,
+                    "crossbow",
                     mutableListOf(
                         mutableListOf(CROSSBOW.unbreakable()),
                         mutableListOf(CROSSBOW.unbreakable().withEnchantment(Enchantments.QUICK_CHARGE, 1)),
