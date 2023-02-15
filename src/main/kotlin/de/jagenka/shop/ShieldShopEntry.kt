@@ -12,10 +12,8 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class ShieldShopEntry : ShopEntry
+class ShieldShopEntry(private val targetDurability: Int = 120) : ShopEntry
 {
-    private val targetDurability: Int = 120
-
     override val nameForStat: String
         get() = "SHIELD"
 
