@@ -153,11 +153,11 @@ object ShopEntries
                 slot(5, 8) to LeaveShopEntry()
             )
 
-            entries[slot(0, 0)]?.let { entries[slot(1, 0)] = RefundShopEntry(it) }
-            entries[slot(0, 1)]?.let { entries[slot(1, 1)] = RefundShopEntry(it) }
-            entries[slot(0, 2)]?.let { entries[slot(1, 2)] = RefundShopEntry(it) }
-            entries[slot(0, 6)]?.let { entries[slot(1, 6)] = RefundShopEntry(it) }
-            entries[slot(0, 7)]?.let { entries[slot(1, 7)] = RefundShopEntry(it) }
+            entries[slot(1, 0)] = RefundShopEntry(0, 0)
+            entries[slot(1, 1)] = RefundShopEntry(0, 1)
+            entries[slot(1, 2)] = RefundShopEntry(0, 2)
+            entries[slot(1, 6)] = RefundShopEntry(0, 6)
+            entries[slot(1, 7)] = RefundShopEntry(0, 7)
 
             return entries.toMap()
         }
@@ -188,7 +188,7 @@ object ShopEntries
         return this
     }
 
-    private fun slot(row: Int, column: Int): Int
+    fun slot(row: Int, column: Int): Int
     {
         return (row * 9 + column).coerceAtLeast(0).coerceAtMost(Shop.slotAmount)
     }

@@ -11,14 +11,18 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class RefundShopEntry(private val shopEntryToRefund: ShopEntry) : ShopEntry
+class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
 {
+    private val shopEntryToRefund: ShopEntry
+        get() = ShopEntries.shopEntries[ShopEntries.slot(row, col)] ?: EmptyShopEntry()
+
     override fun getPrice(player: ServerPlayerEntity): Int = 0
 
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
     {
-        val itemStackToDisplay: ItemStack = if (shopEntryToRefund is UpgradeableShopEntry) shopEntryToRefund.getPreviousDisplayItemStack(player).copy()
-        else shopEntryToRefund.getDisplayItemStack(player).copy()
+        val itemStackToDisplay = (shopEntryToRefund as? UpgradeableShopEntry)?.let { entry ->
+            entry.getPreviousDisplayItemStack(player).copy()
+        } ?: shopEntryToRefund.getDisplayItemStack(player).copy()
 
         return itemStackToDisplay
             .setCustomName(//"Refund ${shopEntryToRefund.getDisplayName()} for ${MoneyManager.getCurrencyString(getRefundAmount(player))}"
