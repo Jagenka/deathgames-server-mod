@@ -1,7 +1,6 @@
 package de.jagenka.shop
 
 import de.jagenka.config.Config.configEntry
-import de.jagenka.gameplay.traps.TrapItems
 import de.jagenka.timer.minutes
 import de.jagenka.timer.seconds
 import net.minecraft.enchantment.Enchantment
@@ -88,8 +87,8 @@ object ShopEntries
                 slot(3, 2) to ItemShopEntry(ItemStack(ENCHANTED_GOLDEN_APPLE), 150, "Gold Apple"),
                 slot(4, 0) to ItemShopEntry(ItemStack(TOTEM_OF_UNDYING), 150, "Totem"),
                 slot(1, 8) to ItemShopEntry(PotionUtil.setPotion(ItemStack(TIPPED_ARROW, 4), Potions.POISON), 25, "Poison Arrow"),
-                slot(3, 7) to ItemShopEntry(TrapItems.SNARE_TRAP.item, 10, "Stop right there, criminal scum!"),
-                slot(3, 8) to ItemShopEntry(TrapItems.VOID_TRAP.item, 10, "The Abyss"),
+                //slot(3, 7) to ItemShopEntry(TrapItems.SNARE_TRAP.item, 10, "Stop right there, criminal scum!"),
+                //slot(3, 8) to ItemShopEntry(TrapItems.VOID_TRAP.item, 10, "The Abyss"),
                 slot(0, 3) to ShieldShopEntry(),
                 slot(4, 1) to ExtraLifeShopEntry(TURTLE_EGG.defaultStack, 100, "Extra Life"),
                 slot(4, 8) to ItemShopEntry(ItemStack(TRIDENT), 69_420, "Trident"),

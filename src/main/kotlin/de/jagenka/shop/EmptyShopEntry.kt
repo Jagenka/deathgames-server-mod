@@ -3,7 +3,7 @@ package de.jagenka.shop
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
 
-class EmptyShopEntry: ShopEntry
+class EmptyShopEntry : ShopEntry // TODO: test
 {
     override val nameForStat: String
         get() = "EMPTY"

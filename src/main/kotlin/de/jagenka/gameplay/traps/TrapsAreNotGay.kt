@@ -18,16 +18,15 @@ import de.jagenka.toCenter
 import kotlinx.serialization.Serializable
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
-import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
+import net.minecraft.nbt.NbtList
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
-import net.minecraft.text.Text
 import net.minecraft.util.math.Direction
 
-enum class DGStatusEffect(val statusEffectInstance: StatusEffectInstance)
+enum class DGStatusEffect(val statusEffectInstance: StatusEffectInstance?)
 {
     BLIND(StatusEffectInstance(StatusEffects.BLINDNESS, 3.seconds(), 100, false, false, false)),
     POISON(StatusEffectInstance(StatusEffects.POISON, 2.seconds(), 0, false, false, false)),
@@ -36,23 +35,15 @@ enum class DGStatusEffect(val statusEffectInstance: StatusEffectInstance)
     LEVITATION(StatusEffectInstance(StatusEffects.LEVITATION, 2.seconds(), 0, false, false, false)),
     GLOWING(StatusEffectInstance(StatusEffects.GLOWING, 2.seconds(), 0, false, false, false)),
     HUNGER(StatusEffectInstance(StatusEffects.HUNGER, 2.seconds(), 1, false, false, false)),
-    FATIGUE(StatusEffectInstance(StatusEffects.MINING_FATIGUE, 2.seconds(), 0, false, false, false))
-}
-
-enum class TrapItems(val item: ItemStack)
-{
-    SNARE_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Snare Trap"))),
-    VOID_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Void Trap"))),
-    EXHAUSTION_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Exhaustion Trap"))),
-    REVEALING_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Revealing Trap"))),
-    POISON_TRAP(Items.BAT_SPAWN_EGG.defaultStack.setCustomName(Text.of("Poison Trap")))
+    FATIGUE(StatusEffectInstance(StatusEffects.MINING_FATIGUE, 2.seconds(), 0, false, false, false)),
+    SNARE(null)
 }
 
 @Serializable
 data class Trap(
     val displayName: String,                            // name shown in shop
     val gaynessRange: Double = 0.5,                     // trigger range
-    val setupTime: Int  ,                               // time, until trap can be triggered. shows particles in the meantime
+    val setupTime: Int,                               // time, until trap can be triggered. shows particles in the meantime
     val gaynessTriggerVisibleRange: Double = 30.0,      // range, in which trigger particles can be seen
     val gaynessVisibilityRange: Double = 10.0,          // range, in which preparation particles can be seen
     val affectedGayRange: Double = 1.5,                 // range, in which players are affected upon trigger
@@ -77,7 +68,7 @@ object TrapsAreNotGay
         x: Int, y: Int, z: Int,
         gaynessRange: Double = Config.trapConfig.triggerRange,
         setupTime: Int = Config.trapConfig.setupTime,
-        gaynessTriggerVisibleRange: Double  = Config.trapConfig.triggerVisibilityRange,
+        gaynessTriggerVisibleRange: Double = Config.trapConfig.triggerVisibilityRange,
         gaynessVisibilityRange: Double = Config.trapConfig.visibilityRange,
         affectedGayRange: Double = Config.trapConfig.affectedRange,
         triggerDuration: Int = Config.trapConfig.triggerDuration,
@@ -87,7 +78,7 @@ object TrapsAreNotGay
     {
         val effects = mutableListOf<StatusEffectInstance>()
         effectsString.forEach { jaysMom ->
-            effects.add(jaysMom.statusEffectInstance)
+            effects.add(jaysMom.statusEffectInstance ?: return@forEach)
         }
         val notGay = NotGay(
             BlockPos(x, y, z),
@@ -210,6 +201,8 @@ object TrapsAreNotGay
     {
         if (ctx.side == Direction.UP)
         {
+            (ctx.stack.nbt?.get("trapEffects") as? NbtList)?.forEach { println(it.asString()) }
+
             mapOf(
                 "Snare Trap" to {
                     addLessGay(

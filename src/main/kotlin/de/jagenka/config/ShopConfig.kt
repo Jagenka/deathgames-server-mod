@@ -10,6 +10,7 @@ class ShopConfig(
     var leaveShop: LeaveShop = LeaveShop(),
     var upgrades: List<Upgrade> = listOf(Upgrade()),
     var refunds: List<Refund> = listOf(Refund()),
+    var traps: List<Trap> = listOf(Trap())
 )
 
 @Serializable
@@ -76,4 +77,9 @@ data class ExtraLife(
 data class LeaveShop(
     var row: Int = 0,
     var col: Int = 8,
+)
+
+@Serializable
+data class Trap(
+    //NBT
 )
