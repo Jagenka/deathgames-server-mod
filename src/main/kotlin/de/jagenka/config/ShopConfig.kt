@@ -48,10 +48,9 @@ data class UpgradeLvl(
 
 @Serializable
 data class UpgradeItem(
-    var name: String = "NONAME",
     var id: String = "minecraft:bow",
     var amount: Int = 1,
-    var nbt: String = "{Enchantments:[{id:power,lvl:3}]}",
+    var nbt: String = "",
 )
 
 @Serializable
