@@ -1,5 +1,6 @@
 package de.jagenka.shop
 
+import de.jagenka.config.Config.configEntry
 import de.jagenka.gameplay.traps.TrapItems
 import de.jagenka.timer.minutes
 import de.jagenka.timer.seconds
@@ -10,15 +11,21 @@ import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items.*
+import net.minecraft.nbt.StringNbtReader
 import net.minecraft.potion.PotionUtil
 import net.minecraft.potion.Potions
+import net.minecraft.registry.Registries
 import net.minecraft.text.Text
+import net.minecraft.util.Identifier
 
 object ShopEntries
 {
     val EMPTY = ItemShopEntry(ItemStack.EMPTY, 0, "")
 
-    val shopEntries: Map<Int, ShopEntry>
+    var shopEntries: Map<Int, ShopEntry> = emptyMap()
+        private set
+
+    val shopEntries2: Map<Int, ShopEntry>
         get()
         {
             val entries = mutableMapOf(
@@ -161,6 +168,51 @@ object ShopEntries
 
             return entries.toMap()
         }
+
+    fun loadShop()
+    {
+        val buffer = mutableMapOf<Int, ShopEntry>()
+
+        configEntry.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
+            val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
+            if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
+            buffer[slot(row, col)] = ItemShopEntry(itemStack, price, name)
+        }
+
+        configEntry.shop.shield.let { (row, col, name, durability) ->
+            buffer[slot(row, col)] = ShieldShopEntry(name, durability)
+        }
+
+        configEntry.shop.extraLive.let { (row, col, name, id, amount, nbt, price) ->
+            val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
+            if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
+            buffer[slot(row, col)] = ExtraLifeShopEntry(itemStack, price, name)
+        }
+
+        configEntry.shop.leaveShop.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry() }
+
+        configEntry.shop.upgrades.forEach { (row, col, name, id, levels) ->
+            val itemStackLists = mutableListOf<MutableList<ItemStack>>()
+            val prices = mutableListOf<Int>()
+
+            levels.forEach { (items, price) ->
+                itemStackLists.add(items.map { (upgradeId, upgradeAmount, upgradeNbt) ->
+                    val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(upgradeId)).orElse(null), upgradeAmount)
+                    if (upgradeNbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(upgradeNbt)
+                    return@map itemStack
+                }.toMutableList())
+                prices.add(price)
+            }
+
+            buffer[slot(row, col)] = UpgradeableShopEntry(id, itemStackLists, prices, name)
+        }
+
+        configEntry.shop.refunds.forEach { (row, col, targetRow, targetCol) ->
+            buffer[slot(row, col)] = RefundShopEntry(targetRow, targetCol)
+        }
+
+        shopEntries = buffer.toMap()
+    }
 
     fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()
 
