@@ -13,7 +13,7 @@ class ShopConfig(
 )
 
 @Serializable
-class Item(
+data class Item(
     var row: Int = 0,
     var col: Int = 0,
     var name: String = "NONAME",
@@ -24,7 +24,7 @@ class Item(
 )
 
 @Serializable
-class Shield(
+data class Shield(
     var row: Int = 0,
     var col: Int = 1,
     var name: String = "NONAME",
@@ -32,7 +32,7 @@ class Shield(
 )
 
 @Serializable
-class Upgrade(
+data class Upgrade(
     var row: Int = 0,
     var col: Int = 2,
     var name: String = "NONAME",
@@ -41,13 +41,13 @@ class Upgrade(
 )
 
 @Serializable
-class UpgradeLvl(
+data class UpgradeLvl(
     var items: List<UpgradeItem> = listOf(UpgradeItem()),
     var price: Int = 420,
 )
 
 @Serializable
-class UpgradeItem(
+data class UpgradeItem(
     var name: String = "NONAME",
     var id: String = "minecraft:bow",
     var amount: Int = 1,
@@ -55,7 +55,7 @@ class UpgradeItem(
 )
 
 @Serializable
-class Refund(
+data class Refund(
     var row: Int = 0,
     var col: Int = 3,
     var targetRow: Int = 0,
@@ -63,7 +63,7 @@ class Refund(
 )
 
 @Serializable
-class ExtraLife(
+data class ExtraLife(
     var row: Int = 0,
     var col: Int = 4,
     var name: String = "NONAME",
@@ -74,7 +74,7 @@ class ExtraLife(
 )
 
 @Serializable
-class LeaveShop(
+data class LeaveShop(
     var row: Int = 0,
     var col: Int = 8,
 )
