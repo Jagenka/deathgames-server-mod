@@ -81,5 +81,10 @@ data class LeaveShop(
 
 @Serializable
 data class Trap(
-    //NBT
+    var row: Int = 0,
+    var col: Int = 5,
+    var name: String = "NONAME",
+    var price: Int = 69,
+    var snare: Boolean = true,
+    var effectNBTs: List<String> = listOf("{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}")
 )

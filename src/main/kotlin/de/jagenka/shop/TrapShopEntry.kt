@@ -1,24 +1,28 @@
 package de.jagenka.shop
 
-import de.jagenka.gameplay.traps.DGStatusEffect
+import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
+import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtList
-import net.minecraft.nbt.NbtString
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.Style
+import net.minecraft.text.Text
 
-class TrapShopEntry(private val name: String, private val price: Int, private val effects: Set<DGStatusEffect>) : ShopEntry
+class TrapShopEntry(private val name: String, private val price: Int, isSnare: Boolean, effects: List<NbtCompound>) : ShopEntry
 {
     private val itemStack = ItemStack(Items.BAT_SPAWN_EGG)
 
     init
     {
         val effectsNbt = NbtList()
-        effectsNbt.addAll(effects.map { NbtString.of(it.name) })
+        effectsNbt.addAll(effects)
         itemStack.orCreateNbt.put("trapEffects", effectsNbt)
+        itemStack.orCreateNbt.putBoolean("isSnareTrap", isSnare)
     }
 
     override val nameForStat: String
@@ -26,7 +30,15 @@ class TrapShopEntry(private val name: String, private val price: Int, private va
 
     override fun getPrice(player: ServerPlayerEntity): Int = price
 
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack = Items.BAT_SPAWN_EGG.defaultStack
+    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack =
+        Items.BAT_SPAWN_EGG.defaultStack.setCustomName(
+            Text.of("${MoneyManager.getCurrencyString(price)}: $name x1").getWithStyle(
+                Style.EMPTY.withColor(
+                    if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
+                    else Util.getTextColor(255, 255, 255)
+                )
+            )[0]
+        )
 
     override fun buy(player: ServerPlayerEntity): Boolean
     {

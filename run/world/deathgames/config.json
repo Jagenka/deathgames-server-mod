@@ -771,6 +771,30 @@
                 "targetRow": 0,
                 "targetCol": 7
             }
+        ],
+        "traps": [
+            {
+                "row": 3,
+                "col": 7,
+                "name": "Stop right there, criminal scum!",
+                "price": 10,
+                "snare": true,
+                "effectNBTs": [
+                    "{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}"
+                ]
+            },
+            {
+                "row": 3,
+                "col": 8,
+                "name": "The Abyss",
+                "price": 10,
+                "snare": false,
+                "effectNBTs": [
+                    "{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}",
+                    "{Ambient:0b,Amplifier:0b,Duration:40,Id:2,ShowIcon:0b,ShowParticles:0b}",
+                    "{Ambient:0b,Amplifier:0b,Duration:40,Id:25,ShowIcon:0b,ShowParticles:0b}"
+                ]
+            }
         ]
     }
 }

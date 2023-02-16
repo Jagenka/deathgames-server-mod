@@ -15,31 +15,28 @@ import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.timer.ticks
 import de.jagenka.toCenter
-import kotlinx.serialization.Serializable
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
-import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.util.math.Direction
 
-enum class DGStatusEffect(val statusEffectInstance: StatusEffectInstance?)
-{
-    BLIND(StatusEffectInstance(StatusEffects.BLINDNESS, 3.seconds(), 100, false, false, false)),
-    POISON(StatusEffectInstance(StatusEffects.POISON, 2.seconds(), 0, false, false, false)),
-    WEAKNESS(StatusEffectInstance(StatusEffects.WEAKNESS, 2.seconds(), 0, false, false, false)),
-    SLOWNESS(StatusEffectInstance(StatusEffects.SLOWNESS, 2.seconds(), 0, false, false, false)),
-    LEVITATION(StatusEffectInstance(StatusEffects.LEVITATION, 2.seconds(), 0, false, false, false)),
-    GLOWING(StatusEffectInstance(StatusEffects.GLOWING, 2.seconds(), 0, false, false, false)),
-    HUNGER(StatusEffectInstance(StatusEffects.HUNGER, 2.seconds(), 1, false, false, false)),
-    FATIGUE(StatusEffectInstance(StatusEffects.MINING_FATIGUE, 2.seconds(), 0, false, false, false)),
-    SNARE(null)
-}
+/*
+{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b} blind
+{Ambient:0b,Amplifier:0b,Duration:40,Id:19,ShowIcon:0b,ShowParticles:0b} poison
+{Ambient:0b,Amplifier:0b,Duration:40,Id:18,ShowIcon:0b,ShowParticles:0b} weakness
+{Ambient:0b,Amplifier:0b,Duration:40,Id:2,ShowIcon:0b,ShowParticles:0b} slowness
+{Ambient:0b,Amplifier:0b,Duration:40,Id:25,ShowIcon:0b,ShowParticles:0b} levitation
+{Ambient:0b,Amplifier:0b,Duration:40,Id:24,ShowIcon:0b,ShowParticles:0b} glowing
+{Ambient:0b,Amplifier:1b,Duration:40,Id:17,ShowIcon:0b,ShowParticles:0b} hunger
+{Ambient:0b,Amplifier:0b,Duration:40,Id:4,ShowIcon:0b,ShowParticles:0b} fatigue
+ */
 
-@Serializable
 data class Trap(
     val displayName: String,                            // name shown in shop
     val gaynessRange: Double = 0.5,                     // trigger range
@@ -49,7 +46,7 @@ data class Trap(
     val affectedGayRange: Double = 1.5,                 // range, in which players are affected upon trigger
     private var triggerDuration: Int = 6.seconds(),     // how long effects are applied
     val snares: Boolean = false,                        // if the trap holds player in place
-    val effects: List<DGStatusEffect>                   // what effects to apply
+    val effects: List<StatusEffectInstance>                   // what effects to apply
 )
 
 object TrapsAreNotGay
@@ -64,7 +61,7 @@ object TrapsAreNotGay
 
     private val notGayness = mutableSetOf<NotGay>()
 
-    private fun addLessGay(
+    private fun placeTrap(
         x: Int, y: Int, z: Int,
         gaynessRange: Double = Config.trapConfig.triggerRange,
         setupTime: Int = Config.trapConfig.setupTime,
@@ -73,13 +70,9 @@ object TrapsAreNotGay
         affectedGayRange: Double = Config.trapConfig.affectedRange,
         triggerDuration: Int = Config.trapConfig.triggerDuration,
         snares: Boolean = false,
-        effectsString: List<DGStatusEffect>
+        effects: List<StatusEffectInstance>
     ): Boolean
     {
-        val effects = mutableListOf<StatusEffectInstance>()
-        effectsString.forEach { jaysMom ->
-            effects.add(jaysMom.statusEffectInstance ?: return@forEach)
-        }
         val notGay = NotGay(
             BlockPos(x, y, z),
             gaynessRange = gaynessRange,
@@ -199,60 +192,34 @@ object TrapsAreNotGay
     @JvmStatic
     fun handleTrapPlacement(ctx: ItemUsageContext): Boolean
     {
+        if (ctx.stack.item != Items.BAT_SPAWN_EGG) return false
+
         if (ctx.side == Direction.UP)
         {
-            (ctx.stack.nbt?.get("trapEffects") as? NbtList)?.forEach { println(it.asString()) }
+            ctx.stack.nbt?.let { itemNbt ->
+                if (!itemNbt.contains("isSnareTrap") || !itemNbt.contains("trapEffects")) return false // if tags are missing, we can use the egg
 
-            mapOf(
-                "Snare Trap" to {
-                    addLessGay(
-                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                        snares = true,
-                        effectsString = listOf(DGStatusEffect.BLIND)
-                    )
-                },
-                "Void Trap" to {
-                    addLessGay(
-                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                        snares = false,
-                        effectsString = listOf(DGStatusEffect.BLIND, DGStatusEffect.LEVITATION, DGStatusEffect.SLOWNESS)
-                    )
-                },
-                "Exhaustion Trap" to {
-                    addLessGay(
-                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                        triggerDuration = 10.seconds(),
-                        snares = false,
-                        effectsString = listOf(DGStatusEffect.HUNGER, DGStatusEffect.FATIGUE)
-                    )
-                },
-                "Revealing Trap" to {
-                    addLessGay(
-                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                        triggerDuration = 15.seconds(),
-                        gaynessRange = 5.0,
-                        affectedGayRange = 20.0,
-                        snares = false,
-                        effectsString = listOf(DGStatusEffect.GLOWING)
-                    )
-                },
-                "Poison Trap" to {
-                    addLessGay(
-                        ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
-                        triggerDuration = 7.seconds(),
-                        snares = false,
-                        effectsString = listOf(DGStatusEffect.WEAKNESS, DGStatusEffect.POISON)
-                    )
+                val isSnare = itemNbt.getBoolean("isSnareTrap")
+                val effects = itemNbt.getList("trapEffects", NbtElement.COMPOUND_TYPE.toInt()).map { nbtElement ->
+                    val nbtCompound = nbtElement as? NbtCompound ?: return@map StatusEffectInstance(StatusEffects.UNLUCK) // invalid elements are treated as unluck
+                    return@map StatusEffectInstance.fromNbt(nbtCompound) ?: StatusEffectInstance(StatusEffects.UNLUCK) // invalid elements are treated as unluck
                 }
-            ).forEach { (name, `|unit|`) ->
-                if (name == ctx.stack.name.string && Items.BAT_SPAWN_EGG == ctx.stack.item)
+
+                val success = placeTrap(
+                    ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
+                    snares = isSnare,
+                    effects = effects
+                )
+
+                if (success)
                 {
-                    if (`|unit|`()) ctx.player?.inventory?.selectedSlot?.let { ctx.player?.inventory?.removeStack(it, 1) }
-                    return true
+                    ctx.player?.inventory?.selectedSlot?.let { ctx.player?.inventory?.removeStack(it, 1) }
                 }
-            }
+
+            } ?: return false // if there is no nbt, we can use the egg
         }
-        return false
+
+        return true // cancel bat spawn egg placement if it is a trap
     }
 }
 
