@@ -50,4 +50,9 @@ class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
 
     override val nameForStat: String
         get() = "${shopEntryToRefund.nameForStat}_REFUND"
+
+    override fun toString(): String
+    {
+        return "row$row col$col refund"
+    }
 }

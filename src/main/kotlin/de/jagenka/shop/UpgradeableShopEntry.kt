@@ -136,4 +136,15 @@ class UpgradeableShopEntry(
 
     override val nameForStat: String
         get() = "${type}_UPGRADE"
+
+    override fun toString(): String
+    {
+        return "$name $type ${
+            boughtItemStacks.joinToString(separator = ", ", prefix = "[", postfix = "]") { lvls ->
+                lvls.joinToString(separator = ", ", prefix = "[", postfix = "]") {
+                    "$it ${it.nbt}"
+                }
+            }
+        } $prices"
+    }
 }
