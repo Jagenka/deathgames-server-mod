@@ -40,6 +40,8 @@ class TrapShopEntry(
         itemStack.orCreateNbt.putDouble("trapVisibilityRange", visibilityRange)
         itemStack.orCreateNbt.putDouble("trapAffectedRange", affectedRange)
         itemStack.orCreateNbt.putInt("trapTriggerDuration", triggerDuration)
+
+        itemStack.setCustomName(Text.of(name).getWithStyle(Style.EMPTY.withItalic(false))[0])
     }
 
     override val nameForStat: String
