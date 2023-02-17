@@ -55,7 +55,6 @@ class BonusPlatformsConfigEntry(
 
 @Serializable
 class RespawnsConfigEntry(
-    var perPlayer: Int = 0,
     var perTeam: Int = 0
 )
 

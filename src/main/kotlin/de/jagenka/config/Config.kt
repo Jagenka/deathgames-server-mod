@@ -46,9 +46,6 @@ object Config
         get() = configEntry.bonus.moneyAmount
     val bonusMoneyInterval
         get() = configEntry.bonus.moneyInterval
-
-    val respawnsPerPlayer
-        get() = configEntry.respawns.perPlayer
     val respawnsPerTeam
         get() = configEntry.respawns.perTeam
 
