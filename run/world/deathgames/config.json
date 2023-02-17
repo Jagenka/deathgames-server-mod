@@ -773,7 +773,13 @@
                 "snare": true,
                 "effectNBTs": [
                     "{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}"
-                ]
+                ],
+                "triggerRange": 0.5,
+                "setupTime": 200,
+                "triggerVisibilityRange": 30.0,
+                "visibilityRange": 10.0,
+                "affectedRange": 1.5,
+                "triggerDuration": 120
             },
             {
                 "row": 3,
@@ -785,7 +791,13 @@
                     "{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}",
                     "{Ambient:0b,Amplifier:0b,Duration:40,Id:2,ShowIcon:0b,ShowParticles:0b}",
                     "{Ambient:0b,Amplifier:0b,Duration:40,Id:25,ShowIcon:0b,ShowParticles:0b}"
-                ]
+                ],
+                "triggerRange": 0.5,
+                "setupTime": 200,
+                "triggerVisibilityRange": 30.0,
+                "visibilityRange": 10.0,
+                "affectedRange": 1.5,
+                "triggerDuration": 120
             },
             {
                 "row": 3,
@@ -798,8 +810,10 @@
                 ],
                 "triggerRange": 1.0,
                 "setupTime": 40,
-                "visibilityRange": 5,
-                "affectedRange": 5
+                "triggerVisibilityRange": 30.0,
+                "visibilityRange": 5.0,
+                "affectedRange": 5.0,
+                "triggerDuration": 120
             }
         ]
     }
