@@ -15,46 +15,45 @@ enum class DamageType
         @JvmStatic
         fun from(damageSource: DamageSource): DamageType
         {
-            // <- means tested
             return when (damageSource.name)
             {
-                "inFire" -> IN_FIRE //
-                "onFire" -> ON_FIRE //
-                "lightningBolt" -> LIGHTNING_BOLT //
-                "lava" -> LAVA //
-                "hotFloor" -> HOT_FLOOR //
-                "inWall" -> IN_WALL //
-                "cramming" -> CRAMMING //
-                "drown" -> DROWN //
-                "starve" -> STARVE //
-                "cactus" -> CACTUS //
-                "fall" -> FALLING //
-                "flyIntoWall" -> FLY_INTO_WALL //
-                "outOfWorld" -> OUT_OF_WORLD //
+                "inFire" -> IN_FIRE
+                "onFire" -> ON_FIRE
+                "lightningBolt" -> LIGHTNING_BOLT
+                "lava" -> LAVA
+                "hotFloor" -> HOT_FLOOR
+                "inWall" -> IN_WALL
+                "cramming" -> CRAMMING
+                "drown" -> DROWN
+                "starve" -> STARVE
+                "cactus" -> CACTUS
+                "fall" -> FALLING
+                "flyIntoWall" -> FLY_INTO_WALL
+                "outOfWorld" -> OUT_OF_WORLD
                 "generic" -> GENERIC
-                "magic" -> MAGIC //
-                "wither" -> WITHER //
+                "magic" -> MAGIC
+                "wither" -> WITHER
                 "dragonBreath" -> DRAGON_BREATH
                 "dryout" -> DRYOUT
-                "sweetBerryBush" -> SWEET_BERRY_BUSH //
+                "sweetBerryBush" -> SWEET_BERRY_BUSH
                 "freeze" -> FREEZE
-                "stalagmite" -> STALAGMITE //
+                "stalagmite" -> STALAGMITE
                 "fallingBlock" -> FALLING_BLOCK
-                "anvil" -> ANVIL //
-                "fallingStalactite" -> FALLING_STALACTITE //
-                "sting" -> STING //
-                "mob" -> MOB //
-                "player" -> PLAYER //
-                "arrow" -> ARROW //
-                "trident" -> TRIDENT //
-                "fireworks" -> FIREWORKS //
-                "fireball" -> FIREBALL //
-                "witherSkull" -> WITHER_SKULL //
+                "anvil" -> ANVIL
+                "fallingStalactite" -> FALLING_STALACTITE
+                "sting" -> STING
+                "mob" -> MOB
+                "player" -> PLAYER
+                "arrow" -> ARROW
+                "trident" -> TRIDENT
+                "fireworks" -> FIREWORKS
+                "fireball" -> FIREBALL
+                "witherSkull" -> WITHER_SKULL
                 "thrown" -> THROWN
-                "indirectMagic" -> INDIRECT_MAGIC //
-                "thorns" -> THORNS //
-                "explosion", "explosion.player" -> EXPLOSIVE //
-                "sonic_boom" -> SONIC_BOOM //
+                "indirectMagic" -> INDIRECT_MAGIC
+                "thorns" -> THORNS
+                "explosion", "explosion.player" -> EXPLOSIVE
+                "sonic_boom" -> SONIC_BOOM
                 "badRespawnPoint" -> BAD_RESPAWN_POINT
                 else -> ERROR
             }
