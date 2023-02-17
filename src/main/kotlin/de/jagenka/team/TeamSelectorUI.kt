@@ -16,7 +16,7 @@ import net.minecraft.text.Text
 
 object TeamSelectorUI
 {
-    val lobbyBounds = Config.configEntry.misc.lobbyBounds
+    val lobbyBounds = Config.configEntry.general.lobbyBounds
 
     var notReadySpamProtection = false
 

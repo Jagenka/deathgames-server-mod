@@ -1,7 +1,32 @@
 {
     "general": {
         "enabled": true,
-        "locale": "en"
+        "locale": "en",
+        "arenaBounds": {
+            "firstCorner": {
+                "x": -128,
+                "y": 48,
+                "z": -128
+            },
+            "secondCorner": {
+                "x": 127,
+                "y": 152,
+                "z": 127
+            }
+        },
+        "spectatorRadiusPadding": 20,
+        "lobbyBounds": {
+            "firstCorner": {
+                "x": -29,
+                "y": 18,
+                "z": -29
+            },
+            "secondCorner": {
+                "x": 29,
+                "y": 34,
+                "z": 29
+            }
+        }
     },
     "spawns": {
         "spawnPositions": {
@@ -129,7 +154,6 @@
         "moneyInterval": 200
     },
     "respawns": {
-        "perPlayer": 5,
         "perTeam": 10
     },
     "money": {
@@ -161,31 +185,6 @@
         "revealTimePerPlayer": 2400,
         "shopCloseTimeAfterReveal": 2400,
         "killStreakPenaltyCap": 10,
-        "arenaBounds": {
-            "firstCorner": {
-                "x": -128,
-                "y": 48,
-                "z": -128
-            },
-            "secondCorner": {
-                "x": 127,
-                "y": 152,
-                "z": 127
-            }
-        },
-        "spectatorRadiusPadding": 20,
-        "lobbyBounds": {
-            "firstCorner": {
-                "x": -29,
-                "y": 18,
-                "z": -29
-            },
-            "secondCorner": {
-                "x": 29,
-                "y": 34,
-                "z": 29
-            }
-        },
         "startInShop": true,
         "startInShopTpAfterSeconds": 30
     },

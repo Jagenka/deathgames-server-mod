@@ -24,7 +24,10 @@ class ConfigEntry(
 @Serializable
 class GeneralConfigEntry(
     var enabled: Boolean = false,
-    var locale: String = "en"
+    var locale: String = "en",
+    var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
+    var spectatorRadiusPadding: Int = 0,
+    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
 )
 
 @Serializable
@@ -77,9 +80,6 @@ class MiscConfigEntry(
     var revealTimePerPlayer: Int = 0,
     var shopCloseTimeAfterReveal: Int = 0,
     var killStreakPenaltyCap: Int = 1,
-    var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
-    var spectatorRadiusPadding: Int = 0,
-    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
     var startInShop: Boolean = false,
     var startInShopTpAfterSeconds: Int = 0
 )
