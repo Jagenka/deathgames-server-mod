@@ -189,14 +189,6 @@
         "startInShop": true,
         "startInShopTpAfterSeconds": 30
     },
-    "traps": {
-        "triggerRange": 0.5,
-        "setupTime": 200,
-        "triggerVisibilityRange": 30.0,
-        "visibilityRange": 10.0,
-        "affectedRange": 1.5,
-        "triggerDuration": 120
-    },
     "displayedText": {
         "currency": "$%amount"
     },
@@ -794,6 +786,20 @@
                     "{Ambient:0b,Amplifier:0b,Duration:40,Id:2,ShowIcon:0b,ShowParticles:0b}",
                     "{Ambient:0b,Amplifier:0b,Duration:40,Id:25,ShowIcon:0b,ShowParticles:0b}"
                 ]
+            },
+            {
+                "row": 3,
+                "col": 6,
+                "name": "Sonicification",
+                "price": 10,
+                "snare": false,
+                "effectNBTs": [
+                    "{Ambient:0b,Amplifier:100b,Duration:60,Id:1,ShowIcon:0b,ShowParticles:0b}"
+                ],
+                "triggerRange": 1.0,
+                "setupTime": 40,
+                "visibilityRange": 5,
+                "affectedRange": 5
             }
         ]
     }

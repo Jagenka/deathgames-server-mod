@@ -89,9 +89,6 @@ object Config
     val captureEnabled
         get() = configEntry.spawns.captureEnabled
 
-    val trapConfig
-        get() = configEntry.traps
-
     val shopCloseTimeAfterReveal
         get() = configEntry.misc.shopCloseTimeAfterReveal
     val killStreakPenaltyCap

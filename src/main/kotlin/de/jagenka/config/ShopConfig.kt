@@ -1,5 +1,6 @@
 package de.jagenka.config
 
+import de.jagenka.timer.seconds
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -86,5 +87,11 @@ data class Trap(
     var name: String = "NONAME",
     var price: Int = 69,
     var snare: Boolean = true,
-    var effectNBTs: List<String> = listOf("{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}")
+    var effectNBTs: List<String> = listOf("{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}"),
+    var triggerRange: Double = 0.5,
+    var setupTime: Int = 10.seconds(),
+    var triggerVisibilityRange: Double = 30.0,
+    var visibilityRange: Double = 10.0,
+    var affectedRange: Double = 1.5,
+    var triggerDuration: Int = 6.seconds(),
 )

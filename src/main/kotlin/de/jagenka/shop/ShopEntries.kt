@@ -58,8 +58,19 @@ object ShopEntries
             buffer[slot(row, col)] = RefundShopEntry(targetRow, targetCol)
         }
 
-        configEntry.shop.traps.forEach { (row, col, name, price, snare, effectNBTs) ->
-            buffer[slot(row, col)] = TrapShopEntry(name, price, snare, effectNBTs.map { StringNbtReader.parse(it) })
+        configEntry.shop.traps.forEach { (row, col, name, price, snare, effectNBTs, triggerRange, setupTime, triggerVisibilityRange, visibilityRange, affectedRange, triggerDuration) ->
+            buffer[slot(row, col)] = TrapShopEntry(
+                name,
+                price,
+                snare,
+                effectNBTs.map { StringNbtReader.parse(it) },
+                triggerRange,
+                setupTime,
+                triggerVisibilityRange,
+                visibilityRange,
+                affectedRange,
+                triggerDuration
+            )
         }
 
         shopEntries = buffer.toMap()

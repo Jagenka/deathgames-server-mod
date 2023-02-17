@@ -4,7 +4,6 @@ import de.jagenka.BlockPos
 import de.jagenka.Coordinates
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
-import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getOnlineParticipatingPlayersAround
 import de.jagenka.managers.PlayerManager.getOnlinePlayersAround
@@ -63,23 +62,23 @@ object TrapsAreNotGay
 
     private fun placeTrap(
         x: Int, y: Int, z: Int,
-        gaynessRange: Double = Config.trapConfig.triggerRange,
-        setupTime: Int = Config.trapConfig.setupTime,
-        gaynessTriggerVisibleRange: Double = Config.trapConfig.triggerVisibilityRange,
-        gaynessVisibilityRange: Double = Config.trapConfig.visibilityRange,
-        affectedGayRange: Double = Config.trapConfig.affectedRange,
-        triggerDuration: Int = Config.trapConfig.triggerDuration,
+        triggerRange: Double,
+        setupTime: Int,
+        triggerVisibilityRange: Double,
+        visibilityRange: Double,
+        affectedRange: Double,
+        triggerDuration: Int,
         snares: Boolean = false,
         effects: List<StatusEffectInstance>
     ): Boolean
     {
         val notGay = NotGay(
             BlockPos(x, y, z),
-            gaynessRange = gaynessRange,
+            triggerRange = triggerRange,
             setupTime = setupTime,
-            gaynessTriggerVisibleRange = gaynessTriggerVisibleRange,
-            gaynessVisibilityRange = gaynessVisibilityRange,
-            affectedGayRange = affectedGayRange,
+            triggerVisibilityRange = triggerVisibilityRange,
+            visibilityRange = visibilityRange,
+            affectedRange = affectedRange,
             triggerDuration = triggerDuration,
             snares = snares,
             effects = effects
@@ -93,10 +92,10 @@ object TrapsAreNotGay
 
     private fun handleNotGay(it: NotGay)
     {
-        val gayTriggerSpectator = getOnlinePlayersAround(it.pos, it.gaynessTriggerVisibleRange)//it.pos.getOnlinePlayersInRange(it.gaynessTriggerVisibleRange)
-        val gayPrepareSpectator = getOnlinePlayersAround(it.pos, it.gaynessVisibilityRange)//it.pos.getOnlinePlayersInRange(it.gaynessVisibilityRange)
-        val affectedPlayers = getOnlineParticipatingPlayersAround(it.pos, it.affectedGayRange)//it.pos.getInGamePlayersInRange(it.affectedGayRange)
-        val triggered = getOnlineParticipatingPlayersAround(it.pos, it.gaynessRange).isNotEmpty()//it.pos.getInGamePlayersInRange(it.gaynessRange).isNotEmpty()
+        val gayTriggerSpectator = getOnlinePlayersAround(it.pos, it.triggerVisibilityRange)//it.pos.getOnlinePlayersInRange(it.gaynessTriggerVisibleRange)
+        val gayPrepareSpectator = getOnlinePlayersAround(it.pos, it.visibilityRange)//it.pos.getOnlinePlayersInRange(it.gaynessVisibilityRange)
+        val affectedPlayers = getOnlineParticipatingPlayersAround(it.pos, it.affectedRange)//it.pos.getInGamePlayersInRange(it.affectedGayRange)
+        val triggered = getOnlineParticipatingPlayersAround(it.pos, it.triggerRange).isNotEmpty()//it.pos.getInGamePlayersInRange(it.gaynessRange).isNotEmpty()
         ifServerLoaded { server ->
             if (it.getAge() < it.setupTime)
             {
@@ -197,18 +196,34 @@ object TrapsAreNotGay
         if (ctx.side == Direction.UP)
         {
             ctx.stack.nbt?.let { itemNbt ->
-                if (!itemNbt.contains("isSnareTrap") || !itemNbt.contains("trapEffects")) return false // if tags are missing, we can use the egg
+                if (!itemNbt.contains("isSnareTrap") || !itemNbt.contains("trapEffects") || !itemNbt.contains("trapTriggerRange")
+                    || !itemNbt.contains("trapSetupTime") || !itemNbt.contains("trapTriggerVisibilityRange")
+                    || !itemNbt.contains("trapVisibilityRange") || !itemNbt.contains("trapAffectedRange")
+                    || !itemNbt.contains("trapTriggerDuration")
+                ) return false // if tags are missing, we can use the egg
 
                 val isSnare = itemNbt.getBoolean("isSnareTrap")
                 val effects = itemNbt.getList("trapEffects", NbtElement.COMPOUND_TYPE.toInt()).map { nbtElement ->
                     val nbtCompound = nbtElement as? NbtCompound ?: return@map StatusEffectInstance(StatusEffects.UNLUCK) // invalid elements are treated as unluck
                     return@map StatusEffectInstance.fromNbt(nbtCompound) ?: StatusEffectInstance(StatusEffects.UNLUCK) // invalid elements are treated as unluck
                 }
+                val triggerRange = itemNbt.getDouble("trapTriggerRange")
+                val setupTime = itemNbt.getInt("trapSetupTime")
+                val triggerVisibilityRange = itemNbt.getDouble("trapTriggerVisibilityRange")
+                val visibilityRange = itemNbt.getDouble("trapVisibilityRange")
+                val affectedRange = itemNbt.getDouble("trapAffectedRange")
+                val triggerDuration = itemNbt.getInt("trapTriggerDuration")
 
                 val success = placeTrap(
                     ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,
                     snares = isSnare,
-                    effects = effects
+                    effects = effects,
+                    triggerRange = triggerRange,
+                    setupTime = setupTime,
+                    triggerVisibilityRange = triggerVisibilityRange,
+                    visibilityRange = visibilityRange,
+                    affectedRange = affectedRange,
+                    triggerDuration = triggerDuration
                 )
 
                 if (success)
@@ -227,11 +242,11 @@ data class DisabledPlayerCoordinateFetch(var flag: Boolean, var coordinates: Coo
 
 data class NotGay(
     val pos: BlockPos, private var age: Int = 0.ticks(),
-    val gaynessRange: Double,
+    val triggerRange: Double,
     val setupTime: Int,
-    val gaynessTriggerVisibleRange: Double,
-    val gaynessVisibilityRange: Double,
-    val affectedGayRange: Double,
+    val triggerVisibilityRange: Double,
+    val visibilityRange: Double,
+    val affectedRange: Double,
     private var triggerDuration: Int,
     val snares: Boolean = false,
     val effects: List<StatusEffectInstance>

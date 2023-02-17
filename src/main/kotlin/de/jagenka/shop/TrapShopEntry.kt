@@ -13,7 +13,18 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class TrapShopEntry(private val name: String, private val price: Int, isSnare: Boolean, effects: List<NbtCompound>) : ShopEntry
+class TrapShopEntry(
+    private val name: String,
+    private val price: Int,
+    isSnare: Boolean,
+    effects: List<NbtCompound>,
+    triggerRange: Double,
+    setupTime: Int,
+    triggerVisibilityRange: Double,
+    visibilityRange: Double,
+    affectedRange: Double,
+    triggerDuration: Int
+) : ShopEntry
 {
     private val itemStack = ItemStack(Items.BAT_SPAWN_EGG)
 
@@ -23,6 +34,12 @@ class TrapShopEntry(private val name: String, private val price: Int, isSnare: B
         effectsNbt.addAll(effects)
         itemStack.orCreateNbt.put("trapEffects", effectsNbt)
         itemStack.orCreateNbt.putBoolean("isSnareTrap", isSnare)
+        itemStack.orCreateNbt.putDouble("trapTriggerRange", triggerRange)
+        itemStack.orCreateNbt.putInt("trapSetupTime", setupTime)
+        itemStack.orCreateNbt.putDouble("trapTriggerVisibilityRange", triggerVisibilityRange)
+        itemStack.orCreateNbt.putDouble("trapVisibilityRange", visibilityRange)
+        itemStack.orCreateNbt.putDouble("trapAffectedRange", affectedRange)
+        itemStack.orCreateNbt.putInt("trapTriggerDuration", triggerDuration)
     }
 
     override val nameForStat: String
