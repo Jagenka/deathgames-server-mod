@@ -17,7 +17,7 @@ import net.minecraft.text.Text
 
 object Shop
 {
-    private val upgrades = mutableMapOf<String, MutableMap<UpgradeType, Int>>().withDefault { mutableMapOf<UpgradeType, Int>().withDefault { 0 } }
+    private val upgrades = mutableMapOf<String, MutableMap<String, Int>>().withDefault { mutableMapOf<String, Int>().withDefault { 0 } }
 
     const val slotAmount = 9 * 6
 
@@ -59,15 +59,15 @@ object Shop
         }
     }
 
-    fun getUpgradeLevel(playerName: String, upgradeType: UpgradeType) = upgrades.getValue(playerName).getValue(upgradeType)
-    fun setUpgradeLevel(playerName: String, upgradeType: UpgradeType, level: Int)
+    fun getUpgradeLevel(playerName: String, upgradeType: String) = upgrades.getValue(playerName).getValue(upgradeType)
+    fun setUpgradeLevel(playerName: String, upgradeType: String, level: Int)
     {
         val upgradeTypeIntMutableMap = upgrades.getValue(playerName)
         upgradeTypeIntMutableMap[upgradeType] = level
         upgrades[playerName] = upgradeTypeIntMutableMap
     }
 
-    fun increaseUpgradeLevel(playerName: String, upgradeType: UpgradeType)
+    fun increaseUpgradeLevel(playerName: String, upgradeType: String)
     {
         setUpgradeLevel(playerName, upgradeType, getUpgradeLevel(playerName, upgradeType) + 1)
     }
@@ -80,9 +80,4 @@ object Shop
     fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.any { it.contains(player.pos) }
 
     fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
-}
-
-enum class UpgradeType
-{
-    SWORD, AXE, BOW, CROSSBOW, ARMOR
 }

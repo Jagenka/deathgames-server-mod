@@ -62,4 +62,9 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
 
     override val nameForStat: String
         get() = "${boughtItemStack.count} $name"
+
+    override fun toString(): String
+    {
+        return "$name $boughtItemStack ${boughtItemStack.nbt} $price"
+    }
 }

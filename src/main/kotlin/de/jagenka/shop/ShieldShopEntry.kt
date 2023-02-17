@@ -12,19 +12,17 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class ShieldShopEntry : ShopEntry
+class ShieldShopEntry(private val name: String = "Shield", private val targetDurability: Int = 120) : ShopEntry
 {
-    private val targetDurability: Int = 120
-
     override val nameForStat: String
-        get() = "SHIELD"
+        get() = name
 
     private fun getPrice() = 50
     override fun getPrice(player: ServerPlayerEntity): Int = getPrice()
 
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack =
         SHIELD.defaultStack.copy().setCustomName(
-            Text.of("${MoneyManager.getCurrencyString(getPrice())}: Shield x1").getWithStyle(
+            Text.of("${MoneyManager.getCurrencyString(getPrice())}: $name x1").getWithStyle(
                 Style.EMPTY.withColor(
                     if (player.getDGMoney() < getPrice()) Util.getTextColor(123, 0, 0)
                     else Util.getTextColor(255, 255, 255)

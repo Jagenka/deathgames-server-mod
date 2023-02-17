@@ -1,6 +1,7 @@
 package de.jagenka.config
 
 import de.jagenka.Util
+import de.jagenka.shop.ShopEntries
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -88,9 +89,6 @@ object Config
     val captureEnabled
         get() = configEntry.spawns.captureEnabled
 
-    val trapConfig
-        get() = configEntry.traps
-
     val shopCloseTimeAfterReveal
         get() = configEntry.misc.shopCloseTimeAfterReveal
     val killStreakPenaltyCap
@@ -122,7 +120,11 @@ object Config
         println("Successfully loaded DeathGames config!")
     }
 
-    fun load() = loadJSON(pathToConfFile.toFile())
+    fun load()
+    {
+        loadJSON(pathToConfFile.toFile())
+        ShopEntries.loadShop()
+    }
 
     fun loadJSON(jsonConfFile: File)
     {

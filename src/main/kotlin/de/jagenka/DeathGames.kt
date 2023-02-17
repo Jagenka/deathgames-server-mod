@@ -28,9 +28,12 @@ import net.minecraft.text.Texts
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
+import org.slf4j.LoggerFactory
 
 object DeathGames : DedicatedServerModInitializer
 {
+    val logger = LoggerFactory.getLogger("deathgames-server-mod")
+
     var running = false
 
     var currentlyStarting = false
@@ -45,7 +48,7 @@ object DeathGames : DedicatedServerModInitializer
 
         StatsIO.loadStats()
 
-        println("DeathGames Mod initialized!")
+        logger.info("DeathGames Mod initialized!")
     }
 
     private fun registerCommands()
