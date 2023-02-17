@@ -28,8 +28,8 @@ object StatsIO
                 it[gameStart] = gameEntry.gameId
                 it[gameEnd] = gameEntry.gameEnd
                 it[mapName] = gameEntry.map
-                it[captureEnabled] = gameEntry.captureEnabled
                 it[winner] = gameEntry.winner?.name ?: "null"
+                it[options] = gameEntry.options
             }
         }
     }
