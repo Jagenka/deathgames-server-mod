@@ -8,7 +8,6 @@ import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.makeParticipating
-import de.jagenka.managers.SpawnManager.getSpawnCoordinates
 import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
@@ -149,7 +148,7 @@ object DeathGames : DedicatedServerModInitializer
     private fun postPrep()
     {
         PlayerManager.getOnlinePlayers().forEach {
-            it.teleport(it.getSpawnCoordinates())
+            ShopTask.exitShop(it)
             DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
 
