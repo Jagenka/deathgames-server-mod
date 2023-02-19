@@ -9,11 +9,12 @@ receiveMoneyPlayer: {amount} ゲット。
 receiveMoneyTeam: チームは{amount} ゲット。
 notEnoughMoney: 所要のお金「{amount}」は持たない。
 shopWindowTitle: 店
-shopEnteredTitle: いらっしゃいませ!
+shopEnteredTitle: いらっしゃいませ！
 shopEnteredSubtitle: 「F」を押してください。
 shopClosedTitle: 休業
 shopClosedSubtitle: 人を殺してみてください！
-shopTpOut: {seconds}秒後にテレポート。。。
+shopTpOut: {seconds}秒後にテレポートします。。。
+tpShopToSpawnGameStart: {time}秒後スポーンへテレポートします。。。
 refundItemText: {item}を売りた！ {amount} ゲット。
 bonusInactive: ボーナス・プラットホーム: {time}秒後にスポーンする。
 bonusInactiveWithName: ボーナス・プラットホーム: {name}は{time}秒後にスポーンする。
@@ -36,7 +37,8 @@ notReady: 整ない
 nowReady: 今は整う！
 noLongerReady: 整ない。
 startGame: ゲーム スタート！
-cantStartGame: ゲームをスタートできない! {players}は整ない。
+cantStartGame: ゲームをスタートできない！ {players}は整ない。
+notEnoughTeams: ゲームをスタートできない！チーム数が少ない！
 and: と
 openTeamUI: 「F」を押してください。
 nowGlowing: {playerName}はマークさられている。

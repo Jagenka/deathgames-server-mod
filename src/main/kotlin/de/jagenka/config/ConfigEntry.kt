@@ -2,7 +2,6 @@ package de.jagenka.config
 
 import de.jagenka.*
 import de.jagenka.managers.Platform
-import de.jagenka.timer.seconds
 import kotlinx.serialization.Serializable
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -18,14 +17,17 @@ class ConfigEntry(
     @Section("money") val money: MoneyConfigEntry = MoneyConfigEntry(),
     @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
     @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
-    @Section("traps") val traps: TrapConfigEntry = TrapConfigEntry(),
-    @Section("displayedText") val displayedText: DisplayedTextConfigEntry = DisplayedTextConfigEntry()
+    @Section("displayedText") val displayedText: DisplayedTextConfigEntry = DisplayedTextConfigEntry(),
+    @Section("shop") val shop: ShopConfig = ShopConfig()
 )
 
 @Serializable
 class GeneralConfigEntry(
     var enabled: Boolean = false,
-    var locale: String = "en"
+    var locale: String = "en",
+    var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
+    var spectatorRadiusPadding: Int = 0,
+    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
 )
 
 @Serializable
@@ -53,7 +55,6 @@ class BonusPlatformsConfigEntry(
 
 @Serializable
 class RespawnsConfigEntry(
-    var perPlayer: Int = 0,
     var perTeam: Int = 0
 )
 
@@ -78,21 +79,8 @@ class MiscConfigEntry(
     var revealTimePerPlayer: Int = 0,
     var shopCloseTimeAfterReveal: Int = 0,
     var killStreakPenaltyCap: Int = 1,
-    var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
-    var spectatorRadiusPadding: Int = 0,
-    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
     var startInShop: Boolean = false,
     var startInShopTpAfterSeconds: Int = 0
-)
-
-@Serializable
-class TrapConfigEntry(
-    var triggerRange: Double = 0.5,
-    var setupTime: Int = 10.seconds(),
-    var triggerVisibilityRange: Double = 30.0,
-    var visibilityRange: Double = 10.0,
-    var affectedRange: Double = 1.5,
-    var triggerDuration: Int = 6.seconds()
 )
 
 @Serializable

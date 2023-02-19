@@ -1,6 +1,7 @@
 package de.jagenka.config
 
 import de.jagenka.Util
+import de.jagenka.shop.ShopEntries
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -45,9 +46,6 @@ object Config
         get() = configEntry.bonus.moneyAmount
     val bonusMoneyInterval
         get() = configEntry.bonus.moneyInterval
-
-    val respawnsPerPlayer
-        get() = configEntry.respawns.perPlayer
     val respawnsPerTeam
         get() = configEntry.respawns.perTeam
 
@@ -76,9 +74,9 @@ object Config
     val shopBounds
         get() = configEntry.shopSettings.shopBounds
     val arenaBounds
-        get() = configEntry.misc.arenaBounds
+        get() = configEntry.general.arenaBounds
     val spectatorRadiusPadding
-        get() = configEntry.misc.spectatorRadiusPadding
+        get() = configEntry.general.spectatorRadiusPadding
 
     val refundPercent
         get() = configEntry.shopSettings.refundPercent
@@ -87,9 +85,6 @@ object Config
         get() = configEntry.spawns.captureTimeNeeded
     val captureEnabled
         get() = configEntry.spawns.captureEnabled
-
-    val trapConfig
-        get() = configEntry.traps
 
     val shopCloseTimeAfterReveal
         get() = configEntry.misc.shopCloseTimeAfterReveal
@@ -122,7 +117,11 @@ object Config
         println("Successfully loaded DeathGames config!")
     }
 
-    fun load() = loadJSON(pathToConfFile.toFile())
+    fun load()
+    {
+        loadJSON(pathToConfFile.toFile())
+        ShopEntries.loadShop()
+    }
 
     fun loadJSON(jsonConfFile: File)
     {

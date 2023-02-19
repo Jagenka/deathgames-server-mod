@@ -18,20 +18,20 @@ object GPS
         ifServerLoaded { server: MinecraftServer ->
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayerEntity ->
                 BonusManager.selectedPlatforms.forEach platforms@{
-                    val arrow = ParticleRenderer.VertexTreeElement(origin)
                     var lookDirection = it.pos.toVec3d().subtract(player.pos.add(origin))
                     if (lookDirection.length() < 10) return@platforms
                     lookDirection = lookDirection.normalize()
                     val lookDirectionXZImage = Vec3d(lookDirection.x, 0.0, lookDirection.z).rotateY(90f.toRadians()).normalize()
                     val localYAxis = lookDirection.crossProduct(lookDirectionXZImage).normalize()
+                    val arrow = ParticleRenderer.VertexTreeElement(origin.add(player.rotationVector.normalize().multiply(2.0))) // move arrow forward, so it can be seen better
                     arrow
                         .makeChildByOffset(lookDirection.multiply(-1.0))
                         .up()
-                        .makeChildByOffset(lookDirection.multiply(4.0))
+                        .makeChildByOffset(lookDirection.multiply(2.0))
                         .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis.toVector3f(), 135f).multiply(1.0))
                         .up()
                         .makeChildByOffset(lookDirection.rotateAroundVector(localYAxis.toVector3f(), -135f).multiply(1.0))
-                    ParticleRenderer.drawParticlesFromVertexTreeElement(server, player, ParticleTypes.WAX_OFF, arrow)
+                    ParticleRenderer.drawParticlesFromVertexTreeElement(server, player, ParticleTypes.ELECTRIC_SPARK, arrow)
                 }
             }
         }

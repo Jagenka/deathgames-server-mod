@@ -8,7 +8,6 @@ import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.makeParticipating
-import de.jagenka.managers.SpawnManager.getSpawnCoordinates
 import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
@@ -28,9 +27,12 @@ import net.minecraft.text.Texts
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
+import org.slf4j.LoggerFactory
 
 object DeathGames : DedicatedServerModInitializer
 {
+    val logger = LoggerFactory.getLogger("deathgames-server-mod")
+
     var running = false
 
     var currentlyStarting = false
@@ -45,7 +47,7 @@ object DeathGames : DedicatedServerModInitializer
 
         StatsIO.loadStats()
 
-        println("DeathGames Mod initialized!")
+        logger.info("DeathGames Mod initialized!")
     }
 
     private fun registerCommands()
@@ -146,7 +148,7 @@ object DeathGames : DedicatedServerModInitializer
     private fun postPrep()
     {
         PlayerManager.getOnlinePlayers().forEach {
-            it.teleport(it.getSpawnCoordinates())
+            ShopTask.exitShop(it)
             DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
 
