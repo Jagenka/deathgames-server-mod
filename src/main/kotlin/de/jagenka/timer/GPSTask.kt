@@ -8,7 +8,7 @@ object GPSTask: TimerTask
     override val onlyInGame: Boolean
         get() = true
     override val runEvery: Int
-        get() = 1.seconds()
+        get() = 2
 
     override fun run()
     {
