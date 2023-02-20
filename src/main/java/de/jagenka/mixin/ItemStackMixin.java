@@ -4,6 +4,7 @@ import de.jagenka.config.Config;
 import de.jagenka.gameplay.traps.TrapsAreNotGay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,10 +19,15 @@ public class ItemStackMixin
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
-        if (TrapsAreNotGay.handleTrapPlacement(context))
+        if (context.getStack().getItem() == Items.BAT_SPAWN_EGG)
         {
-            cir.setReturnValue(ActionResult.PASS);
-            cir.cancel();
+            if (TrapsAreNotGay.handleTrapPlacement(context))
+            {
+                cir.setReturnValue(ActionResult.PASS);
+                cir.cancel();
+            }
         }
+
+        // other items here
     }
 }
