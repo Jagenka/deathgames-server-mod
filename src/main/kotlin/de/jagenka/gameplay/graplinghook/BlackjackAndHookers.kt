@@ -1,12 +1,22 @@
 package de.jagenka.gameplay.graplinghook
 
-import net.minecraft.entity.projectile.FishingBobberEntity
+import de.jagenka.minus
+import de.jagenka.times
+import net.minecraft.item.ItemUsageContext
+import net.minecraft.item.Items
 
 object BlackjackAndHookers
 {
-    // Handle fishing bobbers, which are used as marks for force application
-    fun tick()
+    @JvmStatic
+    fun forceTheHooker(strength: Double, ctx: ItemUsageContext): Boolean
     {
-        val bobbers: MutableList<FishingBobberEntity> = mutableListOf()
+        ctx.player?.let { owner ->
+            owner.fishHook?.let { bobber ->
+                if (!bobber.isOnGround) return false
+                val direction = (bobber.pos - owner.pos).normalize()
+                owner.addVelocity(direction * strength)
+            } ?: return false
+        } ?: return false
+        return true
     }
 }
