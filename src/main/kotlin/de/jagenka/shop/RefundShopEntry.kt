@@ -13,7 +13,7 @@ import net.minecraft.text.Text
 
 class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
 {
-    private val shopEntryToRefund: ShopEntry
+    val shopEntryToRefund: ShopEntry
         get() = ShopEntries.shopEntries[ShopEntries.slot(row, col)] ?: EmptyShopEntry()
 
     override fun getPrice(player: ServerPlayerEntity): Int = 0

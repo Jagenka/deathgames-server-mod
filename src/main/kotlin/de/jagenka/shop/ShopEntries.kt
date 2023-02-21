@@ -73,6 +73,9 @@ object ShopEntries
             )
         }
 
+        // TODO: remove this
+        buffer[slot(5, 6)] = RefundRecentShopEntry()
+
         shopEntries = buffer.toMap()
     }
 

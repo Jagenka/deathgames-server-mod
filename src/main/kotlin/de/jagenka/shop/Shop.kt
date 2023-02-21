@@ -80,4 +80,17 @@ object Shop
     fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.any { it.contains(player.pos) }
 
     fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
+
+    private val recentlyBought = mutableMapOf<String, MutableList<ShopEntry>>().withDefault { mutableListOf() }
+
+    fun registerBought(playerName: String, shopEntry: ShopEntry)
+    {
+        val list = recentlyBought.getValue(playerName)
+        list.add(shopEntry)
+        recentlyBought[playerName] = list
+    }
+
+    fun clearBought(playerName: String) = recentlyBought.getValue(playerName).clear()
+
+    fun getRecentlyBought(playerName: String) = recentlyBought.getValue(playerName).toList()
 }

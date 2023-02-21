@@ -62,6 +62,7 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 
             if (shopEntry.buy(player))
             {
+                Shop.registerBought(player.name.string, shopEntry)
                 StatManager.addBoughtItem(player.name.string, shopEntry, moneySpent)
             }
         }
