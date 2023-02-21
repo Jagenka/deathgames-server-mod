@@ -1,6 +1,7 @@
 package de.jagenka.mixin;
 
 import de.jagenka.config.Config;
+import de.jagenka.gameplay.graplinghook.BlackjackAndHookers;
 import de.jagenka.gameplay.traps.TrapsAreNotGay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -19,6 +20,7 @@ public class ItemStackMixin
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
+        // Traps
         if (context.getStack().getItem() == Items.BAT_SPAWN_EGG)
         {
             if (TrapsAreNotGay.handleTrapPlacement(context))
@@ -28,6 +30,11 @@ public class ItemStackMixin
             }
         }
 
-        // other items here
+        // Grappling hook
+        if (context.getStack().getItem() == Items.FISHING_ROD)
+        {
+            int testValue = 1;
+            BlackjackAndHookers.forceTheHooker(testValue, context);
+        }
     }
 }
