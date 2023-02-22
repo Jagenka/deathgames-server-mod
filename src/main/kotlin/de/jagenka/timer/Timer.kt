@@ -33,6 +33,7 @@ object Timer
             add(GPSTask)
             add(CaptureSpawnTask)
             add(BonusSpawnTask)
+            add(GrapplingTask)
         }
     }
 
