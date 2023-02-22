@@ -16,6 +16,9 @@ object GrapplingTask: TimerTask
 
     override fun reset()
     {
-        println("Reset stuff")
+        BlackjackAndHookers.activeHooks.toList().forEach {
+            it.killEntity()
+            BlackjackAndHookers.activeHooks.remove(it)
+        }
     }
 }
