@@ -3,10 +3,14 @@ package de.jagenka.mixin;
 import de.jagenka.config.Config;
 import de.jagenka.gameplay.graplinghook.BlackjackAndHookers;
 import de.jagenka.gameplay.traps.TrapsAreNotGay;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,12 +33,14 @@ public class ItemStackMixin
                 cir.cancel();
             }
         }
+    }
 
-        // Grappling hook
-        if (context.getStack().getItem() == Items.FISHING_ROD)
+    @Inject(method = "use", at = @At("HEAD"))
+    public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir)
+    {
+        if (user.getStackInHand(hand).getItem() == Items.FISHING_ROD)
         {
-            int testValue = 1;
-            BlackjackAndHookers.forceTheHooker(testValue, context);
+            BlackjackAndHookers.forceTheHooker(world, user);
         }
     }
 }
