@@ -14,7 +14,7 @@ object BlackjackAndHookers
 {
     const val GRAVITY_ACCELERATION = 0.05 // In m/tick² - Calculated from 1 m/s² (Source: Minecraft Wiki => Arrow)
 
-    private val activeHooks = mutableListOf<ArrowHook>()
+    val activeHooks = mutableListOf<ArrowHook>()
 
     @JvmStatic
     fun tick()
