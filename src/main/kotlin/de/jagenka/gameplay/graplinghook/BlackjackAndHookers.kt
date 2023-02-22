@@ -1,6 +1,7 @@
 package de.jagenka.gameplay.graplinghook
 
 import de.jagenka.plus
+import de.jagenka.shop.Shop
 import de.jagenka.times
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.projectile.ArrowEntity
@@ -36,7 +37,7 @@ object BlackjackAndHookers
     fun forceTheHooker(world: World, owner: PlayerEntity): Boolean
     {
         owner.fishHook?.let { bobber ->
-            if (!bobber.isOnGround) return false
+            if (!bobber.isOnGround || owner.pos.y > bobber.pos.y + 1 || Shop.isInShopBounds(owner)) return false
 
             val yVector = Vec3d(0.0, bobber.pos.y - owner.pos.y, 0.0)
             val xzVector = Vec3d(bobber.pos.x - owner.pos.x, 0.0, bobber.pos.z - owner.pos.z)
