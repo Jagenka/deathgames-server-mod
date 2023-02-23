@@ -9,6 +9,8 @@ object BonusSpawnTask : TimerTask
 {
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = true
     override val runEvery: Int
         get() = 1.ticks()
 
@@ -18,8 +20,6 @@ object BonusSpawnTask : TimerTask
     override fun run()
     {
         if (DeathGames.currentlyEnding) return
-
-        if (Timer.gameMechsPaused) return
 
         if (time >= when (currentState)
             {

@@ -5,14 +5,15 @@ import de.jagenka.gameplay.traps.TrapsAreNotGay
 object TrapTask: TimerTask
 {
     override val onlyInGame: Boolean
-        get() = false
-    // TODO: make tru
+        get() = true
+    override val isGameMechanic: Boolean
+        get() = true
+
     override val runEvery: Int
         get() = 1.ticks()
 
     override fun run()
     {
-        if (Timer.gameMechsPaused) return
         TrapsAreNotGay.tick()
     }
 

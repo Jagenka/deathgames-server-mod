@@ -7,14 +7,14 @@ object GPSTask: TimerTask
 {
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = true
     override val runEvery: Int
         get() = 2
 
     override fun run()
     {
         if (currentlyEnding) return
-
-        if (Timer.gameMechsPaused) return
 
         GPS.makeArrowGoBrrr()
     }

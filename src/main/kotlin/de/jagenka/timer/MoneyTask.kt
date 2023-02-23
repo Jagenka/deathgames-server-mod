@@ -14,6 +14,8 @@ object MoneyTask : TimerTask
 {
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = true
     override val runEvery: Int
         get() = 1.ticks()
 
@@ -22,8 +24,6 @@ object MoneyTask : TimerTask
     override fun run()
     {
         if (currentlyEnding) return
-
-        if (Timer.gameMechsPaused) return
 
         PlayerManager.getParticipatingPlayers().forEach { playerName ->
             val playerTimer = moneyTimer.getValue(playerName)
