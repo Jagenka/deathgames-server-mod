@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.projectile.ArrowEntity
 import net.minecraft.entity.projectile.PersistentProjectileEntity
 import net.minecraft.text.Text
+import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import kotlin.math.pow
@@ -14,12 +15,16 @@ import kotlin.math.pow
 object BlackjackAndHookers
 {
     const val GRAVITY_ACCELERATION = 0.05 // In m/tick² - Calculated from 1 m/s² (Source: Minecraft Wiki => Arrow)
+    const val MAX_DISTANCE = 40.0 // In m
+    const val MAX_COOLDOWN = 40 // In ticks
 
     val activeHooks = mutableListOf<ArrowHook>()
+    private val cooldown = Cooldown(MAX_COOLDOWN)
 
     @JvmStatic
     fun tick()
     {
+        cooldown.tickDown()
         activeHooks.toList().forEach {
             if (it.isAlive())
             {
@@ -36,29 +41,37 @@ object BlackjackAndHookers
     @JvmStatic
     fun forceTheHooker(world: World, owner: PlayerEntity): Boolean
     {
-        owner.fishHook?.let { bobber ->
-            if (!bobber.isOnGround || owner.pos.y > bobber.pos.y + 1 || Shop.isInShopBounds(owner)) return false
+        if (Shop.isInShopBounds(owner) || !cooldown.isReady()) return false
 
-            val yVector = Vec3d(0.0, bobber.pos.y - owner.pos.y, 0.0)
-            val xzVector = Vec3d(bobber.pos.x - owner.pos.x, 0.0, bobber.pos.z - owner.pos.z)
+        val hitResult = owner.raycast(MAX_DISTANCE, 0f, false)
+        if (hitResult.type != HitResult.Type.BLOCK) return false
 
-            val (yVelocity, flightTime) = getVerticalVelocity(yVector.length())
-            val xzVelocity = getHorizontalVelocity(xzVector.length(), flightTime)
+        val targetPos = hitResult.pos + Vec3d(0.0, 0.5, 0.0)
+        if (owner.pos.y > targetPos.y + 1) return false
 
-            val totalVelocity = xzVector.normalize() * xzVelocity + yVector.normalize() * yVelocity
+        val yVector = Vec3d(0.0, targetPos.y - owner.pos.y, 0.0)
+        val xzVector = Vec3d(targetPos.x - owner.pos.x, 0.0, targetPos.z - owner.pos.z)
 
-            val arrow = ArrowEntity(world, owner)
-            arrow.velocity = totalVelocity
-            arrow.damage = 1.0
-            arrow.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED
-            arrow.pierceLevel = 16
-            arrow.isSilent = true
-            arrow.customName = Text.of("hook")
-            arrow.isCustomNameVisible = false
-            world.spawnEntity(arrow)
-            activeHooks.add(ArrowHook(arrow, flightTime))
-            owner.startRiding(arrow)
-        } ?: return false
+        val (yVelocity, flightTime) = getVerticalVelocity(yVector.length())
+        val xzVelocity = getHorizontalVelocity(xzVector.length(), flightTime)
+
+        val totalVelocity = xzVector.normalize() * xzVelocity + yVector.normalize() * yVelocity
+
+        val arrow = ArrowEntity(world, owner)
+        arrow.velocity = totalVelocity
+        arrow.damage = 1.0
+        arrow.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED
+        arrow.pierceLevel = 16
+        arrow.isSilent = true
+        arrow.customName = Text.of("hook")
+        arrow.isCustomNameVisible = false
+
+        world.spawnEntity(arrow)
+        activeHooks.add(ArrowHook(arrow, flightTime))
+        owner.startRiding(arrow)
+
+        cooldown.goOnCooldown()
+
         return true
     }
 
@@ -116,5 +129,18 @@ object BlackjackAndHookers
     {
         fun isAlive(): Boolean = age < maxAge
         fun killEntity(): Unit = arrow.kill()
+    }
+
+    data class Cooldown(private val maxCooldown: Int, private var remainingCooldown: Int = 0)
+    {
+        fun isReady(): Boolean = remainingCooldown == 0
+        fun goOnCooldown(): Unit
+        {
+            remainingCooldown = maxCooldown
+        }
+        fun tickDown(): Unit
+        {
+            if (remainingCooldown >= 0) remainingCooldown--
+        }
     }
 }
