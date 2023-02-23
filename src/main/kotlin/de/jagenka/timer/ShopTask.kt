@@ -32,6 +32,8 @@ object ShopTask : TimerTask
 
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = false
     override val runEvery: Int
         get() = 1.ticks()
 

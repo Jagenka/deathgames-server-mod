@@ -12,6 +12,8 @@ object BonusDisplayTask : TimerTask
 {
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = false
     override val runEvery: Int
         get() = 10.ticks()
 
