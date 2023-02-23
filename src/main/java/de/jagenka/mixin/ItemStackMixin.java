@@ -33,12 +33,19 @@ public class ItemStackMixin
                 cir.cancel();
             }
         }
+
+        // Grapple
+        if (context.getPlayer() != null && context.getPlayer().getStackInHand(context.getHand()).getItem() == Items.CARROT_ON_A_STICK)
+        {
+            BlackjackAndHookers.forceTheHooker(context.getWorld(), context.getPlayer());
+        }
     }
 
     @Inject(method = "use", at = @At("HEAD"))
     public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir)
     {
-        if (user.getStackInHand(hand).getItem() == Items.FISHING_ROD)
+        // Grapple
+        if (user.getStackInHand(hand).getItem() == Items.CARROT_ON_A_STICK)
         {
             BlackjackAndHookers.forceTheHooker(world, user);
         }
