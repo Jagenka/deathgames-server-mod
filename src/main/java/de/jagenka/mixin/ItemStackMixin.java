@@ -44,6 +44,8 @@ public class ItemStackMixin
     @Inject(method = "use", at = @At("HEAD"))
     public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir)
     {
+        if (!Config.INSTANCE.isEnabled()) return;
+
         // Grapple
         if (user.getStackInHand(hand).getItem() == Items.CARROT_ON_A_STICK)
         {
