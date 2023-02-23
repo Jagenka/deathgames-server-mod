@@ -1,7 +1,8 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.managers.DisplayManager.sendPrivateMessage
+import de.jagenka.managers.deductDGMoney
+import de.jagenka.shop.Shop.getRefundAmount
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
@@ -33,11 +34,21 @@ class RefundRecentShopEntry : ShopEntry
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>().map { it.shopEntryToRefund })
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>())
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<LeaveShopEntry>())
-        // TODO: Shield - remove durability -> refund shield allgemein
+        // TODO: merge upgrade buys into one
+
         // TODO: Extra Life
-        // TODO: Item, Upgradable
         // TODO: Trap refund -> allgemein
-        player.sendPrivateMessage(recentlyBought.map { it.nameForStat }.toString())
-        return false
+
+        recentlyBought.toList().forEach {
+            if (it.hasItem(player))
+            {
+                player.deductDGMoney(-getRefundAmount(player, it))
+                it.removeItem(player)
+            }
+        }
+
+        Shop.clearRecentlyBought(player.name.string)
+
+        return true
     }
 }

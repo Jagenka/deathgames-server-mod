@@ -14,7 +14,7 @@ interface ShopEntry
     /**
      * total money spent for refund
      */
-    fun getTotalSpentMoney(player: ServerPlayerEntity): Int = 0
+    fun getTotalSpentMoney(player: ServerPlayerEntity): Int = getPrice(player)
 
     /**
      * display name for refund

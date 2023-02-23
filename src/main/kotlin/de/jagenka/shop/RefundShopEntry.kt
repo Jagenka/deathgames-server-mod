@@ -1,10 +1,9 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.config.Config
-import de.jagenka.floor
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.deductDGMoney
+import de.jagenka.shop.Shop.getRefundAmount
 import de.jagenka.util.I18n
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
@@ -27,7 +26,7 @@ class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
         return itemStackToDisplay
             .setCustomName(//"Refund ${shopEntryToRefund.getDisplayName()} for ${MoneyManager.getCurrencyString(getRefundAmount(player))}"
                 Text.of(
-                    I18n.get("refundItemText", mapOf("item" to shopEntryToRefund.getDisplayName(), "amount" to MoneyManager.getCurrencyString(getRefundAmount(player))))
+                    I18n.get("refundItemText", mapOf("item" to shopEntryToRefund.getDisplayName(), "amount" to MoneyManager.getCurrencyString(getRefundAmount(player, this))))
                 ).getWithStyle(
                     Style.EMPTY.withColor(
                         Util.getTextColor(255, 255, 255)
@@ -40,13 +39,11 @@ class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
     {
         return if (shopEntryToRefund.hasItem(player))
         {
-            player.deductDGMoney(-getRefundAmount(player))
+            player.deductDGMoney(-getRefundAmount(player, shopEntryToRefund))
             shopEntryToRefund.removeItem(player)
             true
         } else false
     }
-
-    fun getRefundAmount(player: ServerPlayerEntity) = (shopEntryToRefund.getTotalSpentMoney(player) * (Config.refundPercent.toDouble() / 100.0)).floor()
 
     override val nameForStat: String
         get() = "${shopEntryToRefund.nameForStat}_REFUND"
