@@ -40,4 +40,14 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
 
     override val nameForStat: String
         get() = "EXTRA_LIFE"
+
+    override fun hasItem(player: ServerPlayerEntity): Boolean
+    {
+        return (KillManager.getRespawns(player) ?: 0) >= 1
+    }
+
+    override fun removeItem(player: ServerPlayerEntity)
+    {
+        KillManager.removeOneRespawn(player)
+    }
 }

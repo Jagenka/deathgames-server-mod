@@ -52,4 +52,7 @@ class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
     {
         return "row$row col$col refund"
     }
+
+    override fun hasItem(player: ServerPlayerEntity): Boolean = false // this ShopEntry is not refundable
+    override fun removeItem(player: ServerPlayerEntity) = Unit // refund should do nothing
 }

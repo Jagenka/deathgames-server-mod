@@ -22,14 +22,12 @@ interface ShopEntry
     fun getDisplayName(): String = ""
 
     /**
-     * for refund: only refundable if true - refund is therefore disabled by default
+     * for refund: only refundable if true
      */
-    fun hasItem(player: ServerPlayerEntity): Boolean = false
+    fun hasItem(player: ServerPlayerEntity): Boolean
 
     /**
      * what to do if refunding
      */
     fun removeItem(player: ServerPlayerEntity)
-    {
-    }
 }
