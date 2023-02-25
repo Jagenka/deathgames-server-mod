@@ -122,10 +122,12 @@ object ShopTask : TimerTask
 
     fun exitShop(player: ServerPlayerEntity)
     {
+        val playerName = player.name.string
         SpawnManager.teleportPlayerToSpawn(player)
         player.extinguish()
-        timeInShop[player.name.string] = 0
+        timeInShop[playerName] = 0
         player.closeHandledScreen()
+        Shop.clearRecentlyBought(playerName)
     }
 
     override fun reset()

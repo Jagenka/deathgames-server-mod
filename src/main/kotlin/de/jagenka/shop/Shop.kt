@@ -2,6 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
+import de.jagenka.floor
 import de.jagenka.managers.MoneyManager
 import de.jagenka.util.I18n
 import net.minecraft.entity.player.PlayerEntity
@@ -80,4 +81,20 @@ object Shop
     fun isInShopBounds(player: ServerPlayerEntity): Boolean = Config.shopBounds.any { it.contains(player.pos) }
 
     fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
+
+    private val recentlyBought = mutableMapOf<String, MutableList<ShopEntry>>().withDefault { mutableListOf() }
+
+    fun registerRecentlyBought(playerName: String, shopEntry: ShopEntry)
+    {
+        val list = recentlyBought.getValue(playerName)
+        list.add(shopEntry)
+        recentlyBought[playerName] = list
+    }
+
+    fun clearRecentlyBought(playerName: String) = recentlyBought.getValue(playerName).clear()
+
+    fun getRecentlyBought(playerName: String) = recentlyBought.getValue(playerName).toList()
+
+    fun getRefundAmount(player: ServerPlayerEntity, shopEntryToRefund: ShopEntry) =
+        (shopEntryToRefund.getTotalSpentMoney(player) * (Config.refundPercent.toDouble() / 100.0)).floor()
 }

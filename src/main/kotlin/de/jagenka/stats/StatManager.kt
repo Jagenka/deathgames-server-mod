@@ -30,6 +30,16 @@ object StatManager
         personalStats.gib(playerName).itemsBought = itemsBought
     }
 
+    /**
+     * @param price should be negative, as it will be given to player
+     */
+    fun addRecentlyRefunded(playerName: String, shopEntry: ShopEntry, price: Int)
+    {
+        val itemsBought = personalStats.gib(playerName).itemsBought.toMutableList()
+        itemsBought.add(ItemBoughtEntry("${shopEntry.nameForStat}_REFUND_RECENT", price, Timer.now().toLong()))
+        personalStats.gib(playerName).itemsBought = itemsBought
+    }
+
     @JvmStatic
     fun handleKillType(damageSource: DamageSource, killer: String, deceased: String)
     {
