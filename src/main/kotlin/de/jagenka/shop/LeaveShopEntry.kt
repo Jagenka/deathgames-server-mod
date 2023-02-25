@@ -37,6 +37,9 @@ class LeaveShopEntry : ShopEntry
         return true
     }
 
+    override fun hasItem(player: ServerPlayerEntity): Boolean = false // this ShopEntry is not refundable
+    override fun removeItem(player: ServerPlayerEntity) = Unit // refund should do nothing
+
     override val nameForStat: String
         get() = "LEAVE_SHOP"
 }

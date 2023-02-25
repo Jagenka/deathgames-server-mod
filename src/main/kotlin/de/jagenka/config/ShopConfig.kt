@@ -6,12 +6,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 class ShopConfig(
     var items: List<Item> = listOf(Item()),
-    var shield: Shield = Shield(),
-    var extraLive: ExtraLife = ExtraLife(),
-    var leaveShop: LeaveShop = LeaveShop(),
+    var shield: Shield? = Shield(),
+    var extraLife: ExtraLife? = ExtraLife(),
+    var leaveShop: LeaveShop? = LeaveShop(),
     var upgrades: List<Upgrade> = listOf(Upgrade()),
     var refunds: List<Refund> = listOf(Refund()),
-    var traps: List<Trap> = listOf(Trap())
+    var traps: List<Trap> = listOf(Trap()),
+    var refundRecent: RefundRecent? = RefundRecent(),
 )
 
 @Serializable
@@ -94,4 +95,11 @@ data class Trap(
     var visibilityRange: Double = 10.0,
     var affectedRange: Double = 1.5,
     var triggerDuration: Int = 6.seconds(),
+)
+
+@Serializable
+data class RefundRecent(
+    var row: Int = 3,
+    var col: Int = 5,
+    var name: String = "NONAME",
 )

@@ -35,9 +35,11 @@ class ShieldShopEntry(private val name: String = "Shield", private val targetDur
         if (player.getDGMoney() >= getPrice())
         {
             val upgradableShield = player.inventory.main.find { itemStackInInv ->
-                if (itemStackInInv.item == SHIELD) println(itemStackInInv.damage)
                 itemStackInInv.item == SHIELD && itemStackInInv.damage >= targetDurability
             }
+                ?: player.inventory.offHand.find { itemStackInInv ->
+                    itemStackInInv.item == SHIELD && itemStackInInv.damage >= targetDurability
+                } // if item is in offhand
             if (upgradableShield != null)
             {
                 upgradableShield.damage -= targetDurability
@@ -52,5 +54,30 @@ class ShieldShopEntry(private val name: String = "Shield", private val targetDur
             player.sendPrivateMessage(Shop.getNotEnoughMoneyString(getPrice()))
         }
         return false
+    }
+
+    override fun hasItem(player: ServerPlayerEntity): Boolean
+    {
+        return getShieldForRefund(player) != null
+    }
+
+    override fun removeItem(player: ServerPlayerEntity)
+    {
+        val shield = getShieldForRefund(player) ?: return // this should not happen, as hasItem should have found a shield
+        shield.damage += targetDurability
+        if (shield.damage == shield.maxDamage)
+        {
+            player.inventory.remove({ it == shield }, 1, player.inventory)
+        }
+    }
+
+    private fun getShieldForRefund(player: ServerPlayerEntity): ItemStack?
+    {
+        return player.inventory.main.find { itemStackInInv ->
+            itemStackInInv.item == SHIELD && itemStackInInv.damage <= SHIELD.maxDamage - targetDurability
+        }
+            ?: player.inventory.offHand.find { itemStackInInv ->
+                itemStackInInv.item == SHIELD && itemStackInInv.damage <= SHIELD.maxDamage - targetDurability
+            } // if item is in offhand
     }
 }

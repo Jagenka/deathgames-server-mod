@@ -19,6 +19,8 @@ object InactivePlayersTask : TimerTask
 
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = true
     override val runEvery: Int
         get() = 1.ticks()
 
@@ -27,8 +29,6 @@ object InactivePlayersTask : TimerTask
     override fun run()
     {
         if (currentlyEnding) return
-
-        if (Timer.gameMechsPaused) return
 
         inactiveTimer.forEach { (playerName, time) ->
             val personalRevealTime = getPersonalRevealTime(playerName).toInt()

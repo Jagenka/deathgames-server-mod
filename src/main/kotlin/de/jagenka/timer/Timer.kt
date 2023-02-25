@@ -46,6 +46,7 @@ object Timer
         ticks++
 
         tasks.forEach {
+            if (gameMechsPaused && it.isGameMechanic) return@forEach
             if (it.onlyInGame && !DeathGames.running) return@forEach
             if (ticks % it.runEvery == 0) it.run()
         }

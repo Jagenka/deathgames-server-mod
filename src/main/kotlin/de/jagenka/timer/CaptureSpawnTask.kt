@@ -21,6 +21,8 @@ object CaptureSpawnTask : TimerTask
 {
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = true
     override val runEvery: Int
         get() = 1.ticks()
 
@@ -31,8 +33,6 @@ object CaptureSpawnTask : TimerTask
         if (currentlyEnding) return
 
         if (!captureEnabled) return
-
-        if (Timer.gameMechsPaused) return
 
         val playersOnAnySpawn = mutableListOf<Pair<ServerPlayerEntity, DGSpawn>>()
 

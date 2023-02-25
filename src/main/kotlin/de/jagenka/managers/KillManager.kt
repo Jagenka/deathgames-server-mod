@@ -129,6 +129,7 @@ object KillManager
                 if (respawnsAmount > 0) playerRespawns[deceased.name.string] = respawnsAmount - 1
                 if (respawnsAmount <= 0) deceased.eliminate()
             }
+
             Mode.TEAM ->
             {
                 val respawnsAmount = teamRespawns.getValue(deceased.getDGTeam())
@@ -152,6 +153,14 @@ object KillManager
 
     fun getRespawns(playerName: String) = playerRespawns[playerName]
     fun getRespawns(team: DGTeam) = teamRespawns[team]
+    fun getRespawns(player: ServerPlayerEntity): Int?
+    {
+        return when (livesMode)
+        {
+            Mode.PLAYER -> getRespawns(player.name.string)
+            Mode.TEAM -> getRespawns(player.getDGTeam() ?: return null)
+        }
+    }
 
     fun addLives(playerName: String, amount: Int)
     {

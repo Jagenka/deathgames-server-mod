@@ -72,4 +72,16 @@ class TrapShopEntry(
         }
         return false
     }
+
+    override fun hasItem(player: ServerPlayerEntity): Boolean
+    {
+        return player.inventory.contains(itemStack)
+    }
+
+    override fun removeItem(player: ServerPlayerEntity)
+    {
+        val filter: (ItemStack) -> Boolean = { it.item == itemStack.item && it.nbt == itemStack.nbt }
+
+        player.inventory.remove(filter, 1, player.inventory)
+    }
 }

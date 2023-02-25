@@ -8,6 +8,10 @@ import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
+import net.minecraft.entity.player.PlayerInventory
+import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.TextColor
@@ -258,3 +262,37 @@ fun Vec3d.rotateAroundVector(axis: Vector3f, degrees: Float): Vec3d
 }
 
 infix fun Block.isSame(block: Block) = this.lootTableId == block.lootTableId
+
+fun PlayerInventory.combinedInventory() = main + offHand + armor
+
+fun PlayerInventory.removeWithNbt(item: Item, nbt: NbtCompound?): Boolean
+{
+    val filter: (ItemStack) -> Boolean = { it.item == item && it.nbt == nbt }
+
+    main.toList().forEach {
+        if (filter(it))
+        {
+            println(it)
+            main.remove(it)
+            return true
+        }
+    }
+
+    offHand.toList().forEach {
+        if (filter(it))
+        {
+            offHand.remove(it)
+            return true
+        }
+    }
+
+    armor.toList().forEach {
+        if (filter(it))
+        {
+            armor.remove(it)
+            return true
+        }
+    }
+
+    return false
+}

@@ -11,6 +11,8 @@ object LobbyTask : TimerTask
 {
     override val onlyInGame: Boolean
         get() = false
+    override val isGameMechanic: Boolean
+        get() = false
     override val runEvery: Int
         get() = 1.ticks()
 
