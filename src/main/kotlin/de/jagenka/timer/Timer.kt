@@ -71,7 +71,7 @@ object Timer
         }
     }
 
-    fun schedule(task: () -> Unit, offset: Int): ScheduledTask
+    fun schedule(offset: Int, task: () -> Unit): ScheduledTask
     {
         return scheduleAt(task, now() + offset)
     }

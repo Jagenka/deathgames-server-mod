@@ -72,11 +72,11 @@ object DeathGames : DedicatedServerModInitializer
         PlayerManager.getOnlinePlayers().forEach { player ->
             player.closeHandledScreen()
             DisplayManager.sendTitleMessage(player, literal("3"), literal(""), 1.seconds())
-            Timer.schedule({ DisplayManager.sendTitleMessage(player, literal("2"), literal(""), 1.seconds()) }, 1.seconds())
-            Timer.schedule({ DisplayManager.sendTitleMessage(player, literal("1"), literal(""), 1.seconds()) }, 2.seconds())
+            Timer.schedule(1.seconds()) { DisplayManager.sendTitleMessage(player, literal("2"), literal(""), 1.seconds()) }
+            Timer.schedule(2.seconds()) { DisplayManager.sendTitleMessage(player, literal("1"), literal(""), 1.seconds()) }
         }
 
-        Timer.schedule({ startGame() }, 3.seconds())
+        Timer.schedule(3.seconds()) { startGame() }
     }
 
     fun startGame()
@@ -127,7 +127,7 @@ object DeathGames : DedicatedServerModInitializer
             if (Config.startInShop)
             {
                 it.teleport(Config.shopBounds.random().center)
-                Timer.schedule({ ShopTask.sendTpOutMessage(it, 5) }, (secondsToSpawnTp - 5).coerceAtLeast(0).seconds())
+                Timer.schedule((secondsToSpawnTp - 5).coerceAtLeast(0).seconds()) { ShopTask.sendTpOutMessage(it, 5) }
             }
         }
 
@@ -135,7 +135,7 @@ object DeathGames : DedicatedServerModInitializer
         {
             ShopTask.tpOutActive = false
             DisplayManager.sendChatMessage(I18n.get("tpShopToSpawnGameStart", mapOf("time" to secondsToSpawnTp)))
-            Timer.schedule({ postPrep() }, secondsToSpawnTp.seconds())
+            Timer.schedule(secondsToSpawnTp.seconds()) { postPrep() }
         } else
         {
             postPrep()
@@ -208,7 +208,7 @@ object DeathGames : DedicatedServerModInitializer
 
         StatManager.saveAllStatsAfterGame()
 
-        Timer.schedule({
+        Timer.schedule(10.seconds()) {
             PlayerManager.getOnlinePlayers().forEach {
                 it.changeGameMode(GameMode.ADVENTURE)
                 it.clearStatusEffects()
@@ -222,6 +222,6 @@ object DeathGames : DedicatedServerModInitializer
             PlayerManager.clearParticipatingStatusForEveryone()
             running = false
             currentlyEnding = false
-        }, 10.seconds())
+        }
     }
 }
