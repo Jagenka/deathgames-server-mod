@@ -13,10 +13,13 @@ import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
 import de.jagenka.timer.ShopTask
 import de.jagenka.timer.Timer
+import de.jagenka.timer.Timer.tick
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.projectile.ProjectileEntity
@@ -43,6 +46,15 @@ object DeathGames : DedicatedServerModInitializer
 
     override fun onInitializeServer()
     {
+        ServerWorldEvents.LOAD.register { minecraftServer, _ ->
+            Util.onServerLoaded(minecraftServer)
+        }
+
+        ServerTickEvents.START_SERVER_TICK.register {
+            if (!isEnabled) return@register
+            tick()
+        }
+
         registerCommands()
 
         StatsIO.loadStats()

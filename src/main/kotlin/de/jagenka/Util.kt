@@ -70,7 +70,6 @@ object Util
 
         PlayerManager.prepareTeams()
 
-        DisplayManager.reset()
         DisplayManager.prepareTeams()
     }
 
