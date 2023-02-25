@@ -45,7 +45,7 @@ class RefundRecentShopEntry(private val displayName: String = "Refund recent pur
                 val price = -it.getTotalSpentMoney(player)
                 player.deductDGMoney(price) // always refund 100% if recent refund
                 it.removeItem(player)
-                StatManager.addBoughtItem(player.name.string, it, price)
+                StatManager.addRecentlyRefunded(player.name.string, it, price)
             }
         }
 
