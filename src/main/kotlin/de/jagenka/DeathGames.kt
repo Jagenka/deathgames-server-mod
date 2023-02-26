@@ -107,6 +107,7 @@ object DeathGames : DedicatedServerModInitializer
         Timer.reset()
 
         DisplayManager.reset()
+
         Shop.reset()
 
         KillManager.initLives()
@@ -129,8 +130,9 @@ object DeathGames : DedicatedServerModInitializer
 
         SpawnManager.shuffleSpawns()
 
-        val secondsToSpawnTp = Config.startInShopTpAfterSeconds
+        DisplayManager.showSidebar()
 
+        val secondsToSpawnTp = Config.startInShopTpAfterSeconds
         PlayerManager.getOnlinePlayers().forEach {
             it.closeHandledScreen()
             val (x, y, z) = Config.lobbySpawn
@@ -163,8 +165,6 @@ object DeathGames : DedicatedServerModInitializer
             ShopTask.exitShop(it)
             DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
-
-        DisplayManager.showSidebar()
 
         ShopTask.tpOutActive = true
         Timer.gameMechsPaused = false

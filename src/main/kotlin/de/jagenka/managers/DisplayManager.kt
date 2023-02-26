@@ -1,6 +1,8 @@
 package de.jagenka.managers
 
 
+import de.jagenka.DeathGames
+import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.ticks
@@ -22,37 +24,41 @@ import java.util.regex.Pattern
 
 object DisplayManager
 {
-    private lateinit var sidebarObjective: ScoreboardObjective
-    private lateinit var tabListObjective: ScoreboardObjective
-
     fun reset()
     {
         ifServerLoaded { server ->
-            server.scoreboard.objectives.toList().forEach {
-                server.scoreboard.removeObjective(it)
+            try
+            {
+                server.scoreboard.addObjective("sidebar", ScoreboardCriterion.DUMMY, Text.of(I18n.get("respawns")), ScoreboardCriterion.RenderType.INTEGER)
+            } catch (_: IllegalArgumentException)
+            {
+                DeathGames.logger.info("sidebar objective already exists")
             }
-            if (!DisplayManager::sidebarObjective.isInitialized) sidebarObjective =
-                ScoreboardObjective(
-                    server.scoreboard,
-                    "sidebar",
-                    ScoreboardCriterion.DUMMY,
-                    Text.of(I18n.get("respawns")),
-                    ScoreboardCriterion.RenderType.INTEGER
-                ) // TODO does not update on ingame locale change
+            // server.scoreboard.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, getObjective("sidebar"))
 
-            if (!DisplayManager::tabListObjective.isInitialized) tabListObjective =
-                ScoreboardObjective(server.scoreboard, "tabList", ScoreboardCriterion.DUMMY, Text.of(I18n.get("kill-streak")), ScoreboardCriterion.RenderType.INTEGER)
+            try
+            {
+                server.scoreboard.addObjective("tabList", ScoreboardCriterion.DUMMY, Text.of(I18n.get("kill-streak")), ScoreboardCriterion.RenderType.INTEGER)
+            } catch (_: IllegalArgumentException)
+            {
+                DeathGames.logger.info("tabList objective already exists")
+            }
+            server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, getObjective("tabList"))
 
-
-            server.scoreboard.addScoreboardObjective(sidebarObjective)
-            server.scoreboard.addScoreboardObjective(tabListObjective)
-            server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, tabListObjective)
 
         }
 
         resetLevelDisplay()
         resetBossBars()
         resetKillStreakDisplay()
+    }
+
+    fun getObjective(name: String): ScoreboardObjective
+    {
+        Util.minecraftServer?.let { server ->
+            return server.scoreboard.getNullableObjective(name) ?: return@let
+        }
+        error("objective $name missing")
     }
 
     fun prepareTeams()
@@ -69,15 +75,21 @@ object DisplayManager
 
     fun updateLivesDisplay()
     {
+        val sidebar = getObjective("sidebar")
+
         ifServerLoaded { server ->
             when (KillManager.livesMode)
             {
                 Mode.PLAYER ->
                 {
                     PlayerManager.getPlayers().forEach { playerName ->
+
                         val lives = KillManager.getRespawns(playerName)
-                        if (lives != null && PlayerManager.isParticipating(playerName) && lives >= 0) server.scoreboard.getPlayerScore(playerName, sidebarObjective).score = lives
-                        else server.scoreboard.resetPlayerScore(playerName, sidebarObjective)
+                        if (lives != null && PlayerManager.isParticipating(playerName) && lives >= 0) server.scoreboard.getPlayerScore(playerName, sidebar).score = lives
+                        else
+                        {
+                            server.scoreboard.resetPlayerScore(playerName, sidebar)
+                        }
                     }
                 }
 
@@ -85,9 +97,9 @@ object DisplayManager
                 {
                     DGTeam.values().forEach { team ->
                         val lives = KillManager.getRespawns(team)
-                        if (lives != null && PlayerManager.isParticipating(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebarObjective).score =
+                        if (lives != null && PlayerManager.isParticipating(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebar).score =
                             lives
-                        else server.scoreboard.resetPlayerScore(team.getPrettyName(), sidebarObjective)
+                        else server.scoreboard.resetPlayerScore(team.getPrettyName(), sidebar)
                     }
                 }
             }
@@ -96,6 +108,7 @@ object DisplayManager
 
     fun updateKillStreakDisplay()
     {
+        val tabListObjective = getObjective("tabList")
         ifServerLoaded { server ->
             PlayerManager.getPlayers().forEach { playerName ->
                 val killStreak = KillManager.getKillStreak(playerName)
@@ -106,6 +119,7 @@ object DisplayManager
 
     fun resetKillStreakDisplay()
     {
+        val tabListObjective = getObjective("tabList")
         ifServerLoaded { server ->
             PlayerManager.getPlayers().forEach { playerName ->
                 server.scoreboard.getPlayerScore(playerName, tabListObjective).score = 0
@@ -115,10 +129,14 @@ object DisplayManager
 
     fun showSidebar()
     {
-        ifServerLoaded { server ->
-            updateLivesDisplay()
-            server.scoreboard.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, sidebarObjective)
-        }
+        updateLivesDisplay()
+        Util.minecraftServer?.scoreboard?.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, getObjective("sidebar"))
+            ?: DeathGames.logger.error("minecraft server not initialized")
+    }
+
+    fun hideSidebar()
+    {
+        Util.minecraftServer?.scoreboard?.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, null)
     }
 
     private fun resetLevelDisplay()
