@@ -14,7 +14,7 @@ interface ShopEntry
     /**
      * total money spent for refund
      */
-    fun getTotalSpentMoney(player: ServerPlayerEntity): Int = 0
+    fun getTotalSpentMoney(player: ServerPlayerEntity): Int = getPrice(player)
 
     /**
      * display name for refund
@@ -22,14 +22,12 @@ interface ShopEntry
     fun getDisplayName(): String = ""
 
     /**
-     * for refund: only refundable if true - refund is therefore disabled by default
+     * for refund: only refundable if true
      */
-    fun hasItem(player: ServerPlayerEntity): Boolean = false
+    fun hasItem(player: ServerPlayerEntity): Boolean
 
     /**
      * what to do if refunding
      */
     fun removeItem(player: ServerPlayerEntity)
-    {
-    }
 }

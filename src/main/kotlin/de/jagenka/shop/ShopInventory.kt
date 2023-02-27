@@ -1,5 +1,6 @@
 package de.jagenka.shop
 
+import de.jagenka.shop.Shop.getRefundAmount
 import de.jagenka.stats.StatManager
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
@@ -58,10 +59,13 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
         val shopEntry = items.getValue(slotIndex)
         if (isNonEmptySlot(slotIndex))
         {
-            val moneySpent = if (shopEntry is RefundShopEntry) -shopEntry.getRefundAmount(player) else shopEntry.getPrice(player)
+            val moneySpent =
+                if (shopEntry is RefundShopEntry) -getRefundAmount(player, shopEntry)
+                else shopEntry.getPrice(player)
 
             if (shopEntry.buy(player))
             {
+                Shop.registerRecentlyBought(player.name.string, shopEntry)
                 StatManager.addBoughtItem(player.name.string, shopEntry, moneySpent)
             }
         }

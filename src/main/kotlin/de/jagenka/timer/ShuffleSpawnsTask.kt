@@ -10,6 +10,8 @@ object ShuffleSpawnsTask : TimerTask
 {
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = true
     override val runEvery: Int
         get() = shuffleSpawnsInterval
 
@@ -22,8 +24,6 @@ object ShuffleSpawnsTask : TimerTask
         if (captureEnabled) return
 
         if (currentlyEnding) return
-
-        if (Timer.gameMechsPaused) return
 
         Timer.scheduleAt({ SpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
     }

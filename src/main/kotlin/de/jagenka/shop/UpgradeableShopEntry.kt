@@ -31,7 +31,12 @@ class UpgradeableShopEntry(
         }
     }
 
-    override fun getPrice(player: ServerPlayerEntity): Int = prices[Shop.getUpgradeLevel(player.name.string, type)]
+    override fun getPrice(player: ServerPlayerEntity): Int
+    {
+        val upgradeLevel = Shop.getUpgradeLevel(player.name.string, type)
+        if (upgradeLevel !in prices.indices) return 0
+        return prices[upgradeLevel]
+    }
 
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
     {

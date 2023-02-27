@@ -13,6 +13,8 @@ object BonusMoneyTask : TimerTask
 {
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = true
     override val runEvery: Int
         get() = 1.ticks()
 
@@ -20,7 +22,6 @@ object BonusMoneyTask : TimerTask
 
     override fun run()
     {
-        if (Timer.gameMechsPaused) return
         PlayerManager.getOnlinePlayers().forEach {
             val playerName = it.name.string
             if (ticks.getValue(playerName) >= bonusMoneyInterval)

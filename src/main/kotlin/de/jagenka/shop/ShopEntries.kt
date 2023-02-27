@@ -26,17 +26,17 @@ object ShopEntries
             buffer[slot(row, col)] = ItemShopEntry(itemStack, price, name)
         }
 
-        configEntry.shop.shield.let { (row, col, name, durability) ->
+        configEntry.shop.shield?.let { (row, col, name, durability) ->
             buffer[slot(row, col)] = ShieldShopEntry(name, durability)
         }
 
-        configEntry.shop.extraLive.let { (row, col, name, id, amount, nbt, price) ->
+        configEntry.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
             val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
             if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
             buffer[slot(row, col)] = ExtraLifeShopEntry(itemStack, price, name)
         }
 
-        configEntry.shop.leaveShop.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry() }
+        configEntry.shop.leaveShop?.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry() }
 
         configEntry.shop.upgrades.forEach { (row, col, name, id, levels) ->
             val itemStackLists = mutableListOf<MutableList<ItemStack>>()
@@ -71,6 +71,10 @@ object ShopEntries
                 affectedRange,
                 triggerDuration
             )
+        }
+
+        configEntry.shop.refundRecent?.let { (row, col, name) ->
+            buffer[slot(row, col)] = RefundRecentShopEntry(name)
         }
 
         shopEntries = buffer.toMap()

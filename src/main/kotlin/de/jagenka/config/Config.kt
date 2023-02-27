@@ -1,5 +1,6 @@
 package de.jagenka.config
 
+import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.shop.ShopEntries
 import kotlinx.serialization.decodeFromString
@@ -114,7 +115,7 @@ object Config
 
         } ?: error("Failed loading DeathGames config - Server not loaded yet.")
 
-        println("Successfully loaded DeathGames config!")
+        DeathGames.logger.info("Successfully loaded DeathGames config!")
     }
 
     fun load()

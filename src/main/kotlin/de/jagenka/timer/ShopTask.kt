@@ -32,6 +32,8 @@ object ShopTask : TimerTask
 
     override val onlyInGame: Boolean
         get() = true
+    override val isGameMechanic: Boolean
+        get() = false
     override val runEvery: Int
         get() = 1.ticks()
 
@@ -120,10 +122,12 @@ object ShopTask : TimerTask
 
     fun exitShop(player: ServerPlayerEntity)
     {
+        val playerName = player.name.string
         SpawnManager.teleportPlayerToSpawn(player)
         player.extinguish()
-        timeInShop[player.name.string] = 0
+        timeInShop[playerName] = 0
         player.closeHandledScreen()
+        Shop.clearRecentlyBought(playerName)
     }
 
     override fun reset()
