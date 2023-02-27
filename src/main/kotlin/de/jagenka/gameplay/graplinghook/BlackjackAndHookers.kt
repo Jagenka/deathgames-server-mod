@@ -149,23 +149,30 @@ object BlackjackAndHookers
         return Pair(velocity, tickCount)
     }
 
+    /**
+     * Class for tracking the arrow, which the player is riding on.
+     */
     data class ArrowHook(private val arrow: ArrowEntity, private val maxAge: Int, var age: Int = 0)
     {
         fun isAlive(): Boolean = age < maxAge
         fun killEntity(): Unit = arrow.kill()
     }
 
+    /**
+     * Implements a functional cooldown.
+     */
     data class Cooldown(private val maxCooldown: Int, private var remainingCooldown: Int = 0)
     {
         fun isReady(): Boolean = remainingCooldown <= 0
-        fun goOnCooldown()
+        fun getCooldown(): Double = remainingCooldown.toDouble() / maxCooldown
+        fun goOnCooldown(): Unit
         {
             remainingCooldown = maxCooldown
         }
 
         fun tickDown()
         {
-            if (remainingCooldown >= 0) remainingCooldown--
+            if (remainingCooldown > 0) remainingCooldown--
         }
 
         override fun toString(): String
