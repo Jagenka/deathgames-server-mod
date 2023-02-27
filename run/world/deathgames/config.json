@@ -369,7 +369,8 @@
             "row": 0,
             "col": 3,
             "name": "Shield",
-            "durability": 120
+            "durability": 120,
+            "price": 50
         },
         "extraLife": {
             "row": 4,

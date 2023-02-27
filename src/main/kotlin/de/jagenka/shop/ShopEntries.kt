@@ -26,8 +26,8 @@ object ShopEntries
             buffer[slot(row, col)] = ItemShopEntry(itemStack, price, name)
         }
 
-        configEntry.shop.shield?.let { (row, col, name, durability) ->
-            buffer[slot(row, col)] = ShieldShopEntry(name, durability)
+        configEntry.shop.shield?.let { (row, col, name, durability, price) ->
+            buffer[slot(row, col)] = ShieldShopEntry(name, durability, price)
         }
 
         configEntry.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
