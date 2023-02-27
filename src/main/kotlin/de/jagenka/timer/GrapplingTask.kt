@@ -2,9 +2,11 @@ package de.jagenka.timer
 
 import de.jagenka.gameplay.graplinghook.BlackjackAndHookers
 
-object GrapplingTask: TimerTask
+object GrapplingTask : TimerTask
 {
     override val onlyInGame: Boolean
+        get() = true
+    override val isGameMechanic: Boolean
         get() = true
     override val runEvery: Int
         get() = 1.ticks()
@@ -16,9 +18,6 @@ object GrapplingTask: TimerTask
 
     override fun reset()
     {
-        BlackjackAndHookers.activeHooks.toList().forEach {
-            it.killEntity()
-            BlackjackAndHookers.activeHooks.remove(it)
-        }
+        BlackjackAndHookers.reset()
     }
 }

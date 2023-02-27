@@ -35,9 +35,9 @@ public class ItemStackMixin
         }
 
         // Grapple
-        if (context.getPlayer() != null && context.getPlayer().getStackInHand(context.getHand()).getItem() == Items.CARROT_ON_A_STICK)
+        if (context.getPlayer() != null && context.getPlayer().getStackInHand(context.getHand()).getItem() == BlackjackAndHookers.getItemItem())
         {
-            BlackjackAndHookers.forceTheHooker(context.getWorld(), context.getPlayer());
+            BlackjackAndHookers.forceTheHooker(context.getWorld(), context.getPlayer(), context.getPlayer().getStackInHand(context.getHand()));
         }
     }
 
@@ -45,9 +45,9 @@ public class ItemStackMixin
     public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir)
     {
         // Grapple
-        if (user.getStackInHand(hand).getItem() == Items.CARROT_ON_A_STICK)
+        if (user.getStackInHand(hand).getItem() == BlackjackAndHookers.getItemItem())
         {
-            BlackjackAndHookers.forceTheHooker(world, user);
+            BlackjackAndHookers.forceTheHooker(world, user, user.getStackInHand(hand));
         }
     }
 }
