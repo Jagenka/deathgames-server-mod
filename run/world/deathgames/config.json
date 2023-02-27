@@ -372,13 +372,13 @@
             "durability": 120
         },
         "extraLife": {
-          "row": 4,
-          "col": 1,
-          "name": "Extra Life",
-          "id": "minecraft:turtle_egg",
-          "amount": 1,
-          "nbt": "",
-          "price": 100
+            "row": 4,
+            "col": 1,
+            "name": "Extra Life",
+            "id": "minecraft:turtle_egg",
+            "amount": 1,
+            "nbt": "",
+            "price": 100
         },
         "leaveShop": {
             "row": 5,
@@ -804,21 +804,29 @@
                 "name": "Sonicification",
                 "price": 10,
                 "snare": false,
-              "effectNBTs": [
-                "{Ambient:0b,Amplifier:100b,Duration:60,Id:1,ShowIcon:0b,ShowParticles:0b}"
-              ],
-              "triggerRange": 1.0,
-              "setupTime": 40,
-              "triggerVisibilityRange": 30.0,
-              "visibilityRange": 5.0,
-              "affectedRange": 5.0,
-              "triggerDuration": 120
+                "effectNBTs": [
+                    "{Ambient:0b,Amplifier:100b,Duration:60,Id:1,ShowIcon:0b,ShowParticles:0b}"
+                ],
+                "triggerRange": 1.0,
+                "setupTime": 40,
+                "triggerVisibilityRange": 30.0,
+                "visibilityRange": 5.0,
+                "affectedRange": 5.0,
+                "triggerDuration": 120
             }
         ],
-      "refundRecent": {
-        "row": 5,
-        "col": 2,
-        "name": "Refund recent purchases"
-      }
+        "refundRecent": {
+            "row": 5,
+            "col": 4,
+            "name": "Refund recent purchases"
+        },
+        "hook": {
+            "row": 4,
+            "col": 4,
+            "name": "(Blackjack and )Hook(ers)",
+            "price": 35,
+            "maxDistance": 40.0,
+            "cooldown": 40
+        }
     }
 }

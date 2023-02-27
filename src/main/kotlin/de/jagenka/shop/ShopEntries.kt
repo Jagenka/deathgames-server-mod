@@ -77,6 +77,10 @@ object ShopEntries
             buffer[slot(row, col)] = RefundRecentShopEntry(name)
         }
 
+        configEntry.shop.hook?.let { (row, col, name, price, maxDistance, cooldown) ->
+            buffer[slot(row, col)] = HookerShopEntry(name, price, maxDistance, cooldown)
+        }
+
         shopEntries = buffer.toMap()
     }
 

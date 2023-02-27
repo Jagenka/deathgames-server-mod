@@ -1,10 +1,16 @@
 package de.jagenka.mixin;
 
 import de.jagenka.config.Config;
+import de.jagenka.gameplay.graplinghook.BlackjackAndHookers;
 import de.jagenka.gameplay.traps.TrapsAreNotGay;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,10 +24,32 @@ public class ItemStackMixin
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
-        if (TrapsAreNotGay.handleTrapPlacement(context))
+        // Traps
+        if (context.getStack().getItem() == Items.BAT_SPAWN_EGG)
         {
-            cir.setReturnValue(ActionResult.PASS);
-            cir.cancel();
+            if (TrapsAreNotGay.handleTrapPlacement(context))
+            {
+                cir.setReturnValue(ActionResult.PASS);
+                cir.cancel();
+            }
+        }
+
+        // Grapple
+        if (context.getPlayer() != null && context.getPlayer().getStackInHand(context.getHand()).getItem() == BlackjackAndHookers.getItemItem())
+        {
+            BlackjackAndHookers.forceTheHooker(context.getWorld(), context.getPlayer(), context.getPlayer().getStackInHand(context.getHand()));
+        }
+    }
+
+    @Inject(method = "use", at = @At("HEAD"))
+    public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir)
+    {
+        if (!Config.INSTANCE.isEnabled()) return;
+
+        // Grapple
+        if (user.getStackInHand(hand).getItem() == BlackjackAndHookers.getItemItem())
+        {
+            BlackjackAndHookers.forceTheHooker(world, user, user.getStackInHand(hand));
         }
     }
 }
