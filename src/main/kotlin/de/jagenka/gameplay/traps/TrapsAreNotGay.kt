@@ -17,7 +17,6 @@ import de.jagenka.toCenter
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.ItemUsageContext
-import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.particle.ParticleTypes
@@ -191,8 +190,6 @@ object TrapsAreNotGay
     @JvmStatic
     fun handleTrapPlacement(ctx: ItemUsageContext): Boolean
     {
-        if (ctx.stack.item != Items.BAT_SPAWN_EGG) return false
-
         if (ctx.side == Direction.UP)
         {
             ctx.stack.nbt?.let { itemNbt ->

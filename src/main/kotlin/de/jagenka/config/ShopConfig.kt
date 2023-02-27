@@ -13,6 +13,7 @@ class ShopConfig(
     var refunds: List<Refund> = listOf(Refund()),
     var traps: List<Trap> = listOf(Trap()),
     var refundRecent: RefundRecent? = RefundRecent(),
+    var hook: GrapplingHook? = GrapplingHook()
 )
 
 @Serializable
@@ -102,4 +103,14 @@ data class RefundRecent(
     var row: Int = 3,
     var col: Int = 5,
     var name: String = "NONAME",
+)
+    
+@Serializable
+data class GrapplingHook(
+    var row: Int = 2,
+    var col: Int = 5,
+    var name: String = "NONAME",
+    var price: Int = 0,
+    var maxDistance: Double = 40.0,   // In Blocks
+    var cooldown: Int = 40,     // In ticks
 )

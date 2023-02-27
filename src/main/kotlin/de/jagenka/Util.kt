@@ -246,6 +246,12 @@ fun Float.toRadians(): Float = (this / 180f) * Math.PI.toFloat()
 
 fun Float.toDegree(): Float = (this * 180f) / Math.PI.toFloat()
 
+operator fun Vec3d.plus(other: Vec3d): Vec3d = this.add(other)
+
+operator fun Vec3d.minus(other: Vec3d): Vec3d = this.subtract(other)
+
+operator fun Vec3d.times(factor: Double): Vec3d = this.multiply(factor)
+
 fun Vec3d.pureQuarternion(): Quaternionf = Quaternionf(this.x.toFloat(), this.y.toFloat(), this.z.toFloat(), 0f)
 
 fun Vec3d.rotateAroundVector(axis: Vector3f, degrees: Float): Vec3d
