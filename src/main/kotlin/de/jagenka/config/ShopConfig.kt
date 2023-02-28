@@ -11,7 +11,8 @@ class ShopConfig(
     var leaveShop: LeaveShop = LeaveShop(),
     var upgrades: List<Upgrade> = listOf(Upgrade()),
     var refunds: List<Refund> = listOf(Refund()),
-    var traps: List<Trap> = listOf(Trap())
+    var traps: List<Trap> = listOf(Trap()),
+    var hook: GrapplingHook = GrapplingHook()
 )
 
 @Serializable
@@ -94,4 +95,10 @@ data class Trap(
     var visibilityRange: Double = 10.0,
     var affectedRange: Double = 1.5,
     var triggerDuration: Int = 6.seconds(),
+)
+
+@Serializable
+data class GrapplingHook(
+    var flightTime: Int = 40,   // In ticks
+    var cooldown: Int = 40,     // In ticks
 )
