@@ -33,6 +33,7 @@ data class Shield(
     var col: Int = 1,
     var name: String = "NONAME",
     var durability: Int = 120,
+    var price: Int = 0,
 )
 
 @Serializable
