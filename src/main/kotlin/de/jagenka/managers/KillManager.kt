@@ -39,12 +39,12 @@ object KillManager
 
         TrapsAreNotGay.onPlayerDeath(playerName)
 
-        Timer.schedule({
+        Timer.schedule(5.seconds()) {
             if (PlayerManager.requestRespawn(deceased))
             {
                 deceased.sendPrivateMessage(I18n.get("forceRespawned"))
             }
-        }, 5.seconds())
+        }
 
         if (!DeathGames.running) return
 

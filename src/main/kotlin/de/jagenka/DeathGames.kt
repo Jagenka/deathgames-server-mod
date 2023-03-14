@@ -13,10 +13,13 @@ import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
 import de.jagenka.timer.ShopTask
 import de.jagenka.timer.Timer
+import de.jagenka.timer.Timer.tick
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.projectile.ProjectileEntity
@@ -43,6 +46,15 @@ object DeathGames : DedicatedServerModInitializer
 
     override fun onInitializeServer()
     {
+        ServerLifecycleEvents.SERVER_STARTED.register { minecraftServer ->
+            Util.onServerLoaded(minecraftServer)
+        }
+
+        ServerTickEvents.START_SERVER_TICK.register {
+            if (!isEnabled) return@register
+            tick()
+        }
+
         registerCommands()
 
         StatsIO.loadStats()
@@ -72,11 +84,11 @@ object DeathGames : DedicatedServerModInitializer
         PlayerManager.getOnlinePlayers().forEach { player ->
             player.closeHandledScreen()
             DisplayManager.sendTitleMessage(player, literal("3"), literal(""), 1.seconds())
-            Timer.schedule({ DisplayManager.sendTitleMessage(player, literal("2"), literal(""), 1.seconds()) }, 1.seconds())
-            Timer.schedule({ DisplayManager.sendTitleMessage(player, literal("1"), literal(""), 1.seconds()) }, 2.seconds())
+            Timer.schedule(1.seconds()) { DisplayManager.sendTitleMessage(player, literal("2"), literal(""), 1.seconds()) }
+            Timer.schedule(2.seconds()) { DisplayManager.sendTitleMessage(player, literal("1"), literal(""), 1.seconds()) }
         }
 
-        Timer.schedule({ startGame() }, 3.seconds())
+        Timer.schedule(3.seconds()) { startGame() }
     }
 
     fun startGame()
@@ -95,6 +107,7 @@ object DeathGames : DedicatedServerModInitializer
         Timer.reset()
 
         DisplayManager.reset()
+
         Shop.reset()
 
         KillManager.initLives()
@@ -117,8 +130,9 @@ object DeathGames : DedicatedServerModInitializer
 
         SpawnManager.shuffleSpawns()
 
-        val secondsToSpawnTp = Config.startInShopTpAfterSeconds
+        DisplayManager.showSidebar()
 
+        val secondsToSpawnTp = Config.startInShopTpAfterSeconds
         PlayerManager.getOnlinePlayers().forEach {
             it.closeHandledScreen()
             val (x, y, z) = Config.lobbySpawn
@@ -127,7 +141,7 @@ object DeathGames : DedicatedServerModInitializer
             if (Config.startInShop)
             {
                 it.teleport(Config.shopBounds.random().center)
-                Timer.schedule({ ShopTask.sendTpOutMessage(it, 5) }, (secondsToSpawnTp - 5).coerceAtLeast(0).seconds())
+                Timer.schedule((secondsToSpawnTp - 5).coerceAtLeast(0).seconds()) { ShopTask.sendTpOutMessage(it, 5) }
             }
         }
 
@@ -135,7 +149,7 @@ object DeathGames : DedicatedServerModInitializer
         {
             ShopTask.tpOutActive = false
             DisplayManager.sendChatMessage(I18n.get("tpShopToSpawnGameStart", mapOf("time" to secondsToSpawnTp)))
-            Timer.schedule({ postPrep() }, secondsToSpawnTp.seconds())
+            Timer.schedule(secondsToSpawnTp.seconds()) { postPrep() }
         } else
         {
             postPrep()
@@ -151,8 +165,6 @@ object DeathGames : DedicatedServerModInitializer
             ShopTask.exitShop(it)
             DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
-
-        DisplayManager.showSidebar()
 
         ShopTask.tpOutActive = true
         Timer.gameMechsPaused = false
@@ -208,7 +220,7 @@ object DeathGames : DedicatedServerModInitializer
 
         StatManager.saveAllStatsAfterGame()
 
-        Timer.schedule({
+        Timer.schedule(10.seconds()) {
             PlayerManager.getOnlinePlayers().forEach {
                 it.changeGameMode(GameMode.ADVENTURE)
                 it.clearStatusEffects()
@@ -222,6 +234,6 @@ object DeathGames : DedicatedServerModInitializer
             PlayerManager.clearParticipatingStatusForEveryone()
             running = false
             currentlyEnding = false
-        }, 10.seconds())
+        }
     }
 }

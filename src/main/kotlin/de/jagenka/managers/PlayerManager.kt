@@ -67,7 +67,7 @@ object PlayerManager
     {
         if (DeathGames.running) return false
         val playerName = player.name.string
-        if(teamRegistry[playerName] == team) return false
+        if (teamRegistry[playerName] == team) return false
         if (canPlayerJoin.getValue(playerName))
         {
             ifServerLoaded {
@@ -83,7 +83,7 @@ object PlayerManager
     fun disableTeamJoinForSomeTime(playerName: String)
     {
         canPlayerJoin[playerName] = false
-        Timer.schedule({ makePlayerAbleToJoinAgain(playerName) }, 1.seconds())
+        Timer.schedule(1.seconds()) { makePlayerAbleToJoinAgain(playerName) }
     }
 
     fun makePlayerAbleToJoinAgain(playerName: String)

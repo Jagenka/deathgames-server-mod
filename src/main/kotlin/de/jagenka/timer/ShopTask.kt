@@ -110,7 +110,7 @@ object ShopTask : TimerTask
         if (secondsLeft > 0 && currentlyInShop.contains(player.name.string))
         {
             player.sendPrivateMessage(I18n.get("shopTpOut", mapOf("seconds" to secondsLeft)))
-            Timer.schedule({ sendTpOutMessage(player, secondsLeft - 1) }, 1.seconds())
+            Timer.schedule(1.seconds()) { sendTpOutMessage(player, secondsLeft - 1) }
         }
     }
 

@@ -121,7 +121,7 @@ class StartGameUIEntry : UIEntry
         {
             if (notReadySpamProtection) return
             notReadySpamProtection = true
-            Timer.schedule({ notReadySpamProtection = false }, 1.seconds())
+            Timer.schedule(1.seconds()) { notReadySpamProtection = false }
 
             var whoIsNotReadyString = ""
             repeat(whoIsNotReady.size) { index ->

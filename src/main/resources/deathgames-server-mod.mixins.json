@@ -9,7 +9,6 @@
     "DamageTrackerMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "MinecraftServerMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
