@@ -1,6 +1,5 @@
 package de.jagenka.stats
 
-import de.jagenka.stats.tables.*
 import net.fabricmc.loader.api.FabricLoader
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -41,13 +40,13 @@ object StatsIO
                 it[playerName] = name
                 it[gameId] = personalGameEntry.gameId
                 it[team] = personalGameEntry.team?.name ?: "null"
-                it[damageDealt] = personalGameEntry.damageDealt
-                it[damageTaken] = personalGameEntry.damageTaken
-                it[healthRegenerated] = personalGameEntry.healthRegenerated
+                it[damageDealt] = personalGameEntry.damageDealt.toDouble()
+                it[damageTaken] = personalGameEntry.damageTaken.toDouble()
+                it[healthRegenerated] = personalGameEntry.healthRegenerated.toDouble()
                 it[highestKillStreak] = personalGameEntry.highestKillStreak
                 it[moneyEarned] = personalGameEntry.moneyEarned
                 it[moneySpent] = personalGameEntry.moneySpent
-                it[accountBalanceAverage] = personalGameEntry.accountBalanceAverage
+                it[accountBalanceAverage] = personalGameEntry.accountBalanceAverage.toDouble()
                 it[cmMovedOnGround] = personalGameEntry.cmMovedOnGround
                 it[cmMovedInWater] = personalGameEntry.cmMovedInWater
                 it[cmFallen] = personalGameEntry.cmFallen
