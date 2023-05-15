@@ -77,12 +77,12 @@ class PersonalGameEntry(
 
 class KillEntry(
     var deceased: String,
-    var damageType: DamageType,
+    var damageType: String,
     var time: Long
 )
 
 class DeathEntry(
-    var damageType: DamageType,
+    var damageType: String,
     var time: Long
 )
 

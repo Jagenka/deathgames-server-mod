@@ -65,7 +65,7 @@ object StatsIO
                     it[gameId] = personalGameEntry.gameId
                     it[Stats.playerName] = name
                     it[deceased] = killEntry.deceased
-                    it[damageType] = killEntry.damageType.name
+                    it[damageType] = killEntry.damageType
                     it[time] = killEntry.time
                 }
             }
@@ -74,7 +74,7 @@ object StatsIO
                 Deaths.insert {
                     it[gameId] = personalGameEntry.gameId
                     it[playerName] = name
-                    it[damageType] = deathEntry.damageType.name
+                    it[damageType] = deathEntry.damageType
                     it[time] = deathEntry.time
                 }
             }
