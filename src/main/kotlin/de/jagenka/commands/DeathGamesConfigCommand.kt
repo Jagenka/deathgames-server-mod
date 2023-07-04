@@ -41,7 +41,7 @@ object DeathGamesConfigCommand {
             sectionLiteral.executes {
                 for(property in properties) {
                     val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
-                    it.source.sendFeedback(Text.of("config.${section.name}.${property.name}: $currentValueString"), false)
+                    it.source.sendFeedback({ Text.of("config.${section.name}.${property.name}: $currentValueString") }, false)
                 }
 
                 return@executes 0
@@ -57,7 +57,7 @@ object DeathGamesConfigCommand {
                 propertyLiteral.executes {
                     val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
 
-                    it.source.sendFeedback(Text.of("config.${section.name}.$propertyName: $currentValueString"), false)
+                    it.source.sendFeedback({ Text.of("config.${section.name}.$propertyName: $currentValueString") }, false)
                     return@executes 0
                 }
 
@@ -69,10 +69,10 @@ object DeathGamesConfigCommand {
                     val result = setPropertyFromString(newValue, Config.configEntry, sectionField, property, configPropertyTransformers, it.source)
                     val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
                     if(result) {
-                        it.source.sendFeedback(Text.of("config.${section.name}.$propertyName set to $currentValueString"), true)
+                        it.source.sendFeedback({ Text.of("config.${section.name}.$propertyName set to $currentValueString") }, true)
                         Config.store()
                     } else {
-                        it.source.sendFeedback(Text.of("Could not set value on config.${section.name}.$propertyName"), false)
+                        it.source.sendFeedback({ Text.of("Could not set value on config.${section.name}.$propertyName") }, false)
                     }
 
                     return@executes 0
@@ -100,9 +100,9 @@ object DeathGamesConfigCommand {
                 val coord = playerEntity.toDGCoordinates()
                 pickedCoordinates.add(coord)
                 val coordListString = "Args: [" + pickedCoordinates.joinToString(", ") { it.toString() } + "]"
-                it.source.sendFeedback(Text.of(coordListString), false)
+                it.source.sendFeedback({ Text.of(coordListString) }, false)
             } else {
-                it.source.sendFeedback(Text.of("No player entity found to obtain coordinates from."), false)
+                it.source.sendFeedback({ Text.of("No player entity found to obtain coordinates from.") }, false)
             }
 
             return@executes 0
@@ -110,7 +110,7 @@ object DeathGamesConfigCommand {
 
         clearLiteral.executes {
             pickedCoordinates.clear()
-            it.source.sendFeedback(Text.of("Coordinate list cleared"), false)
+            it.source.sendFeedback({ Text.of("Coordinate list cleared") }, false)
             return@executes 0
         }
 
@@ -168,7 +168,10 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
                 return (source.entity as? ServerPlayerEntity)?.toDGCoordinates()
             } else {
                 // This is terribly engineered, but better to have some feedback than none
-                source.sendFeedback(Text.of("Value has to be one of [first, last, pick], to obtain the first or last argument from the args list or to pick the current position."), false)
+                source.sendFeedback(
+                    { Text.of("Value has to be one of [first, last, pick], to obtain the first or last argument from the args list or to pick the current position.") },
+                    false
+                )
                 return null
             }
         }
@@ -177,7 +180,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
         override fun toString(value: Any): String = "Platform" + (value as? Platform)!!.toString()
         override fun fromString(str: String, source: ServerCommandSource): Platform? {
             if(str.isBlank()) {
-                source.sendFeedback(Text.of("You have to provide a name"), false)
+                source.sendFeedback({ Text.of("You have to provide a name") }, false)
                 return null
             }
 
@@ -197,7 +200,10 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
             val names = str.split(",").map { it.trim() }
 
             if(names.size != DeathGamesConfigCommand.pickedCoordinates.size) {
-                source.sendFeedback(Text.of("You need to provide the same number of names and coordinates. Names: ${names.size}, Coordinates: ${DeathGamesConfigCommand.pickedCoordinates.size}"), false)
+                source.sendFeedback(
+                    { Text.of("You need to provide the same number of names and coordinates. Names: ${names.size}, Coordinates: ${DeathGamesConfigCommand.pickedCoordinates.size}") },
+                    false
+                )
             }
 
             val platforms = (0 until names.size).map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it].asBlockPos()) }
@@ -210,7 +216,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
         override fun fromString(str: String, source: ServerCommandSource): BlockCuboid? {
             Util.getBlockPosListFromString(str)?.let {
                 if(it.size != 2) {
-                    source.sendFeedback(Text.of("You need to specify exactly two coordinates for a BlockCuboid."), false)
+                    source.sendFeedback({ Text.of("You need to specify exactly two coordinates for a BlockCuboid.") }, false)
                     return@fromString null
                 }
                 return@fromString BlockCuboid(it[0], it[1])
@@ -218,7 +224,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
 
             if(DeathGamesConfigCommand.pickedCoordinates.size != 2) {
                 // This is terribly engineered, but better to have some feedback than none
-                source.sendFeedback(Text.of("You need to pick exactly two coordinates for a BlockCuboid."), false)
+                source.sendFeedback({ Text.of("You need to pick exactly two coordinates for a BlockCuboid.") }, false)
                 return null
             } else {
                 return BlockCuboid(DeathGamesConfigCommand.pickedCoordinates[0].asBlockPos(), DeathGamesConfigCommand.pickedCoordinates[1].asBlockPos())

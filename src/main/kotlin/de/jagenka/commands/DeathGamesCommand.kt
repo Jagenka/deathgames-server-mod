@@ -44,17 +44,17 @@ object DeathGamesCommand
                     .requires { it.isOp() }
                     .then(literal("resume").executes {
                         Timer.start()
-                        it.source.sendFeedback(Text.of("Timer is now running."), false)
+                        it.source.sendFeedback({ Text.of("Timer is now running.") }, false)
                         return@executes 0
                     })
                     .then(literal("pause").executes {
                         Timer.pause()
-                        it.source.sendFeedback(Text.of("Timer is now paused."), false)
+                        it.source.sendFeedback({ Text.of("Timer is now paused.") }, false)
                         return@executes 0
                     })
                     .then(literal("reset").executes {
                         Timer.reset()
-                        it.source.sendFeedback(Text.of("Timer is now reset."), false)
+                        it.source.sendFeedback({ Text.of("Timer is now reset.") }, false)
                         return@executes 0
                     })
             )
@@ -87,7 +87,7 @@ object DeathGamesCommand
                 context.source.player?.let {
                     val leftTeam = handleLeaveTeam(context, it)
                     if (leftTeam == null) context.source.sendError(Text.of("You're not part of a team!"))
-                    else context.source.sendFeedback(Text.of("Successfully left $leftTeam."), false)
+                    else context.source.sendFeedback({ Text.of("Successfully left $leftTeam.") }, false)
                 } ?: context.source.sendError(Text.of("You must be a player to do that!"))
                 return@executes 0
             }
@@ -104,7 +104,7 @@ object DeathGamesCommand
                             {
                                 val leftTeam = handleLeaveTeam(context, player)
                                 if (leftTeam == null) context.source.sendError(Text.of("${player.name.string} is not part of a team!"))
-                                else context.source.sendFeedback(Text.of("Successfully kicked ${player.name.string} from $leftTeam."), false)
+                                else context.source.sendFeedback({ Text.of("Successfully kicked ${player.name.string} from $leftTeam.") }, false)
                             }
                         }
                         return@executes 0
@@ -127,7 +127,7 @@ object DeathGamesCommand
                         {
                             Config.load()
                             I18n.loadI18n()
-                            it.source.sendFeedback(Text.literal("config reloaded"), true)
+                            it.source.sendFeedback({ Text.literal("config reloaded") }, true)
                         } catch (e: Exception)
                         {
                             it.source.sendError(Text.literal("error reloading config"))
@@ -176,7 +176,7 @@ object DeathGamesCommand
         if (player.addToDGTeam(team))
         {
             DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
-            context.source.sendFeedback(Text.of("Successfully added ${player.name.string} to $team."), false)
+            context.source.sendFeedback({ Text.of("Successfully added ${player.name.string} to $team.") }, false)
         }
     }
 
@@ -200,7 +200,7 @@ object DeathGamesCommand
             if (player.addToDGTeam(team))
             {
                 DisplayManager.displayMessageOnPlayerTeamJoin(player, team)
-                context.source.sendFeedback(Text.of("Successfully joined $team."), false)
+                context.source.sendFeedback({ Text.of("Successfully joined $team.") }, false)
             }
         } ?: context.source.sendError(Text.of("You must be a player to do that!"))
     }
