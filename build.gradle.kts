@@ -30,12 +30,12 @@ dependencies {
 
     implementation("io.netty:netty-all:4.1.24.Final")
 
-    modImplementation("org.jetbrains.exposed:exposed-core:0.38.2")
-    shadow("org.jetbrains.exposed:exposed-core:0.38.2")
-    modImplementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
-    shadow("org.jetbrains.exposed:exposed-jdbc:0.38.2")
-    modImplementation("org.xerial:sqlite-jdbc:3.36.0.3")
-    shadow("org.xerial:sqlite-jdbc:3.36.0.3")
+    modImplementation("org.jetbrains.exposed:exposed-core:0.40.1")
+    shadow("org.jetbrains.exposed:exposed-core:0.40.1")
+    modImplementation("org.jetbrains.exposed:exposed-jdbc:0.40.1")
+    shadow("org.jetbrains.exposed:exposed-jdbc:0.40.1")
+    modImplementation("org.xerial:sqlite-jdbc:3.40.1.0")
+    shadow("org.xerial:sqlite-jdbc:3.40.1.0")
 
 }
 

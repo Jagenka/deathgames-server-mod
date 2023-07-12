@@ -21,7 +21,7 @@ public class DamageTrackerMixin
     private LivingEntity entity;
 
     @Inject(method = "onDamage", at = @At("TAIL"))
-    private void trackPlayerDamage(DamageSource damageSource, float originalHealth, float damage, CallbackInfo ci)
+    private void trackPlayerDamage(DamageSource damageSource, float damage, CallbackInfo ci)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 

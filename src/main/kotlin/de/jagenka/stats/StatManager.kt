@@ -46,7 +46,7 @@ object StatManager
         personalStats.gib(killer).kills.add(
             KillEntry(
                 deceased,
-                DamageType.from(damageSource),
+                damageSource.name,
                 Timer.now().toLong()
             )
         )
@@ -55,7 +55,7 @@ object StatManager
     @JvmStatic
     fun handleDeathType(damageSource: DamageSource, playerName: String)
     {
-        personalStats.gib(playerName).deaths.add(DeathEntry(DamageType.from(damageSource), Timer.now().toLong()))
+        personalStats.gib(playerName).deaths.add(DeathEntry(damageSource.name, Timer.now().toLong()))
     }
 
     @JvmStatic
