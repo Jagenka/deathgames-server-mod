@@ -112,6 +112,6 @@ object ShopEntries
 
     fun slot(row: Int, column: Int): Int
     {
-        return (row * 9 + column).coerceAtLeast(0).coerceAtMost(Shop.slotAmount)
+        return (row * 9 + column).coerceAtLeast(0).coerceAtMost(Shop.SLOT_AMOUNT)
     }
 }

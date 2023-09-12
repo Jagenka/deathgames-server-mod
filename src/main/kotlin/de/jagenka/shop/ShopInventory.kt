@@ -20,7 +20,7 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
     {
     }
 
-    override fun size() = Shop.slotAmount // has to be fixed for display to show
+    override fun size() = Shop.SLOT_AMOUNT // has to be fixed for display to show
 
     override fun isEmpty() = items.isEmpty()
 

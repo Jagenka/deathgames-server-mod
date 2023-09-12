@@ -18,9 +18,10 @@ import net.minecraft.text.Text
 
 object Shop
 {
-    private val upgrades = mutableMapOf<String, MutableMap<String, Int>>().withDefault { mutableMapOf<String, Int>().withDefault { 0 } }
+    // zero means no level bought
+    private val currentUpgradableLevels = mutableMapOf<String, MutableMap<String, Int>>().withDefault { mutableMapOf<String, Int>().withDefault { 0 } }
 
-    const val slotAmount = 9 * 6
+    const val SLOT_AMOUNT = 9 * 6
 
     @JvmStatic
     fun showInterfaceIfInShop(player: ServerPlayerEntity): Boolean
@@ -60,22 +61,17 @@ object Shop
         }
     }
 
-    fun getUpgradeLevel(playerName: String, upgradeType: String) = upgrades.getValue(playerName).getValue(upgradeType)
-    fun setUpgradeLevel(playerName: String, upgradeType: String, level: Int)
+    fun getUpgradableLevel(playerName: String, upgradeType: String) = currentUpgradableLevels.getValue(playerName).getValue(upgradeType)
+    fun setUpgradableLevel(playerName: String, upgradeType: String, level: Int)
     {
-        val upgradeTypeIntMutableMap = upgrades.getValue(playerName)
+        val upgradeTypeIntMutableMap = currentUpgradableLevels.getValue(playerName)
         upgradeTypeIntMutableMap[upgradeType] = level
-        upgrades[playerName] = upgradeTypeIntMutableMap
-    }
-
-    fun increaseUpgradeLevel(playerName: String, upgradeType: String)
-    {
-        setUpgradeLevel(playerName, upgradeType, getUpgradeLevel(playerName, upgradeType) + 1)
+        currentUpgradableLevels[playerName] = upgradeTypeIntMutableMap
     }
 
     fun reset()
     {
-        this.upgrades.clear()
+        this.currentUpgradableLevels.clear()
     }
 
     fun isInShopBounds(player: PlayerEntity): Boolean = Config.shopBounds.any { it.contains(player.pos) }

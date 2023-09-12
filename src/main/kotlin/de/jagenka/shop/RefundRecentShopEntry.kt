@@ -30,6 +30,8 @@ class RefundRecentShopEntry(private val displayName: String = "Refund recent pur
 
     override fun buy(player: ServerPlayerEntity): Boolean
     {
+        // TODO: adapt to new structure
+
         val recentlyBought = Shop.getRecentlyBought(player.name.string).toMutableList()
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>().map { it.shopEntryToRefund })
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>())
