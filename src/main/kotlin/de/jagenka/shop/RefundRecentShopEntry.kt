@@ -30,18 +30,23 @@ class RefundRecentShopEntry(private val displayName: String = "Refund recent pur
 
     override fun buy(player: ServerPlayerEntity): Boolean
     {
-        // TODO: adapt to new structure
-
         val recentlyBought = Shop.getRecentlyBought(player.name.string).toMutableList()
+
+        // refunds of bought items cancel each other out TODO: macht das sinn?
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>().map { it.shopEntryToRefund })
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>())
+
+        // leaving shop cannot be refunded
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<LeaveShopEntry>())
 
-        var tmp = 0
-        recentlyBought.toList().distinctBy {// filters duplicate Upgradables, but keeps every other ShopEntry
-            if (it is UpgradeableShopEntry) it
-            else tmp++// just need to be different values
-        }.forEach {
+        val upgradesInRecentlyBought = recentlyBought.toList().filterIsInstance<UpgradeableShopEntry>()
+        upgradesInRecentlyBought.distinctBy { it.type }.forEach { distinctShopEntry ->
+            val diff = upgradesInRecentlyBought.count { distinctShopEntry.type == it.type }
+            val cost = distinctShopEntry.addLevel(player, -diff) // - because we want to refund
+            player.deductDGMoney(-cost) // - because refund
+        }
+
+        recentlyBought.toList().filterNot { it is UpgradeableShopEntry }.forEach {
             if (it.hasItem(player))
             {
                 val price = -it.getTotalSpentMoney(player)

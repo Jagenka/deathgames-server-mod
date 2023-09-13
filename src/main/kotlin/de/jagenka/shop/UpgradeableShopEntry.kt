@@ -11,42 +11,41 @@ import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
+import kotlin.math.max
+import kotlin.math.min
 
 class UpgradeableShopEntry(
     val type: String,
-    boughtItemStacks: MutableList<MutableList<ItemStack>>,
-    prices: MutableList<Int>,
+    private val items: MutableList<MutableList<ItemStack>>,
+    private val prices: MutableList<Int>,
     private val name: String
 ) : ShopEntry
 {
-    private val prices: PriceList
-    private val items: ItemsList
-
     init
     {
-        val pricesCopy = prices.toMutableList()
-        val itemsCopy = boughtItemStacks.toMutableList()
-
-        itemsCopy.forEach { if (it.isEmpty()) it.add(ItemStack.EMPTY) } // make sure there is a first item to be shown
-        if (itemsCopy.size < pricesCopy.size) // make both lists to be the same size
+        items.forEach { if (it.isEmpty()) it.add(ItemStack.EMPTY) } // make sure there is a first item to be shown
+        if (items.size < prices.size) // make both lists to be the same size
         {
-            repeat(pricesCopy.size - itemsCopy.size) { itemsCopy.add(mutableListOf(ItemStack.EMPTY)) }
-        } else if (itemsCopy.size > pricesCopy.size)
+            repeat(prices.size - items.size) { items.add(mutableListOf(ItemStack.EMPTY)) }
+        } else if (items.size > prices.size)
         {
-            repeat(itemsCopy.size - pricesCopy.size) { pricesCopy.add(69_420) }
+            repeat(items.size - prices.size) { prices.add(69_420) }
         }
-
-        this.prices = PriceList(pricesCopy)
-        this.items = ItemsList(itemsCopy)
     }
 
-    // this gets the price for next level
+    /**
+     * get price for next level
+     */
     override fun getPrice(player: ServerPlayerEntity): Int
     {
-        val targetLevel = Shop.getUpgradableLevel(player.name.string, type)
-        return prices[targetLevel]
+        val nextLevel = getCurrentLevel(player) + 1
+        if (nextLevel !in prices.indices) return 0
+        return prices[nextLevel]
     }
 
+    /**
+     * get display ItemStack for next level
+     */
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
     {
         val nextLevel = getCurrentLevel(player) + 1
@@ -54,19 +53,22 @@ class UpgradeableShopEntry(
 
     }
 
-    fun getPreviousDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    /**
+     * get display ItemStack for current level (for refund)
+     */
+    fun getCurrentLevelDisplayItemStack(player: ServerPlayerEntity): ItemStack
     {
         return getDisplayItemStackForLevel(player, getCurrentLevel(player))
     }
 
     /**
-     *  first item in boughtItemStacks list is shown
+     * first item in items list is shown
      */
     private fun getDisplayItemStackForLevel(player: ServerPlayerEntity, level: Int): ItemStack
     {
-        if (level !in prices) return ItemStack.EMPTY
+        if (level !in prices.indices) return ItemStack.EMPTY
         val price = prices[level]
-        return items[level].getOrElse(0) { ItemStack.EMPTY }.copy().setCustomName( // - 1, as level 0 is not bought
+        return items[level].getOrElse(0) { ItemStack.EMPTY }.copy().setCustomName(
             Text.of("${MoneyManager.getCurrencyString(price)}: $name").getWithStyle(
                 Style.EMPTY.withColor(
                     if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
@@ -78,10 +80,9 @@ class UpgradeableShopEntry(
 
     override fun buy(player: ServerPlayerEntity): Boolean
     {
-        val currentLevel = getCurrentLevel(player)
-        if (!prices.canUpgrade(currentLevel)) return false
+        val targetLevel = getCurrentLevel(player) + 1
 
-        val targetLevel = currentLevel + 1
+        if (targetLevel !in prices) return false
 
         if (player.getDGMoney() >= prices[targetLevel])
         {
@@ -96,6 +97,20 @@ class UpgradeableShopEntry(
     }
 
     /**
+     * adds (or subtracts if negative) level to(/from) player's upgrad
+     * @return how much this cost
+     */
+    fun addLevel(player: ServerPlayerEntity, diff: Int): Int
+    {
+        val currentLevel = getCurrentLevel(player)
+        val targetLevel = currentLevel + diff
+
+        return setToLevel(player, targetLevel)
+    }
+
+    /**
+     * sets upgrade level and manages item removal and giving
+     * @param targetLevel what level to set to
      * @return how much this cost
      */
     private fun setToLevel(player: ServerPlayerEntity, targetLevel: Int): Int
@@ -103,49 +118,59 @@ class UpgradeableShopEntry(
         val currentLevel = getCurrentLevel(player)
 
         if (targetLevel == currentLevel) return 0
+        if (targetLevel >= prices.size) return 0
 
         // remove items currently equipped
-        if (currentLevel >= 0) items[currentLevel].forEach { itemStackToRemove -> // - 1, as level 0 is not bought
+        items[currentLevel].forEach { itemStackToRemove ->
             player.inventory.remove({ itemStackInInventory ->
                 ((itemStackInInventory.item !is ArmorItem) && (itemStackInInventory.item == itemStackToRemove.item))
             }, -1, player.playerScreenHandler.craftingInput)
         }
 
-        items[targetLevel].forEach { itemStack -> // - 1, as level 0 is not bought
-            // remove only the items in slots that need to be filled with new armor
-            if (itemStack.item is ArmorItem)
-            {
-                listOf(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD).forEachIndexed { index, equipmentSlot ->
-                    if ((itemStack.item as? ArmorItem)?.slotType == equipmentSlot)
-                    {
-                        player.inventory.remove(
-                            { ((it.item as? ArmorItem)?.slotType == equipmentSlot) },
-                            -1,
-                            player.playerScreenHandler.craftingInput
-                        )
-                        // and also put the new armor into the slot
-                        player.inventory.armor[index] = itemStack.copy()
+        if (targetLevel in items.indices)
+        {
+            items[targetLevel].forEach { itemStack ->
+                // remove only the items in slots that need to be filled with new armor
+                if (itemStack.item is ArmorItem)
+                {
+                    listOf(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD).forEachIndexed { index, equipmentSlot ->
+                        if ((itemStack.item as? ArmorItem)?.slotType == equipmentSlot)
+                        {
+                            player.inventory.remove(
+                                { ((it.item as? ArmorItem)?.slotType == equipmentSlot) },
+                                -1,
+                                player.playerScreenHandler.craftingInput
+                            )
+                            // and also put the new armor into the slot
+                            player.inventory.armor[index] = itemStack.copy()
+                        }
                     }
+                } else
+                {
+                    // otherwise just give the new item, as the old one has been removed before
+                    player.giveItemStack(itemStack.copy())
                 }
-            } else
-            {
-                // otherwise just give the new item, as the old one has been removed before
-                player.giveItemStack(itemStack.copy())
             }
         }
 
-        Shop.setUpgradableLevel(player.name.string, type, targetLevel)
+        Shop.setLevelForUpgradeType(player.name.string, type, targetLevel)
 
         return (if (targetLevel < currentLevel) -1 else 1) * // negative cost if downgrade
-                prices.sumBetween(currentLevel, targetLevel)
+                priceSumBetween(currentLevel, targetLevel)
     }
 
-    private fun getCurrentLevel(player: ServerPlayerEntity): Int = Shop.getUpgradableLevel(player.name.string, type)
+    private fun priceSumBetween(currentLevel: Int, targetLevel: Int): Int
+    {
+        return (min(currentLevel, targetLevel) + 1).rangeUntil(max(currentLevel, targetLevel) + 1) // range from lower to higher value, else range is empty
+            .toList().sumOf { prices[it] } // sum up individual level costs
+    }
+
+    private fun getCurrentLevel(player: ServerPlayerEntity): Int = Shop.getLevelForUpgradeType(player.name.string, type)
 
     override fun getTotalSpentMoney(player: ServerPlayerEntity): Int
     {
         val currentLevel = getCurrentLevel(player)
-        return prices.sumBetween(currentLevel, 0)
+        return priceSumBetween(currentLevel, -1)
     }
 
     override fun getDisplayName(): String = name
@@ -157,7 +182,7 @@ class UpgradeableShopEntry(
 
     override fun removeItem(player: ServerPlayerEntity)
     {
-        setToLevel(player, 0)
+        setToLevel(player, -1)
     }
 
     override val nameForStat: String
@@ -173,4 +198,6 @@ class UpgradeableShopEntry(
             }
         } $prices"
     }
+
+    // TODO: combine price and items (?)
 }

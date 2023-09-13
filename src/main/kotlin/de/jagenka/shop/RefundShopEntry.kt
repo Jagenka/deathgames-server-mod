@@ -20,7 +20,7 @@ class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
     {
         val itemStackToDisplay = (shopEntryToRefund as? UpgradeableShopEntry)?.let { entry ->
-            entry.getPreviousDisplayItemStack(player).copy()
+            entry.getCurrentLevelDisplayItemStack(player).copy()
         } ?: shopEntryToRefund.getDisplayItemStack(player).copy()
 
         return itemStackToDisplay

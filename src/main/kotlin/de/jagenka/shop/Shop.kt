@@ -18,8 +18,11 @@ import net.minecraft.text.Text
 
 object Shop
 {
-    // zero means no level bought
-    private val currentUpgradableLevels = mutableMapOf<String, MutableMap<String, Int>>().withDefault { mutableMapOf<String, Int>().withDefault { 0 } }
+    /**
+     * key is a pair of playerName and upgrade type
+     * value is current level 0-indexed, -1 is no upgrade bought
+     */
+    private val currentUpgradableLevels = mutableMapOf<Pair<String, String>, Int>().withDefault { -1 }
 
     const val SLOT_AMOUNT = 9 * 6
 
@@ -61,12 +64,14 @@ object Shop
         }
     }
 
-    fun getUpgradableLevel(playerName: String, upgradeType: String) = currentUpgradableLevels.getValue(playerName).getValue(upgradeType)
-    fun setUpgradableLevel(playerName: String, upgradeType: String, level: Int)
+    fun getLevelForUpgradeType(playerName: String, upgradeType: String): Int
     {
-        val upgradeTypeIntMutableMap = currentUpgradableLevels.getValue(playerName)
-        upgradeTypeIntMutableMap[upgradeType] = level
-        currentUpgradableLevels[playerName] = upgradeTypeIntMutableMap
+        return currentUpgradableLevels.getValue(playerName to upgradeType)
+    }
+
+    fun setLevelForUpgradeType(playerName: String, upgradeType: String, level: Int)
+    {
+        currentUpgradableLevels[playerName to upgradeType] = level
     }
 
     fun reset()
