@@ -1,23 +1,41 @@
 package de.jagenka.gameplay.graplinghook
 
+import de.jagenka.managers.PlayerManager
 import de.jagenka.plus
 import de.jagenka.shop.Shop
+import de.jagenka.timer.seconds
 import de.jagenka.times
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec
+import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.entity.effect.StatusEffectInstance
+import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.projectile.ArrowEntity
+import net.minecraft.entity.projectile.LlamaSpitEntity
 import net.minecraft.entity.projectile.PersistentProjectileEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket
+import net.minecraft.network.packet.s2c.play.EntityAttributesS2CPacket
+import net.minecraft.network.packet.s2c.play.EntityStatusEffectS2CPacket
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
+import javax.swing.text.html.parser.Entity
+import kotlin.math.ceil
+import kotlin.math.floor
 import kotlin.math.pow
+import kotlin.math.sqrt
 
 object BlackjackAndHookers
 {
-    const val GRAVITY_ACCELERATION = 0.05 // In m/tick² - Calculated from 1 m/s² (Source: Minecraft Wiki => Arrow)
+    const val GRAVITY_ACCELERATION = 0.08 // In m/tick² - (Source: Minecraft Wiki => https://minecraft.fandom.com/wiki/Entity)
 
     val activeHooks = mutableListOf<ArrowHook>()
     val cooldowns = mutableMapOf<ItemStack, Cooldown>()
@@ -31,14 +49,14 @@ object BlackjackAndHookers
             it.tickDown()
         }
         activeHooks.toList().forEach {
-            if (it.isAlive())
+            if (!it.isAlive())
             {
-                it.age++
-            } else
-            {
+                val pos = it.getEndPosition()
+                val owner = it.getOwner()
                 it.killEntity()
+                owner.teleport(pos.x, pos.y, pos.z)
                 activeHooks.remove(it)
-            }
+            } else it.tick()
         }
     }
 
@@ -68,28 +86,29 @@ object BlackjackAndHookers
             val hitResult = owner.raycast(maxDistance, 0f, false)
             if (hitResult.type != HitResult.Type.BLOCK) return false
 
-            val targetPos = hitResult.pos + Vec3d(0.0, 0.5, 0.0)
+            val targetPos = (hitResult as BlockHitResult).blockPos.toCenterPos() + Vec3d(0.0, 1.0, 0.0)
+            println(targetPos)
             if (owner.pos.y > targetPos.y + 1) return false
 
-            val yVector = Vec3d(0.0, targetPos.y - owner.pos.y, 0.0)
-            val xzVector = Vec3d(targetPos.x - owner.pos.x, 0.0, targetPos.z - owner.pos.z)
+            val yDistance = targetPos.y - owner.pos.y
+            val xDistance = targetPos.x - owner.pos.x
+            val zDistance = targetPos.z - owner.pos.z
 
-            val (yVelocity, flightTime) = getVerticalVelocity(yVector.length())
-            val xzVelocity = getHorizontalVelocity(xzVector.length(), flightTime)
+            val (yVelocity, flightTime) = getVerticalVelocity(yDistance)
+            val xVelocity = xDistance / flightTime
+            val zVelocity = zDistance / flightTime
 
-            val totalVelocity = xzVector.normalize() * xzVelocity + yVector.normalize() * yVelocity
+            val totalVelocity = Vec3d(xVelocity, yVelocity, zVelocity)
 
-            val arrow = ArrowEntity(world, owner)
-            arrow.velocity = totalVelocity
-            arrow.damage = 1.0
-            arrow.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED
-            arrow.pierceLevel = 16
+            val arrow = ArmorStandEntity(world, owner.pos.x, owner.pos.y, owner.pos.z)
             arrow.isSilent = true
             arrow.customName = Text.of("hook")
             arrow.isCustomNameVisible = false
+            arrow.isInvisible = false
+            arrow.setNoGravity(true)
 
             world.spawnEntity(arrow)
-            activeHooks.add(ArrowHook(arrow, flightTime))
+            activeHooks.add(ArrowHook(arrow, owner, targetPos, totalVelocity))
             owner.startRiding(arrow)
 
             cooldown.goOnCooldown()
@@ -99,63 +118,32 @@ object BlackjackAndHookers
         } ?: return false
     }
 
-    /**
-     * Determines the velocity needed to cover given distance in given time. (In m/tick)
-     * @return The calculated velocity
-     * @param distance The distance to be covered in blocks
-     * @param flyTime The planned flight time in ticks
-     */
-    private fun getHorizontalVelocity(distance: Double, flyTime: Int): Double
+    private fun getVerticalVelocity(yDistance: Double): Pair<Double, Double>
     {
-        // d(N) = v(N) * N - (1-0.99^N) * v(N) => Taylor expansion required => Try simulated approach
-        // v(N) = v(N - 1) * 0.99 with N: number of ticks elapsed => v = v_0 * 0.99^N
-        // d = v * N => d(N) = v_0 * 0.99^N * N
-        // d(N) = v_0 * 0.99^N * N
-        if (flyTime > 100) return 0.0 // Don't calculate for too much flight time
-
-        var sum = 0.0
-
-        for (N in 1..flyTime)
-        {
-            sum += 0.99.pow(N)
-        }
-
-        return distance / sum
-    }
-
-    /**
-     * Simulated approach to calculate the required velocity (m/tick) and flight time (ticks).
-     * @return A pair of the calculated velocity (first) and flight time (second)
-     * @param distance The distance to be traveled.
-     */
-    private fun getVerticalVelocity(distance: Double): Pair<Double, Int>
-    {
-        // d(N) = v(N) * N + (1/2) * g(N) * N²
-        // v(N) = v(N - 1) * 0.99 - g(N) * N
-        val timeout = 100
-
-        var tickCount = 0
-        var velocity = 0.0
-        var coveredDistance = 0.0
-
-        while (coveredDistance < distance && tickCount < timeout)
-        {
-            tickCount++
-            coveredDistance += velocity
-            velocity /= 0.99
-            velocity += GRAVITY_ACCELERATION
-        }
-
-        return Pair(velocity, tickCount)
+        // s = 1/2 * a * t² => t = sqrt(2 * s / a)
+        val flightTime = sqrt(2.0 * yDistance / GRAVITY_ACCELERATION)
+        // v = a * t
+        val yVelocity = GRAVITY_ACCELERATION * flightTime
+        return Pair(yVelocity, flightTime)
     }
 
     /**
      * Class for tracking the arrow, which the player is riding on.
      */
-    data class ArrowHook(private val arrow: ArrowEntity, private val maxAge: Int, var age: Int = 0)
+    data class ArrowHook(private val arrow: ArmorStandEntity, private val owner: PlayerEntity, private val targetPos: Vec3d, private var velocity: Vec3d = Vec3d.ZERO)
     {
-        fun isAlive(): Boolean = age < maxAge
-        fun killEntity(): Unit = arrow.kill()
+        private var previousDist = Double.MAX_VALUE
+        private var recentDist = targetPos.multiply(1.0, 0.0, 1.0).subtract(arrow.pos.multiply(1.0, 0.0, 1.0)).length()
+        fun tick() {
+            arrow.setPosition(arrow.pos + velocity)
+            velocity += Vec3d(0.0, -GRAVITY_ACCELERATION, 0.0)
+            previousDist = recentDist
+            recentDist = targetPos.multiply(1.0, 0.0, 1.0).subtract(arrow.pos.multiply(1.0, 0.0, 1.0)).length()
+        }
+        fun isAlive(): Boolean = previousDist > recentDist && recentDist > 0.5 && !arrow.isInsideWall && !arrow.isOnGround
+        fun getEndPosition(): Vec3d = arrow.pos
+        fun getOwner(): PlayerEntity = owner
+        fun killEntity(): Unit = arrow.discard()
     }
 
     /**
