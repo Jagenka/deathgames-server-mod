@@ -186,7 +186,7 @@
         "shopCloseTimeAfterReveal": 2400,
         "killStreakPenaltyCap": 10,
         "startInShop": true,
-        "startInShopTpAfterSeconds": 30
+        "startInShopTpAfterSeconds": 5
     },
     "displayedText": {
         "currency": "$%amount"
