@@ -3,10 +3,13 @@ package de.jagenka.mixin;
 import de.jagenka.config.Config;
 import de.jagenka.gameplay.graplinghook.BlackjackAndHookers;
 import de.jagenka.gameplay.traps.TrapsAreNotGay;
+import de.jagenka.shop.Shop;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -39,17 +42,38 @@ public class ItemStackMixin
         {
             BlackjackAndHookers.forceTheHooker(context.getWorld(), context.getPlayer(), context.getPlayer().getStackInHand(context.getHand()));
         }
+
+        // ender pearls in shop
+        if (context.getStack().getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(context.getPlayer()))
+        {
+            cir.setReturnValue(ActionResult.FAIL);
+            cir.cancel();
+        }
     }
 
-    @Inject(method = "use", at = @At("HEAD"))
+    @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
+        ItemStack stackInHand = user.getStackInHand(hand);
+
         // Grapple
-        if (user.getStackInHand(hand).getItem() == BlackjackAndHookers.getItemItem())
+        if (stackInHand.getItem() == BlackjackAndHookers.getItemItem())
         {
-            BlackjackAndHookers.forceTheHooker(world, user, user.getStackInHand(hand));
+            BlackjackAndHookers.forceTheHooker(world, user, stackInHand);
+        }
+
+        // ender pearls in shop
+        if (stackInHand.getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(user))
+        {
+            if (user instanceof ServerPlayerEntity)
+            {
+                ((ServerPlayerEntity) user).networkHandler.sendPacket(
+                        new ScreenHandlerSlotUpdateS2CPacket(-2, 0, user.getInventory().selectedSlot, user.getInventory().getStack(user.getInventory().selectedSlot)));
+            }
+            cir.setReturnValue(TypedActionResult.fail(stackInHand));
+            cir.cancel();
         }
     }
 }
