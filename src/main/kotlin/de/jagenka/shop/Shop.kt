@@ -2,7 +2,6 @@ package de.jagenka.shop
 
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
-import de.jagenka.floor
 import de.jagenka.managers.MoneyManager
 import de.jagenka.util.I18n
 import net.minecraft.entity.player.PlayerEntity
@@ -95,7 +94,4 @@ object Shop
     fun clearRecentlyBought(playerName: String) = recentlyBought.getValue(playerName).clear()
 
     fun getRecentlyBought(playerName: String) = recentlyBought.getValue(playerName).toList()
-
-    fun getRefundAmount(player: ServerPlayerEntity, shopEntryToRefund: ShopEntry) =
-        (shopEntryToRefund.getTotalSpentMoney(player) * (Config.refundPercent.toDouble() / 100.0)).floor()
 }

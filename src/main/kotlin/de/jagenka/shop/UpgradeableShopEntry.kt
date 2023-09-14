@@ -78,11 +78,11 @@ class UpgradeableShopEntry(
         )
     }
 
-    override fun buy(player: ServerPlayerEntity): Boolean
+    override fun onClick(player: ServerPlayerEntity): Boolean
     {
         val targetLevel = getCurrentLevel(player) + 1
 
-        if (targetLevel !in prices) return false
+        if (targetLevel !in prices.indices) return false
 
         if (player.getDGMoney() >= prices[targetLevel])
         {
@@ -97,7 +97,7 @@ class UpgradeableShopEntry(
     }
 
     /**
-     * adds (or subtracts if negative) level to(/from) player's upgrad
+     * adds (or subtracts if negative) level to(/from) player's upgrade
      * @return how much this cost
      */
     fun addLevel(player: ServerPlayerEntity, diff: Int): Int
@@ -120,13 +120,17 @@ class UpgradeableShopEntry(
         if (targetLevel == currentLevel) return 0
         if (targetLevel >= prices.size) return 0
 
-        // remove items currently equipped
-        items[currentLevel].forEach { itemStackToRemove ->
-            player.inventory.remove({ itemStackInInventory ->
-                ((itemStackInInventory.item !is ArmorItem) && (itemStackInInventory.item == itemStackToRemove.item))
-            }, -1, player.playerScreenHandler.craftingInput)
+        // remove currently equipped items - can only work if level >= 0
+        if (currentLevel in items.indices)
+        {
+            items[currentLevel].forEach { itemStackToRemove ->
+                player.inventory.remove({ itemStackInInventory ->
+                    ((itemStackInInventory.item !is ArmorItem) && (itemStackInInventory.item == itemStackToRemove.item))
+                }, -1, player.playerScreenHandler.craftingInput)
+            }
         }
 
+        // if target level is another upgrade level, give them the stuffs
         if (targetLevel in items.indices)
         {
             items[targetLevel].forEach { itemStack ->
@@ -177,7 +181,7 @@ class UpgradeableShopEntry(
 
     override fun hasItem(player: ServerPlayerEntity): Boolean
     {
-        return getCurrentLevel(player) > 0
+        return getCurrentLevel(player) >= 0
     }
 
     override fun removeItem(player: ServerPlayerEntity)

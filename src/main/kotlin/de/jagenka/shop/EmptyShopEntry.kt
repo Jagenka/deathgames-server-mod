@@ -15,7 +15,7 @@ class EmptyShopEntry : ShopEntry
 
     override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack = ItemStack.EMPTY
 
-    override fun buy(player: ServerPlayerEntity): Boolean = false
+    override fun onClick(player: ServerPlayerEntity): Boolean = false
 
     override fun hasItem(player: ServerPlayerEntity): Boolean = false // this ShopEntry is not refundable
     override fun removeItem(player: ServerPlayerEntity) = Unit // refund should do nothing

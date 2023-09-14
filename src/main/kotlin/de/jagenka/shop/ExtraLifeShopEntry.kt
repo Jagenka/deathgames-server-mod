@@ -24,7 +24,7 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
         )[0]
     )
 
-    override fun buy(player: ServerPlayerEntity): Boolean
+    override fun onClick(player: ServerPlayerEntity): Boolean
     {
         if (player.getDGMoney() >= price)
         {

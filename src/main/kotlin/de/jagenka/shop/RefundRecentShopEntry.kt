@@ -28,11 +28,11 @@ class RefundRecentShopEntry(private val displayName: String = "Refund recent pur
             )
     }
 
-    override fun buy(player: ServerPlayerEntity): Boolean
+    override fun onClick(player: ServerPlayerEntity): Boolean
     {
         val recentlyBought = Shop.getRecentlyBought(player.name.string).toMutableList()
 
-        // refunds of bought items cancel each other out TODO: macht das sinn?
+        // refunds of bought items cancel each other out
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>().map { it.shopEntryToRefund })
         recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>())
 
@@ -43,7 +43,7 @@ class RefundRecentShopEntry(private val displayName: String = "Refund recent pur
         upgradesInRecentlyBought.distinctBy { it.type }.forEach { distinctShopEntry ->
             val diff = upgradesInRecentlyBought.count { distinctShopEntry.type == it.type }
             val cost = distinctShopEntry.addLevel(player, -diff) // - because we want to refund
-            player.deductDGMoney(-cost) // - because refund
+            player.deductDGMoney(cost) // cost is already negative, as refunding is negative cost
         }
 
         recentlyBought.toList().filterNot { it is UpgradeableShopEntry }.forEach {

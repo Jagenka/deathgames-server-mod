@@ -26,7 +26,7 @@ class LeaveShopEntry : ShopEntry
             )
     }
 
-    override fun buy(player: ServerPlayerEntity): Boolean
+    override fun onClick(player: ServerPlayerEntity): Boolean
     {
         if (Timer.gameMechsPaused)
         {

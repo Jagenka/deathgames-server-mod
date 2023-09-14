@@ -1,6 +1,7 @@
 package de.jagenka.managers
 
 import de.jagenka.config.Config
+import de.jagenka.floor
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.getMoney
 import de.jagenka.managers.MoneyManager.moneyMode
@@ -11,6 +12,7 @@ import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
 import de.jagenka.util.I18n
 import net.minecraft.server.network.ServerPlayerEntity
+import kotlin.math.abs
 import de.jagenka.config.Config.configEntry as config
 
 object MoneyManager
@@ -134,6 +136,20 @@ fun ServerPlayerEntity.getDGMoney(): Int
     }
 }
 
+fun Int.refundScaled(): Int = this * (Config.refundPercent.toDouble() / 100.0).floor()
+
+/**
+ * this is used when refunding, refund percentage is applied here
+ * @param amount sign is ignored, absolute ís used
+ */
+fun ServerPlayerEntity.refundMoney(amount: Int)
+{
+    this.deductDGMoney(-abs(amount).refundScaled())
+}
+
+/**
+ * @param amount how much will be deducted. If negative, this will add money
+ */
 fun ServerPlayerEntity.deductDGMoney(amount: Int)
 {
     StatManager.personalStats.gib(this.name.string).moneySpent += amount
