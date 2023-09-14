@@ -27,7 +27,7 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
             )
     }
 
-    override fun buy(player: ServerPlayerEntity): Boolean
+    override fun onClick(player: ServerPlayerEntity): Boolean
     {
         if (player.getDGMoney() >= price)
         {

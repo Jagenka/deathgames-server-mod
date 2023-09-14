@@ -44,7 +44,7 @@ class HookerShopEntry(
         )
     }
 
-    override fun buy(player: ServerPlayerEntity): Boolean
+    override fun onClick(player: ServerPlayerEntity): Boolean
     {
         if (player.getDGMoney() >= price)
         {

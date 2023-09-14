@@ -29,7 +29,7 @@ class ShieldShopEntry(private val name: String = "Shield", private val targetDur
             )[0]
         )
 
-    override fun buy(player: ServerPlayerEntity): Boolean
+    override fun onClick(player: ServerPlayerEntity): Boolean
     {
         if (player.getDGMoney() >= getPrice(player))
         {
