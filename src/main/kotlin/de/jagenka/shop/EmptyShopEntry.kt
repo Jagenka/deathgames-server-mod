@@ -6,17 +6,19 @@ import net.minecraft.server.network.ServerPlayerEntity
 /**
  * placeholder ShopEntry in case something goes wrong
  */
-class EmptyShopEntry : ShopEntry
+class EmptyShopEntry(player: ServerPlayerEntity) : ShopEntry(player = player, nameForStat = "EMPTY")
 {
-    override val nameForStat: String
-        get() = "EMPTY"
+    override fun getPrice(): Int
+    {
+        return 0
+    }
 
-    override fun getPrice(player: ServerPlayerEntity): Int = 0
+    override fun hasGoods(): Boolean
+    {
+        return false
+    }
 
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack = ItemStack.EMPTY
+    override fun removeGoods() = Unit
 
-    override fun onClick(player: ServerPlayerEntity): Boolean = false
-
-    override fun hasItem(player: ServerPlayerEntity): Boolean = false // this ShopEntry is not refundable
-    override fun removeItem(player: ServerPlayerEntity) = Unit // refund should do nothing
+    override fun getDisplayItemStack(): ItemStack = ItemStack.EMPTY
 }

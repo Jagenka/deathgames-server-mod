@@ -11,12 +11,13 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val price: Int, private val name: String) : ShopEntry
+class ExtraLifeShopEntry(player: ServerPlayerEntity, private val displayItemStack: ItemStack, private val price: Int, override var displayName: String) :
+    ShopEntry(player = player, nameForStat = "EXTRA_LIFE")
 {
-    override fun getPrice(player: ServerPlayerEntity): Int = price
+    override fun getPrice(): Int = price
 
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack = displayItemStack.copy().setCustomName(
-        Text.of("${getCurrencyString(price)}: $name").getWithStyle(
+    override fun getDisplayItemStack(): ItemStack = displayItemStack.copy().setCustomName(
+        Text.of("${getCurrencyString(price)}: $displayName").getWithStyle(
             Style.EMPTY.withColor(
                 if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
                 else Util.getTextColor(255, 255, 255)
@@ -24,8 +25,10 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
         )[0]
     )
 
-    override fun onClick(player: ServerPlayerEntity): Boolean
+    override fun onClick(): Boolean
     {
+        super.onClick()
+
         if (player.getDGMoney() >= price)
         {
             KillManager.addLives(player.name.string, 1)
@@ -38,15 +41,12 @@ class ExtraLifeShopEntry(private val displayItemStack: ItemStack, private val pr
         return false
     }
 
-    override val nameForStat: String
-        get() = "EXTRA_LIFE"
-
-    override fun hasItem(player: ServerPlayerEntity): Boolean
+    override fun hasGoods(): Boolean
     {
         return (KillManager.getRespawns(player) ?: 0) >= 1
     }
 
-    override fun removeItem(player: ServerPlayerEntity)
+    override fun removeGoods()
     {
         KillManager.removeOneRespawn(player)
     }

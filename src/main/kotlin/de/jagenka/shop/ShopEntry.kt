@@ -1,39 +1,54 @@
 package de.jagenka.shop
 
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 
-// TODO? bake ServerPlayerEntity into this interface (one shop entry cannot be served to different players, as each player gets their own shop screen (?))
-interface ShopEntry
+abstract class ShopEntry(internal val player: ServerPlayerEntity, internal val nameForStat: String)
 {
-    val nameForStat: String
+    /**
+     * how many times this shop entry has been clicked during current shop stay
+     */
+    internal var recentlyClickedCount: Int = 0
 
-    fun getPrice(player: ServerPlayerEntity): Int
-    fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    /**
+     * display name for shop
+     */
+    internal open var displayName = nameForStat
+
+    /**
+     * @return current price
+     */
+    abstract fun getPrice(): Int
+
+    /**
+     * total money spent for refund
+     */
+    open fun getTotalSpentMoney(): Int = getPrice()
+
+    /**
+     * @return what item to currently display in shop
+     */
+    open fun getDisplayItemStack(): ItemStack = ItemStack(Items.STONE_BUTTON)
 
     /**
      * this method is called, when a player clicks on this shop entry.
      * @return if the process was legal/successful
      */
-    fun onClick(player: ServerPlayerEntity): Boolean
-
-    /**
-     * total money spent for refund
-     */
-    fun getTotalSpentMoney(player: ServerPlayerEntity): Int = getPrice(player)
-
-    /**
-     * display name for refund
-     */
-    fun getDisplayName(): String = ""
+    open fun onClick(): Boolean
+    {
+        // tracks clicks for refund recent
+        recentlyClickedCount++
+        return true
+    }
 
     /**
      * for refund: only refundable if true
      */
-    fun hasItem(player: ServerPlayerEntity): Boolean
+    abstract fun hasGoods(): Boolean
 
     /**
-     * what to do if refunding
+     * removes item from player's inventory
      */
-    fun removeItem(player: ServerPlayerEntity)
+    abstract fun removeGoods()
 }

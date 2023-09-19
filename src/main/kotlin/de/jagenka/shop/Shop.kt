@@ -84,14 +84,30 @@ object Shop
 
     private val recentlyBought = mutableMapOf<String, MutableList<ShopEntry>>().withDefault { mutableListOf() }
 
+    private val recentlyClickedAmount = mutableMapOf<Pair<String, ShopEntry>, Int>().withDefault { 0 }
+
     fun registerRecentlyBought(playerName: String, shopEntry: ShopEntry)
     {
+        recentlyClickedAmount[playerName to shopEntry] = recentlyClickedAmount.getValue(playerName to shopEntry) + 1
+
         val list = recentlyBought.getValue(playerName)
         list.add(shopEntry)
         recentlyBought[playerName] = list
     }
 
-    fun clearRecentlyBought(playerName: String) = recentlyBought.getValue(playerName).clear()
+    fun clearRecentlyBought(playerName: String)
+    {
+        recentlyBought.getValue(playerName).clear()
+        recentlyClickedAmount.mapNotNull { if (it.key.first == playerName) it.key else null }.forEach { recentlyClickedAmount[it] = 0 }
+    }
 
-    fun getRecentlyBought(playerName: String) = recentlyBought.getValue(playerName).toList()
+    fun getRecentlyBought(playerName: String): List<ShopEntry>
+    {
+        return recentlyBought.getValue(playerName).toList()
+    }
+
+    fun getRecentlyClickedAmounts(playerName: String): Map<ShopEntry, Int>
+    {
+        return recentlyClickedAmount.mapNotNull { if (it.key.first == playerName) it.key.second to it.value else null }.toMap()
+    }
 }

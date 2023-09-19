@@ -136,7 +136,7 @@ fun ServerPlayerEntity.getDGMoney(): Int
     }
 }
 
-fun Int.refundScaled(): Int = this * (Config.refundPercent.toDouble() / 100.0).floor()
+fun Int.scaledForRefund(): Int = this * (Config.refundPercent.toDouble() / 100.0).floor()
 
 /**
  * this is used when refunding, refund percentage is applied here
@@ -144,7 +144,7 @@ fun Int.refundScaled(): Int = this * (Config.refundPercent.toDouble() / 100.0).f
  */
 fun ServerPlayerEntity.refundMoney(amount: Int)
 {
-    this.deductDGMoney(-abs(amount).refundScaled())
+    this.deductDGMoney(-abs(amount).scaledForRefund())
 }
 
 /**

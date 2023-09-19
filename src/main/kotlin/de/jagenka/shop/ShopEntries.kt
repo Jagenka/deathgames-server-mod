@@ -1,89 +1,14 @@
 package de.jagenka.shop
 
-import de.jagenka.config.Config.configEntry
+import de.jagenka.managers.PlayerManager
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.StringNbtReader
-import net.minecraft.registry.Registries
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
-import net.minecraft.util.Identifier
 
 object ShopEntries
 {
-    val EMPTY = ItemShopEntry(ItemStack.EMPTY, 0, "")
-
-    var shopEntries: Map<Int, ShopEntry> = emptyMap()
-        private set
-
-    fun loadShop()
-    {
-        val buffer = mutableMapOf<Int, ShopEntry>()
-
-        configEntry.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
-            val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
-            if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
-            buffer[slot(row, col)] = ItemShopEntry(itemStack, price, name)
-        }
-
-        configEntry.shop.shield?.let { (row, col, name, durability, price) ->
-            buffer[slot(row, col)] = ShieldShopEntry(name, durability, price)
-        }
-
-        configEntry.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
-            val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
-            if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
-            buffer[slot(row, col)] = ExtraLifeShopEntry(itemStack, price, name)
-        }
-
-        configEntry.shop.leaveShop?.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry() }
-
-        configEntry.shop.upgrades.forEach { (row, col, name, id, levels) ->
-            val itemStackLists = mutableListOf<MutableList<ItemStack>>()
-            val prices = mutableListOf<Int>()
-
-            levels.forEach { (items, price) ->
-                itemStackLists.add(items.map { (upgradeId, upgradeAmount, upgradeNbt) ->
-                    val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(upgradeId)).orElse(null), upgradeAmount)
-                    if (upgradeNbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(upgradeNbt)
-                    return@map itemStack
-                }.toMutableList())
-                prices.add(price)
-            }
-
-            buffer[slot(row, col)] = UpgradeableShopEntry(id, itemStackLists, prices, name)
-        }
-
-        configEntry.shop.refunds.forEach { (row, col, targetRow, targetCol) ->
-            buffer[slot(row, col)] = RefundShopEntry(targetRow, targetCol)
-        }
-
-        configEntry.shop.traps.forEach { (row, col, name, price, snare, effectNBTs, triggerRange, setupTime, triggerVisibilityRange, visibilityRange, affectedRange, triggerDuration) ->
-            buffer[slot(row, col)] = TrapShopEntry(
-                name,
-                price,
-                snare,
-                effectNBTs.map { StringNbtReader.parse(it) },
-                triggerRange,
-                setupTime,
-                triggerVisibilityRange,
-                visibilityRange,
-                affectedRange,
-                triggerDuration
-            )
-        }
-
-        configEntry.shop.refundRecent?.let { (row, col, name) ->
-            buffer[slot(row, col)] = RefundRecentShopEntry(name)
-        }
-
-        configEntry.shop.hook?.let { (row, col, name, price, maxDistance, cooldown) ->
-            buffer[slot(row, col)] = HookerShopEntry(name, price, maxDistance, cooldown)
-        }
-
-        shopEntries = buffer.toMap()
-    }
-
     fun Item.unbreakable(): ItemStack = ItemStack(this).makeUnbreakable()
 
     fun ItemStack.makeUnbreakable(): ItemStack
@@ -113,5 +38,28 @@ object ShopEntries
     fun slot(row: Int, column: Int): Int
     {
         return (row * 9 + column).coerceAtLeast(0).coerceAtMost(Shop.SLOT_AMOUNT)
+    }
+
+    /**
+     * map of playerName to their individual shop
+     */
+    val shops = mutableMapOf<String, PersonalizedShop>()
+
+    fun getShopFor(player: ServerPlayerEntity): PersonalizedShop
+    {
+        return shops.getOrPut(player.name.string) { PersonalizedShop(player) }
+    }
+
+    fun loadShop()
+    {
+        PlayerManager.getOnlinePlayers().forEach {
+            shops.putIfAbsent(it.name.string, PersonalizedShop(it))
+        }
+    }
+
+    fun reloadShop()
+    {
+        shops.clear()
+        loadShop()
     }
 }
