@@ -119,7 +119,7 @@ object PlayerManager
     fun prepareTeams()
     {
         ifServerLoaded { server ->
-            DGTeam.values().forEach { color ->
+            DGTeam.entries.forEach { color ->
                 server.scoreboard.addTeam(color.name)
                 server.scoreboard.getTeam(color.name)?.color = Formatting.byName(color.name.lowercase())
             }
@@ -159,8 +159,8 @@ object PlayerManager
         this.changeGameMode(GameMode.SPECTATOR)
     }
 
-    fun getParticipatingTeams() = DGTeam.values().filter { getParticipatingPlayersInTeam(it).isNotEmpty() }
-    fun getOnlineParticipatingTeams() = DGTeam.values().filter { it.getOnlineParticipatingPlayers().isNotEmpty() }
+    fun getParticipatingTeams() = DGTeam.entries.filter { getParticipatingPlayersInTeam(it).isNotEmpty() }
+    fun getOnlineParticipatingTeams() = DGTeam.entries.filter { it.getOnlineParticipatingPlayers().isNotEmpty() }
 
     @JvmStatic
     fun onPlayerJoin(player: ServerPlayerEntity)

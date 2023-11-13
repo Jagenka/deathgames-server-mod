@@ -253,7 +253,7 @@
                 "name": "Invis",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "{CustomPotionEffects:[{Ambient:0b,Amplifier:0b,Duration:1200,Id:14,ShowIcon:1b,ShowParticles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Invisibility\"}'}}",
+                "nbt": "{custom_potion_effects:[{ambient:0b,amplifier:0b,duration:1200,id:invisibility,show_icon:1b,show_particles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Invisibility\"}'}}",
                 "price": 35
             },
             {
@@ -262,7 +262,7 @@
                 "name": "Speed",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "{CustomPotionEffects:[{Ambient:0b,Amplifier:0b,Duration:3600,Id:1,ShowIcon:1b,ShowParticles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Speed\"}'}}",
+                "nbt": "{custom_potion_effects:[{ambient:0b,amplifier:0b,duration:3600,id:speed,show_icon:1b,show_particles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Speed\"}'}}",
                 "price": 30
             },
             {
@@ -271,7 +271,7 @@
                 "name": "Fire Resi",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "{CustomPotionEffects:[{Ambient:0b,Amplifier:0b,Duration:3600,Id:12,ShowIcon:1b,ShowParticles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Fire Resistance\"}'}}",
+                "nbt": "{custom_potion_effects:[{ambient:0b,amplifier:0b,duration:3600,id:fire_resistance,show_icon:1b,show_particles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Fire Resistance\"}'}}",
                 "price": 20
             },
             {
@@ -280,7 +280,7 @@
                 "name": "Strength",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "{CustomPotionEffects:[{Ambient:0b,Amplifier:0b,Duration:3600,Id:5,ShowIcon:1b,ShowParticles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Strength\"}'}}",
+                "nbt": "{custom_potion_effects:[{ambient:0b,amplifier:0b,duration:3600,id:strength,show_icon:1b,show_particles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Strength\"}'}}",
                 "price": 45
             },
             {
@@ -289,7 +289,7 @@
                 "name": "Regen",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "{CustomPotionEffects:[{Ambient:0b,Amplifier:0b,Duration:3600,Id:10,ShowIcon:1b,ShowParticles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Regeneration\"}'}}",
+                "nbt": "{custom_potion_effects:[{ambient:0b,amplifier:0b,duration:3600,id:regeneration,show_icon:1b,show_particles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Regeneration\"}'}}",
                 "price": 25
             },
             {
@@ -298,7 +298,7 @@
                 "name": "Aquadynamis",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "{CustomPotionEffects:[{Ambient:0b,Amplifier:0b,Duration:3600,Id:30,ShowIcon:1b,ShowParticles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Dolphin\\'s Grace\"}'}}",
+                "nbt": "{custom_potion_effects:[{ambient:0b,amplifier:0b,duration:3600,id:dolphins_grace,show_icon:1b,show_particles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Potion of Dolphin\\'s Grace\"}'}}",
                 "price": 20
             },
             {
@@ -307,7 +307,7 @@
                 "name": "Harming",
                 "id": "minecraft:lingering_potion",
                 "amount": 1,
-                "nbt": "{CustomPotionEffects:[{Ambient:0b,Amplifier:0b,Duration:0,Id:7,ShowIcon:1b,ShowParticles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Lingering Potion of Harming\"}'}}",
+                "nbt": "{custom_potion_effects:[{ambient:0b,amplifier:0b,duration:0,id:instant_damage,show_icon:1b,show_particles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Lingering Potion of Harming\"}'}}",
                 "price": 20
             },
             {
@@ -316,7 +316,7 @@
                 "name": "Slowness",
                 "id": "minecraft:splash_potion",
                 "amount": 1,
-                "nbt": "{CustomPotionEffects:[{Ambient:0b,Amplifier:0b,Duration:1800,Id:2,ShowIcon:1b,ShowParticles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Splash Potion of Slowness\"}'}}",
+                "nbt": "{custom_potion_effects:[{ambient:0b,amplifier:0b,duration:1800,id:slowness,show_icon:1b,show_particles:1b}],Potion:\"minecraft:water\",display:{Name:'{\"text\":\"Splash Potion of Slowness\"}'}}",
                 "price": 40
             },
             {
@@ -772,7 +772,7 @@
                 "price": 10,
                 "snare": true,
                 "effectNBTs": [
-                    "{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}"
+                    "{ambient:0b,amplifier:100b,duration:60,id:blindness,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 0.5,
                 "setupTime": 200,
@@ -788,9 +788,9 @@
                 "price": 10,
                 "snare": false,
                 "effectNBTs": [
-                    "{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}",
-                    "{Ambient:0b,Amplifier:0b,Duration:40,Id:2,ShowIcon:0b,ShowParticles:0b}",
-                    "{Ambient:0b,Amplifier:0b,Duration:40,Id:25,ShowIcon:0b,ShowParticles:0b}"
+                    "{ambient:0b,amplifier:100b,duration:60,id:blindness,show_icon:0b,show_particles:0b}",
+                    "{ambient:0b,amplifier:0b,duration:40,id:slowness,show_icon:0b,show_particles:0b}",
+                    "{ambient:0b,amplifier:0b,duration:40,id:levitation,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 0.5,
                 "setupTime": 200,
@@ -806,7 +806,7 @@
                 "price": 10,
                 "snare": false,
                 "effectNBTs": [
-                    "{Ambient:0b,Amplifier:100b,Duration:60,Id:1,ShowIcon:0b,ShowParticles:0b}"
+                    "{ambient:0b,amplifier:100b,duration:60,id:speed,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 1.0,
                 "setupTime": 40,

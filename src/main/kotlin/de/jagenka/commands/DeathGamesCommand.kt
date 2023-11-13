@@ -204,9 +204,4 @@ object DeathGamesCommand
             }
         } ?: context.source.sendError(Text.of("You must be a player to do that!"))
     }
-
-    private fun handleConfig(context: CommandContext<ServerCommandSource>)
-    {
-
-    }
 }

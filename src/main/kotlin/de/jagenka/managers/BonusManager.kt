@@ -7,6 +7,7 @@ import de.jagenka.config.Config.bonusPlatformRadius
 import de.jagenka.isSame
 import de.jagenka.toCenter
 import kotlinx.serialization.Serializable
+import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import kotlin.math.abs
 
@@ -18,8 +19,8 @@ object BonusManager
 
     val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }
 
-    val inactiveBlock = Blocks.RED_CONCRETE
-    val activeBlock = Blocks.LIME_CONCRETE
+    val inactiveBlock: Block = Blocks.RED_CONCRETE
+    val activeBlock: Block = Blocks.LIME_CONCRETE
 
     fun queueRandomPlatforms(howMany: Int)
     {
@@ -45,7 +46,7 @@ object BonusManager
 
     fun disableAllPlatforms()
     {
-        platforms.forEach { activePlatforms.clear() }
+        activePlatforms.clear()
         colorPlatforms()
     }
 

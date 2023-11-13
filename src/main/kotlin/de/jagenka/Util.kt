@@ -143,9 +143,9 @@ object Util
     }
 
     fun getIntTextColor(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
-    fun getTextColor(r: Int, g: Int, b: Int) = TextColor.fromRgb(getIntTextColor(r, g, b))
+    fun getTextColor(r: Int, g: Int, b: Int): TextColor = TextColor.fromRgb(getIntTextColor(r, g, b))
 
-    val coordinatePattern =
+    val coordinatePattern: Pattern =
         Pattern.compile("\\((x\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(z\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(p\\s*=\\s*)?(\\d*\\.?\\d+)\\)")
 
     fun getCoordinateFromString(str: String): Coordinates?

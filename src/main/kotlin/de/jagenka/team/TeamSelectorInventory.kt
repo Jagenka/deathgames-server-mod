@@ -12,9 +12,9 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
 
     init
     {
-        val numberOfTeamsHalf = DGTeam.values().size / 2
+        val numberOfTeamsHalf = DGTeam.entries.size / 2
 
-        DGTeam.values().forEachIndexed { index, team ->
+        DGTeam.entries.forEachIndexed { index, team ->
             if (index < numberOfTeamsHalf)
             {
                 slots[index + 1] = TeamUIEntry(team)
