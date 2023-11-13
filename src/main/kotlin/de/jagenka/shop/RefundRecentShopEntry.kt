@@ -1,7 +1,7 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.managers.deductDGMoney
+import de.jagenka.managers.refundMoney
 import de.jagenka.stats.StatManager
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
@@ -9,14 +9,11 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class RefundRecentShopEntry(private val displayName: String = "Refund recent purchases") : ShopEntry
+class RefundRecentShopEntry(player: ServerPlayerEntity, override var displayName: String = "Refund recent purchases") : ShopEntry(player = player, nameForStat = "refund_recent")
 {
-    override val nameForStat: String
-        get() = "refund_recent"
+    override fun getPrice(): Int = 0
 
-    override fun getPrice(player: ServerPlayerEntity): Int = 0
-
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    override fun getDisplayItemStack(): ItemStack
     {
         return Items.NAME_TAG.defaultStack.copy()
             .setCustomName(
@@ -28,31 +25,33 @@ class RefundRecentShopEntry(private val displayName: String = "Refund recent pur
             )
     }
 
-    override fun onClick(player: ServerPlayerEntity): Boolean
+    override fun onClick(): Boolean
     {
-        val recentlyBought = Shop.getRecentlyBought(player.name.string).toMutableList()
+        super.onClick()
 
-        // refunds of bought items cancel each other out
-        recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>().map { it.shopEntryToRefund })
-        recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>())
+        val recentlyClickedAmounts = Shop.getRecentlyClickedAmounts(player.name.string)
+            .filterNot {
+                it.key is LeaveShopEntry || it.key is EmptyShopEntry || it.key is RefundRecentShopEntry || it.key is RefundShopEntry
+            }
+            .filter { it.value > 0 }
 
-        // leaving shop cannot be refunded
-        recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<LeaveShopEntry>())
-
-        val upgradesInRecentlyBought = recentlyBought.toList().filterIsInstance<UpgradeableShopEntry>()
-        upgradesInRecentlyBought.distinctBy { it.type }.forEach { distinctShopEntry ->
-            val diff = upgradesInRecentlyBought.count { distinctShopEntry.type == it.type }
-            val cost = distinctShopEntry.addLevel(player, -diff) // - because we want to refund
-            player.deductDGMoney(cost) // cost is already negative, as refunding is negative cost
-        }
-
-        recentlyBought.toList().filterNot { it is UpgradeableShopEntry }.forEach {
-            if (it.hasItem(player))
+        recentlyClickedAmounts.forEach { (shopEntry, count) ->
+            if (shopEntry is UpgradeableShopEntry)
             {
-                val price = -it.getTotalSpentMoney(player)
-                player.deductDGMoney(price) // always refund 100% if recent refund
-                it.removeItem(player)
-                StatManager.addRecentlyRefunded(player.name.string, it, price)
+                val moneySpent = shopEntry.addLevel(-count)
+                player.refundMoney(moneySpent)
+                StatManager.addRecentlyRefunded(player.name.string, shopEntry, moneySpent)
+            } else
+            {
+                repeat(count) {
+                    if (shopEntry.hasGoods())
+                    {
+                        val moneySpent = shopEntry.getTotalSpentMoney()
+                        player.refundMoney(moneySpent)
+                        shopEntry.removeGoods()
+                        StatManager.addRecentlyRefunded(player.name.string, shopEntry, moneySpent)
+                    }
+                }
             }
         }
 
@@ -61,6 +60,6 @@ class RefundRecentShopEntry(private val displayName: String = "Refund recent pur
         return true
     }
 
-    override fun hasItem(player: ServerPlayerEntity): Boolean = false // this ShopEntry is not refundable
-    override fun removeItem(player: ServerPlayerEntity) = Unit // refund should do nothing
+    override fun hasGoods(): Boolean = false // this ShopEntry is not refundable
+    override fun removeGoods() = Unit // refund should do nothing
 }

@@ -10,15 +10,16 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: Int, val name: String) : ShopEntry
+class ItemShopEntry(player: ServerPlayerEntity, private val boughtItemStack: ItemStack, private val price: Int, override var displayName: String) :
+    ShopEntry(player, "${boughtItemStack.count} $displayName")
 {
-    override fun getPrice(player: ServerPlayerEntity): Int = price
+    override fun getPrice(): Int = price
 
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    override fun getDisplayItemStack(): ItemStack
     {
         return boughtItemStack.copy()
             .setCustomName(
-                Text.of("${getCurrencyString(price)}: $name x${boughtItemStack.count}").getWithStyle(
+                Text.of("${getCurrencyString(price)}: $displayName x${boughtItemStack.count}").getWithStyle(
                     Style.EMPTY.withColor(
                         if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
                         else Util.getTextColor(255, 255, 255)
@@ -27,7 +28,7 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
             )
     }
 
-    override fun onClick(player: ServerPlayerEntity): Boolean
+    override fun onClick(): Boolean
     {
         if (player.getDGMoney() >= price)
         {
@@ -41,28 +42,27 @@ class ItemShopEntry(private val boughtItemStack: ItemStack, private val price: I
         return false
     }
 
-    override fun getDisplayName(): String = name
-    override fun hasItem(player: ServerPlayerEntity): Boolean
+    override fun hasGoods(): Boolean
     {
-        val amount = boughtItemStack.count
-
-        return player.inventory.count(boughtItemStack.item) >= amount
+        return player.inventory.containsAny {
+            it.isOf(boughtItemStack.item) &&
+                    it.nbt == boughtItemStack.nbt &&
+                    it.count >= boughtItemStack.count
+        }
     }
 
-    override fun removeItem(player: ServerPlayerEntity)
+    override fun removeGoods()
     {
         val amount = boughtItemStack.count
 
         player.inventory.remove({ itemStackInInventory ->
-            itemStackInInventory.item == boughtItemStack.item
+            itemStackInInventory.isOf(boughtItemStack.item) &&
+                    itemStackInInventory.nbt == boughtItemStack.nbt
         }, amount, player.playerScreenHandler.craftingInput)
     }
 
-    override val nameForStat: String
-        get() = "${boughtItemStack.count} $name"
-
     override fun toString(): String
     {
-        return "$name $boughtItemStack ${boughtItemStack.nbt} $price"
+        return "$displayName $boughtItemStack ${boughtItemStack.nbt} $price"
     }
 }

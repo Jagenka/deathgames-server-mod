@@ -12,26 +12,26 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class ShieldShopEntry(private val name: String = "Shield", private val targetDurability: Int = 120, private val price: Int = 50) : ShopEntry
+class ShieldShopEntry(player: ServerPlayerEntity, private val name: String = "Shield", private val targetDurability: Int = 120, private val price: Int = 50) :
+    ShopEntry(player = player, nameForStat = name)
 {
-    override val nameForStat: String
-        get() = name
+    override fun getPrice(): Int = price
 
-    override fun getPrice(player: ServerPlayerEntity): Int = price
-
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack =
+    override fun getDisplayItemStack(): ItemStack =
         SHIELD.defaultStack.copy().setCustomName(
-            Text.of("${MoneyManager.getCurrencyString(getPrice(player))}: $name x1").getWithStyle(
+            Text.of("${MoneyManager.getCurrencyString(getPrice())}: $name x1").getWithStyle(
                 Style.EMPTY.withColor(
-                    if (player.getDGMoney() < getPrice(player)) Util.getTextColor(123, 0, 0)
+                    if (player.getDGMoney() < getPrice()) Util.getTextColor(123, 0, 0)
                     else Util.getTextColor(255, 255, 255)
                 )
             )[0]
         )
 
-    override fun onClick(player: ServerPlayerEntity): Boolean
+    override fun onClick(): Boolean
     {
-        if (player.getDGMoney() >= getPrice(player))
+        super.onClick()
+
+        if (player.getDGMoney() >= getPrice())
         {
             val upgradableShield = player.inventory.main.find { itemStackInInv ->
                 itemStackInInv.item == SHIELD && itemStackInInv.damage >= targetDurability
@@ -46,23 +46,23 @@ class ShieldShopEntry(private val name: String = "Shield", private val targetDur
             {
                 player.giveItemStack(ItemStack(SHIELD).withDamage(SHIELD.maxDamage - targetDurability).copy())
             }
-            player.deductDGMoney(getPrice(player))
+            player.deductDGMoney(getPrice())
             return true
         } else
         {
-            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(getPrice(player)))
+            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(getPrice()))
         }
         return false
     }
 
-    override fun hasItem(player: ServerPlayerEntity): Boolean
+    override fun hasGoods(): Boolean
     {
-        return getShieldForRefund(player) != null
+        return getShieldForRefund() != null
     }
 
-    override fun removeItem(player: ServerPlayerEntity)
+    override fun removeGoods()
     {
-        val shield = getShieldForRefund(player) ?: return // this should not happen, as hasItem should have found a shield
+        val shield = getShieldForRefund() ?: return // this should not happen, as hasItem should have found a shield
         shield.damage += targetDurability
         if (shield.damage == shield.maxDamage)
         {
@@ -70,7 +70,7 @@ class ShieldShopEntry(private val name: String = "Shield", private val targetDur
         }
     }
 
-    private fun getShieldForRefund(player: ServerPlayerEntity): ItemStack?
+    private fun getShieldForRefund(): ItemStack?
     {
         return player.inventory.main.find { itemStackInInv ->
             itemStackInInv.item == SHIELD && itemStackInInv.damage <= SHIELD.maxDamage - targetDurability

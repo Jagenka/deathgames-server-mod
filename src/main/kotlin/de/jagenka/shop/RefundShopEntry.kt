@@ -3,32 +3,33 @@ package de.jagenka.shop
 import de.jagenka.Util
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.refundMoney
-import de.jagenka.managers.refundScaled
+import de.jagenka.managers.scaledForRefund
 import de.jagenka.util.I18n
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
+class RefundShopEntry(player: ServerPlayerEntity, private val shopEntryToRefund: ShopEntry) :
+    ShopEntry(
+        player = player,
+        nameForStat = "${shopEntryToRefund.nameForStat}_REFUND"
+    )
 {
-    val shopEntryToRefund: ShopEntry
-        get() = ShopEntries.shopEntries[ShopEntries.slot(row, col)] ?: EmptyShopEntry()
+    override fun getPrice(): Int = 0
 
-    override fun getPrice(player: ServerPlayerEntity): Int = 0
-
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    override fun getDisplayItemStack(): ItemStack
     {
         val itemStackToDisplay = (shopEntryToRefund as? UpgradeableShopEntry)?.let { entry ->
-            entry.getCurrentLevelDisplayItemStack(player).copy()
-        } ?: shopEntryToRefund.getDisplayItemStack(player).copy()
+            entry.getCurrentLevelDisplayItemStack().copy()
+        } ?: shopEntryToRefund.getDisplayItemStack().copy()
 
         return itemStackToDisplay
             .setCustomName(//"Refund ${shopEntryToRefund.getDisplayName()} for ${MoneyManager.getCurrencyString(getRefundAmount(player))}"
                 Text.of(
                     I18n.get(
                         "refundItemText",
-                        mapOf("item" to shopEntryToRefund.getDisplayName(), "amount" to MoneyManager.getCurrencyString(shopEntryToRefund.getTotalSpentMoney(player).refundScaled()))
+                        mapOf("item" to shopEntryToRefund.displayName, "amount" to MoneyManager.getCurrencyString(shopEntryToRefund.getTotalSpentMoney().scaledForRefund()))
                     )
                 ).getWithStyle(
                     Style.EMPTY.withColor(
@@ -38,24 +39,30 @@ class RefundShopEntry(private val row: Int, private val col: Int) : ShopEntry
             )
     }
 
-    override fun onClick(player: ServerPlayerEntity): Boolean
+    override fun onClick(): Boolean
     {
-        return if (shopEntryToRefund.hasItem(player))
+        super.onClick()
+
+        return if (shopEntryToRefund.hasGoods())
         {
-            player.refundMoney(shopEntryToRefund.getTotalSpentMoney(player))
-            shopEntryToRefund.removeItem(player)
+            player.refundMoney(shopEntryToRefund.getTotalSpentMoney())
+            shopEntryToRefund.removeGoods()
+            if (shopEntryToRefund is UpgradeableShopEntry)
+            {
+                Shop.clearRecentlyBought(player.name.string, shopEntryToRefund)
+            } else
+            {
+                Shop.unregisterRecentlyBought(player.name.string, shopEntryToRefund) // this is for refund recent, so that already refunded items don't get (re)refunded again
+            }
             true
         } else false
     }
 
-    override val nameForStat: String
-        get() = "${shopEntryToRefund.nameForStat}_REFUND"
-
     override fun toString(): String
     {
-        return "row$row col$col refund"
+        return "${shopEntryToRefund.nameForStat} refund"
     }
 
-    override fun hasItem(player: ServerPlayerEntity): Boolean = false // this ShopEntry is not refundable
-    override fun removeItem(player: ServerPlayerEntity) = Unit // refund should do nothing
+    override fun hasGoods(): Boolean = false // this ShopEntry is not refundable
+    override fun removeGoods() = Unit // refund should do nothing
 }

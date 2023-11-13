@@ -14,6 +14,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 
 class TrapShopEntry(
+    player: ServerPlayerEntity,
     private val name: String,
     private val price: Int,
     isSnare: Boolean,
@@ -24,7 +25,7 @@ class TrapShopEntry(
     visibilityRange: Double,
     affectedRange: Double,
     triggerDuration: Int
-) : ShopEntry
+) : ShopEntry(player = player, nameForStat = "${name}_trap")
 {
     private val itemStack = ItemStack(Items.BAT_SPAWN_EGG)
 
@@ -44,12 +45,9 @@ class TrapShopEntry(
         itemStack.setCustomName(Text.of(name).getWithStyle(Style.EMPTY.withItalic(false))[0])
     }
 
-    override val nameForStat: String
-        get() = "${name}_trap"
+    override fun getPrice(): Int = price
 
-    override fun getPrice(player: ServerPlayerEntity): Int = price
-
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack =
+    override fun getDisplayItemStack(): ItemStack =
         Items.BAT_SPAWN_EGG.defaultStack.setCustomName(
             Text.of("${MoneyManager.getCurrencyString(price)}: $name x1").getWithStyle(
                 Style.EMPTY.withColor(
@@ -59,8 +57,10 @@ class TrapShopEntry(
             )[0]
         )
 
-    override fun onClick(player: ServerPlayerEntity): Boolean
+    override fun onClick(): Boolean
     {
+        super.onClick()
+
         if (player.getDGMoney() >= price)
         {
             player.giveItemStack(itemStack.copy())
@@ -73,12 +73,12 @@ class TrapShopEntry(
         return false
     }
 
-    override fun hasItem(player: ServerPlayerEntity): Boolean
+    override fun hasGoods(): Boolean
     {
         return player.inventory.contains(itemStack)
     }
 
-    override fun removeItem(player: ServerPlayerEntity)
+    override fun removeGoods()
     {
         val filter: (ItemStack) -> Boolean = { it.item == itemStack.item && it.nbt == itemStack.nbt }
 

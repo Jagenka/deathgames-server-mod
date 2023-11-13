@@ -15,11 +15,12 @@ import kotlin.math.max
 import kotlin.math.min
 
 class UpgradeableShopEntry(
+    player: ServerPlayerEntity,
     val type: String,
     private val items: MutableList<MutableList<ItemStack>>,
     private val prices: MutableList<Int>,
     private val name: String
-) : ShopEntry
+) : ShopEntry(player = player, nameForStat = "${type}_UPGRADE")
 {
     init
     {
@@ -36,9 +37,9 @@ class UpgradeableShopEntry(
     /**
      * get price for next level
      */
-    override fun getPrice(player: ServerPlayerEntity): Int
+    override fun getPrice(): Int
     {
-        val nextLevel = getCurrentLevel(player) + 1
+        val nextLevel = getCurrentLevel() + 1
         if (nextLevel !in prices.indices) return 0
         return prices[nextLevel]
     }
@@ -46,25 +47,25 @@ class UpgradeableShopEntry(
     /**
      * get display ItemStack for next level
      */
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    override fun getDisplayItemStack(): ItemStack
     {
-        val nextLevel = getCurrentLevel(player) + 1
-        return getDisplayItemStackForLevel(player, nextLevel)
+        val nextLevel = getCurrentLevel() + 1
+        return getDisplayItemStackForLevel(nextLevel)
 
     }
 
     /**
      * get display ItemStack for current level (for refund)
      */
-    fun getCurrentLevelDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    fun getCurrentLevelDisplayItemStack(): ItemStack
     {
-        return getDisplayItemStackForLevel(player, getCurrentLevel(player))
+        return getDisplayItemStackForLevel(getCurrentLevel())
     }
 
     /**
      * first item in items list is shown
      */
-    private fun getDisplayItemStackForLevel(player: ServerPlayerEntity, level: Int): ItemStack
+    private fun getDisplayItemStackForLevel(level: Int): ItemStack
     {
         if (level !in prices.indices) return ItemStack.EMPTY
         val price = prices[level]
@@ -78,15 +79,15 @@ class UpgradeableShopEntry(
         )
     }
 
-    override fun onClick(player: ServerPlayerEntity): Boolean
+    override fun onClick(): Boolean
     {
-        val targetLevel = getCurrentLevel(player) + 1
+        val targetLevel = getCurrentLevel() + 1
 
         if (targetLevel !in prices.indices) return false
 
         if (player.getDGMoney() >= prices[targetLevel])
         {
-            val cost = setToLevel(player, targetLevel)
+            val cost = setToLevel(targetLevel)
             player.deductDGMoney(cost)
             return true
         } else
@@ -100,12 +101,12 @@ class UpgradeableShopEntry(
      * adds (or subtracts if negative) level to(/from) player's upgrade
      * @return how much this cost
      */
-    fun addLevel(player: ServerPlayerEntity, diff: Int): Int
+    fun addLevel(diff: Int): Int
     {
-        val currentLevel = getCurrentLevel(player)
+        val currentLevel = getCurrentLevel()
         val targetLevel = currentLevel + diff
 
-        return setToLevel(player, targetLevel)
+        return setToLevel(targetLevel)
     }
 
     /**
@@ -113,9 +114,9 @@ class UpgradeableShopEntry(
      * @param targetLevel what level to set to
      * @return how much this cost
      */
-    private fun setToLevel(player: ServerPlayerEntity, targetLevel: Int): Int
+    private fun setToLevel(targetLevel: Int): Int
     {
-        val currentLevel = getCurrentLevel(player)
+        val currentLevel = getCurrentLevel()
 
         if (targetLevel == currentLevel) return 0
         if (targetLevel >= prices.size) return 0
@@ -169,28 +170,25 @@ class UpgradeableShopEntry(
             .toList().sumOf { prices[it] } // sum up individual level costs
     }
 
-    private fun getCurrentLevel(player: ServerPlayerEntity): Int = Shop.getLevelForUpgradeType(player.name.string, type)
+    private fun getCurrentLevel(): Int = Shop.getLevelForUpgradeType(player.name.string, type)
 
-    override fun getTotalSpentMoney(player: ServerPlayerEntity): Int
+    override fun getTotalSpentMoney(): Int
     {
-        val currentLevel = getCurrentLevel(player)
+        val currentLevel = getCurrentLevel()
         return priceSumBetween(currentLevel, -1)
     }
 
-    override fun getDisplayName(): String = name
+    override var displayName: String = name
 
-    override fun hasItem(player: ServerPlayerEntity): Boolean
+    override fun hasGoods(): Boolean
     {
-        return getCurrentLevel(player) >= 0
+        return getCurrentLevel() >= 0
     }
 
-    override fun removeItem(player: ServerPlayerEntity)
+    override fun removeGoods()
     {
-        setToLevel(player, -1)
+        setToLevel(-1)
     }
-
-    override val nameForStat: String
-        get() = "${type}_UPGRADE"
 
     override fun toString(): String
     {

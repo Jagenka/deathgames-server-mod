@@ -10,11 +10,11 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class LeaveShopEntry : ShopEntry
+class LeaveShopEntry(player: ServerPlayerEntity) : ShopEntry(player = player, nameForStat = "LEAVE_SHOP")
 {
-    override fun getPrice(player: ServerPlayerEntity): Int = 0
+    override fun getPrice(): Int = 0
 
-    override fun getDisplayItemStack(player: ServerPlayerEntity): ItemStack
+    override fun getDisplayItemStack(): ItemStack
     {
         return Items.BARRIER.defaultStack.copy()
             .setCustomName(
@@ -26,8 +26,10 @@ class LeaveShopEntry : ShopEntry
             )
     }
 
-    override fun onClick(player: ServerPlayerEntity): Boolean
+    override fun onClick(): Boolean
     {
+        super.onClick()
+
         if (Timer.gameMechsPaused)
         {
             player.sendPrivateMessage("Cannot leave right now!")
@@ -37,9 +39,6 @@ class LeaveShopEntry : ShopEntry
         return true
     }
 
-    override fun hasItem(player: ServerPlayerEntity): Boolean = false // this ShopEntry is not refundable
-    override fun removeItem(player: ServerPlayerEntity) = Unit // refund should do nothing
-
-    override val nameForStat: String
-        get() = "LEAVE_SHOP"
+    override fun hasGoods(): Boolean = false // this ShopEntry is not refundable
+    override fun removeGoods() = Unit // refund should do nothing
 }

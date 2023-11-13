@@ -1,6 +1,6 @@
 package de.jagenka.shop
 
-import de.jagenka.managers.refundScaled
+import de.jagenka.managers.scaledForRefund
 import de.jagenka.stats.StatManager
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
@@ -9,11 +9,11 @@ import net.minecraft.server.network.ServerPlayerEntity
 
 class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 {
-    private val items = mutableMapOf<Int, ShopEntry>().withDefault { ShopEntries.EMPTY }
+    private val items = mutableMapOf<Int, ShopEntry>().withDefault { ShopEntries.getShopFor(player).EMPTY }
 
     init
     {
-        items.putAll(ShopEntries.shopEntries)
+        items.putAll(ShopEntries.getShopFor(player).entries)
     }
 
     override fun clear()
@@ -26,7 +26,7 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 
     override fun getStack(slot: Int): ItemStack
     {
-        return items.getValue(slot).getDisplayItemStack(player)
+        return items.getValue(slot).getDisplayItemStack()
     }
 
     override fun removeStack(slot: Int, amount: Int): ItemStack
@@ -60,10 +60,10 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
         if (isNonEmptySlot(slotIndex))
         {
             val moneySpent =
-                if (shopEntry is RefundShopEntry) -shopEntry.getTotalSpentMoney(player).refundScaled() // - because refund
-                else shopEntry.getPrice(player)
+                if (shopEntry is RefundShopEntry) -shopEntry.getTotalSpentMoney().scaledForRefund() // - because refund
+                else shopEntry.getPrice()
 
-            if (shopEntry.onClick(player))
+            if (shopEntry.onClick())
             {
                 Shop.registerRecentlyBought(player.name.string, shopEntry)
                 StatManager.addBoughtItem(player.name.string, shopEntry, moneySpent)
