@@ -187,7 +187,6 @@ class UpgradeableShopEntry(
 
     override fun removeGoods()
     {
-        val diff = getCurrentLevel() - (-1) // TODO ??
         setToLevel(-1)
     }
 

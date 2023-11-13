@@ -10,15 +10,12 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class RefundShopEntry(player: ServerPlayerEntity, private val row: Int, private val col: Int) :
+class RefundShopEntry(player: ServerPlayerEntity, private val shopEntryToRefund: ShopEntry) :
     ShopEntry(
         player = player,
-        nameForStat = "${(ShopEntries.getShopFor(player).entries[ShopEntries.slot(row, col)] ?: EmptyShopEntry(player)).nameForStat}_REFUND"
-    ) // cannot access shopEntryToRefund yet...
+        nameForStat = "${shopEntryToRefund.nameForStat}_REFUND"
+    )
 {
-    val shopEntryToRefund: ShopEntry
-        get() = ShopEntries.getShopFor(player).entries[ShopEntries.slot(row, col)] ?: EmptyShopEntry(player)
-
     override fun getPrice(): Int = 0
 
     override fun getDisplayItemStack(): ItemStack
@@ -50,13 +47,20 @@ class RefundShopEntry(player: ServerPlayerEntity, private val row: Int, private 
         {
             player.refundMoney(shopEntryToRefund.getTotalSpentMoney())
             shopEntryToRefund.removeGoods()
+            if (shopEntryToRefund is UpgradeableShopEntry)
+            {
+                Shop.clearRecentlyBought(player.name.string, shopEntryToRefund)
+            } else
+            {
+                Shop.unregisterRecentlyBought(player.name.string, shopEntryToRefund) // this is for refund recent, so that already refunded items don't get (re)refunded again
+            }
             true
         } else false
     }
 
     override fun toString(): String
     {
-        return "row$row col$col refund"
+        return "${shopEntryToRefund.nameForStat} refund"
     }
 
     override fun hasGoods(): Boolean = false // this ShopEntry is not refundable

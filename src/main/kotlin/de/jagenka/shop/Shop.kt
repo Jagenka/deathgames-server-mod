@@ -42,15 +42,16 @@ object Shop
         {
             override fun createMenu(syncId: Int, inv: PlayerInventory?, player: PlayerEntity?): ScreenHandler
             {
-                val inventory = ShopInventory(serverPlayerEntity)
+                val shopInventory = ShopInventory(serverPlayerEntity)
                 val screenHandler =
-                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, serverPlayerEntity.inventory, inventory, 6)
+                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, inv, shopInventory, 6)
                     {
                         override fun quickMove(player: PlayerEntity?, slot: Int): ItemStack = ItemStack.EMPTY
 
                         override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
                         {
-                            if (actionType == SlotActionType.PICKUP) inventory.onClick(slotIndex)
+                            if (actionType == SlotActionType.PICKUP) shopInventory.onClick(slotIndex)
+                            player?.playerScreenHandler?.updateToClient()
                             serverPlayerEntity.playerScreenHandler.updateToClient()
                         }
                     }
@@ -82,32 +83,40 @@ object Shop
 
     fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
 
-    private val recentlyBought = mutableMapOf<String, MutableList<ShopEntry>>().withDefault { mutableListOf() }
+    // region refund recent
 
-    private val recentlyClickedAmount = mutableMapOf<Pair<String, ShopEntry>, Int>().withDefault { 0 }
+    private val recentlyClickedAmount = mutableMapOf<String, MutableMap<ShopEntry, Int>>().withDefault { mutableMapOf<ShopEntry, Int>().withDefault { 0 } }
 
     fun registerRecentlyBought(playerName: String, shopEntry: ShopEntry)
     {
-        recentlyClickedAmount[playerName to shopEntry] = recentlyClickedAmount.getValue(playerName to shopEntry) + 1
+        val count = recentlyClickedAmount[playerName]?.get(shopEntry) ?: 0
+        recentlyClickedAmount.getOrPut(playerName) { mutableMapOf() }[shopEntry] = count + 1
+    }
 
-        val list = recentlyBought.getValue(playerName)
-        list.add(shopEntry)
-        recentlyBought[playerName] = list
+    /**
+     * this should be called, whenever a shop entry no longer needs to be refunded with "refund recent"
+     * e.g. when a shop entry is successfully refunded with RefundShopEntry.
+     */
+    fun unregisterRecentlyBought(playerName: String, shopEntry: ShopEntry)
+    {
+        val count = recentlyClickedAmount[playerName]?.get(shopEntry) ?: 0
+        recentlyClickedAmount.getOrPut(playerName) { mutableMapOf() }[shopEntry] = count - 1
     }
 
     fun clearRecentlyBought(playerName: String)
     {
-        recentlyBought.getValue(playerName).clear()
-        recentlyClickedAmount.mapNotNull { if (it.key.first == playerName) it.key else null }.forEach { recentlyClickedAmount[it] = 0 }
+        recentlyClickedAmount[playerName] = mutableMapOf()
     }
 
-    fun getRecentlyBought(playerName: String): List<ShopEntry>
+    fun clearRecentlyBought(playerName: String, shopEntry: ShopEntry)
     {
-        return recentlyBought.getValue(playerName).toList()
+        recentlyClickedAmount.getOrPut(playerName) { mutableMapOf() }[shopEntry] = 0
     }
 
     fun getRecentlyClickedAmounts(playerName: String): Map<ShopEntry, Int>
     {
-        return recentlyClickedAmount.mapNotNull { if (it.key.first == playerName) it.key.second to it.value else null }.toMap()
+        return recentlyClickedAmount.getValue(playerName)
     }
+
+    // endregion
 }

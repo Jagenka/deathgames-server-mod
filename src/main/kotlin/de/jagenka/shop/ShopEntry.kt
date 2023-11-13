@@ -7,11 +7,6 @@ import net.minecraft.server.network.ServerPlayerEntity
 abstract class ShopEntry(internal val player: ServerPlayerEntity, internal val nameForStat: String)
 {
     /**
-     * how many times this shop entry has been clicked during current shop stay
-     */
-    internal var recentlyClickedCount: Int = 0
-
-    /**
      * display name for shop
      */
     internal open var displayName = nameForStat
@@ -35,12 +30,7 @@ abstract class ShopEntry(internal val player: ServerPlayerEntity, internal val n
      * this method is called, when a player clicks on this shop entry.
      * @return if the process was legal/successful
      */
-    open fun onClick(): Boolean
-    {
-        // tracks clicks for refund recent
-        recentlyClickedCount++
-        return true
-    }
+    open fun onClick(): Boolean = true
 
     /**
      * for refund: only refundable if true

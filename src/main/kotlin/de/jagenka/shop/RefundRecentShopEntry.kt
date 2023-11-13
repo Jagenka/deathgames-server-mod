@@ -1,7 +1,7 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.managers.deductDGMoney
+import de.jagenka.managers.refundMoney
 import de.jagenka.stats.StatManager
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
@@ -29,40 +29,29 @@ class RefundRecentShopEntry(player: ServerPlayerEntity, override var displayName
     {
         super.onClick()
 
-        val recentlyClickedAmounts = Shop.getRecentlyClickedAmounts(player.name.string).filterNot {
-            it.key is LeaveShopEntry || it.key is EmptyShopEntry
-        }
+        val recentlyClickedAmounts = Shop.getRecentlyClickedAmounts(player.name.string)
+            .filterNot {
+                it.key is LeaveShopEntry || it.key is EmptyShopEntry || it.key is RefundRecentShopEntry || it.key is RefundShopEntry
+            }
+            .filter { it.value > 0 }
 
         recentlyClickedAmounts.forEach { (shopEntry, count) ->
-            // TODO
-        }
-
-        val recentlyBought = Shop.getRecentlyBought(player.name.string).toMutableList()
-
-        // refunds of bought items cancel each other out
-        recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>().map { it.shopEntryToRefund })
-        recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<RefundShopEntry>())
-
-        // leaving shop cannot be refunded
-        recentlyBought.removeAll(recentlyBought.toSet().filterIsInstance<LeaveShopEntry>())
-
-        val upgradesInRecentlyBought = recentlyBought.toList().filterIsInstance<UpgradeableShopEntry>()
-
-        upgradesInRecentlyBought.map { it.type }
-
-        upgradesInRecentlyBought.distinctBy { it.type }.forEach { distinctShopEntry ->
-            val diff = upgradesInRecentlyBought.count { distinctShopEntry.type == it.type }
-            val cost = distinctShopEntry.addLevel(-diff) // - because we want to refund
-            player.deductDGMoney(cost) // cost is already negative, as refunding is negative cost
-        }
-
-        recentlyBought.toList().filterNot { it is UpgradeableShopEntry }.forEach {
-            if (it.hasGoods())
+            if (shopEntry is UpgradeableShopEntry)
             {
-                val price = -it.getTotalSpentMoney()
-                player.deductDGMoney(price) // always refund 100% if recent refund
-                it.removeGoods()
-                StatManager.addRecentlyRefunded(player.name.string, it, price)
+                val moneySpent = shopEntry.addLevel(-count)
+                player.refundMoney(moneySpent)
+                StatManager.addRecentlyRefunded(player.name.string, shopEntry, moneySpent)
+            } else
+            {
+                repeat(count) {
+                    if (shopEntry.hasGoods())
+                    {
+                        val moneySpent = shopEntry.getTotalSpentMoney()
+                        player.refundMoney(moneySpent)
+                        shopEntry.removeGoods()
+                        StatManager.addRecentlyRefunded(player.name.string, shopEntry, moneySpent)
+                    }
+                }
             }
         }
 

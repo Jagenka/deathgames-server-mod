@@ -30,8 +30,6 @@ class ItemShopEntry(player: ServerPlayerEntity, private val boughtItemStack: Ite
 
     override fun onClick(): Boolean
     {
-        super.onClick()
-
         if (player.getDGMoney() >= price)
         {
             player.giveItemStack(boughtItemStack.copy())
@@ -46,9 +44,11 @@ class ItemShopEntry(player: ServerPlayerEntity, private val boughtItemStack: Ite
 
     override fun hasGoods(): Boolean
     {
-        val amount = boughtItemStack.count
-
-        return player.inventory.count(boughtItemStack.item) >= amount
+        return player.inventory.containsAny {
+            it.isOf(boughtItemStack.item) &&
+                    it.nbt == boughtItemStack.nbt &&
+                    it.count >= boughtItemStack.count
+        }
     }
 
     override fun removeGoods()
@@ -56,7 +56,8 @@ class ItemShopEntry(player: ServerPlayerEntity, private val boughtItemStack: Ite
         val amount = boughtItemStack.count
 
         player.inventory.remove({ itemStackInInventory ->
-            itemStackInInventory.item == boughtItemStack.item
+            itemStackInInventory.isOf(boughtItemStack.item) &&
+                    itemStackInInventory.nbt == boughtItemStack.nbt
         }, amount, player.playerScreenHandler.craftingInput)
     }
 
