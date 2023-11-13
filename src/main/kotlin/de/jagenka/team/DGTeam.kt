@@ -50,20 +50,20 @@ enum class DGTeam
         return I18n.get("team${this.name.replace('_', ' ').lowercase().capitalizeWords().replace(" ", "")}")
     }
 
-    fun getFormattedText() = Text.literal(this.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(this.name.lowercase())))[0]
+    fun getFormattedText(): Text = Text.literal(this.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(this.name.lowercase())))[0]
 
     companion object
     {
         val defaultColorBlock: Block = Blocks.WHITE_CONCRETE
 
-        fun random() = values().random()
+        fun random() = entries.random()
 
         fun isColorBlock(block: Block) = block isSame defaultColorBlock || values().any { block isSame it.getColorBlock() }
 
         fun getValuesAsStringList(): List<String>
         {
             val result = mutableListOf<String>()
-            values().forEach { result.add(it.name) }
+            entries.forEach { result.add(it.name) }
             return result.toList()
         }
     }

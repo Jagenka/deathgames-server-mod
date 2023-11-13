@@ -12,8 +12,8 @@ import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket
 import net.minecraft.network.packet.s2c.play.TitleFadeS2CPacket
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket
-import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.scoreboard.ScoreboardCriterion
+import net.minecraft.scoreboard.ScoreboardDisplaySlot
 import net.minecraft.scoreboard.ScoreboardObjective
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
@@ -43,7 +43,7 @@ object DisplayManager
             {
                 DeathGames.logger.info("tabList objective already exists")
             }
-            server.scoreboard.setObjectiveSlot(Scoreboard.LIST_DISPLAY_SLOT_ID, getObjective("tabList"))
+            server.scoreboard.setObjectiveSlot(ScoreboardDisplaySlot.LIST, getObjective("tabList"))
 
 
         }
@@ -64,7 +64,7 @@ object DisplayManager
     fun prepareTeams()
     {
         ifServerLoaded { server ->
-            DGTeam.values().forEach { color ->
+            DGTeam.entries.forEach { color ->
                 server.scoreboard.addTeam(color.name + "_display")
                 val team = server.scoreboard.getTeam(color.name + "_display")
                 team?.color = Formatting.byName(color.name.lowercase())
@@ -95,7 +95,7 @@ object DisplayManager
 
                 Mode.TEAM ->
                 {
-                    DGTeam.values().forEach { team ->
+                    DGTeam.entries.forEach { team ->
                         val lives = KillManager.getRespawns(team)
                         if (lives != null && PlayerManager.isParticipating(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebar).score =
                             lives
@@ -130,13 +130,13 @@ object DisplayManager
     fun showSidebar()
     {
         updateLivesDisplay()
-        Util.minecraftServer?.scoreboard?.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, getObjective("sidebar"))
+        Util.minecraftServer?.scoreboard?.setObjectiveSlot(ScoreboardDisplaySlot.SIDEBAR, getObjective("sidebar"))
             ?: DeathGames.logger.error("minecraft server not initialized")
     }
 
     fun hideSidebar()
     {
-        Util.minecraftServer?.scoreboard?.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, null)
+        Util.minecraftServer?.scoreboard?.setObjectiveSlot(ScoreboardDisplaySlot.SIDEBAR, null)
     }
 
     private fun resetLevelDisplay()

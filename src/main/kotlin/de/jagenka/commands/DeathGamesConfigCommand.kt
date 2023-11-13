@@ -206,7 +206,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
                 )
             }
 
-            val platforms = (0 until names.size).map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it].asBlockPos()) }
+            val platforms = names.indices.map { Platform(names[it], DeathGamesConfigCommand.pickedCoordinates[it].asBlockPos()) }
 
             return PlatformList(platforms)
         }
