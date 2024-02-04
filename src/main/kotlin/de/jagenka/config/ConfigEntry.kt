@@ -30,7 +30,7 @@ class GeneralConfigEntry(
     var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
 )
 
-// TODO: add optional default team (mainly for non-shuffling/capturing games, but also as initial assigment)
+// TODO: add optional default team to spawn positions (mainly for non-shuffling/capturing games, but also as initial assigment)
 
 @Serializable
 class SpawnsConfigEntry(
@@ -38,14 +38,16 @@ class SpawnsConfigEntry(
     var platformRadius: Int = 0,
     var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 0f, 0f),
     var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 0f, 0f),
+    var enableShuffle: Boolean = false,
     var shuffleInterval: Int = 20,
     var shuffleDelayAfterKill: Int = 0,
+    var enableCapture: Boolean = true,
     var captureTimeNeeded: Int = 0,
-    var captureEnabled: Boolean = false
 )
 
 @Serializable
 class BonusPlatformsConfigEntry(
+    var enableBonusPlatforms: Boolean = true,
     var platforms: PlatformList = PlatformList(listOf(Platform("bonus1", BlockPos(0, 0, 0)))),
     var radius: Int = 0,
     var spawnInterval: Int = 0,
@@ -76,18 +78,16 @@ class ShopSettingsConfigEntry(
     var refundPercent: Int = 0
 )
 
-// TODO: add enableShuffleSpawns
 // TODO: add permanentEffects
-// TODO: add enableReveal
-// TODO: add enableBonus
 
 @Serializable
 class MiscConfigEntry(
+    var enableReveal: Boolean = true,
     var revealTimePerPlayer: Int = 0,
     var shopCloseTimeAfterReveal: Int = 0,
     var killStreakPenaltyCap: Int = 1,
     var startInShop: Boolean = false,
-    var startInShopTpAfterSeconds: Int = 0
+    var startInShopTpAfterSeconds: Int = 0,
 )
 
 @Serializable

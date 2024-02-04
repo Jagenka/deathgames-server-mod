@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d
 
 object GPS
 {
-    fun makeArrowGoBrrr()
+    fun showArrowToNextBonusPlatform()
     {
         val origin = Vec3d(0.0, 4.0, 0.0)
         ifServerLoaded { server: MinecraftServer ->

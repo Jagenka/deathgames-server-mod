@@ -1,6 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames.currentlyEnding
+import de.jagenka.config.Config
 import de.jagenka.gameplay.rendering.GPS
 
 object GPSTask: TimerTask
@@ -14,9 +15,11 @@ object GPSTask: TimerTask
 
     override fun run()
     {
+        if (!Config.configEntry.bonus.enableBonusPlatforms) return
+
         if (currentlyEnding) return
 
-        GPS.makeArrowGoBrrr()
+        GPS.showArrowToNextBonusPlatform()
     }
 
     override fun reset()

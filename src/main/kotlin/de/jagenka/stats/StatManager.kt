@@ -134,6 +134,8 @@ object StatManager
         }.filter { PlayerManager.getTeam(it.first) != null }
     }
 
+    // TODO: add new config options to this
+
     /**
      * @return if saving was successful
      */

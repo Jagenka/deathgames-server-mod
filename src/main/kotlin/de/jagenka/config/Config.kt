@@ -3,7 +3,6 @@ package de.jagenka.config
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.shop.ShopEntries
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.minecraft.util.WorldSavePath
@@ -22,6 +21,8 @@ object Config
     }
 
     lateinit var configEntry: ConfigEntry
+
+    // TODO: clean this up
 
     val isEnabled
         get() = configEntry.general.enabled
@@ -85,7 +86,7 @@ object Config
     val captureTimeNeeded
         get() = configEntry.spawns.captureTimeNeeded
     val captureEnabled
-        get() = configEntry.spawns.captureEnabled
+        get() = configEntry.spawns.enableCapture
 
     val shopCloseTimeAfterReveal
         get() = configEntry.misc.shopCloseTimeAfterReveal

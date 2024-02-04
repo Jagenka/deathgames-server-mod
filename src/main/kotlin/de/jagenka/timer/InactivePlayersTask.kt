@@ -1,6 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames.currentlyEnding
+import de.jagenka.config.Config
 import de.jagenka.config.Config.killStreakPenaltyCap
 import de.jagenka.config.Config.revealTimePerPlayer
 import de.jagenka.config.Config.shopCloseTimeAfterReveal
@@ -28,6 +29,9 @@ object InactivePlayersTask : TimerTask
 
     override fun run()
     {
+        // if reveal is disabled, don't do anything
+        if (!Config.configEntry.misc.enableReveal) return
+
         if (currentlyEnding) return
 
         inactiveTimer.forEach { (playerName, time) ->
@@ -75,7 +79,7 @@ object InactivePlayersTask : TimerTask
                 }
 
                 highlightedPlayers.add(playerName)
-                if(PlayerManager.getOnlinePlayer(playerName)?.activeStatusEffects?.contains(StatusEffects.INVISIBILITY) != true)
+                if (PlayerManager.getOnlinePlayer(playerName)?.activeStatusEffects?.contains(StatusEffects.INVISIBILITY) != true)
                 {
                     PlayerManager.getOnlinePlayer(playerName)?.addStatusEffect(StatusEffectInstance(StatusEffects.GLOWING, 2.seconds(), 0, false, false))
                 }
