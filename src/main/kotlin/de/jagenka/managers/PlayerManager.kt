@@ -71,7 +71,7 @@ object PlayerManager
         if (canPlayerJoin.getValue(playerName))
         {
             ifServerLoaded {
-                it.scoreboard.addPlayerToTeam(playerName, it.scoreboard.getTeam(team.name))
+                it.scoreboard.addScoreHolderToTeam(playerName, it.scoreboard.getTeam(team.name))
                 teamRegistry[playerName] = team
             }
             disableTeamJoinForSomeTime(playerName)
@@ -102,7 +102,7 @@ object PlayerManager
         if (canPlayerJoin.getValue(playerName))
         {
             ifServerLoaded {
-                it.scoreboard.clearPlayerTeam(playerName)
+                it.scoreboard.clearTeam(playerName)
                 teamRegistry.remove(playerName)
             }
             disableTeamJoinForSomeTime(playerName)
@@ -168,7 +168,7 @@ object PlayerManager
         if (player.getDGTeam() == null)
         {
             ifServerLoaded { server ->
-                server.scoreboard.clearPlayerTeam(player.name.string)
+                server.scoreboard.clearTeam(player.name.string)
             }
             if (DeathGames.running)
             {
