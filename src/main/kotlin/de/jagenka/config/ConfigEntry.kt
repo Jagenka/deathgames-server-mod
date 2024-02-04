@@ -30,6 +30,8 @@ class GeneralConfigEntry(
     var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
 )
 
+// TODO: add optional default team (mainly for non-shuffling/capturing games, but also as initial assigment)
+
 @Serializable
 class SpawnsConfigEntry(
     var spawnPositions: CoordinateList = CoordinateList(listOf(Coordinates(0, 0, 0, 0f, 0f), Coordinates(0, 0, 0, 0f, 0f))),
@@ -73,6 +75,11 @@ class ShopSettingsConfigEntry(
     var tpOutOfShopAfter: Int = 0,
     var refundPercent: Int = 0
 )
+
+// TODO: add enableShuffleSpawns
+// TODO: add permanentEffects
+// TODO: add enableReveal
+// TODO: add enableBonus
 
 @Serializable
 class MiscConfigEntry(
