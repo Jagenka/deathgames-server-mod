@@ -12,6 +12,7 @@ import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket
 import net.minecraft.network.packet.s2c.play.TitleFadeS2CPacket
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket
+import net.minecraft.scoreboard.ScoreHolder
 import net.minecraft.scoreboard.ScoreboardCriterion
 import net.minecraft.scoreboard.ScoreboardDisplaySlot
 import net.minecraft.scoreboard.ScoreboardObjective
@@ -29,7 +30,7 @@ object DisplayManager
         ifServerLoaded { server ->
             try
             {
-                server.scoreboard.addObjective("sidebar", ScoreboardCriterion.DUMMY, Text.of(I18n.get("respawns")), ScoreboardCriterion.RenderType.INTEGER)
+                server.scoreboard.addObjective("sidebar", ScoreboardCriterion.DUMMY, Text.of(I18n.get("respawns")), ScoreboardCriterion.DUMMY.defaultRenderType, false, null)
             } catch (_: IllegalArgumentException)
             {
                 DeathGames.logger.info("sidebar objective already exists")
@@ -38,7 +39,7 @@ object DisplayManager
 
             try
             {
-                server.scoreboard.addObjective("tabList", ScoreboardCriterion.DUMMY, Text.of(I18n.get("kill-streak")), ScoreboardCriterion.RenderType.INTEGER)
+                server.scoreboard.addObjective("tabList", ScoreboardCriterion.DUMMY, Text.of(I18n.get("kill-streak")), ScoreboardCriterion.DUMMY.defaultRenderType, false, null)
             } catch (_: IllegalArgumentException)
             {
                 DeathGames.logger.info("tabList objective already exists")
@@ -68,7 +69,7 @@ object DisplayManager
                 server.scoreboard.addTeam(color.name + "_display")
                 val team = server.scoreboard.getTeam(color.name + "_display")
                 team?.color = Formatting.byName(color.name.lowercase())
-                server.scoreboard.addPlayerToTeam(color.getPrettyName(), team)
+                server.scoreboard.addScoreHolderToTeam(color.getPrettyName(), team)
             }
         }
     }
@@ -85,10 +86,15 @@ object DisplayManager
                     PlayerManager.getPlayers().forEach { playerName ->
 
                         val lives = KillManager.getRespawns(playerName)
-                        if (lives != null && PlayerManager.isParticipating(playerName) && lives >= 0) server.scoreboard.getPlayerScore(playerName, sidebar).score = lives
-                        else
+                        if (lives != null && PlayerManager.isParticipating(playerName) && lives >= 0)
                         {
-                            server.scoreboard.resetPlayerScore(playerName, sidebar)
+                            server.scoreboard.getOrCreateScore(
+                                ScoreHolder.fromName(playerName),
+                                sidebar
+                            ).score = lives
+                        } else
+                        {
+                            server.scoreboard.removeScore(ScoreHolder.fromName(playerName), sidebar)
                         }
                     }
                 }
@@ -97,9 +103,13 @@ object DisplayManager
                 {
                     DGTeam.entries.forEach { team ->
                         val lives = KillManager.getRespawns(team)
-                        if (lives != null && PlayerManager.isParticipating(team) && lives >= 0) server.scoreboard.getPlayerScore(team.getPrettyName(), sidebar).score =
-                            lives
-                        else server.scoreboard.resetPlayerScore(team.getPrettyName(), sidebar)
+                        if (lives != null && PlayerManager.isParticipating(team) && lives >= 0)
+                        {
+                            server.scoreboard.getOrCreateScore(
+                                ScoreHolder.fromName(team.getPrettyName()),
+                                sidebar
+                            ).score = lives
+                        } else server.scoreboard.removeScore(ScoreHolder.fromName(team.getPrettyName()), sidebar)
                     }
                 }
             }
@@ -112,7 +122,7 @@ object DisplayManager
         ifServerLoaded { server ->
             PlayerManager.getPlayers().forEach { playerName ->
                 val killStreak = KillManager.getKillStreak(playerName)
-                server.scoreboard.getPlayerScore(playerName, tabListObjective).score = killStreak
+                server.scoreboard.getOrCreateScore(ScoreHolder.fromName(playerName), tabListObjective).score = killStreak
             }
         }
     }
@@ -122,7 +132,7 @@ object DisplayManager
         val tabListObjective = getObjective("tabList")
         ifServerLoaded { server ->
             PlayerManager.getPlayers().forEach { playerName ->
-                server.scoreboard.getPlayerScore(playerName, tabListObjective).score = 0
+                server.scoreboard.getOrCreateScore(ScoreHolder.fromName(playerName), tabListObjective).score = 0
             }
         }
     }
