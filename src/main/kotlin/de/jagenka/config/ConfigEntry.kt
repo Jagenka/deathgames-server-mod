@@ -32,10 +32,10 @@ class GeneralConfigEntry(
 
 @Serializable
 class SpawnsConfigEntry(
-    var spawnPositions: CoordinateList = CoordinateList(listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f))),
+    var spawnPositions: CoordinateList = CoordinateList(listOf(Coordinates(0, 0, 0, 0f, 0f), Coordinates(0, 0, 0, 0f, 0f))),
     var platformRadius: Int = 0,
-    var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
-    var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
+    var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 0f, 0f),
+    var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 0f, 0f),
     var shuffleInterval: Int = 20,
     var shuffleDelayAfterKill: Int = 0,
     var captureTimeNeeded: Int = 0,
