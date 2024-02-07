@@ -79,6 +79,7 @@ class ShopSettingsConfigEntry(
 )
 
 // TODO: add permanentEffects
+// TODO: disable fall damage option
 
 @Serializable
 class MiscConfigEntry(
