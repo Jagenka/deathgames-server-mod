@@ -43,6 +43,7 @@ class SpawnsConfigEntry(
     var shuffleDelayAfterKill: Int = 0,
     var enableCapture: Boolean = true,
     var captureTimeNeeded: Int = 0,
+    var respawnEffectNBTs: List<String> = listOf("{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"),
 )
 
 @Serializable
@@ -78,7 +79,6 @@ class ShopSettingsConfigEntry(
     var refundPercent: Int = 0
 )
 
-// TODO: add permanentEffects
 // TODO: disable fall damage option
 
 @Serializable

@@ -11,8 +11,6 @@ import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.minecraft.advancement.criterion.Criteria
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
 import net.minecraft.world.GameMode
@@ -203,7 +201,6 @@ object PlayerManager
     {
         if (DeathGames.running) SpawnManager.teleportPlayerToSpawn(player)
         else player.teleport(Config.lobbySpawn)
-        player.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 10.seconds(), 255))
 
         currentlyDead.remove(player.name.string)
     }

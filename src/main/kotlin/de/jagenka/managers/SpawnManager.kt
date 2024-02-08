@@ -11,12 +11,18 @@ import de.jagenka.managers.DisplayManager.sendChatMessage
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
 import de.jagenka.util.BiMap
+import net.minecraft.entity.effect.StatusEffectInstance
+import net.minecraft.nbt.StringNbtReader
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 import de.jagenka.config.Config.spawnPlatformRadius as platformRadius
 
 object SpawnManager
 {
+    val respawnEffects = Config.configEntry.spawns.respawnEffectNBTs.mapNotNull {
+        StatusEffectInstance.fromNbt(StringNbtReader.parse(it))
+    }
+
     val spawns
         get() = Config.configEntry.spawns.spawnPositions.coords.map { DGSpawn(it) }
 
@@ -33,10 +39,23 @@ object SpawnManager
 
     fun teleportPlayerToSpawn(player: ServerPlayerEntity)
     {
+        // handle position
         val spawnCoordinates = player.getSpawnCoordinates()
         player.teleport(spawnCoordinates)
         player.yaw = spawnCoordinates.yaw
-        if (spawnCoordinates == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
+
+        // check if spectator or player
+        if (spawnCoordinates == defaultSpawn)
+        {
+            player.changeGameMode(GameMode.SPECTATOR)
+        } else
+        {
+            // handle respawn effects for players only
+            player.clearStatusEffects()
+            respawnEffects.forEach {
+                player.addStatusEffect(StatusEffectInstance(it))
+            }
+        }
     }
 
     fun shuffleSpawns()
