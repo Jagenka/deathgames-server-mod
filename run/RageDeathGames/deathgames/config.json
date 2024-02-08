@@ -1,225 +1,248 @@
 {
-  "general": {
-    "enabled": false,
-    "locale": "en",
-    "arenaBounds": {
-      "firstCorner": {
-        "x": -31,
-        "y": 16,
-        "z": -31
-      },
-      "secondCorner": {
-        "x": 31,
-        "y": 64,
-        "z": 31
-      }
-    },
-    "spectatorRadiusPadding": 32,
-    "lobbyBounds": {
-      "firstCorner": {
-        "x": -8,
-        "y": 228,
-        "z": -8
-      },
-      "secondCorner": {
-        "x": 8,
-        "y": 236,
-        "z": 8
-      }
-    }
-  },
-  "spawns": {
-    "spawnPositions": {
-      "coords": [
-        {
-          "x": 27,
-          "y": 46,
-          "z": 27,
-          "yaw": 135.0,
-          "pitch": 0.0
+    "general": {
+        "enabled": false,
+        "locale": "en",
+        "arenaBounds": {
+            "firstCorner": {
+                "x": -31,
+                "y": 16,
+                "z": -31
+            },
+            "secondCorner": {
+                "x": 31,
+                "y": 64,
+                "z": 31
+            }
         },
-        {
-          "x": -27,
-          "y": 46,
-          "z": 27,
-          "yaw": -135.0,
-          "pitch": 0.0
+        "spectatorRadiusPadding": 32,
+        "lobbyBounds": {
+            "firstCorner": {
+                "x": -8,
+                "y": 228,
+                "z": -8
+            },
+            "secondCorner": {
+                "x": 8,
+                "y": 236,
+                "z": 8
+            }
         },
-        {
-          "x": -27,
-          "y": 46,
-          "z": -27,
-          "yaw": -45.0,
-          "pitch": 0.0
-        },
-        {
-          "x": 27,
-          "y": 46,
-          "z": -27,
-          "yaw": 45.0,
-          "pitch": 0.0
-        }
-      ]
-    },
-    "platformRadius": 0,
-    "spectatorSpawn": {
-      "x": 0,
-      "y": 50,
-      "z": 0,
-      "yaw": 0.0,
-      "pitch": 0.0
-    },
-    "lobbySpawn": {
-      "x": 0,
-      "y": 230,
-      "z": 0,
-      "yaw": 0.0,
-      "pitch": 0.0
-    },
-    "shuffleInterval": 20,
-    "shuffleDelayAfterKill": 0,
-    "captureTimeNeeded": 0,
-    "captureEnabled": false
-  },
-  "bonus": {
-    "platforms": {
-      "plats": []
-    },
-    "radius": 0,
-    "spawnInterval": 0,
-    "stayTime": 0,
-    "initialSpawn": 0,
-    "moneyAmount": 0,
-    "moneyInterval": 0
-  },
-  "respawns": {
-    "perTeam": 10
-  },
-  "money": {
-    "start": 100,
-    "amountPerInterval": 0,
-    "interval": 20,
-    "perKill": 20,
-    "perKillStreakKill": 10
-  },
-  "shopSettings": {
-    "shopBounds": [
-      {
-        "firstCorner": {
-          "x": -1,
-          "y": 29,
-          "z": -1
-        },
-        "secondCorner": {
-          "x": 1,
-          "y": 32,
-          "z": 1
-        }
-      }
-    ],
-    "tpOutOfShopAfter": 10,
-    "refundPercent": 100
-  },
-  "misc": {
-    "revealTimePerPlayer": 0,
-    "shopCloseTimeAfterReveal": 0,
-    "killStreakPenaltyCap": 1,
-    "startInShop": true,
-    "startInShopTpAfterSeconds": 20
-  },
-  "displayedText": {
-    "currency": "$%amount"
-  },
-  "shop": {
-    "items": [
-      {
-        "row": 0,
-        "col": 0,
-        "name": "NONAME",
-        "id": "minecraft:fishing_rod",
-        "amount": 1,
-        "nbt": "",
-        "price": 69
-      }
-    ],
-    "shield": {
-      "row": 0,
-      "col": 1,
-      "name": "NONAME",
-      "durability": 120,
-      "price": 0
-    },
-    "extraLife": {
-      "row": 0,
-      "col": 4,
-      "name": "NONAME",
-      "id": "minecraft:turtle_egg",
-      "amount": 1,
-      "nbt": "",
-      "price": 69
-    },
-    "leaveShop": {
-      "row": 0,
-      "col": 8
-    },
-    "upgrades": [
-      {
-        "row": 0,
-        "col": 2,
-        "name": "NONAME",
-        "id": "bow",
-        "levels": [
-          {
-            "items": [
-              {
-                "id": "minecraft:bow",
-                "amount": 1,
-                "nbt": ""
-              }
-            ],
-            "price": 420
-          }
+        "enabledTeams": [
+            "DARK_RED",
+            "YELLOW",
+            "GREEN",
+            "BLUE"
         ]
-      }
-    ],
-    "refunds": [
-      {
-        "row": 0,
-        "col": 3,
-        "targetRow": 0,
-        "targetCol": 2
-      }
-    ],
-    "traps": [
-      {
-        "row": 0,
-        "col": 5,
-        "name": "NONAME",
-        "price": 69,
-        "snare": true,
-        "effectNBTs": [
-          "{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}"
-        ],
-        "triggerRange": 0.5,
-        "setupTime": 200,
-        "triggerVisibilityRange": 30.0,
-        "visibilityRange": 10.0,
-        "affectedRange": 1.5,
-        "triggerDuration": 120
-      }
-    ],
-    "refundRecent": {
-      "row": 3,
-      "col": 5,
-      "name": "NONAME"
     },
-    "hook": {
-      "row": 2,
-      "col": 5,
-      "name": "NONAME",
-      "price": 0,
-      "maxDistance": 40.0,
-      "cooldown": 40
+    "spawns": {
+        "spawnPositions": [
+            {
+                "coordinates": {
+                    "x": 27,
+                    "y": 46,
+                    "z": 27,
+                    "yaw": 135.0,
+                    "pitch": 0.0
+                },
+                "defaultOwner": null
+            },
+            {
+                "coordinates": {
+                    "x": -27,
+                    "y": 46,
+                    "z": 27,
+                    "yaw": -135.0,
+                    "pitch": 0.0
+                },
+                "defaultOwner": null
+            },
+            {
+                "coordinates": {
+                    "x": -27,
+                    "y": 46,
+                    "z": -27,
+                    "yaw": -45.0,
+                    "pitch": 0.0
+                },
+                "defaultOwner": null
+            },
+            {
+                "coordinates": {
+                    "x": 27,
+                    "y": 46,
+                    "z": -27,
+                    "yaw": 45.0,
+                    "pitch": 0.0
+                },
+                "defaultOwner": null
+            }
+        ],
+        "platformRadius": 0,
+        "spectatorSpawn": {
+            "x": 0,
+            "y": 50,
+            "z": 0,
+            "yaw": 0.0,
+            "pitch": 0.0
+        },
+        "lobbySpawn": {
+            "x": 0,
+            "y": 230,
+            "z": 0,
+            "yaw": 0.0,
+            "pitch": 0.0
+        },
+        "enableShuffle": false,
+        "shuffleInterval": 20,
+        "shuffleDelayAfterKill": 0,
+        "enableCapture": false,
+        "captureTimeNeeded": 0,
+        "respawnEffectNBTs": [
+            "{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"
+        ]
+    },
+    "bonus": {
+        "enableBonusPlatforms": false,
+        "platforms": {
+            "plats": [
+            ]
+        },
+        "radius": 0,
+        "spawnInterval": 0,
+        "stayTime": 0,
+        "initialSpawn": 0,
+        "moneyAmount": 0,
+        "moneyInterval": 0
+    },
+    "respawns": {
+        "perTeam": 10
+    },
+    "money": {
+        "start": 100,
+        "amountPerInterval": 0,
+        "interval": 20,
+        "perKill": 20,
+        "perKillStreakKill": 10
+    },
+    "shopSettings": {
+        "shopBounds": [
+            {
+                "firstCorner": {
+                    "x": -1,
+                    "y": 29,
+                    "z": -1
+                },
+                "secondCorner": {
+                    "x": 1,
+                    "y": 32,
+                    "z": 1
+                }
+            }
+        ],
+        "tpOutOfShopAfter": 10,
+        "refundPercent": 100
+    },
+    "misc": {
+        "enableReveal": false,
+        "revealTimePerPlayer": 0,
+        "shopCloseTimeAfterReveal": 0,
+        "killStreakPenaltyCap": 1,
+        "startInShop": true,
+        "startInShopTpAfterSeconds": 20
+    },
+    "displayedText": {
+        "currency": "$%amount"
+    },
+    "shop": {
+        "items": [
+            {
+                "row": 0,
+                "col": 0,
+                "name": "NONAME",
+                "id": "minecraft:fishing_rod",
+                "amount": 1,
+                "nbt": "",
+                "price": 69
+            }
+        ],
+        "shield": {
+            "row": 0,
+            "col": 1,
+            "name": "NONAME",
+            "durability": 120,
+            "price": 0
+        },
+        "extraLife": {
+            "row": 0,
+            "col": 4,
+            "name": "NONAME",
+            "id": "minecraft:turtle_egg",
+            "amount": 1,
+            "nbt": "",
+            "price": 69
+        },
+        "leaveShop": {
+            "row": 0,
+            "col": 8
+        },
+        "upgrades": [
+            {
+                "row": 0,
+                "col": 2,
+                "name": "NONAME",
+                "id": "bow",
+                "levels": [
+                    {
+                        "items": [
+                            {
+                                "id": "minecraft:bow",
+                                "amount": 1,
+                                "nbt": ""
+                            }
+                        ],
+                        "price": 420
+                    }
+                ]
+            }
+        ],
+        "refunds": [
+            {
+                "row": 0,
+                "col": 3,
+                "targetRow": 0,
+                "targetCol": 2
+            }
+        ],
+        "traps": [
+            {
+                "row": 0,
+                "col": 5,
+                "name": "NONAME",
+                "price": 69,
+                "snare": true,
+                "effectNBTs": [
+                    "{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}"
+                ],
+                "triggerRange": 0.5,
+                "setupTime": 200,
+                "triggerVisibilityRange": 30.0,
+                "visibilityRange": 10.0,
+                "affectedRange": 1.5,
+                "triggerDuration": 120
+            }
+        ],
+        "refundRecent": {
+            "row": 3,
+            "col": 5,
+            "name": "NONAME"
+        },
+        "hook": {
+            "row": 2,
+            "col": 5,
+            "name": "NONAME",
+            "price": 0,
+            "maxDistance": 40.0,
+            "cooldown": 40
+        }
     }
-  }
 }
