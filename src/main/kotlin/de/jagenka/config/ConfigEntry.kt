@@ -1,6 +1,10 @@
 package de.jagenka.config
 
-import de.jagenka.*
+import de.jagenka.BlockCuboid
+import de.jagenka.BlockPos
+import de.jagenka.Coordinates
+import de.jagenka.PlatformList
+import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.Platform
 import de.jagenka.team.DGTeam
 import de.jagenka.team.DGTeam.*
@@ -33,11 +37,9 @@ class GeneralConfigEntry(
     var enabledTeams: List<DGTeam> = listOf(BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW)
 )
 
-// TODO: add optional default team to spawn positions (mainly for non-shuffling/capturing games, but also as initial assigment)
-
 @Serializable
 class SpawnsConfigEntry(
-    var spawnPositions: CoordinateList = CoordinateList(listOf(Coordinates(0, 0, 0, 0f, 0f), Coordinates(0, 0, 0, 0f, 0f))),
+    var spawnPositions: List<DGSpawn> = listOf(DGSpawn(Coordinates(0, 0, 0, 0f, 0f), defaultOwner = null)),
     var platformRadius: Int = 0,
     var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 0f, 0f),
     var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 0f, 0f),

@@ -129,7 +129,7 @@ object DeathGames : DedicatedServerModInitializer
 
         PlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
-        SpawnManager.shuffleSpawns()
+        SpawnManager.initSpawns()
 
         DisplayManager.showSidebar()
 

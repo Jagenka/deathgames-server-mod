@@ -11,6 +11,7 @@ import de.jagenka.managers.DisplayManager.sendChatMessage
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
 import de.jagenka.util.BiMap
+import kotlinx.serialization.Serializable
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.nbt.StringNbtReader
 import net.minecraft.server.network.ServerPlayerEntity
@@ -24,7 +25,7 @@ object SpawnManager
     }
 
     val spawns
-        get() = Config.configEntry.spawns.spawnPositions.coords.map { DGSpawn(it) }
+        get() = Config.configEntry.spawns.spawnPositions.toList()
 
     private val teamSpawns = BiMap<DGSpawn, DGTeam>()
 
@@ -55,6 +56,25 @@ object SpawnManager
             respawnEffects.forEach {
                 player.addStatusEffect(StatusEffectInstance(it))
             }
+        }
+    }
+
+    fun initSpawns()
+    {
+        if (Config.configEntry.spawns.enableShuffle)
+        {
+            shuffleSpawns()
+        } else
+        {
+            val teamsWithoutSpawn = mutableListOf<DGTeam>()
+
+            PlayerManager.getNonEmptyTeams().toList().forEach { participatingTeam ->
+                val spawn = spawns.find { it.defaultOwner == participatingTeam }
+                if (spawn != null) teamSpawns[spawn] = participatingTeam
+                else teamsWithoutSpawn.add(participatingTeam)
+            }
+
+            teamsWithoutSpawn.forEach { teamSpawns[getUnassignedSpawns().random()] = it }
         }
     }
 
@@ -128,7 +148,8 @@ object SpawnManager
     }
 }
 
-data class DGSpawn(val coordinates: Coordinates)
+@Serializable
+data class DGSpawn(val coordinates: Coordinates, val defaultOwner: DGTeam?)
 {
     fun getCuboid() = BlockCuboid(coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius), coordinates.asBlockPos().relative(platformRadius, 2, platformRadius))
 
