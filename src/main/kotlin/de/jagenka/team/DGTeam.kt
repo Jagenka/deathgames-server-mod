@@ -14,8 +14,6 @@ import org.joml.Vector3f
 
 enum class DGTeam
 {
-    // TODO: make teams disableable via map config
-
     BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW;
 
     fun getColorBlock(): Block
@@ -60,7 +58,7 @@ enum class DGTeam
 
         fun random() = entries.random()
 
-        fun isColorBlock(block: Block) = block isSame defaultColorBlock || values().any { block isSame it.getColorBlock() }
+        fun isColorBlock(block: Block) = block isSame defaultColorBlock || entries.any { block isSame it.getColorBlock() }
 
         fun getValuesAsStringList(): List<String>
         {
