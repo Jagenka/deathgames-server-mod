@@ -1,6 +1,7 @@
 package de.jagenka.team
 
 import de.jagenka.Util
+import de.jagenka.config.Config
 import de.jagenka.isSame
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isParticipating
@@ -60,14 +61,16 @@ enum class DGTeam
 
         fun isColorBlock(block: Block) = block isSame defaultColorBlock || entries.any { block isSame it.getColorBlock() }
 
-        fun getValuesAsStringList(): List<String>
-        {
-            val result = mutableListOf<String>()
-            entries.forEach { result.add(it.name) }
-            return result.toList()
-        }
+        fun getValuesAsStringList(): List<String> = Config.configEntry.general.enabledTeams.asStringList()
     }
 
+}
+
+fun List<DGTeam>.asStringList(): List<String>
+{
+    val result = mutableListOf<String>()
+    this.forEach { result.add(it.name) }
+    return result.toList()
 }
 
 fun Block.isDGColorBlock() = DGTeam.isColorBlock(this)
