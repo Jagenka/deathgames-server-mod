@@ -277,7 +277,7 @@ fun PlayerInventory.removeWithNbt(item: Item, nbt: NbtCompound?): Boolean
     main.toList().forEach {
         if (filter(it))
         {
-            println(it)
+            //println(it)
             main.remove(it)
             return true
         }
