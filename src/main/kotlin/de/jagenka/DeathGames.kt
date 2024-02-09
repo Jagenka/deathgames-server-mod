@@ -18,10 +18,14 @@ import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
+import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.damage.DamageSource
+import net.minecraft.entity.damage.DamageTypes
 import net.minecraft.entity.projectile.ProjectileEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -54,6 +58,11 @@ object DeathGames : DedicatedServerModInitializer
         ServerTickEvents.START_SERVER_TICK.register {
             if (!isEnabled) return@register
             tick()
+        }
+
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register { livingEntity: LivingEntity, damageSource: DamageSource, _: Float ->
+            //println(damageSource.name + " " + DamageTypes.FALL.value.path)
+            return@register !(!Config.enableFallDamage && livingEntity.isPlayer && damageSource.name == DamageTypes.FALL.value.path)
         }
 
         registerCommands()

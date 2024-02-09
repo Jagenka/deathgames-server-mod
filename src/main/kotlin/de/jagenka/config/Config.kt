@@ -97,6 +97,9 @@ object Config
     val startInShopTpAfterSeconds
         get() = configEntry.misc.startInShopTpAfterSeconds
 
+    val enableFallDamage
+        get() = configEntry.misc.enableFallDamage
+
     fun lateLoadConfig()
     {
         Util.minecraftServer?.let { server ->

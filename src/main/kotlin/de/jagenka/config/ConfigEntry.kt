@@ -84,8 +84,6 @@ class ShopSettingsConfigEntry(
     var refundPercent: Int = 0
 )
 
-// TODO: disable fall damage option
-
 @Serializable
 class MiscConfigEntry(
     var enableReveal: Boolean = true,
@@ -94,6 +92,7 @@ class MiscConfigEntry(
     var killStreakPenaltyCap: Int = 1,
     var startInShop: Boolean = false,
     var startInShopTpAfterSeconds: Int = 0,
+    var enableFallDamage: Boolean = true,
 )
 
 @Serializable
