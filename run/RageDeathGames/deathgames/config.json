@@ -142,7 +142,7 @@
                 }
             }
         ],
-        "tpOutOfShopAfter": 10,
+        "tpOutOfShopAfter": 200,
         "refundPercent": 100
     },
     "misc": {
