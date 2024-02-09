@@ -21,17 +21,32 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
                 enabledTeams.toList() to emptyList()
             } else
             {
-                enabledTeams.subList(0, (enabledTeams.size + 1) / 2).toList() to enabledTeams.subList((enabledTeams.size + 1) / 2, enabledTeams.size).toList()
+                val splitIndex = (enabledTeams.size + 1) / 2
+                enabledTeams.subList(0, splitIndex).toList() to enabledTeams.subList(splitIndex, enabledTeams.size).toList()
             }
 
         val firstLineLeftIndex = 1 + (7 - firstLine.size) / 2
+        val splitFirstLine = firstLine.size % 2 == 0
         firstLine.forEachIndexed { index, team ->
-            slots[firstLineLeftIndex + index] = TeamUIEntry(team)
+            if (splitFirstLine && index >= firstLine.size / 2)
+            {
+                slots[firstLineLeftIndex + index + 1] = TeamUIEntry(team)
+            } else
+            {
+                slots[firstLineLeftIndex + index] = TeamUIEntry(team)
+            }
         }
 
         val secondLineLeftIndex = 10 + (7 - secondLine.size) / 2
+        val splitSecondLine = secondLine.size % 2 == 0
         secondLine.forEachIndexed { index, team ->
-            slots[secondLineLeftIndex + index] = TeamUIEntry(team)
+            if (splitSecondLine && index >= secondLine.size / 2)
+            {
+                slots[secondLineLeftIndex + index + 1] = TeamUIEntry(team)
+            } else
+            {
+                slots[secondLineLeftIndex + index] = TeamUIEntry(team)
+            }
         }
 
         slots[0] = SpectatorUIEntry()
