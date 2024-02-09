@@ -1,6 +1,6 @@
 {
     "general": {
-        "enabled": false,
+        "enabled": true,
         "locale": "en",
         "arenaBounds": {
             "firstCorner": {
@@ -44,7 +44,7 @@
                     "yaw": 135.0,
                     "pitch": 0.0
                 },
-                "defaultOwner": null
+                "defaultOwner": "DARK_RED"
             },
             {
                 "coordinates": {
@@ -54,7 +54,7 @@
                     "yaw": -135.0,
                     "pitch": 0.0
                 },
-                "defaultOwner": null
+                "defaultOwner": "YELLOW"
             },
             {
                 "coordinates": {
@@ -64,7 +64,7 @@
                     "yaw": -45.0,
                     "pitch": 0.0
                 },
-                "defaultOwner": null
+                "defaultOwner": "GREEN"
             },
             {
                 "coordinates": {
@@ -74,7 +74,7 @@
                     "yaw": 45.0,
                     "pitch": 0.0
                 },
-                "defaultOwner": null
+                "defaultOwner": "BLUE"
             }
         ],
         "platformRadius": 0,
