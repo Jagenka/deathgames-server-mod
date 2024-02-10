@@ -93,6 +93,8 @@ class MiscConfigEntry(
     var startInShop: Boolean = false,
     var startInShopTpAfterSeconds: Int = 0,
     var enableFallDamage: Boolean = true,
+    var freezeTime: Boolean = true,
+    var timeAtGameStart: Long = 6000,
 )
 
 @Serializable

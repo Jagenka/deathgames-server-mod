@@ -152,7 +152,9 @@
         "killStreakPenaltyCap": 1,
         "startInShop": true,
         "startInShopTpAfterSeconds": 20,
-        "enableFallDamage": false
+        "enableFallDamage": false,
+        "freezeTime": true,
+        "timeAtGameStart": 18000
     },
     "displayedText": {
         "currency": "%amount ₿"
@@ -185,47 +187,47 @@
             "col": 8
         },
         "upgrades": [
-          {
-            "row": 0,
-            "col": 3,
-            "name": "Sword",
-            "id": "sword",
-            "levels": [
-              {
-                "items": [
-                  {
-                    "id": "minecraft:netherite_sword",
-                    "amount": 1,
-                    "nbt": "{Unbreakable:1,Enchantments:[{id:\"minecraft:sharpness\",lvl:255}]}"
-                  }
-                ],
-                "price": 10
-              }
-            ]
-          },
-          {
-            "row": 0,
-            "col": 5,
-            "name": "Bow",
-            "id": "bow",
-            "levels": [
-              {
-                "items": [
-                  {
-                    "id": "minecraft:bow",
-                    "amount": 1,
-                    "nbt": "{Unbreakable:1,Enchantments:[{id:\"minecraft:power\",lvl:255},{id:\"minecraft:infinity\",lvl:1}]}"
-                  },
-                  {
-                    "id": "minecraft:arrow",
-                    "amount": 1,
-                    "nbt": ""
-                  }
-                ],
-                "price": 10
-              }
-            ]
-          }
+            {
+                "row": 0,
+                "col": 3,
+                "name": "Sword",
+                "id": "sword",
+                "levels": [
+                    {
+                        "items": [
+                            {
+                                "id": "minecraft:netherite_sword",
+                                "amount": 1,
+                                "nbt": "{Unbreakable:1,Enchantments:[{id:\"minecraft:sharpness\",lvl:255}]}"
+                            }
+                        ],
+                        "price": 10
+                    }
+                ]
+            },
+            {
+                "row": 0,
+                "col": 5,
+                "name": "Bow",
+                "id": "bow",
+                "levels": [
+                    {
+                        "items": [
+                            {
+                                "id": "minecraft:bow",
+                                "amount": 1,
+                                "nbt": "{Unbreakable:1,Enchantments:[{id:\"minecraft:power\",lvl:255},{id:\"minecraft:infinity\",lvl:1}]}"
+                            },
+                            {
+                                "id": "minecraft:arrow",
+                                "amount": 1,
+                                "nbt": ""
+                            }
+                        ],
+                        "price": 10
+                    }
+                ]
+            }
         ],
         "refunds": [
             {

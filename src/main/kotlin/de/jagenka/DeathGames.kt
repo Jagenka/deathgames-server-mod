@@ -1,6 +1,7 @@
 package de.jagenka
 
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.Util.minecraftServer
 import de.jagenka.Util.teleport
 import de.jagenka.commands.DeathGamesCommand
 import de.jagenka.config.Config
@@ -34,6 +35,7 @@ import net.minecraft.text.Texts
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
+import net.minecraft.world.GameRules
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -171,6 +173,11 @@ object DeathGames : DedicatedServerModInitializer
 
     private fun postPrep()
     {
+        minecraftServer?.let { server ->
+            server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(!Config.configEntry.misc.freezeTime, server)
+            server.overworld.timeOfDay = Config.configEntry.misc.timeAtGameStart
+        }
+
         PlayerManager.getOnlinePlayers().forEach {
             ShopTask.exitShop(it)
             DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
