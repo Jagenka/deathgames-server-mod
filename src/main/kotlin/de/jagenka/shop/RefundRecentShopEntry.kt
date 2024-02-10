@@ -27,8 +27,6 @@ class RefundRecentShopEntry(player: ServerPlayerEntity, override var displayName
 
     override fun onClick(): Boolean
     {
-        super.onClick()
-
         val recentlyClickedAmounts = Shop.getRecentlyClickedAmounts(player.name.string)
             .filterNot {
                 it.key is LeaveShopEntry || it.key is EmptyShopEntry || it.key is RefundRecentShopEntry || it.key is RefundShopEntry

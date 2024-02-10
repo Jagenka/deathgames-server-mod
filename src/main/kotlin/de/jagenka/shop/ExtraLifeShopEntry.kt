@@ -1,10 +1,8 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.KillManager
 import de.jagenka.managers.MoneyManager.getCurrencyString
-import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
@@ -27,18 +25,10 @@ class ExtraLifeShopEntry(player: ServerPlayerEntity, private val displayItemStac
 
     override fun onClick(): Boolean
     {
-        super.onClick()
-
-        if (player.getDGMoney() >= price)
+        return attemptSale(player, price)
         {
             KillManager.addLives(player.name.string, 1)
-            player.deductDGMoney(price)
-            return true
-        } else
-        {
-            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(price))
         }
-        return false
     }
 
     override fun hasGoods(): Boolean

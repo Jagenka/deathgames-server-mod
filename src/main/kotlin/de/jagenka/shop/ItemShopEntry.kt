@@ -1,9 +1,7 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager.getCurrencyString
-import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
@@ -30,16 +28,9 @@ class ItemShopEntry(player: ServerPlayerEntity, private val boughtItemStack: Ite
 
     override fun onClick(): Boolean
     {
-        if (player.getDGMoney() >= price)
-        {
+        return attemptSale(player, price) {
             player.giveItemStack(boughtItemStack.copy())
-            player.deductDGMoney(price)
-            return true
-        } else
-        {
-            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(price))
         }
-        return false
     }
 
     override fun hasGoods(): Boolean

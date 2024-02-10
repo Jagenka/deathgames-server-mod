@@ -28,8 +28,6 @@ class LeaveShopEntry(player: ServerPlayerEntity) : ShopEntry(player = player, na
 
     override fun onClick(): Boolean
     {
-        super.onClick()
-
         if (Timer.gameMechsPaused)
         {
             player.sendPrivateMessage("Cannot leave right now!")

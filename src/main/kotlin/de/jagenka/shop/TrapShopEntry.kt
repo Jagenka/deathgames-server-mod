@@ -1,9 +1,7 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
@@ -59,18 +57,9 @@ class TrapShopEntry(
 
     override fun onClick(): Boolean
     {
-        super.onClick()
-
-        if (player.getDGMoney() >= price)
-        {
-            player.giveItemStack(itemStack.copy()) // TODO: investigate, why this does not work sometimes (also in ItemShopEntry) - maybe shop closed?
-            player.deductDGMoney(price)
-            return true
-        } else
-        {
-            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(price))
+        return attemptSale(player, price) {
+            player.giveItemStack(itemStack.copy()) // TODO: investigate, why this does not work sometimes (also in ItemShopEntry)
         }
-        return false
     }
 
     override fun hasGoods(): Boolean
