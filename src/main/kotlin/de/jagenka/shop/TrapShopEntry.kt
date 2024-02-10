@@ -63,7 +63,7 @@ class TrapShopEntry(
 
         if (player.getDGMoney() >= price)
         {
-            player.giveItemStack(itemStack.copy())
+            player.giveItemStack(itemStack.copy()) // TODO: investigate, why this does not work sometimes (also in ItemShopEntry) - maybe shop closed?
             player.deductDGMoney(price)
             return true
         } else
