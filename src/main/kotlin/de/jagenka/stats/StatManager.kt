@@ -134,8 +134,6 @@ object StatManager
         }.filter { PlayerManager.getTeam(it.first) != null }
     }
 
-    // TODO: add new config options to this
-
     /**
      * @return if saving was successful
      */
@@ -145,9 +143,11 @@ object StatManager
 
         gameStats.gameId = DeathGames.gameId ?: return false
         gameStats.options =
-            "shuffleInterval=${Config.shuffleSpawnsInterval}," +
-                    "captureTimeNeeded=${Config.captureTimeNeeded}," +
+            "shuffleEnabled=${Config.configEntry.spawns.enableShuffle}," +
+                    "shuffleInterval=${Config.shuffleSpawnsInterval}," +
                     "captureEnabled=${Config.captureEnabled}," +
+                    "captureTimeNeeded=${Config.captureTimeNeeded}," +
+                    "bonusPlatformsEnabled=${Config.configEntry.bonus.enableBonusPlatforms}," +
                     "respawnsPerTeam=${Config.respawnsPerTeam}," +
                     "refundPercent=${Config.refundPercent}," +
                     "startInShop=${Config.startInShop},"
