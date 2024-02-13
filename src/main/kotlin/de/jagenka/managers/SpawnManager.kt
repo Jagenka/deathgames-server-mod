@@ -75,6 +75,8 @@ object SpawnManager
             }
 
             teamsWithoutSpawn.forEach { teamSpawns[getUnassignedSpawns().random()] = it }
+
+            colorSpawns()
         }
     }
 
