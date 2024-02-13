@@ -30,9 +30,9 @@ object CaptureSpawnTask : TimerTask
 
     override fun run()
     {
-        if (currentlyEnding) return
-
         if (!captureEnabled) return
+
+        if (currentlyEnding) return
 
         val playersOnAnySpawn = mutableListOf<Pair<ServerPlayerEntity, DGSpawn>>()
 

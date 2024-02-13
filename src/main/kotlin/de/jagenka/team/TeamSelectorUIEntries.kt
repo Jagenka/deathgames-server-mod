@@ -141,7 +141,7 @@ class StartGameUIEntry : UIEntry
 
             val notReadyString = I18n.get("cantStartGame", mapOf("players" to whoIsNotReadyString)) //TODO: besser?
             val idToPlayer = whoIsNotReady.mapIndexed { index, playerName -> index to playerName }.associate { (index, playerName) -> "%playerName$index" to playerName }
-            println(idToPlayer)
+            //println(idToPlayer)
             DisplayManager.sendChatMessage(DisplayManager.getTextWithPlayersAndTeamsColored(notReadyString, idToPlayer = idToPlayer))
         }
     }

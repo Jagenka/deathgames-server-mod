@@ -1,5 +1,6 @@
 package de.jagenka.team
 
+import de.jagenka.config.Config
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
@@ -12,15 +13,39 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
 
     init
     {
-        val numberOfTeamsHalf = DGTeam.entries.size / 2
+        val enabledTeams = Config.configEntry.general.enabledTeams.toList()
 
-        DGTeam.entries.forEachIndexed { index, team ->
-            if (index < numberOfTeamsHalf)
+        val (firstLine, secondLine) =
+            if (enabledTeams.size <= 7)
             {
-                slots[index + 1] = TeamUIEntry(team)
+                enabledTeams.toList() to emptyList()
             } else
             {
-                slots[index - numberOfTeamsHalf + 10] = TeamUIEntry(team)
+                val splitIndex = (enabledTeams.size + 1) / 2
+                enabledTeams.subList(0, splitIndex).toList() to enabledTeams.subList(splitIndex, enabledTeams.size).toList()
+            }
+
+        val firstLineLeftIndex = 1 + (7 - firstLine.size) / 2
+        val splitFirstLine = firstLine.size % 2 == 0
+        firstLine.forEachIndexed { index, team ->
+            if (splitFirstLine && index >= firstLine.size / 2)
+            {
+                slots[firstLineLeftIndex + index + 1] = TeamUIEntry(team)
+            } else
+            {
+                slots[firstLineLeftIndex + index] = TeamUIEntry(team)
+            }
+        }
+
+        val secondLineLeftIndex = 10 + (7 - secondLine.size) / 2
+        val splitSecondLine = secondLine.size % 2 == 0
+        secondLine.forEachIndexed { index, team ->
+            if (splitSecondLine && index >= secondLine.size / 2)
+            {
+                slots[secondLineLeftIndex + index + 1] = TeamUIEntry(team)
+            } else
+            {
+                slots[secondLineLeftIndex + index] = TeamUIEntry(team)
             }
         }
 

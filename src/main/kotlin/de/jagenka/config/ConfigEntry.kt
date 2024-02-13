@@ -1,7 +1,13 @@
 package de.jagenka.config
 
-import de.jagenka.*
+import de.jagenka.BlockCuboid
+import de.jagenka.BlockPos
+import de.jagenka.Coordinates
+import de.jagenka.PlatformList
+import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.Platform
+import de.jagenka.team.DGTeam
+import de.jagenka.team.DGTeam.*
 import kotlinx.serialization.Serializable
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -28,22 +34,26 @@ class GeneralConfigEntry(
     var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
     var spectatorRadiusPadding: Int = 0,
     var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(0, 0, 0), BlockPos(0, 0, 0)),
+    var enabledTeams: List<DGTeam> = listOf(BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW)
 )
 
 @Serializable
 class SpawnsConfigEntry(
-    var spawnPositions: CoordinateList = CoordinateList(listOf(Coordinates(0, 0, 0, 1f, 1f), Coordinates(0, 0, 0, 1f, 1f))),
+    var spawnPositions: List<DGSpawn> = listOf(DGSpawn(Coordinates(0, 0, 0, 0f, 0f), defaultOwner = null)),
     var platformRadius: Int = 0,
-    var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
-    var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 1f, 1f),
+    var spectatorSpawn: Coordinates = Coordinates(0, 0, 0, 0f, 0f),
+    var lobbySpawn: Coordinates = Coordinates(0, 0, 0, 0f, 0f),
+    var enableShuffle: Boolean = false,
     var shuffleInterval: Int = 20,
     var shuffleDelayAfterKill: Int = 0,
+    var enableCapture: Boolean = true,
     var captureTimeNeeded: Int = 0,
-    var captureEnabled: Boolean = false
+    var respawnEffectNBTs: List<String> = listOf("{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"),
 )
 
 @Serializable
 class BonusPlatformsConfigEntry(
+    var enableBonusPlatforms: Boolean = true,
     var platforms: PlatformList = PlatformList(listOf(Platform("bonus1", BlockPos(0, 0, 0)))),
     var radius: Int = 0,
     var spawnInterval: Int = 0,
@@ -76,11 +86,15 @@ class ShopSettingsConfigEntry(
 
 @Serializable
 class MiscConfigEntry(
+    var enableReveal: Boolean = true,
     var revealTimePerPlayer: Int = 0,
     var shopCloseTimeAfterReveal: Int = 0,
     var killStreakPenaltyCap: Int = 1,
     var startInShop: Boolean = false,
-    var startInShopTpAfterSeconds: Int = 0
+    var startInShopTpAfterSeconds: Int = 0,
+    var enableFallDamage: Boolean = true,
+    var freezeTime: Boolean = true,
+    var timeAtGameStart: Long = 6000,
 )
 
 @Serializable

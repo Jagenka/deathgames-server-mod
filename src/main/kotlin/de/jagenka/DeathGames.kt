@@ -1,6 +1,7 @@
 package de.jagenka
 
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.Util.minecraftServer
 import de.jagenka.Util.teleport
 import de.jagenka.commands.DeathGamesCommand
 import de.jagenka.config.Config
@@ -18,10 +19,14 @@ import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
+import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.damage.DamageSource
+import net.minecraft.entity.damage.DamageTypes
 import net.minecraft.entity.projectile.ProjectileEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -30,6 +35,7 @@ import net.minecraft.text.Texts
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameMode
+import net.minecraft.world.GameRules
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -54,6 +60,11 @@ object DeathGames : DedicatedServerModInitializer
         ServerTickEvents.START_SERVER_TICK.register {
             if (!isEnabled) return@register
             tick()
+        }
+
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register { livingEntity: LivingEntity, damageSource: DamageSource, _: Float ->
+            //println(damageSource.name + " " + DamageTypes.FALL.value.path)
+            return@register !(!Config.enableFallDamage && livingEntity.isPlayer && damageSource.name == DamageTypes.FALL.value.path)
         }
 
         registerCommands()
@@ -129,7 +140,7 @@ object DeathGames : DedicatedServerModInitializer
 
         PlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
 
-        SpawnManager.shuffleSpawns()
+        SpawnManager.initSpawns()
 
         DisplayManager.showSidebar()
 
@@ -162,6 +173,11 @@ object DeathGames : DedicatedServerModInitializer
 
     private fun postPrep()
     {
+        minecraftServer?.let { server ->
+            server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(!Config.configEntry.misc.freezeTime, server)
+            server.overworld.timeOfDay = Config.configEntry.misc.timeAtGameStart
+        }
+
         PlayerManager.getOnlinePlayers().forEach {
             ShopTask.exitShop(it)
             DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())

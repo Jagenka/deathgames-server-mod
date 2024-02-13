@@ -90,7 +90,7 @@ data class Trap(
     var name: String = "NONAME",
     var price: Int = 69,
     var snare: Boolean = true,
-    var effectNBTs: List<String> = listOf("{Ambient:0b,Amplifier:100b,Duration:60,Id:15,ShowIcon:0b,ShowParticles:0b}"),
+    var effectNBTs: List<String> = listOf("{ambient:0b,amplifier:100b,duration:60,id:blindness,show_icon:0b,show_particles:0b}"),
     var triggerRange: Double = 0.5,
     var setupTime: Int = 10.seconds(),
     var triggerVisibilityRange: Double = 30.0,

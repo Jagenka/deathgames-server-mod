@@ -11,14 +11,21 @@ import de.jagenka.managers.DisplayManager.sendChatMessage
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
 import de.jagenka.util.BiMap
+import kotlinx.serialization.Serializable
+import net.minecraft.entity.effect.StatusEffectInstance
+import net.minecraft.nbt.StringNbtReader
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
 import de.jagenka.config.Config.spawnPlatformRadius as platformRadius
 
 object SpawnManager
 {
+    val respawnEffects = Config.configEntry.spawns.respawnEffectNBTs.mapNotNull {
+        StatusEffectInstance.fromNbt(StringNbtReader.parse(it))
+    }
+
     val spawns
-        get() = Config.configEntry.spawns.spawnPositions.coords.map { DGSpawn(it) }
+        get() = Config.configEntry.spawns.spawnPositions.toList()
 
     private val teamSpawns = BiMap<DGSpawn, DGTeam>()
 
@@ -33,10 +40,44 @@ object SpawnManager
 
     fun teleportPlayerToSpawn(player: ServerPlayerEntity)
     {
+        // handle position
         val spawnCoordinates = player.getSpawnCoordinates()
         player.teleport(spawnCoordinates)
         player.yaw = spawnCoordinates.yaw
-        if (spawnCoordinates == defaultSpawn) player.changeGameMode(GameMode.SPECTATOR)
+
+        // check if spectator or player
+        if (spawnCoordinates == defaultSpawn)
+        {
+            player.changeGameMode(GameMode.SPECTATOR)
+        } else
+        {
+            // handle respawn effects for players only
+            player.clearStatusEffects()
+            respawnEffects.forEach {
+                player.addStatusEffect(StatusEffectInstance(it))
+            }
+        }
+    }
+
+    fun initSpawns()
+    {
+        if (Config.configEntry.spawns.enableShuffle)
+        {
+            shuffleSpawns()
+        } else
+        {
+            val teamsWithoutSpawn = mutableListOf<DGTeam>()
+
+            PlayerManager.getNonEmptyTeams().toList().forEach { participatingTeam ->
+                val spawn = spawns.find { it.defaultOwner == participatingTeam }
+                if (spawn != null) teamSpawns[spawn] = participatingTeam
+                else teamsWithoutSpawn.add(participatingTeam)
+            }
+
+            teamsWithoutSpawn.forEach { teamSpawns[getUnassignedSpawns().random()] = it }
+
+            colorSpawns()
+        }
     }
 
     fun shuffleSpawns()
@@ -109,7 +150,8 @@ object SpawnManager
     }
 }
 
-data class DGSpawn(val coordinates: Coordinates)
+@Serializable
+data class DGSpawn(val coordinates: Coordinates, val defaultOwner: DGTeam?)
 {
     fun getCuboid() = BlockCuboid(coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius), coordinates.asBlockPos().relative(platformRadius, 2, platformRadius))
 

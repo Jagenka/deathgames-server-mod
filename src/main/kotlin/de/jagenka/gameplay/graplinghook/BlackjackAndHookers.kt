@@ -1,36 +1,17 @@
 package de.jagenka.gameplay.graplinghook
 
-import de.jagenka.managers.PlayerManager
 import de.jagenka.plus
 import de.jagenka.shop.Shop
-import de.jagenka.timer.seconds
-import de.jagenka.times
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec
 import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.projectile.ArrowEntity
-import net.minecraft.entity.projectile.LlamaSpitEntity
-import net.minecraft.entity.projectile.PersistentProjectileEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.network.packet.s2c.play.EntitiesDestroyS2CPacket
-import net.minecraft.network.packet.s2c.play.EntityAttributesS2CPacket
-import net.minecraft.network.packet.s2c.play.EntityStatusEffectS2CPacket
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
-import javax.swing.text.html.parser.Entity
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.pow
 import kotlin.math.sqrt
 
 object BlackjackAndHookers
@@ -87,7 +68,7 @@ object BlackjackAndHookers
             if (hitResult.type != HitResult.Type.BLOCK) return false
 
             val targetPos = (hitResult as BlockHitResult).blockPos.toCenterPos() + Vec3d(0.0, 1.0, 0.0)
-            println(targetPos)
+            //println(targetPos)
             if (owner.pos.y > targetPos.y + 1) return false
 
             val yDistance = targetPos.y - owner.pos.y

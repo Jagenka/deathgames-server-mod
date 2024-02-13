@@ -1,5 +1,8 @@
 package de.jagenka.shop
 
+import de.jagenka.managers.DisplayManager.sendPrivateMessage
+import de.jagenka.managers.deductDGMoney
+import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
@@ -41,4 +44,25 @@ abstract class ShopEntry(internal val player: ServerPlayerEntity, internal val n
      * removes item from player's inventory
      */
     abstract fun removeGoods()
+
+    companion object
+    {
+        /**
+         * central method to attempt a sale to a player
+         * @return if sale was successful
+         */
+        fun attemptSale(player: ServerPlayerEntity, price: Int, saleProcess: () -> Unit): Boolean
+        {
+            if (player.getDGMoney() >= price)
+            {
+                saleProcess.invoke()
+                player.deductDGMoney(price)
+                return true
+            } else
+            {
+                player.sendPrivateMessage(Shop.getNotEnoughMoneyString(price))
+            }
+            return false
+        }
+    }
 }

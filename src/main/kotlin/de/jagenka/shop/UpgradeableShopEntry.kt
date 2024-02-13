@@ -1,9 +1,7 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.item.ArmorItem
@@ -85,16 +83,9 @@ class UpgradeableShopEntry(
 
         if (targetLevel !in prices.indices) return false
 
-        if (player.getDGMoney() >= prices[targetLevel])
-        {
-            val cost = setToLevel(targetLevel)
-            player.deductDGMoney(cost)
-            return true
-        } else
-        {
-            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(prices[targetLevel]))
+        return attemptSale(player, prices[targetLevel]) {
+            setToLevel(targetLevel)
         }
-        return false
     }
 
     /**

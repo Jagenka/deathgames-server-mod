@@ -2,9 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.Util
 import de.jagenka.gameplay.graplinghook.BlackjackAndHookers
-import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
@@ -44,18 +42,9 @@ class HookerShopEntry(
 
     override fun onClick(): Boolean
     {
-        super.onClick()
-
-        if (player.getDGMoney() >= price)
-        {
+        return attemptSale(player, price) {
             player.giveItemStack(itemStack.copy())
-            player.deductDGMoney(price)
-            return true
-        } else
-        {
-            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(price))
         }
-        return false
     }
 
     override fun hasGoods(): Boolean

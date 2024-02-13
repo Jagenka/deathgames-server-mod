@@ -1,9 +1,7 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
-import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
 import de.jagenka.shop.ShopEntries.withDamage
 import net.minecraft.item.ItemStack
@@ -29,10 +27,7 @@ class ShieldShopEntry(player: ServerPlayerEntity, private val name: String = "Sh
 
     override fun onClick(): Boolean
     {
-        super.onClick()
-
-        if (player.getDGMoney() >= getPrice())
-        {
+        return attemptSale(player, price) {
             val upgradableShield = player.inventory.main.find { itemStackInInv ->
                 itemStackInInv.item == SHIELD && itemStackInInv.damage >= targetDurability
             }
@@ -46,13 +41,7 @@ class ShieldShopEntry(player: ServerPlayerEntity, private val name: String = "Sh
             {
                 player.giveItemStack(ItemStack(SHIELD).withDamage(SHIELD.maxDamage - targetDurability).copy())
             }
-            player.deductDGMoney(getPrice())
-            return true
-        } else
-        {
-            player.sendPrivateMessage(Shop.getNotEnoughMoneyString(getPrice()))
         }
-        return false
     }
 
     override fun hasGoods(): Boolean

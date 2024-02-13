@@ -28,14 +28,14 @@ dependencies {
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
-    implementation("io.netty:netty-all:4.1.24.Final")
+    implementation("io.netty:netty-all:4.1.24.Final") // this specific version is here for a reason, I just don't know what reason
 
     modImplementation("org.jetbrains.exposed:exposed-core:0.40.1")
     shadow("org.jetbrains.exposed:exposed-core:0.40.1")
     modImplementation("org.jetbrains.exposed:exposed-jdbc:0.40.1")
     shadow("org.jetbrains.exposed:exposed-jdbc:0.40.1")
-    modImplementation("org.xerial:sqlite-jdbc:3.40.1.0")
-    shadow("org.xerial:sqlite-jdbc:3.40.1.0")
+    modImplementation("org.xerial:sqlite-jdbc:3.41.2.2")
+    shadow("org.xerial:sqlite-jdbc:3.41.2.2")
 
 }
 

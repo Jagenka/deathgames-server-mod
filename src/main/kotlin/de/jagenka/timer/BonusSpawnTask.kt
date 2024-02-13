@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames
+import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config
 import de.jagenka.managers.BonusManager
 import de.jagenka.timer.BonusSpawnState.*
@@ -19,7 +19,10 @@ object BonusSpawnTask : TimerTask
 
     override fun run()
     {
-        if (DeathGames.currentlyEnding) return
+        // if bonus platforms are disabled, don't do anything
+        if (!Config.configEntry.bonus.enableBonusPlatforms) return
+
+        if (currentlyEnding) return
 
         if (time >= when (currentState)
             {
@@ -56,9 +59,17 @@ object BonusSpawnTask : TimerTask
     override fun reset()
     {
         BonusManager.disableAllPlatforms()
-        BonusManager.queueRandomPlatforms(1)
-        time = 0
-        currentState = INITIAL
+
+        // if bonus platforms are disabled, don't do anything
+        if (!Config.configEntry.bonus.enableBonusPlatforms)
+        {
+            currentState = INACTIVE
+        } else
+        {
+            BonusManager.queueRandomPlatforms(1)
+            time = 0
+            currentState = INITIAL
+        }
     }
 
     fun getTimeToSpawn(): Int?

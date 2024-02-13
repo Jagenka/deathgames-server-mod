@@ -1,5 +1,7 @@
 package de.jagenka.timer
 
+import de.jagenka.DeathGames
+import de.jagenka.config.Config
 import de.jagenka.config.Config.bonusMoneyAmount
 import de.jagenka.config.Config.bonusMoneyInterval
 import de.jagenka.managers.BonusManager
@@ -22,6 +24,11 @@ object BonusMoneyTask : TimerTask
 
     override fun run()
     {
+        // if bonus platforms are disabled, don't do anything
+        if (!Config.configEntry.bonus.enableBonusPlatforms) return
+
+        if (DeathGames.currentlyEnding) return
+
         PlayerManager.getOnlinePlayers().forEach {
             val playerName = it.name.string
             if (ticks.getValue(playerName) >= bonusMoneyInterval)
