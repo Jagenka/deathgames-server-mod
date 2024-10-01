@@ -1,9 +1,9 @@
 plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
-    kotlin("jvm").version(kotlinVersion)
-    kotlin("plugin.serialization").version(kotlinVersion)
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 base {
     val archivesBaseName: String by project
@@ -30,48 +30,49 @@ dependencies {
 
     implementation("io.netty:netty-all:4.1.24.Final") // this specific version is here for a reason, I just don't know what reason
 
-    modImplementation("org.jetbrains.exposed:exposed-core:0.40.1")
-    shadow("org.jetbrains.exposed:exposed-core:0.40.1")
-    modImplementation("org.jetbrains.exposed:exposed-jdbc:0.40.1")
-    shadow("org.jetbrains.exposed:exposed-jdbc:0.40.1")
-    modImplementation("org.xerial:sqlite-jdbc:3.41.2.2")
-    shadow("org.xerial:sqlite-jdbc:3.41.2.2")
+    modImplementation("org.jetbrains.exposed:exposed-core:0.52.0")
+    shadow("org.jetbrains.exposed:exposed-core:0.52.0")
+    modImplementation("org.jetbrains.exposed:exposed-jdbc:0.52.0")
+    shadow("org.jetbrains.exposed:exposed-jdbc:0.52.0")
+    modImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
+    shadow("org.xerial:sqlite-jdbc:3.46.0.0")
+}
 
+loom {
+    accessWidenerPath.set(file("src/main/resources/deathgames-server-mod.accesswidener"))
 }
 
 tasks.remapJar {
     dependsOn(tasks.shadowJar)
-    input.set(tasks.shadowJar.get().archiveFile)
+    inputFile.set(tasks.shadowJar.get().archiveFile)
 }
 
 tasks.shadowJar {
     configurations = listOf(project.configurations.shadow.get())
 }
 
-
-
 tasks {
-    val javaVersion = JavaVersion.VERSION_17
     withType<JavaCompile> {
-        options.encoding = "UTF-8"
-        sourceCompatibility = javaVersion.toString()
-        targetCompatibility = javaVersion.toString()
-        options.release.set(javaVersion.toString().toInt())
+        options.release.set(21)
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions { jvmTarget = javaVersion.toString() }
-        //sourceCompatibility = javaVersion.toString()
-        //targetCompatibility = javaVersion.toString()
+        kotlinOptions {
+            jvmTarget = "21"
+        }
     }
     jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
     processResources {
         inputs.property("version", project.version)
         filesMatching("fabric.mod.json") { expand(mutableMapOf("version" to project.version)) }
     }
+
     java {
-        toolchain { languageVersion.set(JavaLanguageVersion.of(javaVersion.toString())) }
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
+        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+        // if it is present.
+        // If you remove this line, sources will not be generated.
         withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
