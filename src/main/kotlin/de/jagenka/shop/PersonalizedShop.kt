@@ -23,21 +23,21 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
     {
         val buffer = mutableMapOf<Int, ShopEntry>()
 
-        Config.configEntry.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
+        Config.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
             buffer[slot(row, col)] = ItemShopEntry(player, itemStack(id, nbt, amount), price, name)
         }
 
-        Config.configEntry.shop.shield?.let { (row, col, name, durability, price) ->
+        Config.shop.shield?.let { (row, col, name, durability, price) ->
             buffer[slot(row, col)] = ShieldShopEntry(player, name, durability, price)
         }
 
-        Config.configEntry.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
+        Config.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
             buffer[slot(row, col)] = ExtraLifeShopEntry(player, itemStack(id, nbt, amount), price, name)
         }
 
-        Config.configEntry.shop.leaveShop?.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry(player) }
+        Config.shop.leaveShop?.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry(player) }
 
-        Config.configEntry.shop.upgrades.forEach { (row, col, name, id, levels) ->
+        Config.shop.upgrades.forEach { (row, col, name, id, levels) ->
             val itemStackLists = mutableListOf<MutableList<ItemStack>>()
             val prices = mutableListOf<Int>()
 
@@ -51,7 +51,7 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
             buffer[slot(row, col)] = UpgradeableShopEntry(player, id, itemStackLists, prices, name)
         }
 
-        Config.configEntry.shop.traps.forEach { (row, col, name, price, snare, effectNBTs, triggerRange, setupTime, triggerVisibilityRange, visibilityRange, affectedRange, triggerDuration) ->
+        Config.shop.traps.forEach { (row, col, name, price, snare, effectNBTs, triggerRange, setupTime, triggerVisibilityRange, visibilityRange, affectedRange, triggerDuration) ->
             buffer[slot(row, col)] = TrapShopEntry(
                 player,
                 name,
@@ -67,16 +67,16 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
             )
         }
 
-        Config.configEntry.shop.refundRecent?.let { (row, col, name) ->
+        Config.shop.refundRecent?.let { (row, col, name) ->
             buffer[slot(row, col)] = RefundRecentShopEntry(player, name)
         }
 
-        Config.configEntry.shop.hook?.let { (row, col, name, price, maxDistance, cooldown) ->
+        Config.shop.hook?.let { (row, col, name, price, maxDistance, cooldown) ->
             buffer[slot(row, col)] = HookerShopEntry(player, name, price, maxDistance, cooldown)
         }
 
         // refunds need to be last
-        Config.configEntry.shop.refunds.forEach { (row, col, targetRow, targetCol) ->
+        Config.shop.refunds.forEach { (row, col, targetRow, targetCol) ->
             buffer[slot(row, col)] = RefundShopEntry(player, buffer[slot(targetRow, targetCol)] ?: return@forEach)
         }
 

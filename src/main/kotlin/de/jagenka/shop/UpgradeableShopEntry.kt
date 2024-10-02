@@ -192,6 +192,4 @@ class UpgradeableShopEntry(
             }
         } $prices"
     }
-
-    // TODO: combine price and items (?)
 }

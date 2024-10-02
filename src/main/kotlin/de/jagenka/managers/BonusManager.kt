@@ -3,7 +3,6 @@ package de.jagenka.managers
 import de.jagenka.BlockPos
 import de.jagenka.Util
 import de.jagenka.config.Config
-import de.jagenka.config.Config.bonusPlatformRadius
 import de.jagenka.isSame
 import de.jagenka.toCenter
 import kotlinx.serialization.Serializable
@@ -14,7 +13,7 @@ import kotlin.math.abs
 object BonusManager
 {
     val platforms
-        get() = Config.configEntry.bonus.platforms.plats
+        get() = Config.bonus.platforms.plats
     val selectedPlatforms = mutableListOf<Platform>()
 
     val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }
@@ -57,13 +56,13 @@ object BonusManager
         val dx = abs(it.pos.x.toCenter() - player.pos.x)
         val dy = abs(it.pos.y.toDouble() - player.pos.y)
         val dz = abs(it.pos.z.toCenter() - player.pos.z)
-        dy < 2 && dx <= bonusPlatformRadius + 0.5 && dz <= bonusPlatformRadius + 0.5
+        dy < 2 && dx <= Config.bonus.radius + 0.5 && dz <= Config.bonus.radius + 0.5
     }
 
     private fun colorPlatforms()
     {
         platforms.forEach { platform ->
-            Util.getBlocksInSquareRadiusAtFixY(platform.pos, bonusPlatformRadius).forEach { (block, coordinates) ->
+            Util.getBlocksInSquareRadiusAtFixY(platform.pos, Config.bonus.radius).forEach { (block, coordinates) ->
                 if (block isSame inactiveBlock || block isSame activeBlock)
                 {
                     Util.setBlockAt(coordinates, if (platform.isActive()) activeBlock else inactiveBlock)

@@ -65,7 +65,7 @@ class TrapShopEntry(
     override fun onClick(): Boolean
     {
         return attemptSale(player, price) {
-            player.giveItemStack(itemStack.copy()) // TODO: investigate, why this does not work sometimes (also in ItemShopEntry)
+            player.giveItemStack(itemStack.copy())
         }
     }
 

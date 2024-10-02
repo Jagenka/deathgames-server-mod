@@ -24,7 +24,7 @@ object I18n
 
     fun loadI18n()
     {
-        var locale = Config.configEntry.general.locale
+        var locale = Config.general.locale
 
         I18n::class.java.getResourceAsStream(messagesFilePath.format(locale)).use { stream ->
             if (locale.isBlank() || stream == null)

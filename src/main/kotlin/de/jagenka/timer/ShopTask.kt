@@ -26,7 +26,7 @@ object ShopTask : TimerTask
 
     private val lastPosOutOfShop = mutableMapOf<String, TPPos>()
 
-    private const val countdownStartingWithSecondsLeft = 5 // configurable
+    private const val countdownStartingWithSecondsLeft = 5
 
     var tpOutActive: Boolean = true
 
@@ -81,7 +81,7 @@ object ShopTask : TimerTask
                 {
                     timeInShop[playerName] = timeInShop.getValue(playerName) + 1
 
-                    val ticksToTpOut = Config.tpOutOfShopAfter - timeInShop.getValue(playerName)
+                    val ticksToTpOut = Config.shopSettings.tpOutOfShopAfter - timeInShop.getValue(playerName)
 
                     if (ticksToTpOut == countdownStartingWithSecondsLeft.seconds())
                     {

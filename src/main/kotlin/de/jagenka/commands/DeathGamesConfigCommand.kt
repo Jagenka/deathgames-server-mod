@@ -40,7 +40,7 @@ object DeathGamesConfigCommand {
             // print section config
             sectionLiteral.executes {
                 for(property in properties) {
-                    val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
+                    val currentValueString = getStringifiedValueFromProperty(sectionField, property, configPropertyTransformers)
                     it.source.sendFeedback({ Text.of("config.${section.name}.${property.name}: $currentValueString") }, false)
                 }
 
@@ -55,7 +55,7 @@ object DeathGamesConfigCommand {
 
                 // print current property value
                 propertyLiteral.executes {
-                    val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
+                    val currentValueString = getStringifiedValueFromProperty(sectionField, property, configPropertyTransformers)
 
                     it.source.sendFeedback({ Text.of("config.${section.name}.$propertyName: $currentValueString") }, false)
                     return@executes 0
@@ -66,8 +66,8 @@ object DeathGamesConfigCommand {
                 argumentLiteral.executes {
                     val newValue = it.getArgument("newValue", String::class.java)
 
-                    val result = setPropertyFromString(newValue, Config.configEntry, sectionField, property, configPropertyTransformers, it.source)
-                    val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
+                    val result = setPropertyFromString(newValue, sectionField, property, configPropertyTransformers, it.source)
+                    val currentValueString = getStringifiedValueFromProperty(sectionField, property, configPropertyTransformers)
                     if(result) {
                         it.source.sendFeedback({ Text.of("config.${section.name}.$propertyName set to $currentValueString") }, true)
                         Config.store()

@@ -201,7 +201,7 @@ object PlayerManager
     fun handleRespawn(player: ServerPlayerEntity)
     {
         if (DeathGames.running) SpawnManager.teleportPlayerToSpawn(player)
-        else player.teleport(Config.lobbySpawn)
+        else player.teleport(Config.spawns.lobbySpawn)
 
         currentlyDead.remove(player.name.string)
     }

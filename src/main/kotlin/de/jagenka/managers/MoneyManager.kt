@@ -13,7 +13,6 @@ import de.jagenka.team.DGTeam
 import de.jagenka.util.I18n
 import net.minecraft.server.network.ServerPlayerEntity
 import kotlin.math.abs
-import de.jagenka.config.Config.configEntry as config
 
 object MoneyManager
 {
@@ -33,15 +32,16 @@ object MoneyManager
         when (moneyMode)
         {
             Mode.PLAYER -> players.forEach {
-                setMoney(it, Config.startMoneyPerPlayer)
-                StatManager.personalStats.gib(it).moneyEarned += Config.startMoneyPerPlayer
+                setMoney(it, Config.money.start)
+                StatManager.personalStats.gib(it).moneyEarned += Config.money.start
             }
+
             Mode.TEAM ->
             {
                 PlayerManager.getParticipatingTeams().forEach { participatingTeam ->
                     val teamSize = participatingTeam.getPlayers().size
-                    setMoney(participatingTeam, teamSize * Config.startMoneyPerPlayer)
-                    participatingTeam.getPlayers().forEach { StatManager.personalStats.gib(it).moneyEarned += teamSize * Config.startMoneyPerPlayer }
+                    setMoney(participatingTeam, teamSize * Config.money.start)
+                    participatingTeam.getPlayers().forEach { StatManager.personalStats.gib(it).moneyEarned += teamSize * Config.money.start }
                 }
             }
         }
@@ -99,15 +99,16 @@ object MoneyManager
             Mode.PLAYER ->
             {
                 val killStreakAmount = KillManager.getKillStreak(deceased.name.string)
-                val amount = Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount
+                val amount = Config.money.perKill + Config.money.perKillStreakKill * killStreakAmount
                 addMoney(attacker.name.string, amount)
 //                sendChatMessage("They made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.sendPrivateMessage(I18n.get("receiveMoneyPlayer", mapOf("amount" to getCurrencyString(amount))))
             }
+
             Mode.TEAM ->
             {
                 val killStreakAmount = KillManager.getKillStreak(deceased.name.string)
-                val amount = Config.moneyPerKill + Config.moneyBonusPerKillStreakKill * killStreakAmount
+                val amount = Config.money.perKill + Config.money.perKillStreakKill * killStreakAmount
                 addMoney(attacker.getDGTeam(), amount)
 //                sendChatMessage("${attacker.getDGTeam()?.name ?: "They"} made $killStreakAmount kill${if (killStreakAmount != 1) "s" else ""} since their previous death.")
                 attacker.getDGTeam()?.getOnlinePlayers()
@@ -124,7 +125,7 @@ object MoneyManager
         teamMoney.clear()
     }
 
-    fun getCurrencyString(amount: Int) = config.displayedText.currency.replace("%amount", amount.toString())
+    fun getCurrencyString(amount: Int) = Config.displayedText.currency.replace("%amount", amount.toString())
 }
 
 fun ServerPlayerEntity.getDGMoney(): Int
@@ -136,7 +137,7 @@ fun ServerPlayerEntity.getDGMoney(): Int
     }
 }
 
-fun Int.scaledForRefund(): Int = this * (Config.refundPercent.toDouble() / 100.0).floor()
+fun Int.scaledForRefund(): Int = this * (Config.shopSettings.refundPercent.toDouble() / 100.0).floor()
 
 /**
  * this is used when refunding, refund percentage is applied here

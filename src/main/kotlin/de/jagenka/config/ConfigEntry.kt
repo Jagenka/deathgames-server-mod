@@ -21,7 +21,7 @@ class ConfigEntry(
     @Section("bonus") val bonus: BonusPlatformsConfigEntry = BonusPlatformsConfigEntry(),
     @Section("respawns") val respawns: RespawnsConfigEntry = RespawnsConfigEntry(),
     @Section("money") val money: MoneyConfigEntry = MoneyConfigEntry(),
-    @Section("shop") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
+    @Section("shopSettings") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
     @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
     @Section("displayedText") val displayedText: DisplayedTextConfigEntry = DisplayedTextConfigEntry(),
     @Section("shop") val shop: ShopConfig = ShopConfig()

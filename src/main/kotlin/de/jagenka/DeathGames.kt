@@ -64,7 +64,7 @@ object DeathGames : DedicatedServerModInitializer
 
         ServerLivingEntityEvents.ALLOW_DAMAGE.register { livingEntity: LivingEntity, damageSource: DamageSource, _: Float ->
             //println(damageSource.name + " " + DamageTypes.FALL.value.path)
-            return@register !(!Config.enableFallDamage && livingEntity.isPlayer && damageSource.name == DamageTypes.FALL.value.path)
+            return@register !(!Config.misc.enableFallDamage && livingEntity.isPlayer && damageSource.name == DamageTypes.FALL.value.path)
         }
 
         registerCommands()
@@ -144,20 +144,20 @@ object DeathGames : DedicatedServerModInitializer
 
         DisplayManager.showSidebar()
 
-        val secondsToSpawnTp = Config.startInShopTpAfterSeconds
+        val secondsToSpawnTp = Config.misc.startInShopTpAfterSeconds
         PlayerManager.getOnlinePlayers().forEach {
             it.closeHandledScreen()
-            val (x, y, z) = Config.lobbySpawn
+            val (x, y, z) = Config.spawns.lobbySpawn
             it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
 
-            if (Config.startInShop)
+            if (Config.misc.startInShop)
             {
-                it.teleport(Config.shopBounds.random().center)
+                it.teleport(Config.shopSettings.shopBounds.random().center)
                 Timer.schedule((secondsToSpawnTp - 5).coerceAtLeast(0).seconds()) { ShopTask.sendTpOutMessage(it, 5) }
             }
         }
 
-        if (Config.startInShop)
+        if (Config.misc.startInShop)
         {
             ShopTask.tpOutActive = false
             DisplayManager.sendChatMessage(I18n.get("tpShopToSpawnGameStart", mapOf("time" to secondsToSpawnTp)))
@@ -174,8 +174,8 @@ object DeathGames : DedicatedServerModInitializer
     private fun postPrep()
     {
         minecraftServer?.let { server ->
-            server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(!Config.configEntry.misc.freezeTime, server)
-            server.overworld.timeOfDay = Config.configEntry.misc.timeAtGameStart
+            server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(!Config.misc.freezeTime, server)
+            server.overworld.timeOfDay = Config.misc.timeAtGameStart
         }
 
         PlayerManager.getOnlinePlayers().forEach {
@@ -206,7 +206,7 @@ object DeathGames : DedicatedServerModInitializer
         if (winnerCount != 0)
         {
             winners.add(
-                Text.of(if (winnerCount != 1) I18n.get("winnerPlural") else I18n.get("winnerSingular")) //TODO: change
+                Text.of(if (winnerCount != 1) I18n.get("winnerPlural") else I18n.get("winnerSingular"))
             )
             winners.add(winnerPlayers)
         }

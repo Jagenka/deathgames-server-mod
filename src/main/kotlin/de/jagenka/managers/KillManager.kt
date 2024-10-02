@@ -1,7 +1,7 @@
 package de.jagenka.managers
 
 import de.jagenka.DeathGames
-import de.jagenka.config.Config.respawnsPerTeam
+import de.jagenka.config.Config
 import de.jagenka.gameplay.traps.TrapsAreNotGay
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager.eliminate
@@ -146,8 +146,8 @@ object KillManager
         val players = PlayerManager.getPlayers()
         when (livesMode)
         {
-            Mode.PLAYER -> players.forEach { playerRespawns[it] = respawnsPerTeam }
-            Mode.TEAM -> players.forEach { teamRespawns[PlayerManager.getTeam(it)] = respawnsPerTeam }
+            Mode.PLAYER -> players.forEach { playerRespawns[it] = Config.respawns.perTeam }
+            Mode.TEAM -> players.forEach { teamRespawns[PlayerManager.getTeam(it)] = Config.respawns.perTeam }
         }
     }
 

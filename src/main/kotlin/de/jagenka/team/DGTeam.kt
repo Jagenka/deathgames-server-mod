@@ -61,7 +61,7 @@ enum class DGTeam
 
         fun isColorBlock(block: Block) = block isSame defaultColorBlock || entries.any { block isSame it.getColorBlock() }
 
-        fun getValuesAsStringList(): List<String> = Config.configEntry.general.enabledTeams.asStringList()
+        fun getValuesAsStringList(): List<String> = Config.general.enabledTeams.asStringList()
     }
 
 }

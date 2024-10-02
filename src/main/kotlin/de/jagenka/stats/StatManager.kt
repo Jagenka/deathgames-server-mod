@@ -143,14 +143,14 @@ object StatManager
 
         gameStats.gameId = DeathGames.gameId ?: return false
         gameStats.options =
-            "shuffleEnabled=${Config.configEntry.spawns.enableShuffle}," +
-                    "shuffleInterval=${Config.shuffleSpawnsInterval}," +
-                    "captureEnabled=${Config.captureEnabled}," +
-                    "captureTimeNeeded=${Config.captureTimeNeeded}," +
-                    "bonusPlatformsEnabled=${Config.configEntry.bonus.enableBonusPlatforms}," +
-                    "respawnsPerTeam=${Config.respawnsPerTeam}," +
-                    "refundPercent=${Config.refundPercent}," +
-                    "startInShop=${Config.startInShop},"
+            "shuffleEnabled=${Config.spawns.enableShuffle}," +
+                    "shuffleInterval=${Config.spawns.shuffleInterval}," +
+                    "captureEnabled=${Config.spawns.enableCapture}," +
+                    "captureTimeNeeded=${Config.spawns.captureTimeNeeded}," +
+                    "bonusPlatformsEnabled=${Config.bonus.enableBonusPlatforms}," +
+                    "respawnsPerTeam=${Config.respawns.perTeam}," +
+                    "refundPercent=${Config.shopSettings.refundPercent}," +
+                    "startInShop=${Config.misc.startInShop},"
         gameStats.map = minecraftServer?.getSavePath(WorldSavePath.ROOT)?.parent?.fileName.toString()
 
         StatsIO.storeGame(gameStats)

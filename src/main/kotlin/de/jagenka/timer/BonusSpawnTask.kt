@@ -20,16 +20,16 @@ object BonusSpawnTask : TimerTask
     override fun run()
     {
         // if bonus platforms are disabled, don't do anything
-        if (!Config.configEntry.bonus.enableBonusPlatforms) return
+        if (!Config.bonus.enableBonusPlatforms) return
 
         if (currentlyEnding) return
 
         if (time >= when (currentState)
             {
                 INACTIVE -> return
-                INITIAL -> Config.bonusPlatformInitialSpawn
-                SPAWNING -> Config.bonusPlatformSpawnInterval
-                DESPAWNING -> Config.bonusPlatformStayTime
+                INITIAL -> Config.bonus.initialSpawn
+                SPAWNING -> Config.bonus.spawnInterval
+                DESPAWNING -> Config.bonus.stayTime
             }
         )
         {
@@ -61,7 +61,7 @@ object BonusSpawnTask : TimerTask
         BonusManager.disableAllPlatforms()
 
         // if bonus platforms are disabled, don't do anything
-        if (!Config.configEntry.bonus.enableBonusPlatforms)
+        if (!Config.bonus.enableBonusPlatforms)
         {
             currentState = INACTIVE
         } else
@@ -77,8 +77,8 @@ object BonusSpawnTask : TimerTask
         return when (currentState)
         {
             INACTIVE -> null
-            INITIAL -> Config.bonusPlatformInitialSpawn - time
-            SPAWNING -> Config.bonusPlatformSpawnInterval - time
+            INITIAL -> Config.bonus.initialSpawn - time
+            SPAWNING -> Config.bonus.spawnInterval - time
             DESPAWNING -> null
         }
     }
@@ -90,7 +90,7 @@ object BonusSpawnTask : TimerTask
             INACTIVE -> null
             INITIAL -> null
             SPAWNING -> null
-            DESPAWNING -> Config.bonusPlatformStayTime - time
+            DESPAWNING -> Config.bonus.stayTime - time
         }
     }
 }

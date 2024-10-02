@@ -1,8 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames.currentlyEnding
-import de.jagenka.config.Config.captureEnabled
-import de.jagenka.config.Config.captureTimeNeeded
+import de.jagenka.config.Config
 import de.jagenka.gameplay.rendering.CaptureAnimation
 import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.DisplayManager
@@ -30,7 +29,7 @@ object CaptureSpawnTask : TimerTask
 
     override fun run()
     {
-        if (!captureEnabled) return
+        if (!Config.spawns.enableCapture) return
 
         if (currentlyEnding) return
 
@@ -43,7 +42,7 @@ object CaptureSpawnTask : TimerTask
             {
                 if (SpawnManager.getTeam(spawn) !in teamsOnSpawn)
                 {
-                    if (captureProgress.getValue(spawn) > captureTimeNeeded)
+                    if (captureProgress.getValue(spawn) > Config.spawns.captureTimeNeeded)
                     {
                         val newTeam = teamsOnSpawn.find { it != null } ?: return@forEachSpawn // das sollte nie passieren
                         captureProgress[spawn] = 0
@@ -72,7 +71,7 @@ object CaptureSpawnTask : TimerTask
 
         playersOnAnySpawn.forEach forEachPlayer@{ (playerOnSpawn, spawn) ->
             val progress = captureProgress.getValue(spawn)
-            val fillAmount = progress.toFloat() / captureTimeNeeded.toFloat()
+            val fillAmount = progress.toFloat() / Config.spawns.captureTimeNeeded.toFloat()
             DisplayManager.setBossBarForPlayer(playerOnSpawn, fillAmount, text = literal(I18n.get("captureProgress")), color = BossBar.Color.BLUE, idSuffix = "capture")
         }
 
@@ -96,7 +95,7 @@ object CaptureSpawnTask : TimerTask
             I18n.get("captureASpawn", replaceMap)
         }
         val mapThingie = mutableMapOf("%newTeam" to newTeam)
-        if(oldTeam != null) mapThingie["%oldTeam"] = oldTeam
+        if (oldTeam != null) mapThingie["%oldTeam"] = oldTeam
         DisplayManager.sendChatMessage(DisplayManager.getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapThingie))
     }
 

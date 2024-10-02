@@ -83,7 +83,7 @@ object Shop
     {
         if (player == null) return false
 
-        return Config.shopBounds.any { it.contains(player.pos) }
+        return Config.shopSettings.shopBounds.any { it.contains(player.pos) }
 
     }
 
