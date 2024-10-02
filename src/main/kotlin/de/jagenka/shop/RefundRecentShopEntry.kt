@@ -2,6 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.Util
 import de.jagenka.managers.refundMoney
+import de.jagenka.setCustomName
 import de.jagenka.stats.StatManager
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items

@@ -2,6 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
+import de.jagenka.setCustomName
 import de.jagenka.timer.ShopTask
 import de.jagenka.timer.Timer
 import net.minecraft.item.ItemStack

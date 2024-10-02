@@ -4,6 +4,7 @@ import de.jagenka.Util
 import de.jagenka.managers.KillManager
 import de.jagenka.managers.MoneyManager.getCurrencyString
 import de.jagenka.managers.getDGMoney
+import de.jagenka.setCustomName
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style

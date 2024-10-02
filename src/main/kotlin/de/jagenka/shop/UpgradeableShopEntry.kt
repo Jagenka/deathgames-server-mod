@@ -3,6 +3,7 @@ package de.jagenka.shop
 import de.jagenka.Util
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.getDGMoney
+import de.jagenka.setCustomName
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.item.ArmorItem
 import net.minecraft.item.ItemStack
@@ -186,7 +187,7 @@ class UpgradeableShopEntry(
         return "$name $type ${
             items.joinToString(separator = ", ", prefix = "[", postfix = "]") { lvls ->
                 lvls.joinToString(separator = ", ", prefix = "[", postfix = "]") {
-                    "$it ${it.nbt}"
+                    "$it ${it.components}"
                 }
             }
         } $prices"

@@ -1,12 +1,13 @@
 package de.jagenka.shop;
 
+import com.mojang.brigadier.StringReader
 import de.jagenka.config.Config
-import de.jagenka.shop.ShopEntries.slot
+import net.minecraft.command.argument.ItemStringReader
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.StringNbtReader
-import net.minecraft.registry.Registries
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier
+import net.minecraft.registry.BuiltinRegistries
+import net.minecraft.server.command.CommandManager
+import net.minecraft.server.network.ServerPlayerEntity
 
 class PersonalizedShop(private val player: ServerPlayerEntity)
 {
@@ -15,14 +16,15 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
     var entries: Map<Int, ShopEntry> = emptyMap()
         private set
 
+    private val commandRegistryAccess = CommandManager.createRegistryAccess(BuiltinRegistries.createWrapperLookup())
+    private val itemStringReader = ItemStringReader(commandRegistryAccess)
+
     init
     {
         val buffer = mutableMapOf<Int, ShopEntry>()
 
         Config.configEntry.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
-            val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
-            if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
-            buffer[slot(row, col)] = ItemShopEntry(player, itemStack, price, name)
+            buffer[slot(row, col)] = ItemShopEntry(player, itemStack(id, nbt, amount), price, name)
         }
 
         Config.configEntry.shop.shield?.let { (row, col, name, durability, price) ->
@@ -30,9 +32,7 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
         }
 
         Config.configEntry.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
-            val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
-            if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
-            buffer[slot(row, col)] = ExtraLifeShopEntry(player, itemStack, price, name)
+            buffer[slot(row, col)] = ExtraLifeShopEntry(player, itemStack(id, nbt, amount), price, name)
         }
 
         Config.configEntry.shop.leaveShop?.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry(player) }
@@ -43,9 +43,7 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
 
             levels.forEach { (items, price) ->
                 itemStackLists.add(items.map { (upgradeId, upgradeAmount, upgradeNbt) ->
-                    val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(upgradeId)).orElse(null), upgradeAmount)
-                    if (upgradeNbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(upgradeNbt)
-                    return@map itemStack
+                    itemStack(upgradeId, upgradeNbt, upgradeAmount)
                 }.toMutableList())
                 prices.add(price)
             }
@@ -83,5 +81,18 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
         }
 
         entries = buffer.toMap()
+    }
+
+    private fun itemStack(id: String, nbt: String, amount: Int): ItemStack
+    {
+        val itemResult = itemStringReader.consume(StringReader(id + nbt))
+        val itemStack = ItemStack(itemResult.item, amount)
+        itemStack.applyUnvalidatedChanges(itemResult.components)
+        return itemStack
+    }
+
+    fun slot(row: Int, column: Int): Int
+    {
+        return (row * 9 + column).coerceAtLeast(0).coerceAtMost(Shop.SLOT_AMOUNT)
     }
 }

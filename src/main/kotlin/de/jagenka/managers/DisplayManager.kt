@@ -224,7 +224,7 @@ object DisplayManager
     fun setBossBarForPlayer(player: ServerPlayerEntity, fillAmount: Float, text: Text, color: BossBar.Color, idSuffix: String = "main")
     {
         ifServerLoaded { server ->
-            val bossBarId = Identifier(player.name.string.lowercase() + "_$idSuffix")
+            val bossBarId = Identifier.of(player.name.string.lowercase() + "_$idSuffix")
             var bossBar = server.bossBarManager.get(bossBarId)
             if (bossBar == null)
             {
@@ -243,7 +243,7 @@ object DisplayManager
     fun removeBossBarForPlayer(player: ServerPlayerEntity, idSuffix: String)
     {
         ifServerLoaded { server ->
-            val bossBarId = Identifier(player.name.string.lowercase() + "_$idSuffix")
+            val bossBarId = Identifier.of(player.name.string.lowercase() + "_$idSuffix")
             server.bossBarManager.get(bossBarId)?.let {
                 it.removePlayer(player)
                 server.bossBarManager.remove(it)

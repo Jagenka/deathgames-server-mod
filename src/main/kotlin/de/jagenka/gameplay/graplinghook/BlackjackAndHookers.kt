@@ -2,6 +2,7 @@ package de.jagenka.gameplay.graplinghook
 
 import de.jagenka.plus
 import de.jagenka.shop.Shop
+import net.minecraft.component.DataComponentTypes.CUSTOM_DATA
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
@@ -35,7 +36,7 @@ object BlackjackAndHookers
                 val pos = it.getEndPosition()
                 val owner = it.getOwner()
                 it.killEntity()
-                owner.teleport(pos.x, pos.y, pos.z)
+                owner.teleport(pos.x, pos.y, pos.z, false)
                 activeHooks.remove(it)
             } else it.tick()
         }
@@ -54,7 +55,8 @@ object BlackjackAndHookers
     @JvmStatic
     fun forceTheHooker(world: World, owner: PlayerEntity, itemStackInHand: ItemStack): Boolean
     {
-        itemStackInHand.nbt?.let { nbt ->
+        itemStackInHand.components?.let { components ->
+            val nbt = components.get(CUSTOM_DATA)?.nbt ?: return false
             if (!nbt.contains("hookMaxDistance") || !nbt.contains("hookCooldown")) return false
 
             val maxDistance = nbt.getDouble("hookMaxDistance")

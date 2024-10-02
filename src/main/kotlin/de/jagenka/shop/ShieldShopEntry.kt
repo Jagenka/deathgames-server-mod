@@ -3,7 +3,9 @@ package de.jagenka.shop
 import de.jagenka.Util
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.getDGMoney
-import de.jagenka.shop.ShopEntries.withDamage
+import de.jagenka.maxDamage
+import de.jagenka.setCustomName
+import de.jagenka.withDamage
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items.SHIELD
 import net.minecraft.server.network.ServerPlayerEntity

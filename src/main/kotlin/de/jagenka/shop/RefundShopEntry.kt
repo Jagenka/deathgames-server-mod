@@ -4,6 +4,7 @@ import de.jagenka.Util
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.refundMoney
 import de.jagenka.managers.scaledForRefund
+import de.jagenka.setCustomName
 import de.jagenka.util.I18n
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity

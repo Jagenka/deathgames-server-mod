@@ -6,6 +6,7 @@ import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
+import de.jagenka.setCustomName
 import de.jagenka.team.TeamSelectorUI.notReadySpamProtection
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds

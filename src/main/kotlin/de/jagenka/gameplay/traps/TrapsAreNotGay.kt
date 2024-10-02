@@ -14,13 +14,13 @@ import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.timer.ticks
 import de.jagenka.toCenter
+import net.minecraft.component.DataComponentTypes.CUSTOM_DATA
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.particle.ParticleTypes
-import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.util.math.Direction
 
@@ -124,7 +124,7 @@ object TrapsAreNotGay
                         )
                     }
                     affectedPlayers.forEach { player ->
-                        player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 1f, 1f)
+                        player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, 1f, 1f)
                         it.addDisabledPlayer(player.name.string)
 
                         StatManager.personalStats.gib(player.name.string).timesCaughtInTrap++
@@ -192,24 +192,26 @@ object TrapsAreNotGay
     {
         if (ctx.side == Direction.UP)
         {
-            ctx.stack.nbt?.let { itemNbt ->
-                if (!itemNbt.contains("isSnareTrap") || !itemNbt.contains("trapEffects") || !itemNbt.contains("trapTriggerRange")
-                    || !itemNbt.contains("trapSetupTime") || !itemNbt.contains("trapTriggerVisibilityRange")
-                    || !itemNbt.contains("trapVisibilityRange") || !itemNbt.contains("trapAffectedRange")
-                    || !itemNbt.contains("trapTriggerDuration")
+            ctx.stack.components?.let { components ->
+                val nbt = components.get(CUSTOM_DATA)?.nbt ?: return false
+
+                if (!nbt.contains("isSnareTrap") || !nbt.contains("trapEffects") || !nbt.contains("trapTriggerRange")
+                    || !nbt.contains("trapSetupTime") || !nbt.contains("trapTriggerVisibilityRange")
+                    || !nbt.contains("trapVisibilityRange") || !nbt.contains("trapAffectedRange")
+                    || !nbt.contains("trapTriggerDuration")
                 ) return false // if tags are missing, we can use the egg
 
-                val isSnare = itemNbt.getBoolean("isSnareTrap")
-                val effects = itemNbt.getList("trapEffects", NbtElement.COMPOUND_TYPE.toInt()).map { nbtElement ->
+                val isSnare = nbt.getBoolean("isSnareTrap")
+                val effects = nbt.getList("trapEffects", NbtElement.COMPOUND_TYPE.toInt()).map { nbtElement ->
                     val nbtCompound = nbtElement as? NbtCompound ?: return@map StatusEffectInstance(StatusEffects.UNLUCK) // invalid elements are treated as unluck
                     return@map StatusEffectInstance.fromNbt(nbtCompound) ?: StatusEffectInstance(StatusEffects.UNLUCK) // invalid elements are treated as unluck
                 }
-                val triggerRange = itemNbt.getDouble("trapTriggerRange")
-                val setupTime = itemNbt.getInt("trapSetupTime")
-                val triggerVisibilityRange = itemNbt.getDouble("trapTriggerVisibilityRange")
-                val visibilityRange = itemNbt.getDouble("trapVisibilityRange")
-                val affectedRange = itemNbt.getDouble("trapAffectedRange")
-                val triggerDuration = itemNbt.getInt("trapTriggerDuration")
+                val triggerRange = nbt.getDouble("trapTriggerRange")
+                val setupTime = nbt.getInt("trapSetupTime")
+                val triggerVisibilityRange = nbt.getDouble("trapTriggerVisibilityRange")
+                val visibilityRange = nbt.getDouble("trapVisibilityRange")
+                val affectedRange = nbt.getDouble("trapAffectedRange")
+                val triggerDuration = nbt.getInt("trapTriggerDuration")
 
                 val success = placeTrap(
                     ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z,

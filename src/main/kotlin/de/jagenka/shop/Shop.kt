@@ -79,7 +79,13 @@ object Shop
         this.currentUpgradableLevels.clear()
     }
 
-    fun isInShopBounds(player: PlayerEntity): Boolean = Config.shopBounds.any { it.contains(player.pos) }
+    fun isInShopBounds(player: PlayerEntity?): Boolean
+    {
+        if (player == null) return false
+
+        return Config.shopBounds.any { it.contains(player.pos) }
+
+    }
 
     fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
 

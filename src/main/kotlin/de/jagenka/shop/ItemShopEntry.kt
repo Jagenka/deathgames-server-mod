@@ -1,8 +1,10 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
+import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager.getCurrencyString
 import de.jagenka.managers.getDGMoney
+import de.jagenka.setCustomName
 import net.minecraft.item.ItemStack
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
@@ -36,8 +38,7 @@ class ItemShopEntry(player: ServerPlayerEntity, private val boughtItemStack: Ite
     override fun hasGoods(): Boolean
     {
         return player.inventory.containsAny {
-            it.isOf(boughtItemStack.item) &&
-                    it.nbt == boughtItemStack.nbt &&
+            itemAndNbtEqual(boughtItemStack, it) &&
                     it.count >= boughtItemStack.count
         }
     }
@@ -47,13 +48,12 @@ class ItemShopEntry(player: ServerPlayerEntity, private val boughtItemStack: Ite
         val amount = boughtItemStack.count
 
         player.inventory.remove({ itemStackInInventory ->
-            itemStackInInventory.isOf(boughtItemStack.item) &&
-                    itemStackInInventory.nbt == boughtItemStack.nbt
+            itemAndNbtEqual(boughtItemStack, itemStackInInventory)
         }, amount, player.playerScreenHandler.craftingInput)
     }
 
     override fun toString(): String
     {
-        return "$displayName $boughtItemStack ${boughtItemStack.nbt} $price"
+        return "$displayName $boughtItemStack ${boughtItemStack.components} $price"
     }
 }

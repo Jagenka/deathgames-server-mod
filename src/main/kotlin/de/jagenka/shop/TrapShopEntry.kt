@@ -1,8 +1,12 @@
 package de.jagenka.shop
 
 import de.jagenka.Util
+import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.getDGMoney
+import de.jagenka.setCustomName
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.NbtComponent
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
@@ -31,14 +35,17 @@ class TrapShopEntry(
     {
         val effectsNbt = NbtList()
         effectsNbt.addAll(effects)
-        itemStack.orCreateNbt.put("trapEffects", effectsNbt)
-        itemStack.orCreateNbt.putBoolean("isSnareTrap", isSnare)
-        itemStack.orCreateNbt.putDouble("trapTriggerRange", triggerRange)
-        itemStack.orCreateNbt.putInt("trapSetupTime", setupTime)
-        itemStack.orCreateNbt.putDouble("trapTriggerVisibilityRange", triggerVisibilityRange)
-        itemStack.orCreateNbt.putDouble("trapVisibilityRange", visibilityRange)
-        itemStack.orCreateNbt.putDouble("trapAffectedRange", affectedRange)
-        itemStack.orCreateNbt.putInt("trapTriggerDuration", triggerDuration)
+
+        val nbt = NbtCompound()
+        nbt.put("trapEffects", effectsNbt)
+        nbt.putBoolean("isSnareTrap", isSnare)
+        nbt.putDouble("trapTriggerRange", triggerRange)
+        nbt.putInt("trapSetupTime", setupTime)
+        nbt.putDouble("trapTriggerVisibilityRange", triggerVisibilityRange)
+        nbt.putDouble("trapVisibilityRange", visibilityRange)
+        nbt.putDouble("trapAffectedRange", affectedRange)
+        nbt.putInt("trapTriggerDuration", triggerDuration)
+        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt))
 
         itemStack.setCustomName(Text.of(name).getWithStyle(Style.EMPTY.withItalic(false))[0])
     }
@@ -69,7 +76,9 @@ class TrapShopEntry(
 
     override fun removeGoods()
     {
-        val filter: (ItemStack) -> Boolean = { it.item == itemStack.item && it.nbt == itemStack.nbt }
+        val filter: (ItemStack) -> Boolean = {
+            itemAndNbtEqual(itemStack, it)
+        }
 
         player.inventory.remove(filter, 1, player.inventory)
     }
