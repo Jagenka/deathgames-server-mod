@@ -50,7 +50,10 @@ class TeamUIEntry(override val team: DGTeam) : UIEntry
         get()
         {
             val teamSize = team.getPlayers().size
-            val baseString = I18n.get("teamSelectUIHover", mapOf("teamSize" to teamSize, "teamName" to "%teamName")) //TODO: geht das besser?
+
+            // first get translated String from I18n, but keep teamName as a placeholder
+            val baseString = I18n.get("teamSelectUIHover", mapOf("teamSize" to teamSize, "teamName" to "%teamName"))
+            // to then replace the placeholder with colored text
             return team.getColorBlock().asItem().defaultStack.setCustomName(DisplayManager.getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapOf("%teamName" to team)))
         }
 
@@ -124,6 +127,7 @@ class StartGameUIEntry : UIEntry
             notReadySpamProtection = true
             Timer.schedule(1.seconds()) { notReadySpamProtection = false }
 
+            // this part is pretty complicated because i want to add a localized "and" between the last two entries
             var whoIsNotReadyString = ""
             repeat(whoIsNotReady.size) { index ->
                 if (index != 0)
@@ -140,9 +144,10 @@ class StartGameUIEntry : UIEntry
                 whoIsNotReadyString += "%playerName$index"
             }
 
-            val notReadyString = I18n.get("cantStartGame", mapOf("players" to whoIsNotReadyString)) //TODO: besser?
+            // first get translated String from I18n, but keep non-ready players as a placeholder
+            val notReadyString = I18n.get("cantStartGame", mapOf("players" to whoIsNotReadyString))
             val idToPlayer = whoIsNotReady.mapIndexed { index, playerName -> index to playerName }.associate { (index, playerName) -> "%playerName$index" to playerName }
-            //println(idToPlayer)
+            // to then replace the placeholder with colored text
             DisplayManager.sendChatMessage(DisplayManager.getTextWithPlayersAndTeamsColored(notReadyString, idToPlayer = idToPlayer))
         }
     }

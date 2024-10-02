@@ -66,7 +66,9 @@ object KillManager
 
     private fun getShutdownText(deceasedName: String, killStreak: Int): Text
     {
-        val configString = I18n.get("shutdown", mapOf("killStreak" to killStreak, "deceased" to "%deceased")) //TODO kann man das ändern?
+        // first get translated String from I18n, but keep deceased as a placeholder
+        val configString = I18n.get("shutdown", mapOf("killStreak" to killStreak, "deceased" to "%deceased"))
+        // to then replace the placeholder with colored text
         return DisplayManager.getTextWithPlayersAndTeamsColored(configString, idToPlayer = mapOf("%deceased" to deceasedName))
     }
 

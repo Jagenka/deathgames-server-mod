@@ -216,7 +216,9 @@ object DisplayManager
             sendChatMessage(Text.of(I18n.get("playerLeaveTeam", mapOf("playerName" to player.name.string))))
         } else
         {
-            val baseString = I18n.get("playerJoinTeam", mapOf("playerName" to player.name.string, "teamName" to "%teamName")) //TODO: geht das anders?
+            // first get translated String from I18n, but keep teamName as a placeholder
+            val baseString = I18n.get("playerJoinTeam", mapOf("playerName" to player.name.string, "teamName" to "%teamName"))
+            // to then replace the placeholder with colored text
             sendChatMessage(getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapOf("%teamName" to team)))
         }
     }
