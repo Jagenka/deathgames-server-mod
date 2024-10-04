@@ -57,7 +57,7 @@ object TrapsAreNotGay
     and disappears.
      */
 
-    private val notGayness = mutableSetOf<NotGay>()
+    private val allTraps = mutableSetOf<NotGay>()
 
     private fun placeTrap(
         x: Int, y: Int, z: Int,
@@ -82,52 +82,56 @@ object TrapsAreNotGay
             snares = snares,
             effects = effects
         )
-        return if (!notGayness.contains(notGay))
+        return if (!allTraps.contains(notGay))
         {
-            notGayness.add(notGay)
+            allTraps.add(notGay)
             true
         } else false
     }
 
-    private fun handleNotGay(it: NotGay)
+    /**
+     * @param it is one trap - thanks @Runebreaker for this perfect class name
+     */
+    private fun handleEffects(it: NotGay)
     {
-        val gayTriggerSpectator = getOnlinePlayersAround(it.pos, it.triggerVisibilityRange)//it.pos.getOnlinePlayersInRange(it.gaynessTriggerVisibleRange)
-        val gayPrepareSpectator = getOnlinePlayersAround(it.pos, it.visibilityRange)//it.pos.getOnlinePlayersInRange(it.gaynessVisibilityRange)
-        val affectedPlayers = getOnlineParticipatingPlayersAround(it.pos, it.affectedRange)//it.pos.getInGamePlayersInRange(it.affectedGayRange)
-        val triggered = getOnlineParticipatingPlayersAround(it.pos, it.triggerRange).isNotEmpty()//it.pos.getInGamePlayersInRange(it.gaynessRange).isNotEmpty()
+        val playersInTriggerVisibilityRange = getOnlinePlayersAround(it.pos, it.triggerVisibilityRange)
+        val playersInGeneralVisibilityRange = getOnlinePlayersAround(it.pos, it.visibilityRange)
+        val playersHitByTrapEffects = getOnlineParticipatingPlayersAround(it.pos, it.affectedRange)
+        val trapTriggered = getOnlineParticipatingPlayersAround(it.pos, it.triggerRange).isNotEmpty()
         ifServerLoaded { server ->
             if (it.getAge() < it.setupTime)
             {
-                gayPrepareSpectator.forEach { currentPlayer ->
+                playersInGeneralVisibilityRange.forEach { currentPlayer ->
                     server.overworld.spawnParticles(currentPlayer, ParticleTypes.CRIT, true, it.pos.x.toCenter(), it.pos.y + 0.2, it.pos.z.toCenter(), 1, 0.05, 0.1, 0.05, 0.1)
                 }
             } else
             {
                 server.overworld.spawnParticles(ParticleTypes.NAUTILUS, it.pos.x.toCenter(), it.pos.y - 0.015, it.pos.z.toCenter(), 0, 0.0, 0.0, 0.0, 0.0)
                 // Manage ethan
-                if (triggered && !it.isTriggered())
+                if (trapTriggered && !it.isTriggered())
                 {
                     it.trigger()
-                    gayTriggerSpectator.forEach { player ->
+                    playersInTriggerVisibilityRange.forEach { player ->
                         server.overworld.spawnParticles(
-                            player,
-                            ParticleTypes.LARGE_SMOKE,
-                            true,
-                            it.pos.x.toCenter(),
-                            it.pos.y.toDouble(),
-                            it.pos.z.toCenter(),
-                            500,
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.5
+                            /* viewer = */ player,
+                            /* particle = */ ParticleTypes.LARGE_SMOKE,
+                            /* force = */ true,
+                            /* x = */ it.pos.x.toCenter(),
+                            /* y = */ it.pos.y.toDouble(),
+                            /* z = */ it.pos.z.toCenter(),
+                            /* count = */ 500,
+                            /* deltaX = */ 0.0,
+                            /* deltaY = */ 0.0,
+                            /* deltaZ = */ 0.0,
+                            /* speed = */ 0.5
                         )
                     }
-                    affectedPlayers.forEach { player ->
+                    playersHitByTrapEffects.forEach { player ->
                         player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, 1f, 1f)
-                        it.addDisabledPlayer(player.name.string)
-
+                        it.addTrappedPlayer(player.name.string)
                         StatManager.personalStats.gib(player.name.string).timesCaughtInTrap++
+
+                        println("trigger")
                     }
                 }
             }
@@ -136,53 +140,56 @@ object TrapsAreNotGay
 
     fun onPlayerDeath(playerName: String)
     {
-        notGayness.forEach { it.disabledJumpPlayers.remove(playerName) }
+        allTraps.forEach { it.trappedPlayers.remove(playerName) }
     }
 
     fun becomeGay()
     {
-        notGayness.clear()
+        allTraps.clear()
     }
 
     @JvmStatic
     fun tick()
     {
-        notGayness.forEach { notGay ->
+        allTraps.forEach { notGay ->
             notGay.tick()
-            handleNotGay(notGay)
+            handleEffects(notGay)
         }
-        notGayness.toList().forEach { notGay ->
-            // Handles snaring player
-            if (notGay.isTriggered() && notGay.getRemainingDuration() > 0)
+        allTraps.toList().forEach { trap ->
+            // handles snaring player
+            if (trap.isTriggered() && trap.getRemainingDuration() > 0)
             {
-                notGay.disabledJumpPlayers.forEach inner@{ (playerName, coordinatesMaybe) ->
+                trap.trappedPlayers.forEach inner@{ (playerName, coordinatesMaybe) ->
                     val player = PlayerManager.getOnlinePlayer(playerName) ?: return@inner
-                    if (notGay.snares)
+                    if (trap.snares)
                     {
-                        if (coordinatesMaybe.flag && player.isOnGround)
+                        if (coordinatesMaybe.snared && player.isOnGround)
                         {
                             coordinatesMaybe.coordinates = Coordinates(player.pos.x, player.pos.y, player.pos.z, player.yaw, player.pitch)
-                            coordinatesMaybe.flag = false
+                            coordinatesMaybe.snared = false
                         }
                         coordinatesMaybe.coordinates?.let { coordinates ->
                             player.teleport(coordinates)
                         }
                     }
-                    val newCustomTimer = Timer.newCustomTimer("effect_apply_${notGay.pos}")
+                    // only one trap per position -> pos can be identifier
+                    val newCustomTimer = Timer.newCustomTimer("effect_apply_${trap.pos}")
+
+                    // handles potions effects
                     if (newCustomTimer.time % 20.ticks() == 0)
                     {
-                        notGay.effects.forEach {
-                            //println("Adding effect ${it.effectType.name.string} to ${player.name.asString()}.")
+                        trap.effects.forEach {
                             player.addStatusEffect(StatusEffectInstance(it))
                         }
                     }
                 }
-                notGay.decrementDuration()
+                trap.decrementDuration()
             }
-            if (notGay.getRemainingDuration() <= 0)
+            // handles removing potions effects
+            if (trap.getRemainingDuration() <= 0)
             {
-                Timer.removeCustomTimer(CustomTimer("effect_apply_${notGay.pos}"))
-                notGayness.remove(notGay)
+                Timer.removeCustomTimer(CustomTimer("effect_apply_${trap.pos}"))
+                allTraps.remove(trap)
             }
         }
     }
@@ -237,9 +244,9 @@ object TrapsAreNotGay
     }
 }
 
-data class DisabledPlayerCoordinateFetch(var flag: Boolean, var coordinates: Coordinates? = null)
+data class TrappedPlayerCoordinateFetch(var snared: Boolean, var coordinates: Coordinates? = null)
 
-data class NotGay(
+class NotGay(
     val pos: BlockPos, private var age: Int = 0.ticks(),
     val triggerRange: Double,
     val setupTime: Int,
@@ -251,7 +258,10 @@ data class NotGay(
     val effects: List<StatusEffectInstance>
 )
 {
-    val disabledJumpPlayers = mutableMapOf<String, DisabledPlayerCoordinateFetch>()
+    /**
+     * keys are playerNames
+     */
+    val trappedPlayers = mutableMapOf<String, TrappedPlayerCoordinateFetch>()
     private var triggered = false
 
     override fun equals(other: Any?): Boolean
@@ -261,14 +271,12 @@ data class NotGay(
 
         other as NotGay
 
-        if (pos != other.pos) return false
-
-        return true
+        return pos == other.pos
     }
 
-    fun addDisabledPlayer(playerName: String)
+    fun addTrappedPlayer(playerName: String)
     {
-        disabledJumpPlayers[playerName] = DisabledPlayerCoordinateFetch(true)
+        trappedPlayers[playerName] = TrappedPlayerCoordinateFetch(true)
     }
 
     fun trigger()
