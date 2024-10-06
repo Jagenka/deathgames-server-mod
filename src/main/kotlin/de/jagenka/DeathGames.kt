@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
+import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.LivingEntity
@@ -42,6 +43,7 @@ import org.slf4j.LoggerFactory
 object DeathGames : DedicatedServerModInitializer
 {
     val logger: Logger = LoggerFactory.getLogger("deathgames-server-mod")
+    lateinit var commandRegistryAccess: CommandRegistryAccess
 
     var running = false
 
@@ -76,7 +78,8 @@ object DeathGames : DedicatedServerModInitializer
 
     private fun registerCommands()
     {
-        CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
+        CommandRegistrationCallback.EVENT.register { dispatcher, commandRegistryAccess, _ ->
+            DeathGames.commandRegistryAccess = commandRegistryAccess
             DeathGamesCommand.register(dispatcher)
         }
     }

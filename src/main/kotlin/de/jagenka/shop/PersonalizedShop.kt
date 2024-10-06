@@ -1,12 +1,11 @@
 package de.jagenka.shop;
 
 import com.mojang.brigadier.StringReader
+import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import net.minecraft.command.argument.ItemStringReader
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.StringNbtReader
-import net.minecraft.registry.BuiltinRegistries
-import net.minecraft.server.command.CommandManager
 import net.minecraft.server.network.ServerPlayerEntity
 
 class PersonalizedShop(private val player: ServerPlayerEntity)
@@ -16,8 +15,7 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
     var entries: Map<Int, ShopEntry> = emptyMap()
         private set
 
-    private val commandRegistryAccess = CommandManager.createRegistryAccess(BuiltinRegistries.createWrapperLookup())
-    private val itemStringReader = ItemStringReader(commandRegistryAccess)
+    private val itemStringReader = ItemStringReader(DeathGames.commandRegistryAccess)
 
     init
     {

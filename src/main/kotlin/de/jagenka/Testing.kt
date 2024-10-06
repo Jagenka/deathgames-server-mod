@@ -10,7 +10,6 @@ object Testing
 }
 
 /*
-    TODO: sound when popping trap
-    TODO: potions and tipped arrows
-    TODO: unbreakable weapons and armor -> error in config file?
+    TODO: sound when popping trap -- should work?? investigate alternative method call
+    TODO: rename nbt to components in config
  */
