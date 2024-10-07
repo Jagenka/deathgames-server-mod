@@ -20,7 +20,10 @@ import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
+import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket
 import net.minecraft.particle.ParticleTypes
+import net.minecraft.registry.Registries
+import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.util.math.Direction
 
@@ -127,11 +130,21 @@ object TrapsAreNotGay
                         )
                     }
                     playersHitByTrapEffects.forEach { player ->
-                        player.playSound(SoundEvents.ENTITY_IRON_GOLEM_HURT, 1f, 1f)
+                        // idk why player.playSound did not work, as it almost does the same...
+                        player.networkHandler.sendPacket(
+                            PlaySoundS2CPacket(
+                                Registries.SOUND_EVENT.getEntry(SoundEvents.ENTITY_IRON_GOLEM_HURT),
+                                SoundCategory.PLAYERS,
+                                player.x,
+                                player.y,
+                                player.z,
+                                1f,
+                                1f,
+                                player.world.random.nextLong()
+                            )
+                        )
                         it.addTrappedPlayer(player.name.string)
                         StatManager.personalStats.gib(player.name.string).timesCaughtInTrap++
-
-                        println("trigger")
                     }
                 }
             }
