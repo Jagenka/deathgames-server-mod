@@ -246,7 +246,7 @@
                 "name": "Melon",
                 "id": "minecraft:melon_slice",
                 "amount": 8,
-                "nbt": "",
+                "components": "",
                 "price": 5
             },
             {
@@ -255,7 +255,7 @@
                 "name": "Arrows",
                 "id": "minecraft:arrow",
                 "amount": 4,
-                "nbt": "",
+                "components": "",
                 "price": 5
             },
             {
@@ -264,7 +264,7 @@
                 "name": "Ender Pearl",
                 "id": "minecraft:ender_pearl",
                 "amount": 2,
-                "nbt": "",
+                "components": "",
                 "price": 10
             },
             {
@@ -273,7 +273,7 @@
                 "name": "Beef",
                 "id": "minecraft:cooked_beef",
                 "amount": 1,
-                "nbt": "",
+                "components": "",
                 "price": 10
             },
             {
@@ -282,7 +282,7 @@
                 "name": "Le Fishe",
                 "id": "minecraft:fishing_rod",
                 "amount": 1,
-                "nbt": "",
+                "components": "",
                 "price": 30
             },
             {
@@ -291,7 +291,7 @@
                 "name": "420",
                 "id": "minecraft:blaze_rod",
                 "amount": 1,
-                "nbt": "[enchantments={levels:{fire_aspect:2}}]",
+                "components": "[enchantments={levels:{fire_aspect:2}}]",
                 "price": 40
             },
             {
@@ -300,7 +300,7 @@
                 "name": "Invis",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "[potion_contents={custom_effects:[{id:invisibility,amplifier:0,duration:1200}]}]",
+                "components": "[potion_contents={custom_effects:[{id:invisibility,amplifier:0,duration:1200}]}]",
                 "price": 35
             },
             {
@@ -309,7 +309,7 @@
                 "name": "Speed",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "[potion_contents={custom_effects:[{id:speed,amplifier:0,duration:3600}]}]",
+                "components": "[potion_contents={custom_effects:[{id:speed,amplifier:0,duration:3600}]}]",
                 "price": 30
             },
             {
@@ -318,7 +318,7 @@
                 "name": "Fire Resi",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "[potion_contents={custom_effects:[{id:fire_resistance,amplifier:0,duration:3600}]}]",
+                "components": "[potion_contents={custom_effects:[{id:fire_resistance,amplifier:0,duration:3600}]}]",
                 "price": 20
             },
             {
@@ -327,7 +327,7 @@
                 "name": "Strength",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "[potion_contents={custom_effects:[{id:strength,amplifier:0,duration:3600}]}]",
+                "components": "[potion_contents={custom_effects:[{id:strength,amplifier:0,duration:3600}]}]",
                 "price": 45
             },
             {
@@ -336,7 +336,7 @@
                 "name": "Regen",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "[potion_contents={custom_effects:[{id:regeneration,amplifier:0,duration:3600}]}]",
+                "components": "[potion_contents={custom_effects:[{id:regeneration,amplifier:0,duration:3600}]}]",
                 "price": 25
             },
             {
@@ -345,7 +345,7 @@
                 "name": "Aquadynamis",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "nbt": "[potion_contents={custom_effects:[{id:dolphins_grace,amplifier:0,duration:3600}]}]",
+                "components": "[potion_contents={custom_effects:[{id:dolphins_grace,amplifier:0,duration:3600}]}]",
                 "price": 20
             },
             {
@@ -354,7 +354,7 @@
                 "name": "Harming",
                 "id": "minecraft:lingering_potion",
                 "amount": 1,
-                "nbt": "[potion_contents={custom_effects:[{id:instant_damage,amplifier:0,duration:0}]}]",
+                "components": "[potion_contents={custom_effects:[{id:instant_damage,amplifier:0,duration:0}]}]",
                 "price": 20
             },
             {
@@ -363,7 +363,7 @@
                 "name": "Slowness",
                 "id": "minecraft:splash_potion",
                 "amount": 1,
-                "nbt": "[potion_contents={custom_effects:[{id:slowness,amplifier:0,duration:1800}]}]",
+                "components": "[potion_contents={custom_effects:[{id:slowness,amplifier:0,duration:1800}]}]",
                 "price": 40
             },
             {
@@ -372,7 +372,7 @@
                 "name": "Gold Apple",
                 "id": "minecraft:enchanted_golden_apple",
                 "amount": 1,
-                "nbt": "",
+                "components": "",
                 "price": 150
             },
             {
@@ -381,7 +381,7 @@
                 "name": "Totem",
                 "id": "minecraft:totem_of_undying",
                 "amount": 1,
-                "nbt": "",
+                "components": "",
                 "price": 150
             },
             {
@@ -390,7 +390,7 @@
                 "name": "Poison Arrow",
                 "id": "minecraft:tipped_arrow",
                 "amount": 4,
-                "nbt": "[potion_contents={potion:poison}]",
+                "components": "[potion_contents={potion:poison}]",
                 "price": 25
             },
             {
@@ -399,7 +399,7 @@
                 "name": "Pls fix me.",
                 "id": "minecraft:trident",
                 "amount": 1,
-                "nbt": "",
+                "components": "",
                 "price": 69420
             },
             {
@@ -408,7 +408,7 @@
                 "name": "An Lüter Mülsch",
                 "id": "minecraft:milk_bucket",
                 "amount": 1,
-                "nbt": "",
+                "components": "",
                 "price": 5
             }
         ],
@@ -425,7 +425,7 @@
             "name": "Extra Life",
             "id": "minecraft:turtle_egg",
             "amount": 1,
-            "nbt": "",
+            "components": "",
             "price": 100
         },
         "leaveShop": {
@@ -444,22 +444,22 @@
                             {
                                 "id": "minecraft:leather_helmet",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             },
                             {
                                 "id": "minecraft:leather_chestplate",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             },
                             {
                                 "id": "minecraft:leather_leggings",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             },
                             {
                                 "id": "minecraft:leather_boots",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 40
@@ -469,12 +469,12 @@
                             {
                                 "id": "minecraft:iron_helmet",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             },
                             {
                                 "id": "minecraft:iron_leggings",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 60
@@ -484,12 +484,12 @@
                             {
                                 "id": "minecraft:iron_chestplate",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             },
                             {
                                 "id": "minecraft:iron_boots",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 80
@@ -499,12 +499,12 @@
                             {
                                 "id": "minecraft:diamond_helmet",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             },
                             {
                                 "id": "minecraft:diamond_leggings",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 100
@@ -514,12 +514,12 @@
                             {
                                 "id": "minecraft:diamond_chestplate",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             },
                             {
                                 "id": "minecraft:diamond_boots",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 120
@@ -537,7 +537,7 @@
                             {
                                 "id": "minecraft:wooden_sword",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 50
@@ -547,7 +547,7 @@
                             {
                                 "id": "minecraft:stone_sword",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 50
@@ -557,7 +557,7 @@
                             {
                                 "id": "minecraft:iron_sword",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 50
@@ -567,7 +567,7 @@
                             {
                                 "id": "minecraft:diamond_sword",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 50
@@ -577,7 +577,7 @@
                             {
                                 "id": "minecraft:netherite_sword",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 50
@@ -595,7 +595,7 @@
                             {
                                 "id": "minecraft:wooden_axe",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 120
@@ -605,7 +605,7 @@
                             {
                                 "id": "minecraft:stone_axe",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 40
@@ -615,7 +615,7 @@
                             {
                                 "id": "minecraft:iron_axe",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 40
@@ -625,7 +625,7 @@
                             {
                                 "id": "minecraft:diamond_axe",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 40
@@ -635,7 +635,7 @@
                             {
                                 "id": "minecraft:netherite_axe",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 40
@@ -653,7 +653,7 @@
                             {
                                 "id": "minecraft:bow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 75
@@ -663,7 +663,7 @@
                             {
                                 "id": "minecraft:bow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={power:1}]"
+                                "components": "[unbreakable={},enchantments={power:1}]"
                             }
                         ],
                         "price": 100
@@ -673,7 +673,7 @@
                             {
                                 "id": "minecraft:bow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={power:2}]"
+                                "components": "[unbreakable={},enchantments={power:2}]"
                             }
                         ],
                         "price": 100
@@ -683,7 +683,7 @@
                             {
                                 "id": "minecraft:bow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={power:3}]"
+                                "components": "[unbreakable={},enchantments={power:3}]"
                             }
                         ],
                         "price": 100
@@ -693,7 +693,7 @@
                             {
                                 "id": "minecraft:bow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={power:4}]"
+                                "components": "[unbreakable={},enchantments={power:4}]"
                             }
                         ],
                         "price": 100
@@ -703,7 +703,7 @@
                             {
                                 "id": "minecraft:bow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={power:5}]"
+                                "components": "[unbreakable={},enchantments={power:5}]"
                             }
                         ],
                         "price": 100
@@ -721,7 +721,7 @@
                             {
                                 "id": "minecraft:crossbow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={}]"
+                                "components": "[unbreakable={}]"
                             }
                         ],
                         "price": 75
@@ -731,7 +731,7 @@
                             {
                                 "id": "minecraft:crossbow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={quick_charge:1}]"
+                                "components": "[unbreakable={},enchantments={quick_charge:1}]"
                             }
                         ],
                         "price": 25
@@ -741,7 +741,7 @@
                             {
                                 "id": "minecraft:crossbow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={quick_charge:2}]"
+                                "components": "[unbreakable={},enchantments={quick_charge:2}]"
                             }
                         ],
                         "price": 50
@@ -751,7 +751,7 @@
                             {
                                 "id": "minecraft:crossbow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={quick_charge:3}]"
+                                "components": "[unbreakable={},enchantments={quick_charge:3}]"
                             }
                         ],
                         "price": 100
@@ -761,7 +761,7 @@
                             {
                                 "id": "minecraft:crossbow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={quick_charge:4}]"
+                                "components": "[unbreakable={},enchantments={quick_charge:4}]"
                             }
                         ],
                         "price": 150
@@ -771,7 +771,7 @@
                             {
                                 "id": "minecraft:crossbow",
                                 "amount": 1,
-                                "nbt": "[unbreakable={},enchantments={quick_charge:5}]"
+                                "components": "[unbreakable={},enchantments={quick_charge:5}]"
                             }
                         ],
                         "price": 150

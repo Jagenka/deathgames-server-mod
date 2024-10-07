@@ -23,7 +23,7 @@ data class Item(
     var name: String = "NONAME",
     var id: String = "minecraft:fishing_rod",
     var amount: Int = 1,
-    var nbt: String = "",
+    var components: String = "",
     var price: Int = 69,
 )
 
@@ -55,7 +55,7 @@ data class UpgradeLvl(
 data class UpgradeItem(
     var id: String = "minecraft:bow",
     var amount: Int = 1,
-    var nbt: String = "",
+    var components: String = "",
 )
 
 @Serializable
@@ -73,7 +73,7 @@ data class ExtraLife(
     var name: String = "NONAME",
     var id: String = "minecraft:turtle_egg",
     var amount: Int = 1,
-    var nbt: String = "",
+    var components: String = "",
     var price: Int = 69,
 )
 
