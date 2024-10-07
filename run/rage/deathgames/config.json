@@ -167,7 +167,7 @@
                 "name": "Fishing Rod",
                 "id": "minecraft:fishing_rod",
                 "amount": 1,
-                "nbt": "{Unbreakable:1}",
+                "components": "[unbreakable={}]",
                 "price": 0
             },
             {
@@ -176,7 +176,7 @@
                 "name": "Totem",
                 "id": "minecraft:totem_of_undying",
                 "amount": 1,
-                "nbt": "",
+                "components": "",
                 "price": 5
             }
         ],
@@ -198,7 +198,7 @@
                             {
                                 "id": "minecraft:netherite_sword",
                                 "amount": 1,
-                                "nbt": "{Unbreakable:1,Enchantments:[{id:\"minecraft:sharpness\",lvl:255}]}"
+                                "components": "[unbreakable={},enchantments={sharpness:255}]"
                             }
                         ],
                         "price": 10
@@ -216,12 +216,12 @@
                             {
                                 "id": "minecraft:bow",
                                 "amount": 1,
-                                "nbt": "{Unbreakable:1,Enchantments:[{id:\"minecraft:power\",lvl:255},{id:\"minecraft:infinity\",lvl:1}]}"
+                                "components": "[unbreakable={},enchantments={power:255,infinity:1}]"
                             },
                             {
                                 "id": "minecraft:arrow",
                                 "amount": 1,
-                                "nbt": ""
+                                "components": ""
                             }
                         ],
                         "price": 10
@@ -251,7 +251,7 @@
                 "price": 1,
                 "snare": true,
                 "effectNBTs": [
-                    "{ambient:0,amplifier:100,duration:60,id:blindness,show_icon:0,show_particles:0}"
+                    "{ambient:0b,amplifier:100b,duration:60,id:blindness,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 0.5,
                 "setupTime": 200,
@@ -267,9 +267,9 @@
                 "price": 1,
                 "snare": false,
                 "effectNBTs": [
-                    "{ambient:0,amplifier:100,duration:60,id:blindness,show_icon:0,show_particles:0}",
-                    "{ambient:0,amplifier:0,duration:40,id:slowness,show_icon:0,show_particles:0}",
-                    "{ambient:0,amplifier:0,duration:40,id:levitation,show_icon:0,show_particles:0}"
+                    "{ambient:0b,amplifier:100b,duration:60,id:blindness,show_icon:0b,show_particles:0b}",
+                    "{ambient:0b,amplifier:0b,duration:40,id:slowness,show_icon:0b,show_particles:0b}",
+                    "{ambient:0b,amplifier:0b,duration:40,id:levitation,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 0.5,
                 "setupTime": 200,
@@ -285,7 +285,7 @@
                 "price": 1,
                 "snare": false,
                 "effectNBTs": [
-                    "{ambient:0,amplifier:100,duration:60,id:speed,show_icon:0,show_particles:0}"
+                    "{ambient:0b,amplifier:100b,duration:60,id:speed,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 1.0,
                 "setupTime": 40,

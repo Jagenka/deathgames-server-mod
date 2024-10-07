@@ -10,6 +10,5 @@ object Testing
 }
 
 /*
-    TODO: edit config for rage map
     TODO: rewrite Trap code smh
  */
