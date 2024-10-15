@@ -97,7 +97,7 @@ object DeathGamesConfigCommand {
             val playerEntity = it.source.entity as? ServerPlayerEntity
 
             if (playerEntity != null) {
-                val coord = playerEntity.toDGCoordinates()
+                val coord = playerEntity.getDGCoordinates()
                 pickedCoordinates.add(coord)
                 val coordListString = "Args: [" + pickedCoordinates.joinToString(", ") { it.toString() } + "]"
                 it.source.sendFeedback({ Text.of(coordListString) }, false)
@@ -165,7 +165,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
             } else if(str == "last") {
                 return DeathGamesConfigCommand.pickedCoordinates.lastOrNull()
             } else if(str == "pick") {
-                return (source.entity as? ServerPlayerEntity)?.toDGCoordinates()
+                return (source.entity as? ServerPlayerEntity)?.getDGCoordinates()
             } else {
                 // This is terribly engineered, but better to have some feedback than none
                 source.sendFeedback(
