@@ -8,12 +8,11 @@ import de.jagenka.setCustomName
 import de.jagenka.withDamage
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items.SHIELD
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class ShieldShopEntry(player: ServerPlayerEntity, private val name: String = "Shield", private val targetDurability: Int = 120, private val price: Int = 50) :
-    ShopEntry(player = player, nameForStat = name)
+class ShieldShopEntry(playerName: String, private val name: String = "Shield", private val targetDurability: Int = 120, private val price: Int = 50) :
+    ShopEntry(playerName, nameForStat = name)
 {
     override fun getPrice(): Int = price
 
@@ -21,7 +20,7 @@ class ShieldShopEntry(player: ServerPlayerEntity, private val name: String = "Sh
         SHIELD.defaultStack.copy().setCustomName(
             Text.of("${MoneyManager.getCurrencyString(getPrice())}: $name x1").getWithStyle(
                 Style.EMPTY.withColor(
-                    if (player.getDGMoney() < getPrice()) Util.getTextColor(123, 0, 0)
+                    if (getDGMoney(playerName) < getPrice()) Util.getTextColor(123, 0, 0)
                     else Util.getTextColor(255, 255, 255)
                 )
             )[0]
@@ -30,10 +29,10 @@ class ShieldShopEntry(player: ServerPlayerEntity, private val name: String = "Sh
     override fun onClick(): Boolean
     {
         return attemptSale(player, price) {
-            val upgradableShield = player.inventory.main.find { itemStackInInv ->
+            val upgradableShield = player?.inventory?.main?.find { itemStackInInv ->
                 itemStackInInv.item == SHIELD && itemStackInInv.damage >= targetDurability
             }
-                ?: player.inventory.offHand.find { itemStackInInv ->
+                ?: player?.inventory?.offHand?.find { itemStackInInv ->
                     itemStackInInv.item == SHIELD && itemStackInInv.damage >= targetDurability
                 } // if item is in offhand
             if (upgradableShield != null)
@@ -41,7 +40,7 @@ class ShieldShopEntry(player: ServerPlayerEntity, private val name: String = "Sh
                 upgradableShield.damage -= targetDurability
             } else
             {
-                player.giveItemStack(ItemStack(SHIELD).withDamage(SHIELD.maxDamage - targetDurability).copy())
+                player?.giveItemStack(ItemStack(SHIELD).withDamage(SHIELD.maxDamage - targetDurability).copy())
             }
         }
     }
@@ -57,16 +56,16 @@ class ShieldShopEntry(player: ServerPlayerEntity, private val name: String = "Sh
         shield.damage += targetDurability
         if (shield.damage == shield.maxDamage)
         {
-            player.inventory.remove({ it == shield }, 1, player.inventory)
+            player?.inventory?.remove({ it == shield }, 1, player!!.inventory) // should be null-safe, because remove will not be called, if player is null
         }
     }
 
     private fun getShieldForRefund(): ItemStack?
     {
-        return player.inventory.main.find { itemStackInInv ->
+        return player?.inventory?.main?.find { itemStackInInv ->
             itemStackInInv.item == SHIELD && itemStackInInv.damage <= SHIELD.maxDamage - targetDurability
         }
-            ?: player.inventory.offHand.find { itemStackInInv ->
+            ?: player?.inventory?.offHand?.find { itemStackInInv ->
                 itemStackInInv.item == SHIELD && itemStackInInv.damage <= SHIELD.maxDamage - targetDurability
             } // if item is in offhand
     }

@@ -81,7 +81,7 @@ object Config
     fun load()
     {
         loadJSON(pathToConfFile.toFile())
-        ShopEntries.loadShop()
+        ShopEntries.reloadShop()
     }
 
     fun loadJSON(jsonConfFile: File)

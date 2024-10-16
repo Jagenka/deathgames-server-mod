@@ -147,15 +147,17 @@ object PlayerManager
     fun ServerPlayerEntity.isParticipating() = getParticipatingPlayers().contains(this.name.string)
 
 
-    fun ServerPlayerEntity.makeParticipating()
+    fun addParticipant(playerName: String)
     {
-        participatingMap[this.name.string] = true
+        participatingMap[playerName] = true
     }
 
-    fun ServerPlayerEntity.eliminate()
+    fun removeParticipant(playerName: String) = eliminate(playerName)
+
+    fun eliminate(playerName: String)
     {
-        participatingMap[this.name.string] = false
-        this.changeGameMode(GameMode.SPECTATOR)
+        participatingMap[playerName] = false
+        getOnlinePlayer(playerName)?.changeGameMode(GameMode.SPECTATOR)
     }
 
     fun getParticipatingTeams() = DGTeam.entries.filter { getParticipatingPlayersInTeam(it).isNotEmpty() }

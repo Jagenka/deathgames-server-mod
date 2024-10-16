@@ -1,12 +1,11 @@
 package de.jagenka.shop
 
 import net.minecraft.item.ItemStack
-import net.minecraft.server.network.ServerPlayerEntity
 
 /**
  * placeholder ShopEntry in case something goes wrong
  */
-class EmptyShopEntry(player: ServerPlayerEntity) : ShopEntry(player = player, nameForStat = "EMPTY")
+class EmptyShopEntry(playerName: String) : ShopEntry(playerName, nameForStat = "EMPTY")
 {
     override fun getPrice(): Int
     {

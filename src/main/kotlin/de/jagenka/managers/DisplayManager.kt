@@ -161,7 +161,7 @@ object DisplayManager
     {
         PlayerManager.getOnlinePlayers().forEach { player ->
             player.setExperiencePoints(0)
-            player.setExperienceLevel(player.getDGMoney())
+            player.setExperienceLevel(getDGMoney(player.name.string))
         }
     }
 

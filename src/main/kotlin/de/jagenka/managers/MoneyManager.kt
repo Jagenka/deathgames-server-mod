@@ -128,12 +128,12 @@ object MoneyManager
     fun getCurrencyString(amount: Int) = Config.displayedText.currency.replace("%amount", amount.toString())
 }
 
-fun ServerPlayerEntity.getDGMoney(): Int
+fun getDGMoney(playerName: String): Int
 {
     return when (moneyMode)
     {
-        Mode.PLAYER -> getMoney(this)
-        Mode.TEAM -> this.getDGTeam()?.let { getMoney(it) } ?: 0
+        Mode.PLAYER -> getMoney(playerName)
+        Mode.TEAM -> PlayerManager.getTeam(playerName)?.let { getMoney(it) } ?: 0
     }
 }
 
@@ -143,20 +143,20 @@ fun Int.scaledForRefund(): Int = this * (Config.shopSettings.refundPercent.toDou
  * this is used when refunding, refund percentage is applied here
  * @param amount sign is ignored, absolute ís used
  */
-fun ServerPlayerEntity.refundMoney(amount: Int)
+fun refundMoney(playerName: String, amount: Int)
 {
-    this.deductDGMoney(-abs(amount).scaledForRefund())
+    deductDGMoney(playerName, -abs(amount).scaledForRefund())
 }
 
 /**
  * @param amount how much will be deducted. If negative, this will add money
  */
-fun ServerPlayerEntity.deductDGMoney(amount: Int)
+fun deductDGMoney(playerName: String, amount: Int)
 {
-    StatManager.personalStats.gib(this.name.string).moneySpent += amount
+    StatManager.personalStats.gib(playerName).moneySpent += amount
     when (moneyMode)
     {
-        Mode.PLAYER -> refundMoney(this.name.string, -amount)
-        Mode.TEAM -> refundMoney(this.getDGTeam(), -amount)
+        Mode.PLAYER -> refundMoney(playerName, -amount)
+        Mode.TEAM -> refundMoney(PlayerManager.getTeam(playerName), -amount)
     }
 }

@@ -1,7 +1,6 @@
 package de.jagenka.shop
 
 import de.jagenka.managers.PlayerManager
-import net.minecraft.server.network.ServerPlayerEntity
 
 object ShopEntries
 {
@@ -10,15 +9,15 @@ object ShopEntries
      */
     private val shops = mutableMapOf<String, PersonalizedShop>()
 
-    fun getShopFor(player: ServerPlayerEntity): PersonalizedShop
+    fun getShopFor(playerName: String): PersonalizedShop
     {
-        return shops.getOrPut(player.name.string) { PersonalizedShop(player) }
+        return shops.getOrPut(playerName) { PersonalizedShop(playerName) }
     }
 
     fun loadShop()
     {
         PlayerManager.getOnlinePlayers().forEach {
-            shops.putIfAbsent(it.name.string, PersonalizedShop(it))
+            shops.putIfAbsent(it.name.string, PersonalizedShop(it.name.string))
         }
     }
 

@@ -42,7 +42,7 @@ object Shop
         {
             override fun createMenu(syncId: Int, inv: PlayerInventory?, player: PlayerEntity?): ScreenHandler
             {
-                val shopInventory = ShopInventory(serverPlayerEntity)
+                val shopInventory = ShopInventory(serverPlayerEntity.name.string)
                 val screenHandler =
                     object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, inv, shopInventory, 6)
                     {

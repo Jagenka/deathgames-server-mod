@@ -4,9 +4,8 @@ import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.gameplay.traps.TrapsAreNotGay
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
-import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.managers.PlayerManager.makeParticipating
+import de.jagenka.managers.PlayerManager.getTeam
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
@@ -48,7 +47,7 @@ object KillManager
 
         if (!DeathGames.running) return
 
-        removeOneRespawn(deceased)
+        removeOneRespawn(deceased.name.string)
 
         val killStreak = getKillStreak(playerName)
         if (killStreak >= 3)
@@ -121,22 +120,22 @@ object KillManager
         DisplayManager.updateKillStreakDisplay()
     }
 
-    fun removeOneRespawn(deceased: ServerPlayerEntity)
+    fun removeOneRespawn(playerName: String)
     {
         when (livesMode)
         {
             Mode.PLAYER ->
             {
-                val respawnsAmount = playerRespawns.getValue(deceased.name.string)
-                if (respawnsAmount > 0) playerRespawns[deceased.name.string] = respawnsAmount - 1
-                if (respawnsAmount <= 0) deceased.eliminate()
+                val respawnsAmount = playerRespawns.getValue(playerName)
+                if (respawnsAmount > 0) playerRespawns[playerName] = respawnsAmount - 1
+                if (respawnsAmount <= 0) PlayerManager.eliminate(playerName)
             }
 
             Mode.TEAM ->
             {
-                val respawnsAmount = teamRespawns.getValue(deceased.getDGTeam())
-                if (respawnsAmount > 0) teamRespawns[deceased.getDGTeam()] = respawnsAmount - 1
-                if (respawnsAmount <= 0) deceased.eliminate()
+                val respawnsAmount = teamRespawns.getValue(getTeam(playerName))
+                if (respawnsAmount > 0) teamRespawns[getTeam(playerName)] = respawnsAmount - 1
+                if (respawnsAmount <= 0) PlayerManager.eliminate(playerName)
             }
         }
 
@@ -184,10 +183,10 @@ object KillManager
         getRespawns(team)?.let { if (it < 1) return } ?: return
 
         team.getOnlinePlayers().filter { !PlayerManager.isParticipating(it.name.string) }.randomOrNull()?.let { player ->
-            player.makeParticipating()
+            PlayerManager.addParticipant(player.name.string)
             player.changeGameMode(GameMode.ADVENTURE)
             SpawnManager.teleportPlayerToSpawn(player)
-            removeOneRespawn(player)
+            removeOneRespawn(player.name.string)
         }
     }
 
