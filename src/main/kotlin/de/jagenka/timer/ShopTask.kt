@@ -90,7 +90,7 @@ object ShopTask : TimerTask
 
                     if (ticksToTpOut < 0)
                     {
-                        exitShop(serverPlayerEntity)
+                        exitShop(playerName)
                     }
                 }
             } else currentlyInShop.remove(playerName)
@@ -120,9 +120,9 @@ object ShopTask : TimerTask
         player.inventory.remove({ itemStack -> itemStack.item in illegalItems }, -1, player.playerScreenHandler.craftingInput)
     }
 
-    fun exitShop(player: ServerPlayerEntity)
+    fun exitShop(playerName: String)
     {
-        val playerName = player.name.string
+        val player = PlayerManager.getOnlinePlayer(playerName) ?: return
         SpawnManager.teleportPlayerToSpawn(player)
         player.extinguish()
         timeInShop[playerName] = 0

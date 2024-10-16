@@ -5,15 +5,14 @@ import de.jagenka.stats.StatManager
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
-import net.minecraft.server.network.ServerPlayerEntity
 
-class ShopInventory(private val player: ServerPlayerEntity) : Inventory
+class ShopInventory(private val playerName: String) : Inventory
 {
-    private val items = mutableMapOf<Int, ShopEntry>().withDefault { ShopEntries.getShopFor(player).EMPTY }
+    private val items = mutableMapOf<Int, ShopEntry>().withDefault { ShopEntries.getShopFor(playerName).EMPTY }
 
     init
     {
-        items.putAll(ShopEntries.getShopFor(player).entries)
+        items.putAll(ShopEntries.getShopFor(playerName).entries)
     }
 
     override fun clear()
@@ -65,8 +64,8 @@ class ShopInventory(private val player: ServerPlayerEntity) : Inventory
 
             if (shopEntry.onClick())
             {
-                Shop.registerRecentlyBought(player.name.string, shopEntry)
-                StatManager.addBoughtItem(player.name.string, shopEntry, moneySpent)
+                Shop.registerRecentlyBought(playerName, shopEntry)
+                StatManager.addBoughtItem(playerName, shopEntry, moneySpent)
             }
         }
     }

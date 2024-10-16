@@ -11,12 +11,11 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtList
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
 class TrapShopEntry(
-    player: ServerPlayerEntity,
+    playerName: String,
     private val name: String,
     private val price: Int,
     isSnare: Boolean,
@@ -27,7 +26,7 @@ class TrapShopEntry(
     visibilityRange: Double,
     affectedRange: Double,
     triggerDuration: Int
-) : ShopEntry(player = player, nameForStat = "${name}_trap")
+) : ShopEntry(playerName, nameForStat = "${name}_trap")
 {
     private val itemStack = ItemStack(Items.BAT_SPAWN_EGG)
 
@@ -56,7 +55,7 @@ class TrapShopEntry(
         Items.BAT_SPAWN_EGG.defaultStack.setCustomName(
             Text.of("${MoneyManager.getCurrencyString(price)}: $name x1").getWithStyle(
                 Style.EMPTY.withColor(
-                    if (player.getDGMoney() < price) Util.getTextColor(123, 0, 0)
+                    if (getDGMoney(playerName) < price) Util.getTextColor(123, 0, 0)
                     else Util.getTextColor(255, 255, 255)
                 )
             )[0]
@@ -65,13 +64,13 @@ class TrapShopEntry(
     override fun onClick(): Boolean
     {
         return attemptSale(player, price) {
-            player.giveItemStack(itemStack.copy())
+            player?.giveItemStack(itemStack.copy())
         }
     }
 
     override fun hasGoods(): Boolean
     {
-        return player.inventory.contains(itemStack)
+        return player?.inventory?.contains(itemStack) == true
     }
 
     override fun removeGoods()
@@ -80,6 +79,6 @@ class TrapShopEntry(
             itemAndNbtEqual(itemStack, it)
         }
 
-        player.inventory.remove(filter, 1, player.inventory)
+        player?.inventory?.remove(filter, 1, player!!.inventory) // should be null-safe, because remove will not be called, if player is null
     }
 }

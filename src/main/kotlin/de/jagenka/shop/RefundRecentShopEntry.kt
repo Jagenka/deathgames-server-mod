@@ -6,11 +6,10 @@ import de.jagenka.setCustomName
 import de.jagenka.stats.StatManager
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class RefundRecentShopEntry(player: ServerPlayerEntity, override var displayName: String = "Refund recent purchases") : ShopEntry(player = player, nameForStat = "refund_recent")
+class RefundRecentShopEntry(playerName: String, override var displayName: String = "Refund recent purchases") : ShopEntry(playerName, nameForStat = "refund_recent")
 {
     override fun getPrice(): Int = 0
 
@@ -28,7 +27,7 @@ class RefundRecentShopEntry(player: ServerPlayerEntity, override var displayName
 
     override fun onClick(): Boolean
     {
-        val recentlyClickedAmounts = Shop.getRecentlyClickedAmounts(player.name.string)
+        val recentlyClickedAmounts = Shop.getRecentlyClickedAmounts(playerName)
             .filterNot {
                 it.key is LeaveShopEntry || it.key is EmptyShopEntry || it.key is RefundRecentShopEntry || it.key is RefundShopEntry
             }
@@ -38,23 +37,23 @@ class RefundRecentShopEntry(player: ServerPlayerEntity, override var displayName
             if (shopEntry is UpgradeableShopEntry)
             {
                 val moneySpent = shopEntry.addLevel(-count)
-                player.refundMoney(moneySpent)
-                StatManager.addRecentlyRefunded(player.name.string, shopEntry, moneySpent)
+                refundMoney(playerName, moneySpent)
+                StatManager.addRecentlyRefunded(playerName, shopEntry, moneySpent)
             } else
             {
                 repeat(count) {
                     if (shopEntry.hasGoods())
                     {
                         val moneySpent = shopEntry.getTotalSpentMoney()
-                        player.refundMoney(moneySpent)
+                        refundMoney(playerName, moneySpent)
                         shopEntry.removeGoods()
-                        StatManager.addRecentlyRefunded(player.name.string, shopEntry, moneySpent)
+                        StatManager.addRecentlyRefunded(playerName, shopEntry, moneySpent)
                     }
                 }
             }
         }
 
-        Shop.clearRecentlyBought(player.name.string)
+        Shop.clearRecentlyBought(playerName)
 
         return true
     }

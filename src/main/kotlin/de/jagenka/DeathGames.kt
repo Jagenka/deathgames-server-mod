@@ -9,7 +9,6 @@ import de.jagenka.config.Config.isEnabled
 import de.jagenka.gameplay.traps.TrapManager
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.managers.PlayerManager.makeParticipating
 import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
@@ -134,7 +133,7 @@ object DeathGames : DedicatedServerModInitializer
             it.inventory.clear()
             it.health = 20f //set max hearts
             it.hungerManager.add(20, 1f) //set max food and saturation
-            it.makeParticipating()
+            PlayerManager.addParticipant(it.name.string)
             it.changeGameMode(GameMode.ADVENTURE)
         }
 
@@ -186,7 +185,7 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         PlayerManager.getOnlinePlayers().forEach {
-            ShopTask.exitShop(it)
+            ShopTask.exitShop(it.name.string)
             DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
 
