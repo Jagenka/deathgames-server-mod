@@ -1,6 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames
+import kotlinx.datetime.Clock
 
 object Timer
 {
@@ -9,7 +10,7 @@ object Timer
 
     private val tasks = mutableListOf<TimerTask>()
     private val scheduledTasks = mutableListOf<ScheduledTask>()
-    private val scheduledIntervalTasks = mutableListOf<ScheduledIntervalTask>()
+    private val intervalTasks = mutableSetOf<IntervalTask>()
 
     private val customTimers = mutableListOf<CustomTimer>()
 
@@ -60,7 +61,7 @@ object Timer
             }
         }
 
-        scheduledIntervalTasks.toList().forEach {
+        intervalTasks.toList().forEach {
             if ((now() - it.start) % it.interval == 0)
             {
                 it.task()
@@ -79,7 +80,7 @@ object Timer
 
     fun scheduleAt(task: () -> Unit, time: Int): ScheduledTask
     {
-        val scheduledTask = ScheduledTask(task, time)
+        val scheduledTask = ScheduledTask(time, task)
         scheduledTasks.add(scheduledTask)
         return scheduledTask
     }
@@ -89,29 +90,26 @@ object Timer
         scheduledTasks.remove(task)
     }
 
-    fun scheduleWithInterval(task: () -> Unit, offset: Int, interval: Int): ScheduledIntervalTask
+    fun scheduleWithInterval(name: String, interval: Int, task: () -> Unit): IntervalTask?
     {
-        val scheduledIntervalTask = ScheduledIntervalTask.getFor(task, offset, interval)
-        scheduleWithInterval(scheduledIntervalTask)
-        return scheduledIntervalTask
+        intervalTasks.find { it.name == name }?.let { // if task already exists
+            return it
+        }
+        val newIntervalTask = IntervalTask(name, interval, task)
+        intervalTasks.add(newIntervalTask)
+        return newIntervalTask
     }
 
-    fun scheduleWithInterval(task: ScheduledIntervalTask)
+    fun removeIntervalTask(name: String)
     {
-        if (!scheduledIntervalTasks.contains(task)) scheduledIntervalTasks.add(task)
+        intervalTasks.removeIf { it.name == name }
     }
 
-    fun unscheduleIntervalTask(task: ScheduledIntervalTask)
-    {
-        scheduledIntervalTasks.remove(task)
-    }
-
-    fun newCustomTimer(): CustomTimer = newCustomTimer()
-
-    fun newCustomTimer(name: String): CustomTimer
+    fun newCustomTimer(name: String = Clock.System.now().toString()): CustomTimer
     {
         val customTimer = CustomTimer(name)
-        return customTimers.find { it.name == name } ?: customTimers.add(customTimer).let { customTimer }
+        return customTimers.find { it.name == name } // return timer already in storage instead of adding a new one
+            ?: customTimers.add(customTimer).let { customTimer } // add it, and return customTimer (let necessary because add returns true)
     }
 
     fun removeCustomTimer(customTimer: CustomTimer)
@@ -140,7 +138,7 @@ object Timer
         gameMechsPaused = true
         tasks.forEach { it.reset() }
         scheduledTasks.clear()
-        scheduledIntervalTasks.clear()
+        intervalTasks.clear()
         customTimers.clear()
     }
 
@@ -162,16 +160,13 @@ enum class DGUnit(val factor: Int)
     TICKS(1), SECONDS(20), MINUTES(1200), HOURS(72000);
 }
 
-data class ScheduledTask(val task: () -> Unit, val time: Int)
-data class ScheduledIntervalTask(val task: () -> Unit, val start: Int, val interval: Int)
+data class ScheduledTask(val time: Int, val task: () -> Unit)
+data class IntervalTask(val name: String, val interval: Int, val task: () -> Unit)
 {
-    companion object
-    {
-        fun getFor(task: () -> Unit, offset: Int, interval: Int) = ScheduledIntervalTask(task, Timer.now() + offset, interval)
-    }
+    val start: Int = Timer.now()
 }
 
-data class CustomTimer(val name: String = System.currentTimeMillis().toString())
+data class CustomTimer(val name: String)
 {
     var time: Int = 0
 }

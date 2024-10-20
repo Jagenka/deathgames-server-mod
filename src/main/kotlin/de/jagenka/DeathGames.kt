@@ -6,6 +6,7 @@ import de.jagenka.Util.teleport
 import de.jagenka.commands.DeathGamesCommand
 import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
+import de.jagenka.gameplay.traps.TrapManager
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.shop.Shop
@@ -136,9 +137,12 @@ object DeathGames : DedicatedServerModInitializer
             it.changeGameMode(GameMode.ADVENTURE)
         }
 
+        // remove items drops and stuck projectiles from map
         ifServerLoaded { server ->
             server.overworld.iterateEntities().toList().filter { it is ItemEntity || it is ProjectileEntity }.forEach { it.remove(Entity.RemovalReason.KILLED) }
         }
+        // remove previously laid traps
+        TrapManager.reset()
 
         PlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
 

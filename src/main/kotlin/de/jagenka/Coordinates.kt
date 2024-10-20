@@ -36,4 +36,4 @@ operator fun Coordinates.div(value: Double) = Coordinates((this.x / value).floor
 
 
 //fun Vec3d.toDGCoordinates() = Coordinates(this)
-fun ServerPlayerEntity.toDGCoordinates() = Coordinates(this.pos.x, this.pos.y, this.pos.z, this.yaw, this.pitch)
+fun ServerPlayerEntity.getDGCoordinates() = Coordinates(this.pos.x, this.pos.y, this.pos.z, this.yaw, this.pitch)

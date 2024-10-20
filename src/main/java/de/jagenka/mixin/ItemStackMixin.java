@@ -2,7 +2,7 @@ package de.jagenka.mixin;
 
 import de.jagenka.config.Config;
 import de.jagenka.gameplay.graplinghook.BlackjackAndHookers;
-import de.jagenka.gameplay.traps.TrapsAreNotGay;
+import de.jagenka.gameplay.traps.TrapManager;
 import de.jagenka.shop.Shop;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,7 +30,7 @@ public class ItemStackMixin
         // Traps
         if (context.getStack().getItem() == Items.BAT_SPAWN_EGG)
         {
-            if (TrapsAreNotGay.handleTrapPlacement(context))
+            if (TrapManager.handleTrapPlacement(context))
             {
                 cir.setReturnValue(ActionResult.PASS);
                 cir.cancel();

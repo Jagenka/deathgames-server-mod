@@ -165,4 +165,5 @@ object StatManager
     }
 }
 
+// TODO: rename
 fun <K, V> MutableMap<K, V>.gib(key: K): V = this.getOrPut(key) { this.getValue(key) }

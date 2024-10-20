@@ -2,7 +2,7 @@ package de.jagenka.managers
 
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
-import de.jagenka.gameplay.traps.TrapsAreNotGay
+import de.jagenka.gameplay.traps.TrapManager
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.getTeam
@@ -36,7 +36,7 @@ object KillManager
 
         PlayerManager.registerAsCurrentlyDead(playerName)
 
-        TrapsAreNotGay.onPlayerDeath(playerName)
+        TrapManager.onPlayerDeath(playerName)
 
         Timer.schedule(5.seconds()) {
             if (PlayerManager.requestRespawn(deceased))

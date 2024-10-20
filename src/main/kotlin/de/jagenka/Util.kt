@@ -82,8 +82,9 @@ object Util
             ?: log("Minecraft Server not yet initialized")
     }
 
-    fun ServerPlayerEntity.teleport(coordinates: Coordinates)
+    fun ServerPlayerEntity.teleport(coordinates: Coordinates?)
     {
+        if (coordinates == null) return
         val (x, y, z, yaw, pitch) = coordinates
         this.teleport(server.overworld, x.toCenter(), y.toDouble(), z.toCenter(), yaw, pitch)
     }
