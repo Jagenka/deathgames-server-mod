@@ -1,12 +1,11 @@
 package de.jagenka.managers
 
 import de.jagenka.DeathGames
-import de.jagenka.config.Config.respawnsPerTeam
-import de.jagenka.gameplay.traps.TrapsAreNotGay
+import de.jagenka.config.Config
+import de.jagenka.gameplay.traps.TrapManager
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
-import de.jagenka.managers.PlayerManager.eliminate
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.managers.PlayerManager.makeParticipating
+import de.jagenka.managers.PlayerManager.getTeam
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
@@ -37,7 +36,7 @@ object KillManager
 
         PlayerManager.registerAsCurrentlyDead(playerName)
 
-        TrapsAreNotGay.onPlayerDeath(playerName)
+        TrapManager.onPlayerDeath(playerName)
 
         Timer.schedule(5.seconds()) {
             if (PlayerManager.requestRespawn(deceased))
@@ -48,7 +47,7 @@ object KillManager
 
         if (!DeathGames.running) return
 
-        removeOneRespawn(deceased)
+        removeOneRespawn(deceased.name.string)
 
         val killStreak = getKillStreak(playerName)
         if (killStreak >= 3)
@@ -66,7 +65,9 @@ object KillManager
 
     private fun getShutdownText(deceasedName: String, killStreak: Int): Text
     {
-        val configString = I18n.get("shutdown", mapOf("killStreak" to killStreak, "deceased" to "%deceased")) //TODO kann man das ändern?
+        // first get translated String from I18n, but keep deceased as a placeholder
+        val configString = I18n.get("shutdown", mapOf("killStreak" to killStreak, "deceased" to "%deceased"))
+        // to then replace the placeholder with colored text
         return DisplayManager.getTextWithPlayersAndTeamsColored(configString, idToPlayer = mapOf("%deceased" to deceasedName))
     }
 
@@ -119,22 +120,22 @@ object KillManager
         DisplayManager.updateKillStreakDisplay()
     }
 
-    fun removeOneRespawn(deceased: ServerPlayerEntity)
+    fun removeOneRespawn(playerName: String)
     {
         when (livesMode)
         {
             Mode.PLAYER ->
             {
-                val respawnsAmount = playerRespawns.getValue(deceased.name.string)
-                if (respawnsAmount > 0) playerRespawns[deceased.name.string] = respawnsAmount - 1
-                if (respawnsAmount <= 0) deceased.eliminate()
+                val respawnsAmount = playerRespawns.getValue(playerName)
+                if (respawnsAmount > 0) playerRespawns[playerName] = respawnsAmount - 1
+                if (respawnsAmount <= 0) PlayerManager.eliminate(playerName)
             }
 
             Mode.TEAM ->
             {
-                val respawnsAmount = teamRespawns.getValue(deceased.getDGTeam())
-                if (respawnsAmount > 0) teamRespawns[deceased.getDGTeam()] = respawnsAmount - 1
-                if (respawnsAmount <= 0) deceased.eliminate()
+                val respawnsAmount = teamRespawns.getValue(getTeam(playerName))
+                if (respawnsAmount > 0) teamRespawns[getTeam(playerName)] = respawnsAmount - 1
+                if (respawnsAmount <= 0) PlayerManager.eliminate(playerName)
             }
         }
 
@@ -146,8 +147,8 @@ object KillManager
         val players = PlayerManager.getPlayers()
         when (livesMode)
         {
-            Mode.PLAYER -> players.forEach { playerRespawns[it] = respawnsPerTeam }
-            Mode.TEAM -> players.forEach { teamRespawns[PlayerManager.getTeam(it)] = respawnsPerTeam }
+            Mode.PLAYER -> players.forEach { playerRespawns[it] = Config.respawns.perTeam }
+            Mode.TEAM -> players.forEach { teamRespawns[PlayerManager.getTeam(it)] = Config.respawns.perTeam }
         }
     }
 
@@ -182,10 +183,10 @@ object KillManager
         getRespawns(team)?.let { if (it < 1) return } ?: return
 
         team.getOnlinePlayers().filter { !PlayerManager.isParticipating(it.name.string) }.randomOrNull()?.let { player ->
-            player.makeParticipating()
+            PlayerManager.addParticipant(player.name.string)
             player.changeGameMode(GameMode.ADVENTURE)
             SpawnManager.teleportPlayerToSpawn(player)
-            removeOneRespawn(player)
+            removeOneRespawn(player.name.string)
         }
     }
 

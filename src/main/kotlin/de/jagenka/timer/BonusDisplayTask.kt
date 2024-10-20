@@ -21,7 +21,7 @@ object BonusDisplayTask : TimerTask
     override fun run()
     {
         // if bonus platforms are disabled, don't do anything
-        if (!Config.configEntry.bonus.enableBonusPlatforms) return
+        if (!Config.bonus.enableBonusPlatforms) return
 
         if (currentlyEnding) return
 

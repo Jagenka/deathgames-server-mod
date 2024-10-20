@@ -1,6 +1,7 @@
 package de.jagenka.mixin;
 
 import de.jagenka.config.Config;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ConnectedClientData;
@@ -15,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerManagerMixin
 {
     @Inject(method = "respawnPlayer", at = @At("TAIL"))
-    private void respawnPlayer(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir)
+    private void respawnPlayer(ServerPlayerEntity player, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayerEntity> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 

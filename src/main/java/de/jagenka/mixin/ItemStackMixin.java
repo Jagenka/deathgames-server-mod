@@ -2,7 +2,7 @@ package de.jagenka.mixin;
 
 import de.jagenka.config.Config;
 import de.jagenka.gameplay.graplinghook.BlackjackAndHookers;
-import de.jagenka.gameplay.traps.TrapsAreNotGay;
+import de.jagenka.gameplay.traps.TrapManager;
 import de.jagenka.shop.Shop;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,7 +30,7 @@ public class ItemStackMixin
         // Traps
         if (context.getStack().getItem() == Items.BAT_SPAWN_EGG)
         {
-            if (TrapsAreNotGay.handleTrapPlacement(context))
+            if (TrapManager.handleTrapPlacement(context))
             {
                 cir.setReturnValue(ActionResult.PASS);
                 cir.cancel();
@@ -40,7 +40,10 @@ public class ItemStackMixin
         // Grapple
         if (context.getPlayer() != null && context.getPlayer().getStackInHand(context.getHand()).getItem() == BlackjackAndHookers.getItemItem())
         {
-            BlackjackAndHookers.forceTheHooker(context.getWorld(), context.getPlayer(), context.getPlayer().getStackInHand(context.getHand()));
+            if (context.getPlayer() instanceof ServerPlayerEntity player)
+            {
+                BlackjackAndHookers.forceTheHooker(context.getWorld(), player, context.getPlayer().getStackInHand(context.getHand()));
+            }
         }
 
         // ender pearls in shop
@@ -61,7 +64,10 @@ public class ItemStackMixin
         // Grapple
         if (stackInHand.getItem() == BlackjackAndHookers.getItemItem())
         {
-            BlackjackAndHookers.forceTheHooker(world, user, stackInHand);
+            if (user instanceof ServerPlayerEntity player)
+            {
+                BlackjackAndHookers.forceTheHooker(world, player, stackInHand);
+            }
         }
 
         // ender pearls in shop

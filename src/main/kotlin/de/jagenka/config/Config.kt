@@ -20,85 +20,41 @@ object Config
         encodeDefaults = true // WHO EVEN THOUGHT THIS WOULD BE A GOOD IDEA AS FALSE BY DEFAULT? WTF? WHAT IF I SEND A MESSAGE OVER THE NETWORK?
     }
 
-    lateinit var configEntry: ConfigEntry
-
-    // TODO: clean this up
+    /**
+     * do not use this if not absolutely necessary
+     */
+    lateinit var internalConfigEntry: ConfigEntry
 
     val isEnabled
-        get() = configEntry.general.enabled
+        get() = internalConfigEntry.general.enabled
 
+    val general
+        get() = internalConfigEntry.general
 
-    val spawnPlatformRadius
-        get() = configEntry.spawns.platformRadius
+    val spawns
+        get() = internalConfigEntry.spawns
 
-    val defaultSpawn
-        get() = configEntry.spawns.spectatorSpawn
-    val lobbySpawn
-        get() = configEntry.spawns.lobbySpawn
+    val bonus
+        get() = internalConfigEntry.bonus
 
-    val bonusPlatformRadius
-        get() = configEntry.bonus.radius
-    val bonusPlatformSpawnInterval
-        get() = configEntry.bonus.spawnInterval
-    val bonusPlatformStayTime
-        get() = configEntry.bonus.stayTime
-    val bonusPlatformInitialSpawn
-        get() = configEntry.bonus.initialSpawn
-    val bonusMoneyAmount
-        get() = configEntry.bonus.moneyAmount
-    val bonusMoneyInterval
-        get() = configEntry.bonus.moneyInterval
-    val respawnsPerTeam
-        get() = configEntry.respawns.perTeam
+    val respawns
+        get() = internalConfigEntry.respawns
 
-    val shuffleSpawnsInterval
-        get() = configEntry.spawns.shuffleInterval
-    val shuffleDelayAfterKill
-        get() = configEntry.spawns.shuffleDelayAfterKill
+    val money
+        get() = internalConfigEntry.money
 
-    val moneyInterval
-        get() = configEntry.money.interval
-    val moneyPerInterval
-        get() = configEntry.money.amountPerInterval
-    val moneyPerKill
-        get() = configEntry.money.perKill
-    val moneyBonusPerKillStreakKill
-        get() = configEntry.money.perKillStreakKill
-    val startMoneyPerPlayer
-        get() = configEntry.money.start
+    val shopSettings
+        get() = internalConfigEntry.shopSettings
 
-    val revealTimePerPlayer
-        get() = configEntry.misc.revealTimePerPlayer
+    val misc
+        get() = internalConfigEntry.misc
 
-    val tpOutOfShopAfter
-        get() = configEntry.shopSettings.tpOutOfShopAfter
+    val displayedText
+        get() = internalConfigEntry.displayedText
 
-    val shopBounds
-        get() = configEntry.shopSettings.shopBounds
-    val arenaBounds
-        get() = configEntry.general.arenaBounds
-    val spectatorRadiusPadding
-        get() = configEntry.general.spectatorRadiusPadding
+    val shop
+        get() = internalConfigEntry.shop
 
-    val refundPercent
-        get() = configEntry.shopSettings.refundPercent
-
-    val captureTimeNeeded
-        get() = configEntry.spawns.captureTimeNeeded
-    val captureEnabled
-        get() = configEntry.spawns.enableCapture
-
-    val shopCloseTimeAfterReveal
-        get() = configEntry.misc.shopCloseTimeAfterReveal
-    val killStreakPenaltyCap
-        get() = configEntry.misc.killStreakPenaltyCap
-    val startInShop
-        get() = configEntry.misc.startInShop
-    val startInShopTpAfterSeconds
-        get() = configEntry.misc.startInShopTpAfterSeconds
-
-    val enableFallDamage
-        get() = configEntry.misc.enableFallDamage
 
     fun lateLoadConfig()
     {
@@ -112,7 +68,7 @@ object Config
             if (!Files.exists(pathToConfFile))
             {
                 Files.createFile(pathToConfFile)
-                configEntry = ConfigEntry()
+                internalConfigEntry = ConfigEntry()
                 store()
             }
             load()
@@ -125,17 +81,17 @@ object Config
     fun load()
     {
         loadJSON(pathToConfFile.toFile())
-        ShopEntries.loadShop()
+        ShopEntries.reloadShop()
     }
 
     fun loadJSON(jsonConfFile: File)
     {
-        configEntry = serializer.decodeFromString(jsonConfFile.readText())
+        internalConfigEntry = serializer.decodeFromString(jsonConfFile.readText())
     }
 
     fun store()
     {
-        val json = serializer.encodeToString(configEntry)
+        val json = serializer.encodeToString(internalConfigEntry)
 
         Files.writeString(pathToConfFile, json)
     }

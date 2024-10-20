@@ -42,7 +42,7 @@ object Shop
         {
             override fun createMenu(syncId: Int, inv: PlayerInventory?, player: PlayerEntity?): ScreenHandler
             {
-                val shopInventory = ShopInventory(serverPlayerEntity)
+                val shopInventory = ShopInventory(serverPlayerEntity.name.string)
                 val screenHandler =
                     object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, inv, shopInventory, 6)
                     {
@@ -79,7 +79,13 @@ object Shop
         this.currentUpgradableLevels.clear()
     }
 
-    fun isInShopBounds(player: PlayerEntity): Boolean = Config.shopBounds.any { it.contains(player.pos) }
+    fun isInShopBounds(player: PlayerEntity?): Boolean
+    {
+        if (player == null) return false
+
+        return Config.shopSettings.shopBounds.any { it.contains(player.pos) }
+
+    }
 
     fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
 

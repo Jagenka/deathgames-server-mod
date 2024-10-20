@@ -161,7 +161,7 @@ object DisplayManager
     {
         PlayerManager.getOnlinePlayers().forEach { player ->
             player.setExperiencePoints(0)
-            player.setExperienceLevel(player.getDGMoney())
+            player.setExperienceLevel(getDGMoney(player.name.string))
         }
     }
 
@@ -216,7 +216,9 @@ object DisplayManager
             sendChatMessage(Text.of(I18n.get("playerLeaveTeam", mapOf("playerName" to player.name.string))))
         } else
         {
-            val baseString = I18n.get("playerJoinTeam", mapOf("playerName" to player.name.string, "teamName" to "%teamName")) //TODO: geht das anders?
+            // first get translated String from I18n, but keep teamName as a placeholder
+            val baseString = I18n.get("playerJoinTeam", mapOf("playerName" to player.name.string, "teamName" to "%teamName"))
+            // to then replace the placeholder with colored text
             sendChatMessage(getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapOf("%teamName" to team)))
         }
     }
@@ -224,7 +226,7 @@ object DisplayManager
     fun setBossBarForPlayer(player: ServerPlayerEntity, fillAmount: Float, text: Text, color: BossBar.Color, idSuffix: String = "main")
     {
         ifServerLoaded { server ->
-            val bossBarId = Identifier(player.name.string.lowercase() + "_$idSuffix")
+            val bossBarId = Identifier.of(player.name.string.lowercase() + "_$idSuffix")
             var bossBar = server.bossBarManager.get(bossBarId)
             if (bossBar == null)
             {
@@ -243,7 +245,7 @@ object DisplayManager
     fun removeBossBarForPlayer(player: ServerPlayerEntity, idSuffix: String)
     {
         ifServerLoaded { server ->
-            val bossBarId = Identifier(player.name.string.lowercase() + "_$idSuffix")
+            val bossBarId = Identifier.of(player.name.string.lowercase() + "_$idSuffix")
             server.bossBarManager.get(bossBarId)?.let {
                 it.removePlayer(player)
                 server.bossBarManager.remove(it)

@@ -2,15 +2,15 @@ package de.jagenka.shop
 
 import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
+import de.jagenka.setCustomName
 import de.jagenka.timer.ShopTask
 import de.jagenka.timer.Timer
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class LeaveShopEntry(player: ServerPlayerEntity) : ShopEntry(player = player, nameForStat = "LEAVE_SHOP")
+class LeaveShopEntry(playerName: String) : ShopEntry(playerName, nameForStat = "LEAVE_SHOP")
 {
     override fun getPrice(): Int = 0
 
@@ -30,10 +30,10 @@ class LeaveShopEntry(player: ServerPlayerEntity) : ShopEntry(player = player, na
     {
         if (Timer.gameMechsPaused)
         {
-            player.sendPrivateMessage("Cannot leave right now!")
+            player?.sendPrivateMessage("Cannot leave right now!")
             return false
         }
-        ShopTask.exitShop(player)
+        ShopTask.exitShop(playerName)
         return true
     }
 

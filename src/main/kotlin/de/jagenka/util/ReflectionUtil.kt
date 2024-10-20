@@ -2,7 +2,6 @@ package de.jagenka.util
 
 import de.jagenka.commands.ConfigPropertyTransformer
 import de.jagenka.config.Config
-import de.jagenka.config.ConfigEntry
 import de.jagenka.config.Section
 import net.minecraft.server.command.ServerCommandSource
 import java.lang.reflect.Field
@@ -38,7 +37,7 @@ fun getConfigPropertyTransformer(type: Class<*>, transformers: Map<Class<out Any
 }
 
 fun setPropertyFromString(
-    newValue: String, configEntry: ConfigEntry, sectionField: Field, propertyField: Field,
+    newValue: String, sectionField: Field, propertyField: Field,
     transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>,
     source: ServerCommandSource
 ): Boolean {
@@ -46,7 +45,7 @@ fun setPropertyFromString(
         sectionField.isAccessible = true
         propertyField.isAccessible = true
 
-        val currentSection: Any = sectionField.get(Config.configEntry)
+        val currentSection: Any = sectionField.get(Config.internalConfigEntry)
 //        val currentValue = propertyField.get(currentSection)
 
         val transformer = getConfigPropertyTransformer(propertyField.type, transformers) ?: return false
@@ -64,14 +63,15 @@ fun setPropertyFromString(
     }
 }
 
-fun getStringifiedValueFromProperty(configEntry: ConfigEntry, sectionField: Field, propertyField: Field,
+fun getStringifiedValueFromProperty(
+    sectionField: Field, propertyField: Field,
     transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>
 ): String {
     try {
         sectionField.isAccessible = true
         propertyField.isAccessible = true
 
-        val currentSection: Any = sectionField.get(Config.configEntry)
+        val currentSection: Any = sectionField.get(Config.internalConfigEntry)
         val currentValue = propertyField.get(currentSection)
 
         val transformer = getConfigPropertyTransformer(propertyField.type, transformers) ?: return "!! No valid transformer"

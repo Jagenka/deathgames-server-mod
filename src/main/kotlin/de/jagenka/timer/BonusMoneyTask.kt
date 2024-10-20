@@ -2,8 +2,6 @@ package de.jagenka.timer
 
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
-import de.jagenka.config.Config.bonusMoneyAmount
-import de.jagenka.config.Config.bonusMoneyInterval
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.MoneyManager.addMoney
@@ -22,23 +20,28 @@ object BonusMoneyTask : TimerTask
 
     private val ticks = mutableMapOf<String, Int>().withDefault { 1 }
 
+    val moneyInterval
+        get() = Config.bonus.moneyInterval
+    val moneyAmount
+        get() = Config.bonus.moneyAmount
+
     override fun run()
     {
         // if bonus platforms are disabled, don't do anything
-        if (!Config.configEntry.bonus.enableBonusPlatforms) return
+        if (!Config.bonus.enableBonusPlatforms) return
 
         if (DeathGames.currentlyEnding) return
 
         PlayerManager.getOnlinePlayers().forEach {
             val playerName = it.name.string
-            if (ticks.getValue(playerName) >= bonusMoneyInterval)
+            if (ticks.getValue(playerName) >= moneyInterval)
             {
-                addMoney(playerName, bonusMoneyAmount)
-                ticks[playerName] = ticks.getValue(playerName) - bonusMoneyInterval
+                addMoney(playerName, moneyAmount)
+                ticks[playerName] = ticks.getValue(playerName) - moneyInterval
             }
-            if (bonusMoneyAmount != 0 && BonusManager.isOnActivePlatform(playerName))
+            if (moneyAmount != 0 && BonusManager.isOnActivePlatform(playerName))
             {
-                DisplayManager.setExpProgress(playerName, ticks.getValue(playerName).toFloat() / bonusMoneyInterval.toFloat())
+                DisplayManager.setExpProgress(playerName, ticks.getValue(playerName).toFloat() / moneyInterval.toFloat())
                 ticks[playerName] = ticks.getValue(playerName) + 1
 
                 StatManager.personalStats.gib(playerName).ticksOnBonus++

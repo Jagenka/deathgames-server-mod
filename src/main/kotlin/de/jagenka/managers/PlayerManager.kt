@@ -11,6 +11,7 @@ import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.minecraft.advancement.criterion.Criteria
+import net.minecraft.entity.Entity
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Formatting
 import net.minecraft.world.GameMode
@@ -23,6 +24,7 @@ object PlayerManager
     private val teamRegistry = mutableMapOf<String, DGTeam>()
 
     private val currentlyDead = mutableSetOf<String>()
+    private val recentlyRespawned = mutableSetOf<String>()
 
     private val canPlayerJoin = mutableMapOf<String, Boolean>().withDefault { true }
 
@@ -146,15 +148,17 @@ object PlayerManager
     fun ServerPlayerEntity.isParticipating() = getParticipatingPlayers().contains(this.name.string)
 
 
-    fun ServerPlayerEntity.makeParticipating()
+    fun addParticipant(playerName: String)
     {
-        participatingMap[this.name.string] = true
+        participatingMap[playerName] = true
     }
 
-    fun ServerPlayerEntity.eliminate()
+    fun removeParticipant(playerName: String) = eliminate(playerName)
+
+    fun eliminate(playerName: String)
     {
-        participatingMap[this.name.string] = false
-        this.changeGameMode(GameMode.SPECTATOR)
+        participatingMap[playerName] = false
+        getOnlinePlayer(playerName)?.changeGameMode(GameMode.SPECTATOR)
     }
 
     fun getParticipatingTeams() = DGTeam.entries.filter { getParticipatingPlayersInTeam(it).isNotEmpty() }
@@ -196,13 +200,18 @@ object PlayerManager
 
     fun isCurrentlyDead(playerName: String) = playerName in currentlyDead
 
+    fun hasRecentlyRespawned(playerName: String) = playerName in recentlyRespawned
+
     @JvmStatic
     fun handleRespawn(player: ServerPlayerEntity)
     {
         if (DeathGames.running) SpawnManager.teleportPlayerToSpawn(player)
-        else player.teleport(Config.lobbySpawn)
+        else player.teleport(Config.spawns.lobbySpawn)
 
-        currentlyDead.remove(player.name.string)
+        val playerName = player.name.string
+        currentlyDead.remove(playerName)
+        recentlyRespawned.add(playerName)
+        Timer.schedule(1.seconds()) { recentlyRespawned.remove(playerName) }
     }
 
     fun clearParticipatingStatusForEveryone()
@@ -225,7 +234,7 @@ object PlayerManager
             if (player.notInAnyWorld)
             {
                 player.notInAnyWorld = false
-                player.networkHandler.player = server.playerManager.respawnPlayer(player, true)
+                player.networkHandler.player = server.playerManager.respawnPlayer(player, true, Entity.RemovalReason.DISCARDED)
                 Criteria.CHANGED_DIMENSION.trigger(player, World.END, World.OVERWORLD)
                 return true
             }
@@ -233,8 +242,14 @@ object PlayerManager
             {
                 return false
             }
-            player.networkHandler.player = server.playerManager.respawnPlayer(player, false)
+            player.networkHandler.player = server.playerManager.respawnPlayer(player, false, Entity.RemovalReason.DISCARDED)
             return true
         } ?: return false
+    }
+
+    fun resetForGameStart()
+    {
+        currentlyDead.clear()
+        recentlyRespawned.clear()
     }
 }

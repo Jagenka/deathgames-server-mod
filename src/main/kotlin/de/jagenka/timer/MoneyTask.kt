@@ -1,8 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames.currentlyEnding
-import de.jagenka.config.Config.moneyInterval
-import de.jagenka.config.Config.moneyPerInterval
+import de.jagenka.config.Config
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.MoneyManager
@@ -20,6 +19,11 @@ object MoneyTask : TimerTask
         get() = 1.ticks()
 
     private val moneyTimer = mutableMapOf<String, Int>().withDefault { 0 }
+
+    val moneyInterval
+        get() = Config.money.interval
+    val moneyPerInterval
+        get() = Config.money.amountPerInterval
 
     override fun run()
     {

@@ -8,12 +8,15 @@ import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
+import net.minecraft.component.ComponentMap
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.UnbreakableComponent
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.Difficulty
@@ -79,8 +82,9 @@ object Util
             ?: log("Minecraft Server not yet initialized")
     }
 
-    fun ServerPlayerEntity.teleport(coordinates: Coordinates)
+    fun ServerPlayerEntity.teleport(coordinates: Coordinates?)
     {
+        if (coordinates == null) return
         val (x, y, z, yaw, pitch) = coordinates
         this.teleport(server.overworld, x.toCenter(), y.toDouble(), z.toCenter(), yaw, pitch)
     }
@@ -266,38 +270,41 @@ fun Vec3d.rotateAroundVector(axis: Vector3f, degrees: Float): Vec3d
     return Vec3d(finalQuaternion.x.toDouble(), finalQuaternion.y.toDouble(), finalQuaternion.z.toDouble())
 }
 
-infix fun Block.isSame(block: Block) = this.lootTableId == block.lootTableId
+infix fun Block.isSame(block: Block) = this.translationKey == block.translationKey
 
 fun PlayerInventory.combinedInventory() = main + offHand + armor
 
-fun PlayerInventory.removeWithNbt(item: Item, nbt: NbtCompound?): Boolean
+/**
+ * custom port of previously existing function
+ * sets custom name of given ItemStack and returns itself (redundant but like original implementation)
+ */
+fun ItemStack.setCustomName(text: Text): ItemStack
 {
-    val filter: (ItemStack) -> Boolean = { it.item == item && it.nbt == nbt }
+    this.set(DataComponentTypes.CUSTOM_NAME, text)
+    return this
+}
 
-    main.toList().forEach {
-        if (filter(it))
-        {
-            //println(it)
-            main.remove(it)
-            return true
-        }
-    }
+fun itemAndNbtEqual(itemStack1: ItemStack, itemStack2: ItemStack): Boolean
+{
+    return itemStack1.item == itemStack2.item &&
+            itemStack1.components == itemStack2.components
+}
 
-    offHand.toList().forEach {
-        if (filter(it))
-        {
-            offHand.remove(it)
-            return true
-        }
-    }
+fun ItemStack.withDamage(damage: Int): ItemStack
+{
+    this.damage = damage
+    return this
+}
 
-    armor.toList().forEach {
-        if (filter(it))
-        {
-            armor.remove(it)
-            return true
-        }
-    }
+val Item.maxDamage
+    get() = (this.components.get(DataComponentTypes.MAX_DAMAGE) ?: 0)
 
-    return false
+/**
+ * i will leave this here, because it took me 30 mins to figure this out haha
+ */
+private fun ItemStack.makeUnbreakable(): ItemStack
+{
+    val componentType = DataComponentTypes.UNBREAKABLE
+    this.applyComponentsFrom(ComponentMap.builder().add(componentType, UnbreakableComponent(true)).build())  // show in tooltip
+    return this
 }

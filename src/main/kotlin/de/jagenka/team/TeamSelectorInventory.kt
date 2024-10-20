@@ -13,7 +13,7 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
 
     init
     {
-        val enabledTeams = Config.configEntry.general.enabledTeams.toList()
+        val enabledTeams = Config.general.enabledTeams.toList()
 
         val (firstLine, secondLine) =
             if (enabledTeams.size <= 7)
@@ -58,11 +58,13 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
 
     override fun getStack(slotIndex: Int): ItemStack
     {
+        if (slotIndex !in slots.indices) return EMPTY
         return slots[slotIndex].displayItemStack
     }
 
     fun onClick(slotIndex: Int)
     {
+        if (slotIndex !in slots.indices) return
         slots[slotIndex].onClick(player)
     }
 

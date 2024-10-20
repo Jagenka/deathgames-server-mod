@@ -4,15 +4,15 @@ import de.jagenka.Util
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.refundMoney
 import de.jagenka.managers.scaledForRefund
+import de.jagenka.setCustomName
 import de.jagenka.util.I18n
 import net.minecraft.item.ItemStack
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class RefundShopEntry(player: ServerPlayerEntity, private val shopEntryToRefund: ShopEntry) :
+class RefundShopEntry(playerName: String, private val shopEntryToRefund: ShopEntry) :
     ShopEntry(
-        player = player,
+        playerName,
         nameForStat = "${shopEntryToRefund.nameForStat}_REFUND"
     )
 {
@@ -45,14 +45,14 @@ class RefundShopEntry(player: ServerPlayerEntity, private val shopEntryToRefund:
 
         return if (shopEntryToRefund.hasGoods())
         {
-            player.refundMoney(shopEntryToRefund.getTotalSpentMoney())
+            refundMoney(playerName, shopEntryToRefund.getTotalSpentMoney())
             shopEntryToRefund.removeGoods()
             if (shopEntryToRefund is UpgradeableShopEntry)
             {
-                Shop.clearRecentlyBought(player.name.string, shopEntryToRefund)
+                Shop.clearRecentlyBought(playerName, shopEntryToRefund)
             } else
             {
-                Shop.unregisterRecentlyBought(player.name.string, shopEntryToRefund) // this is for refund recent, so that already refunded items don't get (re)refunded again
+                Shop.unregisterRecentlyBought(playerName, shopEntryToRefund) // this is for refund recent, so that already refunded items don't get (re)refunded again
             }
             true
         } else false

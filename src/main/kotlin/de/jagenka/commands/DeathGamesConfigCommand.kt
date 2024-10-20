@@ -40,7 +40,7 @@ object DeathGamesConfigCommand {
             // print section config
             sectionLiteral.executes {
                 for(property in properties) {
-                    val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
+                    val currentValueString = getStringifiedValueFromProperty(sectionField, property, configPropertyTransformers)
                     it.source.sendFeedback({ Text.of("config.${section.name}.${property.name}: $currentValueString") }, false)
                 }
 
@@ -55,7 +55,7 @@ object DeathGamesConfigCommand {
 
                 // print current property value
                 propertyLiteral.executes {
-                    val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
+                    val currentValueString = getStringifiedValueFromProperty(sectionField, property, configPropertyTransformers)
 
                     it.source.sendFeedback({ Text.of("config.${section.name}.$propertyName: $currentValueString") }, false)
                     return@executes 0
@@ -66,8 +66,8 @@ object DeathGamesConfigCommand {
                 argumentLiteral.executes {
                     val newValue = it.getArgument("newValue", String::class.java)
 
-                    val result = setPropertyFromString(newValue, Config.configEntry, sectionField, property, configPropertyTransformers, it.source)
-                    val currentValueString = getStringifiedValueFromProperty(Config.configEntry, sectionField, property, configPropertyTransformers)
+                    val result = setPropertyFromString(newValue, sectionField, property, configPropertyTransformers, it.source)
+                    val currentValueString = getStringifiedValueFromProperty(sectionField, property, configPropertyTransformers)
                     if(result) {
                         it.source.sendFeedback({ Text.of("config.${section.name}.$propertyName set to $currentValueString") }, true)
                         Config.store()
@@ -97,7 +97,7 @@ object DeathGamesConfigCommand {
             val playerEntity = it.source.entity as? ServerPlayerEntity
 
             if (playerEntity != null) {
-                val coord = playerEntity.toDGCoordinates()
+                val coord = playerEntity.getDGCoordinates()
                 pickedCoordinates.add(coord)
                 val coordListString = "Args: [" + pickedCoordinates.joinToString(", ") { it.toString() } + "]"
                 it.source.sendFeedback({ Text.of(coordListString) }, false)
@@ -165,7 +165,7 @@ val configPropertyTransformers = mapOf<Class<out Any>, ConfigPropertyTransformer
             } else if(str == "last") {
                 return DeathGamesConfigCommand.pickedCoordinates.lastOrNull()
             } else if(str == "pick") {
-                return (source.entity as? ServerPlayerEntity)?.toDGCoordinates()
+                return (source.entity as? ServerPlayerEntity)?.getDGCoordinates()
             } else {
                 // This is terribly engineered, but better to have some feedback than none
                 source.sendFeedback(

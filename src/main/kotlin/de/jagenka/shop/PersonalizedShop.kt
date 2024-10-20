@@ -1,61 +1,56 @@
 package de.jagenka.shop;
 
+import com.mojang.brigadier.StringReader
+import de.jagenka.DeathGames
 import de.jagenka.config.Config
-import de.jagenka.shop.ShopEntries.slot
+import net.minecraft.command.argument.ItemStringReader
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.StringNbtReader
-import net.minecraft.registry.Registries
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier
 
-class PersonalizedShop(private val player: ServerPlayerEntity)
+class PersonalizedShop(private val playerName: String)
 {
-    val EMPTY = ItemShopEntry(player, ItemStack.EMPTY, 0, "")
+    val EMPTY = ItemShopEntry(playerName, ItemStack.EMPTY, 0, "")
 
     var entries: Map<Int, ShopEntry> = emptyMap()
         private set
+
+    private val itemStringReader = ItemStringReader(DeathGames.commandRegistryAccess)
 
     init
     {
         val buffer = mutableMapOf<Int, ShopEntry>()
 
-        Config.configEntry.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
-            val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
-            if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
-            buffer[slot(row, col)] = ItemShopEntry(player, itemStack, price, name)
+        Config.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
+            buffer[slot(row, col)] = ItemShopEntry(playerName, itemStack(id, nbt, amount), price, name)
         }
 
-        Config.configEntry.shop.shield?.let { (row, col, name, durability, price) ->
-            buffer[slot(row, col)] = ShieldShopEntry(player, name, durability, price)
+        Config.shop.shield?.let { (row, col, name, durability, price) ->
+            buffer[slot(row, col)] = ShieldShopEntry(playerName, name, durability, price)
         }
 
-        Config.configEntry.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
-            val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(id)).orElse(null), amount)
-            if (nbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(nbt)
-            buffer[slot(row, col)] = ExtraLifeShopEntry(player, itemStack, price, name)
+        Config.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
+            buffer[slot(row, col)] = ExtraLifeShopEntry(playerName, itemStack(id, nbt, amount), price, name)
         }
 
-        Config.configEntry.shop.leaveShop?.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry(player) }
+        Config.shop.leaveShop?.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry(playerName) }
 
-        Config.configEntry.shop.upgrades.forEach { (row, col, name, id, levels) ->
+        Config.shop.upgrades.forEach { (row, col, name, id, levels) ->
             val itemStackLists = mutableListOf<MutableList<ItemStack>>()
             val prices = mutableListOf<Int>()
 
             levels.forEach { (items, price) ->
                 itemStackLists.add(items.map { (upgradeId, upgradeAmount, upgradeNbt) ->
-                    val itemStack = ItemStack(Registries.ITEM.getOrEmpty(Identifier(upgradeId)).orElse(null), upgradeAmount)
-                    if (upgradeNbt.isNotBlank()) itemStack.nbt = StringNbtReader.parse(upgradeNbt)
-                    return@map itemStack
+                    itemStack(upgradeId, upgradeNbt, upgradeAmount)
                 }.toMutableList())
                 prices.add(price)
             }
 
-            buffer[slot(row, col)] = UpgradeableShopEntry(player, id, itemStackLists, prices, name)
+            buffer[slot(row, col)] = UpgradeableShopEntry(playerName, id, itemStackLists, prices, name)
         }
 
-        Config.configEntry.shop.traps.forEach { (row, col, name, price, snare, effectNBTs, triggerRange, setupTime, triggerVisibilityRange, visibilityRange, affectedRange, triggerDuration) ->
+        Config.shop.traps.forEach { (row, col, name, price, snare, effectNBTs, triggerRange, setupTime, triggerVisibilityRange, visibilityRange, affectedRange, triggerDuration) ->
             buffer[slot(row, col)] = TrapShopEntry(
-                player,
+                playerName,
                 name,
                 price,
                 snare,
@@ -69,19 +64,32 @@ class PersonalizedShop(private val player: ServerPlayerEntity)
             )
         }
 
-        Config.configEntry.shop.refundRecent?.let { (row, col, name) ->
-            buffer[slot(row, col)] = RefundRecentShopEntry(player, name)
+        Config.shop.refundRecent?.let { (row, col, name) ->
+            buffer[slot(row, col)] = RefundRecentShopEntry(playerName, name)
         }
 
-        Config.configEntry.shop.hook?.let { (row, col, name, price, maxDistance, cooldown) ->
-            buffer[slot(row, col)] = HookerShopEntry(player, name, price, maxDistance, cooldown)
+        Config.shop.hook?.let { (row, col, name, price, maxDistance, cooldown) ->
+            buffer[slot(row, col)] = HookerShopEntry(playerName, name, price, maxDistance, cooldown)
         }
 
         // refunds need to be last
-        Config.configEntry.shop.refunds.forEach { (row, col, targetRow, targetCol) ->
-            buffer[slot(row, col)] = RefundShopEntry(player, buffer[slot(targetRow, targetCol)] ?: return@forEach)
+        Config.shop.refunds.forEach { (row, col, targetRow, targetCol) ->
+            buffer[slot(row, col)] = RefundShopEntry(playerName, buffer[slot(targetRow, targetCol)] ?: return@forEach)
         }
 
         entries = buffer.toMap()
+    }
+
+    private fun itemStack(id: String, nbt: String, amount: Int): ItemStack
+    {
+        val itemResult = itemStringReader.consume(StringReader(id + nbt))
+        val itemStack = ItemStack(itemResult.item, amount)
+        itemStack.applyUnvalidatedChanges(itemResult.components)
+        return itemStack
+    }
+
+    fun slot(row: Int, column: Int): Int
+    {
+        return (row * 9 + column).coerceAtLeast(0).coerceAtMost(Shop.SLOT_AMOUNT)
     }
 }

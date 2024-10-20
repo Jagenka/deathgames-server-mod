@@ -26,7 +26,7 @@ object ShopTask : TimerTask
 
     private val lastPosOutOfShop = mutableMapOf<String, TPPos>()
 
-    private const val countdownStartingWithSecondsLeft = 5 // configurable
+    private const val countdownStartingWithSecondsLeft = 5
 
     var tpOutActive: Boolean = true
 
@@ -81,7 +81,7 @@ object ShopTask : TimerTask
                 {
                     timeInShop[playerName] = timeInShop.getValue(playerName) + 1
 
-                    val ticksToTpOut = Config.tpOutOfShopAfter - timeInShop.getValue(playerName)
+                    val ticksToTpOut = Config.shopSettings.tpOutOfShopAfter - timeInShop.getValue(playerName)
 
                     if (ticksToTpOut == countdownStartingWithSecondsLeft.seconds())
                     {
@@ -90,7 +90,7 @@ object ShopTask : TimerTask
 
                     if (ticksToTpOut < 0)
                     {
-                        exitShop(serverPlayerEntity)
+                        exitShop(playerName)
                     }
                 }
             } else currentlyInShop.remove(playerName)
@@ -120,9 +120,9 @@ object ShopTask : TimerTask
         player.inventory.remove({ itemStack -> itemStack.item in illegalItems }, -1, player.playerScreenHandler.craftingInput)
     }
 
-    fun exitShop(player: ServerPlayerEntity)
+    fun exitShop(playerName: String)
     {
-        val playerName = player.name.string
+        val player = PlayerManager.getOnlinePlayer(playerName) ?: return
         SpawnManager.teleportPlayerToSpawn(player)
         player.extinguish()
         timeInShop[playerName] = 0

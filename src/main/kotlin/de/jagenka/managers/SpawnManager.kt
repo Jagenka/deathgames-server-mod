@@ -6,8 +6,8 @@ import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
-import de.jagenka.config.Config.defaultSpawn
 import de.jagenka.managers.DisplayManager.sendChatMessage
+import de.jagenka.managers.SpawnManager.platformRadius
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
 import de.jagenka.util.BiMap
@@ -16,16 +16,20 @@ import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.nbt.StringNbtReader
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.world.GameMode
-import de.jagenka.config.Config.spawnPlatformRadius as platformRadius
 
 object SpawnManager
 {
-    val respawnEffects = Config.configEntry.spawns.respawnEffectNBTs.mapNotNull {
+    val defaultSpawn
+        get() = Config.spawns.spectatorSpawn
+    val platformRadius
+        get() = Config.spawns.platformRadius
+
+    val respawnEffects = Config.spawns.respawnEffectNBTs.mapNotNull {
         StatusEffectInstance.fromNbt(StringNbtReader.parse(it))
     }
 
     val spawns
-        get() = Config.configEntry.spawns.spawnPositions.toList()
+        get() = Config.spawns.spawnPositions.toList()
 
     private val teamSpawns = BiMap<DGSpawn, DGTeam>()
 
@@ -53,15 +57,20 @@ object SpawnManager
         {
             // handle respawn effects for players only
             player.clearStatusEffects()
-            respawnEffects.forEach {
-                player.addStatusEffect(StatusEffectInstance(it))
-            }
+            applyRespawnEffects(player)
+        }
+    }
+
+    fun applyRespawnEffects(player: ServerPlayerEntity)
+    {
+        respawnEffects.forEach {
+            player.addStatusEffect(StatusEffectInstance(it))
         }
     }
 
     fun initSpawns()
     {
-        if (Config.configEntry.spawns.enableShuffle)
+        if (Config.spawns.enableShuffle)
         {
             shuffleSpawns()
         } else

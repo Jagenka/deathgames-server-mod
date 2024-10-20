@@ -15,7 +15,7 @@ object GPSTask: TimerTask
 
     override fun run()
     {
-        if (!Config.configEntry.bonus.enableBonusPlatforms) return
+        if (!Config.bonus.enableBonusPlatforms) return
 
         if (currentlyEnding) return
 

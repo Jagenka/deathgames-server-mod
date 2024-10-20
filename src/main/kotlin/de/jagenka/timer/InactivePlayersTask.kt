@@ -2,9 +2,6 @@ package de.jagenka.timer
 
 import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config
-import de.jagenka.config.Config.killStreakPenaltyCap
-import de.jagenka.config.Config.revealTimePerPlayer
-import de.jagenka.config.Config.shopCloseTimeAfterReveal
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.KillManager
 import de.jagenka.managers.PlayerManager
@@ -30,7 +27,7 @@ object InactivePlayersTask : TimerTask
     override fun run()
     {
         // if reveal is disabled, don't do anything
-        if (!Config.configEntry.misc.enableReveal) return
+        if (!Config.misc.enableReveal) return
 
         if (currentlyEnding) return
 
@@ -96,10 +93,11 @@ object InactivePlayersTask : TimerTask
         inactiveTimer.clear()
     }
 
-    private fun getPersonalRevealTime(playerName: String) = revealTimePerPlayer.toDouble() * getKillStreakPenaltyFactor(playerName)
-    private fun getPersonalShopCloseTime(playerName: String) = shopCloseTimeAfterReveal.toDouble() * getKillStreakPenaltyFactor(playerName)
+    private fun getPersonalRevealTime(playerName: String) = Config.misc.revealTimePerPlayer.toDouble() * getKillStreakPenaltyFactor(playerName)
+    private fun getPersonalShopCloseTime(playerName: String) = Config.misc.shopCloseTimeAfterReveal.toDouble() * getKillStreakPenaltyFactor(playerName)
 
-    private fun getKillStreakPenaltyFactor(playerName: String) = (killStreakPenaltyCap - KillManager.getKillStreak(playerName)).toDouble() / killStreakPenaltyCap.toDouble()
+    private fun getKillStreakPenaltyFactor(playerName: String) =
+        (Config.misc.killStreakPenaltyCap - KillManager.getKillStreak(playerName)).toDouble() / Config.misc.killStreakPenaltyCap.toDouble()
 
     fun hasShopClosed(playerName: String) = (playerName in highlightedPlayers) && (inactiveTimer.getValue(playerName) >= (getPersonalRevealTime(playerName) * 2))
 

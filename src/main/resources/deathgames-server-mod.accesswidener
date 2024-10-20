@@ -1,0 +1,5 @@
+accessWidener	v1	named
+
+accessible field net/minecraft/component/type/NbtComponent nbt Lnet/minecraft/nbt/NbtCompound;
+
+accessible method net/minecraft/entity/decoration/ArmorStandEntity setMarker (Z)V
