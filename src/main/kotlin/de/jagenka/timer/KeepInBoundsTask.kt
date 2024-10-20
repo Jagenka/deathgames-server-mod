@@ -2,8 +2,6 @@ package de.jagenka.timer
 
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.entity.effect.StatusEffects
 
 object KeepInBoundsTask : TimerTask
 {
@@ -17,9 +15,9 @@ object KeepInBoundsTask : TimerTask
     override fun run()
     {
         PlayerManager.getOnlineParticipatingPlayers().forEach { player ->
-            if (!Config.general.arenaBounds.contains(player.pos))
+            if (!Config.general.arenaBounds.contains(player.pos) && !PlayerManager.hasRecentlyRespawned(player.name.string))
             {
-                player.addStatusEffect(StatusEffectInstance(StatusEffects.WITHER, 1.seconds(), 9))
+                player.damage(player.damageSources.outOfWorld(), 10f)
             }
         }
     }

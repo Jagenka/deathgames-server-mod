@@ -24,6 +24,7 @@ object PlayerManager
     private val teamRegistry = mutableMapOf<String, DGTeam>()
 
     private val currentlyDead = mutableSetOf<String>()
+    private val recentlyRespawned = mutableSetOf<String>()
 
     private val canPlayerJoin = mutableMapOf<String, Boolean>().withDefault { true }
 
@@ -199,13 +200,18 @@ object PlayerManager
 
     fun isCurrentlyDead(playerName: String) = playerName in currentlyDead
 
+    fun hasRecentlyRespawned(playerName: String) = playerName in recentlyRespawned
+
     @JvmStatic
     fun handleRespawn(player: ServerPlayerEntity)
     {
         if (DeathGames.running) SpawnManager.teleportPlayerToSpawn(player)
         else player.teleport(Config.spawns.lobbySpawn)
 
-        currentlyDead.remove(player.name.string)
+        val playerName = player.name.string
+        currentlyDead.remove(playerName)
+        recentlyRespawned.add(playerName)
+        Timer.schedule(1.seconds()) { recentlyRespawned.remove(playerName) }
     }
 
     fun clearParticipatingStatusForEveryone()
@@ -239,5 +245,11 @@ object PlayerManager
             player.networkHandler.player = server.playerManager.respawnPlayer(player, false, Entity.RemovalReason.DISCARDED)
             return true
         } ?: return false
+    }
+
+    fun resetForGameStart()
+    {
+        currentlyDead.clear()
+        recentlyRespawned.clear()
     }
 }
