@@ -84,6 +84,7 @@ object BlackjackAndHookers
             val totalVelocity = Vec3d(xVelocity, yVelocity, zVelocity)
 
             val vehicleEntity = ArmorStandEntity(world, owner.pos.x, owner.pos.y, owner.pos.z) // this entity is used for transporting the player
+            vehicleEntity.isMarker = true
             vehicleEntity.isSilent = true
             vehicleEntity.customName = Text.of("hook")
             vehicleEntity.isCustomNameVisible = false
