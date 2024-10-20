@@ -40,7 +40,10 @@ public class ItemStackMixin
         // Grapple
         if (context.getPlayer() != null && context.getPlayer().getStackInHand(context.getHand()).getItem() == BlackjackAndHookers.getItemItem())
         {
-            BlackjackAndHookers.forceTheHooker(context.getWorld(), context.getPlayer(), context.getPlayer().getStackInHand(context.getHand()));
+            if (context.getPlayer() instanceof ServerPlayerEntity player)
+            {
+                BlackjackAndHookers.forceTheHooker(context.getWorld(), player, context.getPlayer().getStackInHand(context.getHand()));
+            }
         }
 
         // ender pearls in shop
@@ -61,7 +64,10 @@ public class ItemStackMixin
         // Grapple
         if (stackInHand.getItem() == BlackjackAndHookers.getItemItem())
         {
-            BlackjackAndHookers.forceTheHooker(world, user, stackInHand);
+            if (user instanceof ServerPlayerEntity player)
+            {
+                BlackjackAndHookers.forceTheHooker(world, player, stackInHand);
+            }
         }
 
         // ender pearls in shop
