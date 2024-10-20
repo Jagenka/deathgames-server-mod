@@ -57,9 +57,14 @@ object SpawnManager
         {
             // handle respawn effects for players only
             player.clearStatusEffects()
-            respawnEffects.forEach {
-                player.addStatusEffect(StatusEffectInstance(it))
-            }
+            applyRespawnEffects(player)
+        }
+    }
+
+    fun applyRespawnEffects(player: ServerPlayerEntity)
+    {
+        respawnEffects.forEach {
+            player.addStatusEffect(StatusEffectInstance(it))
         }
     }
 
