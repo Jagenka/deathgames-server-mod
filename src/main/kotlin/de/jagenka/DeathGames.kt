@@ -28,6 +28,7 @@ import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.entity.damage.DamageTypes
+import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.projectile.ProjectileEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -139,7 +140,11 @@ object DeathGames : DedicatedServerModInitializer
 
         // remove items drops and stuck projectiles from map
         ifServerLoaded { server ->
-            server.overworld.iterateEntities().toList().filter { it is ItemEntity || it is ProjectileEntity }.forEach { it.remove(Entity.RemovalReason.KILLED) }
+            server.overworld.iterateEntities().toList().filter {
+                it is ItemEntity ||
+                        it is ProjectileEntity ||
+                        (it as? ArmorStandEntity)?.customName?.string == "hook"
+            }.forEach { it.remove(Entity.RemovalReason.KILLED) }
         }
         // remove previously laid traps
         TrapManager.reset()
