@@ -10,6 +10,5 @@ object Testing
 }
 
 /*
-    TODO: rewrite Trap code smh
-    TODO: add name field to potion component
+
  */

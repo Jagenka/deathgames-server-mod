@@ -83,16 +83,16 @@ object BlackjackAndHookers
 
             val totalVelocity = Vec3d(xVelocity, yVelocity, zVelocity)
 
-            val arrow = ArmorStandEntity(world, owner.pos.x, owner.pos.y, owner.pos.z)
-            arrow.isSilent = true
-            arrow.customName = Text.of("hook")
-            arrow.isCustomNameVisible = false
-            arrow.isInvisible = false
-            arrow.setNoGravity(true)
+            val vehicleEntity = ArmorStandEntity(world, owner.pos.x, owner.pos.y, owner.pos.z) // this entity is used for transporting the player
+            vehicleEntity.isSilent = true
+            vehicleEntity.customName = Text.of("hook")
+            vehicleEntity.isCustomNameVisible = false
+            vehicleEntity.isInvisible = true
+            vehicleEntity.setNoGravity(true)
 
-            world.spawnEntity(arrow)
-            activeHooks.add(ArrowHook(arrow, owner, targetPos, totalVelocity))
-            owner.startRiding(arrow)
+            world.spawnEntity(vehicleEntity)
+            activeHooks.add(ArrowHook(vehicleEntity, owner, targetPos, totalVelocity))
+            owner.startRiding(vehicleEntity)
 
             cooldown.goOnCooldown()
             owner.itemCooldownManager.set(itemItem, cooldownSetting)
