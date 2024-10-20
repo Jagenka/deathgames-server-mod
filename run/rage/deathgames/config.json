@@ -4,14 +4,14 @@
         "locale": "en",
         "arenaBounds": {
             "firstCorner": {
-                "x": -31,
+                "x": -32,
                 "y": 16,
-                "z": -31
+                "z": -32
             },
             "secondCorner": {
-                "x": 31,
+                "x": 32,
                 "y": 64,
-                "z": 31
+                "z": 32
             }
         },
         "spectatorRadiusPadding": 32,
@@ -251,7 +251,7 @@
                 "price": 1,
                 "snare": true,
                 "effectNBTs": [
-                    "{ambient:0b,amplifier:100b,duration:60,id:blindness,show_icon:0b,show_particles:0b}"
+                    "{ambient:0b,amplifier:100b,duration:140,id:blindness,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 0.5,
                 "setupTime": 200,
@@ -267,9 +267,9 @@
                 "price": 1,
                 "snare": false,
                 "effectNBTs": [
-                    "{ambient:0b,amplifier:100b,duration:60,id:blindness,show_icon:0b,show_particles:0b}",
-                    "{ambient:0b,amplifier:0b,duration:40,id:slowness,show_icon:0b,show_particles:0b}",
-                    "{ambient:0b,amplifier:0b,duration:40,id:levitation,show_icon:0b,show_particles:0b}"
+                    "{ambient:0b,amplifier:100b,duration:140,id:blindness,show_icon:0b,show_particles:0b}",
+                    "{ambient:0b,amplifier:0b,duration:120,id:slowness,show_icon:0b,show_particles:0b}",
+                    "{ambient:0b,amplifier:0b,duration:120,id:levitation,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 0.5,
                 "setupTime": 200,
@@ -285,7 +285,7 @@
                 "price": 1,
                 "snare": false,
                 "effectNBTs": [
-                    "{ambient:0b,amplifier:100b,duration:60,id:speed,show_icon:0b,show_particles:0b}"
+                    "{ambient:0b,amplifier:100b,duration:40,id:speed,show_icon:0b,show_particles:0b}"
                 ],
                 "triggerRange": 1.0,
                 "setupTime": 40,
@@ -301,7 +301,7 @@
             "col": 8,
             "name": "Grappling Hook",
             "price": 0,
-            "maxDistance": 40.0,
+            "maxDistance": 20.0,
             "cooldown": 40
         }
     }
