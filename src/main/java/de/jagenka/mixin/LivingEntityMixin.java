@@ -1,17 +1,13 @@
 package de.jagenka.mixin;
 
 import de.jagenka.config.Config;
-import de.jagenka.managers.SpawnManager;
 import de.jagenka.stats.StatManager;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin
@@ -27,15 +23,5 @@ public class LivingEntityMixin
         }
     }
 
-    @Inject(method = "tryUseDeathProtector", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;sendEntityStatus(Lnet/minecraft/entity/Entity;B)V"))
-    private void onTotemActivated(DamageSource source, CallbackInfoReturnable<Boolean> cir)
-    {
-        if (!Config.INSTANCE.isEnabled()) return;
-
-        if ((LivingEntity) (Object) this instanceof ServerPlayerEntity player)
-        {
-            // no longer clearing effects, as death protector component can have specific effects: TODO: move respawn effects to component?
-            SpawnManager.INSTANCE.applyRespawnEffects(player);
-        }
-    }
+    // no longer clearing or giving effects on death, as death protector component can have specific effects: respawn effects now need to be set in shop config
 }

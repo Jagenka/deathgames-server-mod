@@ -173,10 +173,10 @@
             {
                 "row": 4,
                 "col": 4,
-                "name": "Totem",
-                "id": "minecraft:totem_of_undying",
+                "name": "Lifesaver",
+                "id": "soul_lantern",
                 "amount": 1,
-                "components": "",
+                "components": "[custom_name='{\"text\":\"Lifesaver\",\"italic\":false}',lore=['{text:\"Prevents death, but teleports you randomly. :)\"}'],minecraft:death_protection={death_effects:[{type:'teleport_randomly'},{type:'apply_effects',effects:[{id:instant_health,amplifier:69,duration:10}]}]}]",
                 "price": 5
             }
         ],
