@@ -102,13 +102,19 @@
             "{ambient:0b,amplifier:0b,duration:-1,id:speed,show_icon:0b,show_particles:0b}",
             "{ambient:0b,amplifier:1b,duration:-1,id:jump_boost,show_icon:0b,show_particles:0b}",
             "{ambient:0b,amplifier:0b,duration:-1,id:saturation,show_icon:0b,show_particles:0b}"
+        ],
+        "respawnItems": [
+            {
+                "id": "soul_lantern",
+                "amount": 1,
+                "components": "[custom_name='{\"text\":\"Lifesaver\",\"italic\":false}',lore=['{text:\"Prevents death, but teleports you randomly. :)\"}'],minecraft:death_protection={death_effects:[{type:'teleport_randomly'},{type:'apply_effects',effects:[{id:instant_health,amplifier:69,duration:10}]}]}]"
+            }
         ]
     },
     "bonus": {
         "enableBonusPlatforms": false,
         "platforms": {
-            "plats": [
-            ]
+            "plats": []
         },
         "radius": 0,
         "spawnInterval": 0,
@@ -169,15 +175,6 @@
                 "amount": 1,
                 "components": "[unbreakable={}]",
                 "price": 0
-            },
-            {
-                "row": 4,
-                "col": 4,
-                "name": "Lifesaver",
-                "id": "soul_lantern",
-                "amount": 1,
-                "components": "[custom_name='{\"text\":\"Lifesaver\",\"italic\":false}',lore=['{text:\"Prevents death, but teleports you randomly. :)\"}'],minecraft:death_protection={death_effects:[{type:'teleport_randomly'},{type:'apply_effects',effects:[{id:instant_health,amplifier:69,duration:10}]}]}]",
-                "price": 5
             }
         ],
         "shield": null,
