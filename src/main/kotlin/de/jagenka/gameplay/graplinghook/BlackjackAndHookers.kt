@@ -1,5 +1,6 @@
 package de.jagenka.gameplay.graplinghook
 
+import de.jagenka.DeathGames
 import de.jagenka.managers.PlayerManager
 import de.jagenka.plus
 import de.jagenka.shop.Shop
@@ -65,10 +66,11 @@ object BlackjackAndHookers
         cooldowns.clear()
     }
 
-    // TODO: "works" in lobby - initiates but does not update! -> prevent usage, when game is not running
     @JvmStatic
     fun forceTheHooker(world: World, owner: ServerPlayerEntity, itemStackInHand: ItemStack): Boolean
     {
+        if (!DeathGames.running) return false
+
         itemStackInHand.components?.let { components ->
             val nbt = components.get(CUSTOM_DATA)?.nbt ?: return false
             if (!nbt.contains("hookMaxDistance") || !nbt.contains("hookCooldown")) return false
