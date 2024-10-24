@@ -38,7 +38,9 @@ enum class DGTeam
         }
     }
 
-    fun getColorVector(): Vector3f = Util.getRGBVector3fForInt(Formatting.byName(this.name.lowercase())?.colorValue ?: 0xFFFFFF)
+    fun getColorInt(): Int = Formatting.byName(this.name.lowercase())?.colorValue ?: 0xFFFFFF
+
+    fun getColorVector(): Vector3f = Util.getRGBVector3fForInt(getColorInt())
 
     fun getPlayers() = PlayerManager.getPlayersInTeam(this)
 

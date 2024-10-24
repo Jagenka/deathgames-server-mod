@@ -4,6 +4,7 @@ import de.jagenka.Util
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.item.ArmorItem
 import net.minecraft.item.ItemStack
@@ -144,10 +145,11 @@ class UpgradeableShopEntry(
                 if (itemStack.item is ArmorItem)
                 {
                     armorSlots.forEachIndexed { index, equipmentSlot ->
-                        if ((itemStack.item as? ArmorItem)?.slotType == equipmentSlot)
+                        // 1.21.3: EquipmentSlot is now a component
+                        if ((itemStack.item as? ArmorItem)?.components?.get(DataComponentTypes.EQUIPPABLE)?.slot == equipmentSlot)
                         {
                             player?.inventory?.remove(
-                                { ((it.item as? ArmorItem)?.slotType == equipmentSlot) },
+                                { ((it.item as? ArmorItem)?.components?.get(DataComponentTypes.EQUIPPABLE)?.slot == equipmentSlot) },
                                 -1,
                                 player!!.playerScreenHandler.craftingInput // should be null-safe, because remove will not be called, if player is null
                             )

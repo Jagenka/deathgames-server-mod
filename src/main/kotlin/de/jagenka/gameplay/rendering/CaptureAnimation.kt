@@ -84,7 +84,7 @@ object CaptureAnimation
                         return@inner
                     }
 
-                    val rgbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorVector() ?: Vector3f(0f, 0f, 0f), 4f)
+                    val rgbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorInt() ?: 0xFFFFFF, 4f)
                     ParticleRenderer.drawMultipleParticlesWorld(server, player, rgbParticle, particles)
                 }
 
@@ -135,7 +135,7 @@ object CaptureAnimation
                         return@inner
                     }
 
-                    val orbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorVector() ?: Vector3f(0f, 0f, 0f), 1f)
+                    val orbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorInt() ?: 0xFFFFFF, 1f)
                     ParticleRenderer.drawMultipleParticlesWorld(server, player, orbParticle, particles)
                 }
             }

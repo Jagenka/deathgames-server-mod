@@ -27,14 +27,14 @@ public class LivingEntityMixin
         }
     }
 
-    @Inject(method = "tryUseTotem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;sendEntityStatus(Lnet/minecraft/entity/Entity;B)V"))
+    @Inject(method = "tryUseDeathProtector", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;sendEntityStatus(Lnet/minecraft/entity/Entity;B)V"))
     private void onTotemActivated(DamageSource source, CallbackInfoReturnable<Boolean> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
         if ((LivingEntity) (Object) this instanceof ServerPlayerEntity player)
         {
-            player.clearStatusEffects();
+            // no longer clearing effects, as death protector component can have specific effects: TODO: move respawn effects to component?
             SpawnManager.INSTANCE.applyRespawnEffects(player);
         }
     }

@@ -65,6 +65,7 @@ object BlackjackAndHookers
         cooldowns.clear()
     }
 
+    // TODO: "works" in lobby - initiates but does not update! -> prevent usage, when game is not running
     @JvmStatic
     fun forceTheHooker(world: World, owner: ServerPlayerEntity, itemStackInHand: ItemStack): Boolean
     {
@@ -111,7 +112,7 @@ object BlackjackAndHookers
             owner.startRiding(vehicle, true)
 
             cooldown.goOnCooldown()
-            owner.itemCooldownManager.set(itemItem, cooldownSetting)
+            owner.itemCooldownManager.set(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
 
             return true
         } ?: return false

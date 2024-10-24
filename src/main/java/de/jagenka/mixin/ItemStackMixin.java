@@ -12,7 +12,6 @@ import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -55,7 +54,7 @@ public class ItemStackMixin
     }
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir)
+    public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
@@ -78,7 +77,7 @@ public class ItemStackMixin
                 ((ServerPlayerEntity) user).networkHandler.sendPacket(
                         new ScreenHandlerSlotUpdateS2CPacket(-2, 0, user.getInventory().selectedSlot, user.getInventory().getStack(user.getInventory().selectedSlot)));
             }
-            cir.setReturnValue(TypedActionResult.fail(stackInHand));
+            cir.setReturnValue(ActionResult.FAIL);
             cir.cancel();
         }
     }
