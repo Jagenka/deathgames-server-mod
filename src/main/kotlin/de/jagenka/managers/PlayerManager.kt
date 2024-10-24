@@ -174,7 +174,7 @@ object PlayerManager
             }
             if (DeathGames.running)
             {
-                SpawnManager.teleportPlayerToSpawn(player)
+                SpawnManager.spawnPlayer(player)
                 player.changeGameMode(GameMode.SPECTATOR)
             }
         }
@@ -205,13 +205,18 @@ object PlayerManager
     @JvmStatic
     fun handleRespawn(player: ServerPlayerEntity)
     {
-        if (DeathGames.running) SpawnManager.teleportPlayerToSpawn(player)
-        else player.teleport(Config.spawns.lobbySpawn)
+        if (DeathGames.running)
+        {
+            SpawnManager.spawnPlayer(player)
 
-        val playerName = player.name.string
-        currentlyDead.remove(playerName)
-        recentlyRespawned.add(playerName)
-        Timer.schedule(1.seconds()) { recentlyRespawned.remove(playerName) }
+            val playerName = player.name.string
+            currentlyDead.remove(playerName)
+            recentlyRespawned.add(playerName)
+            Timer.schedule(1.seconds()) { recentlyRespawned.remove(playerName) }
+        } else
+        {
+            player.teleport(Config.spawns.lobbySpawn)
+        }
     }
 
     fun clearParticipatingStatusForEveryone()

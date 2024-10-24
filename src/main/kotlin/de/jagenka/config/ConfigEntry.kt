@@ -49,6 +49,14 @@ class SpawnsConfigEntry(
     var enableCapture: Boolean = true,
     var captureTimeNeeded: Int = 400,
     var respawnEffectNBTs: List<String> = listOf("{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"),
+    var respawnItems: List<RespawnItem> = listOf(RespawnItem()),
+)
+
+@Serializable
+data class RespawnItem(
+    var id: String = "minecraft:apple",
+    var amount: Int = 1,
+    var components: String = "",
 )
 
 @Serializable

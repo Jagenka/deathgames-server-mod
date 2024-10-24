@@ -123,7 +123,7 @@ object ShopTask : TimerTask
     fun exitShop(playerName: String)
     {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return
-        SpawnManager.teleportPlayerToSpawn(player)
+        SpawnManager.spawnPlayer(player)
         player.extinguish()
         timeInShop[playerName] = 0
         player.closeHandledScreen()

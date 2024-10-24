@@ -1,9 +1,7 @@
 package de.jagenka.shop;
 
-import com.mojang.brigadier.StringReader
-import de.jagenka.DeathGames
+import de.jagenka.Util.parseItemStack
 import de.jagenka.config.Config
-import net.minecraft.command.argument.ItemStringReader
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.StringNbtReader
 
@@ -14,14 +12,12 @@ class PersonalizedShop(private val playerName: String)
     var entries: Map<Int, ShopEntry> = emptyMap()
         private set
 
-    private val itemStringReader = ItemStringReader(DeathGames.commandRegistryAccess)
-
     init
     {
         val buffer = mutableMapOf<Int, ShopEntry>()
 
         Config.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
-            buffer[slot(row, col)] = ItemShopEntry(playerName, itemStack(id, nbt, amount), price, name)
+            buffer[slot(row, col)] = ItemShopEntry(playerName, parseItemStack(id, nbt, amount), price, name)
         }
 
         Config.shop.shield?.let { (row, col, name, durability, price) ->
@@ -29,7 +25,7 @@ class PersonalizedShop(private val playerName: String)
         }
 
         Config.shop.extraLife?.let { (row, col, name, id, amount, nbt, price) ->
-            buffer[slot(row, col)] = ExtraLifeShopEntry(playerName, itemStack(id, nbt, amount), price, name)
+            buffer[slot(row, col)] = ExtraLifeShopEntry(playerName, parseItemStack(id, nbt, amount), price, name)
         }
 
         Config.shop.leaveShop?.let { (row, col) -> buffer[slot(row, col)] = LeaveShopEntry(playerName) }
@@ -40,7 +36,7 @@ class PersonalizedShop(private val playerName: String)
 
             levels.forEach { (items, price) ->
                 itemStackLists.add(items.map { (upgradeId, upgradeAmount, upgradeNbt) ->
-                    itemStack(upgradeId, upgradeNbt, upgradeAmount)
+                    parseItemStack(upgradeId, upgradeNbt, upgradeAmount)
                 }.toMutableList())
                 prices.add(price)
             }
@@ -78,14 +74,6 @@ class PersonalizedShop(private val playerName: String)
         }
 
         entries = buffer.toMap()
-    }
-
-    private fun itemStack(id: String, nbt: String, amount: Int): ItemStack
-    {
-        val itemResult = itemStringReader.consume(StringReader(id + nbt))
-        val itemStack = ItemStack(itemResult.item, amount)
-        itemStack.applyUnvalidatedChanges(itemResult.components)
-        return itemStack
     }
 
     fun slot(row: Int, column: Int): Int

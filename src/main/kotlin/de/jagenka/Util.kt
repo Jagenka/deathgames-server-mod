@@ -1,5 +1,6 @@
 package de.jagenka
 
+import com.mojang.brigadier.StringReader
 import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.DisplayManager
@@ -8,6 +9,7 @@ import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
+import net.minecraft.command.argument.ItemStringReader
 import net.minecraft.component.ComponentMap
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.component.type.UnbreakableComponent
@@ -37,6 +39,8 @@ object Util
 {
     var minecraftServer: MinecraftServer? = null
         private set
+
+    private val itemStringReader = ItemStringReader(DeathGames.commandRegistryAccess)
 
     @JvmStatic
     fun onServerLoaded(minecraftServer: MinecraftServer)
@@ -233,6 +237,14 @@ object Util
         {
             return null
         }
+    }
+
+    fun parseItemStack(id: String, nbt: String, amount: Int): ItemStack
+    {
+        val itemResult = itemStringReader.consume(StringReader(id + nbt))
+        val itemStack = ItemStack(itemResult.item, amount)
+        itemStack.applyUnvalidatedChanges(itemResult.components)
+        return itemStack
     }
 }
 

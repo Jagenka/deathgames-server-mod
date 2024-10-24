@@ -149,7 +149,8 @@
         "captureTimeNeeded": 400,
         "respawnEffectNBTs": [
             "{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"
-        ]
+        ],
+        "respawnItems": []
     },
     "bonus": {
         "enableBonusPlatforms": true,
