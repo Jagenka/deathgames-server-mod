@@ -3,6 +3,7 @@ package de.jagenka.gameplay.rendering
 import de.jagenka.BlockPos
 import de.jagenka.Util
 import de.jagenka.floor
+import de.jagenka.managers.PlayerManager
 import de.jagenka.rotateAroundVector
 import net.minecraft.particle.ParticleEffect
 import net.minecraft.server.MinecraftServer
@@ -17,27 +18,7 @@ import kotlin.random.Random
 
 object ParticleRenderer
 {
-
-    private val model =
-        PlyImporter.parsePlyFromFile("C:/Programming Projects/deathgames-server-mod/src/main/resources/models/Squirtle.ply")
-
-    fun renderCube()
-    {
-        Util.ifServerLoaded { server ->
-            PlayerManager.getOnlinePlayers().forEach { player ->
-                val lookDirection = player.rotationVector.normalize()
-                val offset = Vec3d(lookDirection.x, 0.0, lookDirection.z).multiply(3.0)
-                val finalStructure = VertexStructure()
-                if (model.isEmpty()) return@ifServerLoaded
-                model.getSet().forEach { edge ->
-                    finalStructure.add(Edge(edge.point1.add(offset), edge.point2.add(offset)))
-                }
-                drawParticlesFromVertexStructure(server, player, ParticleTypes.WAX_OFF, finalStructure)
-            }
-        }
-    }
-
-    private fun generateLine(point1: Vec3d, point2: Vec3d, vertexSpacing: Double): List<Vec3d>
+    fun generateLine(point1: Vec3d, point2: Vec3d, vertexSpacing: Double): List<Vec3d>
     {
         val vertices: MutableList<Vec3d> = mutableListOf()
         val vector: Vec3d = point2.subtract(point1)
