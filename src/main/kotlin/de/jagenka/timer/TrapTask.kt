@@ -26,7 +26,7 @@ object TrapTask : TimerTask
             {
                 playersInGeneralVisibilityRange.forEach { player ->
                     player.serverWorld.spawnParticles(
-                        player, ParticleTypes.CRIT, true, x.toCenter(), y + 0.2, z.toCenter(), 1, 0.05, 0.1, 0.05, 0.1
+                        player, ParticleTypes.CRIT, true, true, x.toCenter(), y + 0.2, z.toCenter(), 1, 0.05, 0.1, 0.05, 0.1
                     )
                 }
             }
