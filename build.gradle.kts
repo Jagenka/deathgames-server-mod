@@ -30,12 +30,12 @@ dependencies {
 
     implementation("io.netty:netty-all:4.1.24.Final") // this specific version is here for a reason, I just don't know what reason
 
-    modImplementation("org.jetbrains.exposed:exposed-core:0.52.0")
-    shadow("org.jetbrains.exposed:exposed-core:0.52.0")
-    modImplementation("org.jetbrains.exposed:exposed-jdbc:0.52.0")
-    shadow("org.jetbrains.exposed:exposed-jdbc:0.52.0")
-    modImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
-    shadow("org.xerial:sqlite-jdbc:3.46.0.0")
+    modImplementation("org.jetbrains.exposed:exposed-core:0.58.0")
+    shadow("org.jetbrains.exposed:exposed-core:0.58.0")
+    modImplementation("org.jetbrains.exposed:exposed-jdbc:0.58.0")
+    shadow("org.jetbrains.exposed:exposed-jdbc:0.58.0")
+    modImplementation("org.xerial:sqlite-jdbc:3.48.0.0")
+    shadow("org.xerial:sqlite-jdbc:3.48.0.0")
 }
 
 loom {
