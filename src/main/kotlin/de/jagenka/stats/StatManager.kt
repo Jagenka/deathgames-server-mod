@@ -142,15 +142,16 @@ object StatManager
         if (!DeathGames.currentlyEnding) return false
 
         gameStats.gameId = DeathGames.gameId ?: return false
-        gameStats.options =
-            "shuffleEnabled=${Config.spawns.enableShuffle}," +
-                    "shuffleInterval=${Config.spawns.shuffleInterval}," +
-                    "captureEnabled=${Config.spawns.enableCapture}," +
-                    "captureTimeNeeded=${Config.spawns.captureTimeNeeded}," +
-                    "bonusPlatformsEnabled=${Config.bonus.enableBonusPlatforms}," +
-                    "respawnsPerTeam=${Config.respawns.perTeam}," +
-                    "refundPercent=${Config.shopSettings.refundPercent}," +
-                    "startInShop=${Config.misc.startInShop},"
+
+        gameStats.options["shuffleEnabled"] = Config.spawns.enableShuffle.toString()
+        gameStats.options["shuffleInterval"] = Config.spawns.shuffleInterval.toString()
+        gameStats.options["captureEnabled"] = Config.spawns.enableCapture.toString()
+        gameStats.options["captureTimeNeeded"] = Config.spawns.captureTimeNeeded.toString()
+        gameStats.options["bonusPlatformsEnabled"] = Config.bonus.enableBonusPlatforms.toString()
+        gameStats.options["respawnsPerTeam"] = Config.respawns.perTeam.toString()
+        gameStats.options["refundPercent"] = Config.shopSettings.refundPercent.toString()
+        gameStats.options["startInShop"] = Config.misc.startInShop.toString()
+
         gameStats.map = minecraftServer?.getSavePath(WorldSavePath.ROOT)?.parent?.fileName.toString()
 
         StatsIO.storeGame(gameStats)

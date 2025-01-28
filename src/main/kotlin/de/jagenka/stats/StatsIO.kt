@@ -17,7 +17,7 @@ object StatsIO
         Database.connect("jdbc:sqlite:$pathToStatsFile")
 
         transaction {
-            SchemaUtils.create(Deaths, Games, ItemsBought, Kills, Stats)
+            SchemaUtils.create(Deaths, Games, ItemsBought, Kills, Stats, Options)
         }
     }
 
@@ -29,7 +29,14 @@ object StatsIO
                 it[gameEnd] = gameEntry.gameEnd
                 it[mapName] = gameEntry.map
                 it[winner] = gameEntry.winner?.name ?: "null"
-                it[options] = gameEntry.options
+            }
+
+            gameEntry.options.forEach { id, value ->
+                Options.insert {
+                    it[gameStart] = gameEntry.gameId
+                    it[optionID] = id
+                    it[optionValue] = value
+                }
             }
         }
     }

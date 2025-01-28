@@ -11,7 +11,7 @@ class GameEntry(
     var gameEnd: Long = 0,
     var map: String = "",
     var winner: DGTeam? = null,
-    var options: String = ""
+    var options: MutableMap<String, String> = mutableMapOf(),
 )
 {
     override fun equals(other: Any?): Boolean

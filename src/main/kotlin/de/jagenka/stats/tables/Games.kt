@@ -9,7 +9,6 @@ object Games : Table()
     val gameEnd: Column<Long> = long("gameEnd")
     val mapName: Column<String> = varchar("mapName", 50)
     val winner: Column<String> = varchar("winner", 12) // String representation of `DGTeam?`
-    val options: Column<String> = text("options") // TODO: 1NF
 
     override val primaryKey = PrimaryKey(gameStart)
 }
