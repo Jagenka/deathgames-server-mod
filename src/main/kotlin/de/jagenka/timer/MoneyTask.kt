@@ -4,10 +4,8 @@ import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
-import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.PlayerManager
-import de.jagenka.stats.StatManager
 
 object MoneyTask : TimerTask
 {
@@ -46,7 +44,7 @@ object MoneyTask : TimerTask
 
             moneyTimer[playerName] = moneyTimer.getValue(playerName) + 1
 
-            StatManager.updateAccountBalanceAverage(playerName, MoneyManager.getMoney(playerName))
+            // update account balance average moved to AverageBalance Task (needs to run when starting in shop)
         }
     }
 

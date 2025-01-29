@@ -35,6 +35,7 @@ object Timer
             add(CaptureSpawnTask)
             add(BonusSpawnTask)
             add(GrapplingTask)
+            add(AverageBalanceTask)
         }
     }
 
