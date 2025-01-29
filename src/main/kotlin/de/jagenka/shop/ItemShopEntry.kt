@@ -10,8 +10,11 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 
 class ItemShopEntry(playerName: String, private val boughtItemStack: ItemStack, private val price: Int, override var displayName: String) :
-    ShopEntry(playerName, "${boughtItemStack.count} $displayName")
+    ShopEntry(playerName = playerName, nameForStat = displayName)
 {
+    override val amount: Int
+        get() = boughtItemStack.count
+
     override fun getPrice(): Int = price
 
     override fun getDisplayItemStack(): ItemStack

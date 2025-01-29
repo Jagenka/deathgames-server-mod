@@ -16,6 +16,9 @@ class RefundShopEntry(playerName: String, private val shopEntryToRefund: ShopEnt
         nameForStat = "${shopEntryToRefund.nameForStat}_REFUND"
     )
 {
+    override val amount: Int
+        get() = shopEntryToRefund.amount
+
     override fun getPrice(): Int = 0
 
     override fun getDisplayItemStack(): ItemStack

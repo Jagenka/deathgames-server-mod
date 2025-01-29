@@ -19,6 +19,11 @@ abstract class ShopEntry(internal val playerName: String, internal val nameForSt
     internal open var displayName = nameForStat
 
     /**
+     * the amount of goods bought - will be durability bought in case of a shield
+     */
+    internal open val amount: Int = 1
+
+    /**
      * @return current price
      */
     abstract fun getPrice(): Int

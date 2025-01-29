@@ -26,7 +26,7 @@ class TrapShopEntry(
     visibilityRange: Double,
     affectedRange: Double,
     triggerDuration: Int
-) : ShopEntry(playerName, nameForStat = "${name}_trap")
+) : ShopEntry(playerName, nameForStat = "${name}_TRAP")
 {
     private val itemStack = ItemStack(Items.BAT_SPAWN_EGG)
 

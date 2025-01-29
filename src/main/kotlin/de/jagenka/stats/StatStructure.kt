@@ -88,6 +88,7 @@ class DeathEntry(
 
 class ItemBoughtEntry(
     var name: String,
+    var amount: Int,
     var price: Int,
     var time: Long
 )

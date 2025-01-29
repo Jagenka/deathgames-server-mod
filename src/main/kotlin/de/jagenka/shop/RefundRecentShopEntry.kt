@@ -9,7 +9,7 @@ import net.minecraft.item.Items
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
-class RefundRecentShopEntry(playerName: String, override var displayName: String = "Refund recent purchases") : ShopEntry(playerName, nameForStat = "refund_recent")
+class RefundRecentShopEntry(playerName: String, override var displayName: String = "Refund recent purchases") : ShopEntry(playerName, nameForStat = "REFUND_RECENT")
 {
     override fun getPrice(): Int = 0
 
