@@ -98,10 +98,10 @@
         "enableCapture": false,
         "captureTimeNeeded": 0,
         "respawnEffectNBTs": [
-            "{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}",
-            "{ambient:0b,amplifier:0b,duration:-1,id:speed,show_icon:0b,show_particles:0b}",
-            "{ambient:0b,amplifier:1b,duration:-1,id:jump_boost,show_icon:0b,show_particles:0b}",
-            "{ambient:0b,amplifier:0b,duration:-1,id:saturation,show_icon:0b,show_particles:0b}"
+            "{ambient:0,amplifier:255,duration:100,id:resistance,show_icon:0,show_particles:0}",
+            "{ambient:0,amplifier:0,duration:-1,id:speed,show_icon:0,show_particles:0}",
+            "{ambient:0,amplifier:1,duration:-1,id:jump_boost,show_icon:0,show_particles:0}",
+            "{ambient:0,amplifier:0,duration:-1,id:saturation,show_icon:0,show_particles:0}"
         ],
         "respawnItems": [
             {
