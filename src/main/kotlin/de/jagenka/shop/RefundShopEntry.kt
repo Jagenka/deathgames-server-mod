@@ -16,7 +16,10 @@ class RefundShopEntry(playerName: String, private val shopEntryToRefund: ShopEnt
         nameForStat = "${shopEntryToRefund.nameForStat}_REFUND"
     )
 {
-    override fun getPrice(): Int = 0
+    override val amount: Int
+        get() = shopEntryToRefund.amount
+
+    override fun getPrice(): Int = -shopEntryToRefund.getTotalSpentMoney()
 
     override fun getDisplayItemStack(): ItemStack
     {
@@ -60,7 +63,7 @@ class RefundShopEntry(playerName: String, private val shopEntryToRefund: ShopEnt
 
     override fun toString(): String
     {
-        return "${shopEntryToRefund.nameForStat} refund"
+        return nameForStat
     }
 
     override fun hasGoods(): Boolean = false // this ShopEntry is not refundable

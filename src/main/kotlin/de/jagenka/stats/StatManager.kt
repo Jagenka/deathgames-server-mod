@@ -26,7 +26,7 @@ object StatManager
     fun addBoughtItem(playerName: String, shopEntry: ShopEntry, price: Int)
     {
         val itemsBought = personalStats.gib(playerName).itemsBought.toMutableList()
-        itemsBought.add(ItemBoughtEntry(shopEntry.nameForStat, price, Timer.now().toLong()))
+        itemsBought.add(ItemBoughtEntry(shopEntry.nameForStat, shopEntry.amount, price, Timer.now().toLong()))
         personalStats.gib(playerName).itemsBought = itemsBought
     }
 
@@ -36,7 +36,7 @@ object StatManager
     fun addRecentlyRefunded(playerName: String, shopEntry: ShopEntry, price: Int)
     {
         val itemsBought = personalStats.gib(playerName).itemsBought.toMutableList()
-        itemsBought.add(ItemBoughtEntry("${shopEntry.nameForStat}_REFUND_RECENT", price, Timer.now().toLong()))
+        itemsBought.add(ItemBoughtEntry("${shopEntry.nameForStat}_REFUND_RECENT", shopEntry.amount, -price, Timer.now().toLong()))
         personalStats.gib(playerName).itemsBought = itemsBought
     }
 
@@ -142,15 +142,16 @@ object StatManager
         if (!DeathGames.currentlyEnding) return false
 
         gameStats.gameId = DeathGames.gameId ?: return false
-        gameStats.options =
-            "shuffleEnabled=${Config.spawns.enableShuffle}," +
-                    "shuffleInterval=${Config.spawns.shuffleInterval}," +
-                    "captureEnabled=${Config.spawns.enableCapture}," +
-                    "captureTimeNeeded=${Config.spawns.captureTimeNeeded}," +
-                    "bonusPlatformsEnabled=${Config.bonus.enableBonusPlatforms}," +
-                    "respawnsPerTeam=${Config.respawns.perTeam}," +
-                    "refundPercent=${Config.shopSettings.refundPercent}," +
-                    "startInShop=${Config.misc.startInShop},"
+
+        gameStats.options["shuffleEnabled"] = Config.spawns.enableShuffle.toString()
+        gameStats.options["shuffleInterval"] = Config.spawns.shuffleInterval.toString()
+        gameStats.options["captureEnabled"] = Config.spawns.enableCapture.toString()
+        gameStats.options["captureTimeNeeded"] = Config.spawns.captureTimeNeeded.toString()
+        gameStats.options["bonusPlatformsEnabled"] = Config.bonus.enableBonusPlatforms.toString()
+        gameStats.options["respawnsPerTeam"] = Config.respawns.perTeam.toString()
+        gameStats.options["refundPercent"] = Config.shopSettings.refundPercent.toString()
+        gameStats.options["startInShop"] = Config.misc.startInShop.toString()
+
         gameStats.map = minecraftServer?.getSavePath(WorldSavePath.ROOT)?.parent?.fileName.toString()
 
         StatsIO.storeGame(gameStats)
@@ -165,5 +166,5 @@ object StatManager
     }
 }
 
-// TODO: rename
+// TODO: remove? was macht das überhaupt? warum?
 fun <K, V> MutableMap<K, V>.gib(key: K): V = this.getOrPut(key) { this.getValue(key) }

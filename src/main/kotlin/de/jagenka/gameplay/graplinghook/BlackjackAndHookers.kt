@@ -1,5 +1,6 @@
 package de.jagenka.gameplay.graplinghook
 
+import de.jagenka.DeathGames
 import de.jagenka.managers.PlayerManager
 import de.jagenka.plus
 import de.jagenka.shop.Shop
@@ -68,6 +69,8 @@ object BlackjackAndHookers
     @JvmStatic
     fun forceTheHooker(world: World, owner: ServerPlayerEntity, itemStackInHand: ItemStack): Boolean
     {
+        if (!DeathGames.running) return false
+
         itemStackInHand.components?.let { components ->
             val nbt = components.get(CUSTOM_DATA)?.nbt ?: return false
             if (!nbt.contains("hookMaxDistance") || !nbt.contains("hookCooldown")) return false
@@ -111,7 +114,7 @@ object BlackjackAndHookers
             owner.startRiding(vehicle, true)
 
             cooldown.goOnCooldown()
-            owner.itemCooldownManager.set(itemItem, cooldownSetting)
+            owner.itemCooldownManager.set(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
 
             return true
         } ?: return false

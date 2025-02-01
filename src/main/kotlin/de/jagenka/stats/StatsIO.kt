@@ -17,7 +17,7 @@ object StatsIO
         Database.connect("jdbc:sqlite:$pathToStatsFile")
 
         transaction {
-            SchemaUtils.create(Deaths, Games, ItemsBought, Kills, Stats)
+            SchemaUtils.create(Deaths, Games, ItemsBought, Kills, Stats, Options)
         }
     }
 
@@ -29,16 +29,23 @@ object StatsIO
                 it[gameEnd] = gameEntry.gameEnd
                 it[mapName] = gameEntry.map
                 it[winner] = gameEntry.winner?.name ?: "null"
-                it[options] = gameEntry.options
+            }
+
+            gameEntry.options.forEach { id, value ->
+                Options.insert {
+                    it[gameStart] = gameEntry.gameId
+                    it[optionID] = id
+                    it[optionValue] = value
+                }
             }
         }
     }
 
-    fun storePlayer(name: String, personalGameEntry: PersonalGameEntry)
+    fun storePlayer(playerName: String, personalGameEntry: PersonalGameEntry)
     {
         transaction {
             Stats.insert {
-                it[playerName] = name
+                it[this.playerName] = playerName
                 it[gameId] = personalGameEntry.gameId
                 it[team] = personalGameEntry.team?.name ?: "null"
                 it[damageDealt] = personalGameEntry.damageDealt
@@ -63,7 +70,7 @@ object StatsIO
             personalGameEntry.kills.forEach { killEntry ->
                 Kills.insert {
                     it[gameId] = personalGameEntry.gameId
-                    it[Stats.playerName] = name
+                    it[this.playerName] = playerName
                     it[deceased] = killEntry.deceased
                     it[damageType] = killEntry.damageType
                     it[time] = killEntry.time
@@ -73,7 +80,7 @@ object StatsIO
             personalGameEntry.deaths.forEach { deathEntry ->
                 Deaths.insert {
                     it[gameId] = personalGameEntry.gameId
-                    it[playerName] = name
+                    it[this.playerName] = playerName
                     it[damageType] = deathEntry.damageType
                     it[time] = deathEntry.time
                 }
@@ -82,8 +89,9 @@ object StatsIO
             personalGameEntry.itemsBought.forEach { itemBought ->
                 ItemsBought.insert {
                     it[gameId] = personalGameEntry.gameId
-                    it[playerName] = name
-                    it[itemName] = itemBought.name
+                    it[this.playerName] = playerName
+                    it[name] = itemBought.name
+                    it[amount] = itemBought.amount
                     it[price] = itemBought.price
                     it[time] = itemBought.time
                 }

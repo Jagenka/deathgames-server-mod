@@ -185,7 +185,7 @@ object KillManager
         team.getOnlinePlayers().filter { !PlayerManager.isParticipating(it.name.string) }.randomOrNull()?.let { player ->
             PlayerManager.addParticipant(player.name.string)
             player.changeGameMode(GameMode.ADVENTURE)
-            SpawnManager.teleportPlayerToSpawn(player)
+            SpawnManager.spawnPlayer(player)
             removeOneRespawn(player.name.string)
         }
     }

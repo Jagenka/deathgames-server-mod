@@ -28,6 +28,10 @@ object SpawnManager
         StatusEffectInstance.fromNbt(StringNbtReader.parse(it))
     }
 
+    val respawnItems = Config.spawns.respawnItems.map { (id, amount, components) ->
+        Util.parseItemStack(id, components, amount)
+    }
+
     val spawns
         get() = Config.spawns.spawnPositions.toList()
 
@@ -42,7 +46,10 @@ object SpawnManager
         } ?: defaultSpawn
     }
 
-    fun teleportPlayerToSpawn(player: ServerPlayerEntity)
+    /**
+     * teleports player to their spawn, and adds respawn effects and items, if player is participating (not spectator)
+     */
+    fun spawnPlayer(player: ServerPlayerEntity)
     {
         // handle position
         val spawnCoordinates = player.getSpawnCoordinates()
@@ -55,9 +62,13 @@ object SpawnManager
             player.changeGameMode(GameMode.SPECTATOR)
         } else
         {
-            // handle respawn effects for players only
+            // handle respawn effects/items for participating players only
             player.clearStatusEffects()
             applyRespawnEffects(player)
+
+            respawnItems.forEach {
+                player.giveItemStack(it.copy())
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package de.jagenka
 
+import com.mojang.brigadier.StringReader
 import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.DisplayManager
@@ -8,12 +9,14 @@ import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
+import net.minecraft.command.argument.ItemStringReader
 import net.minecraft.component.ComponentMap
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.component.type.UnbreakableComponent
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.network.packet.s2c.play.PositionFlag
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
@@ -36,6 +39,8 @@ object Util
 {
     var minecraftServer: MinecraftServer? = null
         private set
+
+    private val itemStringReader = ItemStringReader(DeathGames.commandRegistryAccess)
 
     @JvmStatic
     fun onServerLoaded(minecraftServer: MinecraftServer)
@@ -86,10 +91,15 @@ object Util
     {
         if (coordinates == null) return
         val (x, y, z, yaw, pitch) = coordinates
-        this.teleport(server.overworld, x.toCenter(), y.toDouble(), z.toCenter(), yaw, pitch)
+        // new in 1.21.3: PositionFlags if relative tp and resetCamera (why not?)
+        this.teleport(server.overworld, x.toCenter(), y.toDouble(), z.toCenter(), emptySet<PositionFlag>(), yaw, pitch, true)
     }
 
-    fun ServerPlayerEntity.teleport(vec3d: Vec3d, yaw: Float, pitch: Float) = this.teleport(server.overworld, vec3d.x, vec3d.y, vec3d.z, yaw, pitch)
+    fun ServerPlayerEntity.teleport(vec3d: Vec3d, yaw: Float, pitch: Float): Boolean
+    {
+        // new in 1.21.3: PositionFlags if relative tp and resetCamera (why not?)
+        return this.teleport(server.overworld, vec3d.x, vec3d.y, vec3d.z, emptySet<PositionFlag>(), yaw, pitch, true)
+    }
 
     fun setBlockAt(pos: BlockPos, block: Block)
     {
@@ -146,8 +156,14 @@ object Util
         return Vector3f(r.toFloat() / 0xFF.toFloat(), g.toFloat() / 0xFF.toFloat(), b.toFloat() / 0xFF.toFloat())
     }
 
-    fun getIntTextColor(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
-    fun getTextColor(r: Int, g: Int, b: Int): TextColor = TextColor.fromRgb(getIntTextColor(r, g, b))
+    /**
+     * converts individual RGB values to one int
+     * @param r red value with 0 <= r < 255/FF
+     * @param g green value with 0 <= g < 255/FF
+     * @param b blue value with 0 <= b < 255/FF
+     */
+    fun getRGBInt(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
+    fun getTextColor(r: Int, g: Int, b: Int): TextColor = TextColor.fromRgb(getRGBInt(r, g, b))
 
     val coordinatePattern: Pattern =
         Pattern.compile("\\((x\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(z\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(p\\s*=\\s*)?(\\d*\\.?\\d+)\\)")
@@ -221,6 +237,14 @@ object Util
         {
             return null
         }
+    }
+
+    fun parseItemStack(id: String, nbt: String, amount: Int): ItemStack
+    {
+        val itemResult = itemStringReader.consume(StringReader(id + nbt))
+        val itemStack = ItemStack(itemResult.item, amount)
+        itemStack.applyUnvalidatedChanges(itemResult.components)
+        return itemStack
     }
 }
 

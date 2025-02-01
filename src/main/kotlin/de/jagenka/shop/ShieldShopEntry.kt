@@ -14,6 +14,12 @@ import net.minecraft.text.Text
 class ShieldShopEntry(playerName: String, private val name: String = "Shield", private val targetDurability: Int = 120, private val price: Int = 50) :
     ShopEntry(playerName, nameForStat = name)
 {
+    /**
+     * count refers to durability bought in this case
+     */
+    override val amount: Int
+        get() = targetDurability
+
     override fun getPrice(): Int = price
 
     override fun getDisplayItemStack(): ItemStack =

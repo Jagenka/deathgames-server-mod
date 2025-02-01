@@ -77,14 +77,14 @@ object ParticleRenderer
         val baseY = player.pos.y
         val baseZ = player.pos.z
         vertices.forEach { vertex: Vec3d ->
-            server.overworld.spawnParticles(player, particle, true, baseX + vertex.x, baseY + vertex.y, baseZ + vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
+            server.overworld.spawnParticles(player, particle, true, true, baseX + vertex.x, baseY + vertex.y, baseZ + vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
     }
 
     fun drawMultipleParticlesWorld(server: MinecraftServer, player: ServerPlayerEntity, particle: ParticleEffect, vertices: Collection<Vec3d>)
     {
         vertices.forEach { vertex: Vec3d ->
-            server.overworld.spawnParticles(player, particle, true, vertex.x, vertex.y, vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
+            server.overworld.spawnParticles(player, particle, true, true, vertex.x, vertex.y, vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
     }
 
