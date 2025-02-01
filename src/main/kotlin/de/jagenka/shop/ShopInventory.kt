@@ -59,7 +59,7 @@ class ShopInventory(private val playerName: String) : Inventory
         if (isNonEmptySlot(slotIndex))
         {
             val moneySpent =
-                if (shopEntry is RefundShopEntry) -shopEntry.getTotalSpentMoney().scaledForRefund() // - because refund
+                if (shopEntry is RefundShopEntry) shopEntry.getTotalSpentMoney().scaledForRefund()
                 else shopEntry.getPrice()
 
             if (shopEntry.onClick())

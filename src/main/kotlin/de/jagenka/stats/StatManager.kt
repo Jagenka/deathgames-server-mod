@@ -36,7 +36,7 @@ object StatManager
     fun addRecentlyRefunded(playerName: String, shopEntry: ShopEntry, price: Int)
     {
         val itemsBought = personalStats.gib(playerName).itemsBought.toMutableList()
-        itemsBought.add(ItemBoughtEntry("${shopEntry.nameForStat}_REFUND_RECENT", shopEntry.amount, price, Timer.now().toLong()))
+        itemsBought.add(ItemBoughtEntry("${shopEntry.nameForStat}_REFUND_RECENT", shopEntry.amount, -price, Timer.now().toLong()))
         personalStats.gib(playerName).itemsBought = itemsBought
     }
 
