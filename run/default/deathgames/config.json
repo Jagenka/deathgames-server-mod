@@ -148,7 +148,7 @@
         "enableCapture": true,
         "captureTimeNeeded": 400,
         "respawnEffectNBTs": [
-            "{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"
+            "{ambient:0,amplifier:255,duration:100,id:resistance,show_icon:0,show_particles:0}"
         ],
         "respawnItems": []
     },
