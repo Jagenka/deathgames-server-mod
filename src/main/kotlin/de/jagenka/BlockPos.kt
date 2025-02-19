@@ -25,4 +25,9 @@ data class BlockPos(val x: Int, val y: Int, val z: Int)
         fun from(vec3d: Vec3d) = from(vec3d.x, vec3d.y, vec3d.z)
         fun from(x: Double, y: Double, z: Double) = BlockPos(x.floor(), y.floor(), z.floor())
     }
+
+    override fun toString(): String
+    {
+        return "($x, $y, $z)"
+    }
 }

@@ -1,13 +1,19 @@
 package de.jagenka.managers
 
-import de.jagenka.BlockPos
-import de.jagenka.Util
+import de.jagenka.*
 import de.jagenka.config.Config
-import de.jagenka.isSame
-import de.jagenka.toCenter
 import kotlinx.serialization.Serializable
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.LodestoneTrackerComponent
+import net.minecraft.component.type.NbtComponent
+import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.text.Text
+import net.minecraft.util.math.GlobalPos
+import java.util.*
 import kotlin.math.abs
 
 object BonusManager
@@ -72,10 +78,56 @@ object BonusManager
     }
 
     fun Platform.isActive() = activePlatforms.getValue(this)
+
+    val bonusCompass: ItemStack
+        get()
+        {
+            val compass = Items.COMPASS.defaultStack
+
+            val customCompassNbt = NbtCompound()
+            customCompassNbt.putBoolean("isDGBonusTracker", true)
+            compass.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customCompassNbt))
+
+            return compass
+        }
+
+    fun updateAllCompasses()
+    {
+        PlayerManager.getOnlineParticipatingPlayers().forEach { player ->
+            val compassesToGive = (selectedPlatforms.size -
+                    player.inventory.combinedInventory()
+                        .count {
+                            it.item == Items.COMPASS &&
+                                    it.get(DataComponentTypes.CUSTOM_DATA)?.nbt?.getBoolean("isDGBonusTracker") == true
+                        }).coerceAtLeast(0)
+
+            val emptyHotbarSlots = player.inventory.main.subList(0, 9).mapIndexed { index, itemStack -> if (itemStack.isEmpty) index else -1 }.filter { it >= 0 }
+            val fitInHotbar = emptyHotbarSlots.size
+            repeat(fitInHotbar.coerceAtMost(compassesToGive)) { player.inventory.setStack(emptyHotbarSlots.reversed()[it], bonusCompass) }
+            repeat((compassesToGive - fitInHotbar).coerceAtLeast(0)) { player.giveItemStack(bonusCompass) }
+
+            player.inventory.combinedInventory()
+                .filter {
+                    it.item == Items.COMPASS &&
+                            it.get(DataComponentTypes.CUSTOM_DATA)?.nbt?.getBoolean("isDGBonusTracker") == true
+                }
+                .forEachIndexed { index, stackInInventory ->
+                    if (index !in selectedPlatforms.indices) return@forEachIndexed
+
+                    val platform = selectedPlatforms[index]
+
+                    stackInInventory.setCustomName(Text.of(platform.toString().trim()))
+
+                    val lodestoneTrackerComponent =
+                        LodestoneTrackerComponent(Optional.of(GlobalPos.create(player.world.registryKey, platform.pos.asMinecraftBlockPos())), true)
+                    stackInInventory.set(DataComponentTypes.LODESTONE_TRACKER, lodestoneTrackerComponent)
+                }
+        }
+    }
 }
 
 @Serializable
 data class Platform(val name: String, val pos: BlockPos)
 {
-    override fun toString() = "$name,$pos"
+    override fun toString() = "$name $pos"
 }

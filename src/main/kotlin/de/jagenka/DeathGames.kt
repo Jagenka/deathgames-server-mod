@@ -194,6 +194,9 @@ object DeathGames : DedicatedServerModInitializer
             DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
         }
 
+        // give compass to next bonus platform
+        BonusManager.updateAllCompasses()
+
         ShopTask.tpOutActive = true
         Timer.gameMechsPaused = false
     }
