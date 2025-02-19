@@ -2,16 +2,16 @@ package de.jagenka.timer
 
 import de.jagenka.DeathGames.currentlyEnding
 import de.jagenka.config.Config
-import de.jagenka.gameplay.rendering.GPS
+import de.jagenka.managers.BonusManager
 
-object GPSTask: TimerTask
+object GPSTask : TimerTask
 {
     override val onlyInGame: Boolean
         get() = true
     override val isGameMechanic: Boolean
         get() = true
     override val runEvery: Int
-        get() = 2
+        get() = 5.seconds()
 
     override fun run()
     {
@@ -19,7 +19,7 @@ object GPSTask: TimerTask
 
         if (currentlyEnding) return
 
-        GPS.showArrowToNextBonusPlatform()
+        BonusManager.updateAllCompasses()
     }
 
     override fun reset()
