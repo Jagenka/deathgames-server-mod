@@ -1,12 +1,9 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
+import de.jagenka.*
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.getDGMoney
-import de.jagenka.setCustomName
-import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.EquipmentSlot
-import net.minecraft.item.ArmorItem
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -21,8 +18,6 @@ class UpgradeableShopEntry(
     private val name: String
 ) : ShopEntry(playerName, nameForStat = "${type}_UPGRADE")
 {
-    private val armorSlots = listOf(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD)
-
     init
     {
         items.forEach { if (it.isEmpty()) it.add(ItemStack.EMPTY) } // make sure there is a first item to be shown
@@ -115,24 +110,36 @@ class UpgradeableShopEntry(
         if (targetLevel == currentLevel) return 0
         if (targetLevel >= prices.size) return 0
 
+        // this stores what equipment slots were in which slots before upgrading, to later insert the upgrades into the same slots
+        var equipmentSlotToIndexInInventory = emptyMap<EquipmentSlot, Int>()
+
         // remove currently equipped items - can only work if current level is in range
         if (currentLevel in items.indices)
         {
             if (targetLevel !in items.indices)
             {
                 // remove all items from all upgrade levels when downgrading to level -1
-                items.flatMap { it }.forEach { itemStackToRemove ->
-                    player?.inventory?.remove({ itemStackInInventory ->
-                        itemStackInInventory.item == itemStackToRemove.item
-                    }, -1, player!!.playerScreenHandler.craftingInput)
+                items.flatten().forEach { itemStackToRemove ->
+                    player?.inventory?.removeItemStack(itemStackToRemove, 1)
                 }
             } else
             {
+                // find where armor items were stored
+                equipmentSlotToIndexInInventory =
+                    player?.inventory?.mapIndexedNotNull { index, stackInInventory ->
+                        val equipmentSlot = stackInInventory.item.equipmentSlot
+                        if (stackInInventory.item.isArmor() && equipmentSlot != null)
+                        {
+                            equipmentSlot to index
+                        } else
+                        {
+                            null
+                        }
+                    }?.toMap() ?: emptyMap()
+
+                // remove only the current levels items when target level is valid
                 items[currentLevel].forEach { itemStackToRemove ->
-                    player?.inventory?.remove({ itemStackInInventory ->
-                        (itemStackInInventory.item == itemStackToRemove.item) &&
-                                (itemStackInInventory.item !is ArmorItem) // do not remove armor items, as they get replaced instead later
-                    }, -1, player!!.playerScreenHandler.craftingInput) // should be null-safe, because remove will not be called, if player is null
+                    player?.inventory?.removeItemStack(itemStackToRemove, 1)
                 }
             }
         }
@@ -141,21 +148,20 @@ class UpgradeableShopEntry(
         if (targetLevel in items.indices)
         {
             items[targetLevel].forEach { itemStack ->
-                // remove only the items in slots that need to be filled with new armor
-                if (itemStack.item is ArmorItem)
+                // if the item is armor, we need to do some fancy stuffs
+                if (itemStack.item.isArmor())
                 {
-                    armorSlots.forEachIndexed { index, equipmentSlot ->
-                        // 1.21.3: EquipmentSlot is now a component
-                        if ((itemStack.item as? ArmorItem)?.components?.get(DataComponentTypes.EQUIPPABLE)?.slot == equipmentSlot)
-                        {
-                            player?.inventory?.remove(
-                                { ((it.item as? ArmorItem)?.components?.get(DataComponentTypes.EQUIPPABLE)?.slot == equipmentSlot) },
-                                -1,
-                                player!!.playerScreenHandler.craftingInput // should be null-safe, because remove will not be called, if player is null
-                            )
-                            // and also put the new armor into the slot
-                            player?.inventory?.armor[index] = itemStack.copy()
-                        }
+                    val equipmentSlot = itemStack.item.equipmentSlot
+                    val slotToPutIn = equipmentSlotToIndexInInventory[equipmentSlot]
+
+                    if (slotToPutIn != null)
+                    {
+                        // if a designated slot was determined for this equipment, re-insert it there
+                        player?.inventory?.insertStack(slotToPutIn, itemStack.copy())
+                    } else
+                    {
+                        // else just put it where it belongs
+                        player?.equipStack(equipmentSlot, itemStack.copy())
                     }
                 } else
                 {
@@ -164,7 +170,6 @@ class UpgradeableShopEntry(
                 }
             }
         }
-
 
         Shop.setLevelForUpgradeType(playerName, type, targetLevel)
 

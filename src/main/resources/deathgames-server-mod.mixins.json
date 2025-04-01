@@ -3,19 +3,21 @@
   "minVersion": "0.8",
   "package": "de.jagenka.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [],
-  "client": [],
-  "server": [
+  "mixins": [
     "CompassItemMixin",
+    "CraftingScreenHandlerMixin",
     "DamageTrackerMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "MinecraftDedicatedServerMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
+    "PlayerScreenHandlerMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayNetworkHandlerMixin"
   ],
+  "client": [],
+  "server": [],
   "injectors": {
     "defaultRequire": 1
   }

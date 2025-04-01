@@ -292,7 +292,7 @@
                 "name": "420",
                 "id": "minecraft:blaze_rod",
                 "amount": 1,
-                "components": "[enchantments={levels:{fire_aspect:2}}]",
+                "components": "[enchantments={fire_aspect:2}]",
                 "price": 40
             },
             {
@@ -473,7 +473,17 @@
                                 "components": "[unbreakable={}]"
                             },
                             {
+                                "id": "minecraft:leather_chestplate",
+                                "amount": 1,
+                                "components": "[unbreakable={}]"
+                            },
+                            {
                                 "id": "minecraft:iron_leggings",
+                                "amount": 1,
+                                "components": "[unbreakable={}]"
+                            },
+                            {
+                                "id": "minecraft:leather_boots",
                                 "amount": 1,
                                 "components": "[unbreakable={}]"
                             }
@@ -483,7 +493,17 @@
                     {
                         "items": [
                             {
+                                "id": "minecraft:iron_helmet",
+                                "amount": 1,
+                                "components": "[unbreakable={}]"
+                            },
+                            {
                                 "id": "minecraft:iron_chestplate",
+                                "amount": 1,
+                                "components": "[unbreakable={}]"
+                            },
+                            {
+                                "id": "minecraft:iron_leggings",
                                 "amount": 1,
                                 "components": "[unbreakable={}]"
                             },
@@ -503,7 +523,17 @@
                                 "components": "[unbreakable={}]"
                             },
                             {
+                                "id": "minecraft:iron_chestplate",
+                                "amount": 1,
+                                "components": "[unbreakable={}]"
+                            },
+                            {
                                 "id": "minecraft:diamond_leggings",
+                                "amount": 1,
+                                "components": "[unbreakable={}]"
+                            },
+                            {
+                                "id": "minecraft:iron_boots",
                                 "amount": 1,
                                 "components": "[unbreakable={}]"
                             }
@@ -513,7 +543,17 @@
                     {
                         "items": [
                             {
+                                "id": "minecraft:diamond_helmet",
+                                "amount": 1,
+                                "components": "[unbreakable={}]"
+                            },
+                            {
                                 "id": "minecraft:diamond_chestplate",
+                                "amount": 1,
+                                "components": "[unbreakable={}]"
+                            },
+                            {
+                                "id": "minecraft:diamond_leggings",
                                 "amount": 1,
                                 "components": "[unbreakable={}]"
                             },

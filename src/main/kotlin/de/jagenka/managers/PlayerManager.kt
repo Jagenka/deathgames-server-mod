@@ -167,6 +167,8 @@ object PlayerManager
     @JvmStatic
     fun onPlayerJoin(player: ServerPlayerEntity)
     {
+        Util.minecraftServer?.let { server -> player.lockRecipes(server.recipeManager.values()) }
+
         if (player.getDGTeam() == null)
         {
             ifServerLoaded { server ->

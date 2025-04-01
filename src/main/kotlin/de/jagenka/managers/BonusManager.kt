@@ -14,6 +14,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.Text
 import net.minecraft.util.math.GlobalPos
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.abs
 
 object BonusManager
@@ -98,7 +99,7 @@ object BonusManager
                     player.inventory.combinedInventory()
                         .count {
                             it.item == Items.COMPASS &&
-                                    it.get(DataComponentTypes.CUSTOM_DATA)?.nbt?.getBoolean("isDGBonusTracker") == true
+                                    it.get(DataComponentTypes.CUSTOM_DATA)?.nbt?.getBoolean("isDGBonusTracker")?.getOrNull() == true
                         }).coerceAtLeast(0)
 
             val emptyHotbarSlots = player.inventory.main.subList(0, 9).mapIndexed { index, itemStack -> if (itemStack.isEmpty) index else -1 }.filter { it >= 0 }
@@ -109,7 +110,7 @@ object BonusManager
             player.inventory.combinedInventory()
                 .filter {
                     it.item == Items.COMPASS &&
-                            it.get(DataComponentTypes.CUSTOM_DATA)?.nbt?.getBoolean("isDGBonusTracker") == true
+                            it.get(DataComponentTypes.CUSTOM_DATA)?.nbt?.getBoolean("isDGBonusTracker")?.getOrNull() == true
                 }
                 .forEachIndexed { index, stackInInventory ->
                     if (index !in selectedPlatforms.indices) return@forEachIndexed

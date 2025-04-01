@@ -3,7 +3,6 @@ package de.jagenka.shop;
 import de.jagenka.Util.parseItemStack
 import de.jagenka.config.Config
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.StringNbtReader
 
 class PersonalizedShop(private val playerName: String)
 {
@@ -44,13 +43,13 @@ class PersonalizedShop(private val playerName: String)
             buffer[slot(row, col)] = UpgradeableShopEntry(playerName, id, itemStackLists, prices, name)
         }
 
-        Config.shop.traps.forEach { (row, col, name, price, snare, effectNBTs, triggerRange, setupTime, triggerVisibilityRange, visibilityRange, affectedRange, triggerDuration) ->
+        Config.shop.traps.forEach { (row, col, name, price, snare, effectNBTStrings, triggerRange, setupTime, triggerVisibilityRange, visibilityRange, affectedRange, triggerDuration) ->
             buffer[slot(row, col)] = TrapShopEntry(
                 playerName,
                 name,
                 price,
                 snare,
-                effectNBTs.map { StringNbtReader.parse(it) },
+                effectNBTStrings,
                 triggerRange,
                 setupTime,
                 triggerVisibilityRange,

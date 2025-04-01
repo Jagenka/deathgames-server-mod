@@ -30,6 +30,7 @@ import net.minecraft.entity.damage.DamageSource
 import net.minecraft.entity.damage.DamageTypes
 import net.minecraft.entity.decoration.ArmorStandEntity
 import net.minecraft.entity.projectile.ProjectileEntity
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.Text.literal
@@ -159,7 +160,7 @@ object DeathGames : DedicatedServerModInitializer
         PlayerManager.getOnlinePlayers().forEach {
             it.closeHandledScreen()
             val (x, y, z) = Config.spawns.lobbySpawn
-            it.setSpawnPoint(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true, false)
+            it.setSpawnPoint(ServerPlayerEntity.Respawn(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true), false)
 
             if (Config.misc.startInShop)
             {

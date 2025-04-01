@@ -6,6 +6,7 @@ import de.jagenka.managers.getDGMoney
 import de.jagenka.maxDamage
 import de.jagenka.setCustomName
 import de.jagenka.withDamage
+import net.minecraft.entity.EquipmentSlot
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items.SHIELD
 import net.minecraft.text.Style
@@ -35,12 +36,14 @@ class ShieldShopEntry(playerName: String, private val name: String = "Shield", p
     override fun onClick(): Boolean
     {
         return attemptSale(player, price) {
-            val upgradableShield = player?.inventory?.main?.find { itemStackInInv ->
-                itemStackInInv.item == SHIELD && itemStackInInv.damage >= targetDurability
+            // first, look in offhand for an upgradable shield
+            val upgradableShield = (player?.inventory?.equipment?.get(EquipmentSlot.OFFHAND)?.takeIf { itemStackInOffhand ->
+                itemStackInOffhand.item == SHIELD && itemStackInOffhand.damage >= targetDurability
             }
-                ?: player?.inventory?.offHand?.find { itemStackInInv ->
+            // if not present, look in main inventory
+                ?: player?.inventory?.main?.find { itemStackInInv ->
                     itemStackInInv.item == SHIELD && itemStackInInv.damage >= targetDurability
-                } // if item is in offhand
+                })
             if (upgradableShield != null)
             {
                 upgradableShield.damage -= targetDurability
@@ -71,7 +74,7 @@ class ShieldShopEntry(playerName: String, private val name: String = "Shield", p
         return player?.inventory?.main?.find { itemStackInInv ->
             itemStackInInv.item == SHIELD && itemStackInInv.damage <= SHIELD.maxDamage - targetDurability
         }
-            ?: player?.inventory?.offHand?.find { itemStackInInv ->
+            ?: player?.inventory?.equipment?.get(EquipmentSlot.OFFHAND)?.takeIf { itemStackInInv ->
                 itemStackInInv.item == SHIELD && itemStackInInv.damage <= SHIELD.maxDamage - targetDurability
             } // if item is in offhand
     }
