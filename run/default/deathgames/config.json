@@ -201,7 +201,7 @@
         "perTeam": 10
     },
     "money": {
-        "start": 110,
+        "start": 1100,
         "amountPerInterval": 5,
         "interval": 600,
         "perKill": 20,
@@ -301,7 +301,7 @@
                 "name": "Invisibility",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Invisibility\",\"italic\":false}',potion_contents={custom_effects:[{id:invisibility,amplifier:0,duration:1200}]}]",
+                "components": "[custom_name={text:\"Invisibility\",italic:false},potion_contents={custom_effects:[{id:invisibility,amplifier:0,duration:1200}]}]",
                 "price": 35
             },
             {
@@ -310,7 +310,7 @@
                 "name": "Speed",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Speed\",\"italic\":false}',potion_contents={custom_effects:[{id:speed,amplifier:0,duration:3600}]}]",
+                "components": "[custom_name={text:\"Speed\",italic:false},potion_contents={custom_effects:[{id:speed,amplifier:0,duration:3600}]}]",
                 "price": 30
             },
             {
@@ -319,7 +319,7 @@
                 "name": "Fire Resistance",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Fire Resistance\",\"italic\":false}',potion_contents={custom_effects:[{id:fire_resistance,amplifier:0,duration:3600}]}]",
+                "components": "[custom_name={text:\"Fire Resistance\",italic:false},potion_contents={custom_effects:[{id:fire_resistance,amplifier:0,duration:3600}]}]",
                 "price": 20
             },
             {
@@ -328,7 +328,7 @@
                 "name": "Strength",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Strength\",\"italic\":false}',potion_contents={custom_effects:[{id:strength,amplifier:0,duration:3600}]}]",
+                "components": "[custom_name={text:\"Strength\",italic:false},potion_contents={custom_effects:[{id:strength,amplifier:0,duration:3600}]}]",
                 "price": 45
             },
             {
@@ -337,7 +337,7 @@
                 "name": "Regeneration",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Regeneration\",\"italic\":false}',potion_contents={custom_effects:[{id:regeneration,amplifier:0,duration:3600}]}]",
+                "components": "[custom_name={text:\"Regeneration\",italic:false},potion_contents={custom_effects:[{id:regeneration,amplifier:0,duration:3600}]}]",
                 "price": 25
             },
             {
@@ -346,7 +346,7 @@
                 "name": "Dolphins Grace",
                 "id": "minecraft:potion",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Dolphins Grace\",\"italic\":false}',potion_contents={custom_effects:[{id:dolphins_grace,amplifier:0,duration:3600}]}]",
+                "components": "[custom_name={text:\"Dolphins Grace\",italic:false},potion_contents={custom_effects:[{id:dolphins_grace,amplifier:0,duration:3600}]}]",
                 "price": 20
             },
             {
@@ -355,7 +355,7 @@
                 "name": "Lingering Pain",
                 "id": "minecraft:lingering_potion",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Lingering Pain\",\"italic\":false}',potion_contents={custom_effects:[{id:instant_damage,amplifier:0,duration:100}]}]",
+                "components": "[custom_name={text:\"Lingering Pain\",italic:false},potion_contents={custom_effects:[{id:instant_damage,amplifier:0,duration:100}]}]",
                 "price": 20
             },
             {
@@ -364,7 +364,7 @@
                 "name": "Slowness",
                 "id": "minecraft:splash_potion",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Splash Slowness\",\"italic\":false}',potion_contents={custom_effects:[{id:slowness,amplifier:0,duration:1800}]}]",
+                "components": "[custom_name={text:\"Splash Slowness\",italic:false},potion_contents={custom_effects:[{id:slowness,amplifier:0,duration:1800}]}]",
                 "price": 40
             },
             {
