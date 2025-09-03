@@ -27,10 +27,10 @@
     "deathgames-server-mod.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.10",
-    "fabric": ">=0.119.6+1.21.5",
-    "fabric-language-kotlin": ">=1.13.2+kotlin.2.1.20",
-    "minecraft": "~1.21.5",
+    "fabricloader": ">=0.17.2",
+    "fabric": ">=0.133.0+1.21.8",
+    "fabric-language-kotlin": ">=1.13.5+kotlin.2.2.10",
+    "minecraft": "~1.21.8",
     "java": ">=21"
   }
 }
