@@ -7,10 +7,11 @@ import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.component.type.NbtComponent
+import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.StringNbtReader
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 
@@ -19,7 +20,7 @@ class TrapShopEntry(
     private val name: String,
     private val price: Int,
     isSnare: Boolean,
-    effects: List<NbtCompound>,
+    effects: List<String>,
     triggerRange: Double,
     setupTime: Int,
     triggerVisibilityRange: Double,
@@ -32,11 +33,14 @@ class TrapShopEntry(
 
     init
     {
-        val effectsNbt = NbtList()
-        effectsNbt.addAll(effects)
+        val combinedNbtString = effects.joinToString(separator = ",", prefix = "{effects:[", postfix = "]}")
+
+        val effectInstances = StringNbtReader.readCompound(combinedNbtString)
+            .get("effects", StatusEffectInstance.CODEC.listOf())
+            .orElse(emptyList())
 
         val nbt = NbtCompound()
-        nbt.put("trapEffects", effectsNbt)
+        nbt.put("trapEffects", StatusEffectInstance.CODEC.listOf(), effectInstances)
         nbt.putBoolean("isSnareTrap", isSnare)
         nbt.putDouble("trapTriggerRange", triggerRange)
         nbt.putInt("trapSetupTime", setupTime)

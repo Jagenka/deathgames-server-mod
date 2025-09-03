@@ -8,7 +8,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
-import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -72,13 +71,9 @@ public class ItemStackMixin
         // ender pearls in shop
         if (stackInHand.getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(user))
         {
-            if (user instanceof ServerPlayerEntity)
-            {
-                ((ServerPlayerEntity) user).networkHandler.sendPacket(
-                        new ScreenHandlerSlotUpdateS2CPacket(-2, 0, user.getInventory().selectedSlot, user.getInventory().getStack(user.getInventory().selectedSlot)));
-            }
             cir.setReturnValue(ActionResult.FAIL);
             cir.cancel();
+            user.currentScreenHandler.sendContentUpdates();
         }
     }
 }

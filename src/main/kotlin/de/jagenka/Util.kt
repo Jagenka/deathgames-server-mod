@@ -12,7 +12,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.command.argument.ItemStringReader
 import net.minecraft.component.ComponentMap
 import net.minecraft.component.DataComponentTypes
-import net.minecraft.component.type.UnbreakableComponent
+import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -71,9 +71,14 @@ object Util
             server.gameRules[GameRules.KEEP_INVENTORY].set(true, server)
             server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(false, server)
             server.gameRules[GameRules.DO_WEATHER_CYCLE].set(false, server)
+            server.gameRules[GameRules.LOCATOR_BAR].set(false, server)
             server.overworld.setWeather(Int.MAX_VALUE, 0, false, false)
             server.overworld.timeOfDay = 6000 // noon
             server.setDifficulty(Difficulty.NORMAL, false)
+
+            PlayerManager.getOnlinePlayers().forEach { player ->
+                player.lockRecipes(server.recipeManager.values())
+            }
         }
 
         PlayerManager.prepareTeams()
@@ -92,13 +97,15 @@ object Util
         if (coordinates == null) return
         val (x, y, z, yaw, pitch) = coordinates
         // new in 1.21.3: PositionFlags if relative tp and resetCamera (why not?)
-        this.teleport(server.overworld, x.toCenter(), y.toDouble(), z.toCenter(), emptySet<PositionFlag>(), yaw, pitch, true)
+        // new in 0.10.0-1.21.8: no longer teleporting to overworld, as map could be in another dimension
+        this.teleport(world, x.toCenter(), y.toDouble(), z.toCenter(), emptySet<PositionFlag>(), yaw, pitch, true)
     }
 
     fun ServerPlayerEntity.teleport(vec3d: Vec3d, yaw: Float, pitch: Float): Boolean
     {
         // new in 1.21.3: PositionFlags if relative tp and resetCamera (why not?)
-        return this.teleport(server.overworld, vec3d.x, vec3d.y, vec3d.z, emptySet<PositionFlag>(), yaw, pitch, true)
+        // new in 0.10.0-1.21.8: no longer teleporting to overworld, as map could be in another dimension
+        return this.teleport(world, vec3d.x, vec3d.y, vec3d.z, emptySet<PositionFlag>(), yaw, pitch, true)
     }
 
     fun setBlockAt(pos: BlockPos, block: Block)
@@ -296,7 +303,13 @@ fun Vec3d.rotateAroundVector(axis: Vector3f, degrees: Float): Vec3d
 
 infix fun Block.isSame(block: Block) = this.translationKey == block.translationKey
 
-fun PlayerInventory.combinedInventory() = main + offHand + armor
+fun PlayerInventory.combinedInventory() =
+    main +
+            equipment.get(EquipmentSlot.OFFHAND) +
+            equipment.get(EquipmentSlot.HEAD) +
+            equipment.get(EquipmentSlot.BODY) +
+            equipment.get(EquipmentSlot.LEGS) +
+            equipment.get(EquipmentSlot.FEET)
 
 /**
  * custom port of previously existing function
@@ -323,12 +336,28 @@ fun ItemStack.withDamage(damage: Int): ItemStack
 val Item.maxDamage
     get() = (this.components.get(DataComponentTypes.MAX_DAMAGE) ?: 0)
 
+fun Item.isArmor(): Boolean
+{
+    return (this.components.get(DataComponentTypes.EQUIPPABLE)?.slot ?: return false) in
+            listOf(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
+}
+
+val Item.equipmentSlot: EquipmentSlot?
+    get() = this.components.get(DataComponentTypes.EQUIPPABLE)?.slot
+
+fun PlayerInventory.removeItemStack(stackToRemove: ItemStack, maxCount: Int = -1): Int
+{
+    return this.remove({ itemStackInInventory ->
+        ItemStack.areEqual(stackToRemove, itemStackInInventory)
+    }, maxCount, player!!.playerScreenHandler.craftingInput) // should be null-safe, because a player inventory without a player should be an illegal state
+}
+
 /**
- * i will leave this here, because it took me 30 mins to figure this out haha
+ * I will leave this here, because it took me 30 minutes to figure this out haha
  */
 private fun ItemStack.makeUnbreakable(): ItemStack
 {
     val componentType = DataComponentTypes.UNBREAKABLE
-    this.applyComponentsFrom(ComponentMap.builder().add(componentType, UnbreakableComponent(true)).build())  // show in tooltip
+    this.applyComponentsFrom(ComponentMap.builder().add(componentType, net.minecraft.util.Unit.INSTANCE).build())  // show in tooltip
     return this
 }

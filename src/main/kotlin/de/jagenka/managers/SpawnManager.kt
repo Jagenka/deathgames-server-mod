@@ -24,9 +24,9 @@ object SpawnManager
     val platformRadius
         get() = Config.spawns.platformRadius
 
-    val respawnEffects = Config.spawns.respawnEffectNBTs.mapNotNull {
-        StatusEffectInstance.fromNbt(StringNbtReader.parse(it))
-    }
+    val respawnEffects = StringNbtReader.readCompound(
+        Config.spawns.respawnEffectNBTs.joinToString(separator = ",", prefix = "{effects:[", postfix = "]}")
+    ).get("effects", StatusEffectInstance.CODEC.listOf()).orElse(emptyList())
 
     val respawnItems = Config.spawns.respawnItems.map { (id, amount, components) ->
         Util.parseItemStack(id, components, amount)

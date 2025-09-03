@@ -15,6 +15,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.sqrt
 
 object BlackjackAndHookers
@@ -73,10 +74,9 @@ object BlackjackAndHookers
 
         itemStackInHand.components?.let { components ->
             val nbt = components.get(CUSTOM_DATA)?.nbt ?: return false
-            if (!nbt.contains("hookMaxDistance") || !nbt.contains("hookCooldown")) return false
 
-            val maxDistance = nbt.getDouble("hookMaxDistance")
-            val cooldownSetting = nbt.getInt("hookCooldown")
+            val maxDistance = nbt.getDouble("hookMaxDistance").getOrNull() ?: return false
+            val cooldownSetting = nbt.getInt("hookCooldown").getOrNull() ?: return false
 
             val cooldown = cooldowns.getOrPut(itemStackInHand) { Cooldown(cooldownSetting) }
 
