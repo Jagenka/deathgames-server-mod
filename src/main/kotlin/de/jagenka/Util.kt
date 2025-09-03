@@ -71,6 +71,7 @@ object Util
             server.gameRules[GameRules.KEEP_INVENTORY].set(true, server)
             server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(false, server)
             server.gameRules[GameRules.DO_WEATHER_CYCLE].set(false, server)
+            server.gameRules[GameRules.LOCATOR_BAR].set(false, server)
             server.overworld.setWeather(Int.MAX_VALUE, 0, false, false)
             server.overworld.timeOfDay = 6000 // noon
             server.setDifficulty(Difficulty.NORMAL, false)
