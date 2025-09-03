@@ -8,8 +8,8 @@ pluginManagement {
         gradlePluginPortal()
     }
     plugins {
-        val loomVersion: String by settings
-        id("fabric-loom").version(loomVersion)
+        val loom_version: String by settings
+        id("fabric-loom").version(loom_version)
         val kotlinVersion: String by System.getProperties()
         kotlin("jvm").version(kotlinVersion)
     }

@@ -53,7 +53,7 @@ class Trap(
         // show/play trigger effects
         getOnlinePlayersAround(position, triggerVisibilityRange).forEach { player ->
             // exploding particles
-            player.serverWorld.spawnParticles(
+            player.world.spawnParticles(
                 player, ParticleTypes.LARGE_SMOKE, true, true, x.toCenter(), y.toDouble(), z.toCenter(), 500, .0, .0, .0, .5
             )
             // play sound

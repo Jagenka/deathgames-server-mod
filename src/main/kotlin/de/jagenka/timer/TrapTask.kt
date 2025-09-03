@@ -25,7 +25,7 @@ object TrapTask : TimerTask
             if (!trap.doneSettingUp) // setup animation
             {
                 playersInGeneralVisibilityRange.forEach { player ->
-                    player.serverWorld.spawnParticles(
+                    player.world.spawnParticles(
                         player, ParticleTypes.CRIT, true, true, x.toCenter(), y + 0.2, z.toCenter(), 1, 0.05, 0.1, 0.05, 0.1
                     )
                 }
@@ -35,7 +35,7 @@ object TrapTask : TimerTask
             {
                 // play idle animation
                 playersInGeneralVisibilityRange.forEach { player ->
-                    player.serverWorld.spawnParticles(
+                    player.world.spawnParticles(
                         ParticleTypes.NAUTILUS, x.toCenter(), y - 0.015, z.toCenter(), 0, 0.0, 0.0, 0.0, 0.0
                     )
                 }

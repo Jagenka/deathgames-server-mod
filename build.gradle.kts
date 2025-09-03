@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
@@ -56,8 +58,8 @@ tasks {
         options.release.set(21)
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "21"
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
     jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }

@@ -160,7 +160,8 @@ object DeathGames : DedicatedServerModInitializer
         PlayerManager.getOnlinePlayers().forEach {
             it.closeHandledScreen()
             val (x, y, z) = Config.spawns.lobbySpawn
-            it.setSpawnPoint(ServerPlayerEntity.Respawn(it.server.overworld.registryKey, BlockPos(x, y, z), 0f, true), false)
+            // new in 0.10.0-1.21.8: no longer setting spawn in overworld, as map could be in another dimension
+            it.setSpawnPoint(ServerPlayerEntity.Respawn(it.world.registryKey, BlockPos(x, y, z), 0f, true), false)
 
             if (Config.misc.startInShop)
             {

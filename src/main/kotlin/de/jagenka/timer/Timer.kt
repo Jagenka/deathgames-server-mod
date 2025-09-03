@@ -1,7 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames
-import kotlinx.datetime.Clock
+import kotlin.time.ExperimentalTime
 
 object Timer
 {
@@ -106,7 +106,8 @@ object Timer
         intervalTasks.removeIf { it.name == name }
     }
 
-    fun newCustomTimer(name: String = Clock.System.now().toString()): CustomTimer
+    @OptIn(ExperimentalTime::class)
+    fun newCustomTimer(name: String = kotlin.time.Clock.System.now().toString()): CustomTimer
     {
         val customTimer = CustomTimer(name)
         return customTimers.find { it.name == name } // return timer already in storage instead of adding a new one

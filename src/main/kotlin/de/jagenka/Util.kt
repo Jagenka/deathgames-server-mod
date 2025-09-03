@@ -96,13 +96,15 @@ object Util
         if (coordinates == null) return
         val (x, y, z, yaw, pitch) = coordinates
         // new in 1.21.3: PositionFlags if relative tp and resetCamera (why not?)
-        this.teleport(server.overworld, x.toCenter(), y.toDouble(), z.toCenter(), emptySet<PositionFlag>(), yaw, pitch, true)
+        // new in 0.10.0-1.21.8: no longer teleporting to overworld, as map could be in another dimension
+        this.teleport(world, x.toCenter(), y.toDouble(), z.toCenter(), emptySet<PositionFlag>(), yaw, pitch, true)
     }
 
     fun ServerPlayerEntity.teleport(vec3d: Vec3d, yaw: Float, pitch: Float): Boolean
     {
         // new in 1.21.3: PositionFlags if relative tp and resetCamera (why not?)
-        return this.teleport(server.overworld, vec3d.x, vec3d.y, vec3d.z, emptySet<PositionFlag>(), yaw, pitch, true)
+        // new in 0.10.0-1.21.8: no longer teleporting to overworld, as map could be in another dimension
+        return this.teleport(world, vec3d.x, vec3d.y, vec3d.z, emptySet<PositionFlag>(), yaw, pitch, true)
     }
 
     fun setBlockAt(pos: BlockPos, block: Block)
