@@ -1,4 +1,4 @@
-package de.jagenka.shop;
+package de.jagenka.shop
 
 import de.jagenka.Util.parseItemStack
 import de.jagenka.config.Config

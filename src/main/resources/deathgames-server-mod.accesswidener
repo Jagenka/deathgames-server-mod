@@ -1,8 +1,8 @@
 accessWidener	v1	named
 
-accessible field net/minecraft/component/type/NbtComponent nbt Lnet/minecraft/nbt/NbtCompound;
+accessible field net/minecraft/world/item/component/CustomData tag Lnet/minecraft/nbt/CompoundTag;
 
-accessible field net/minecraft/entity/player/PlayerInventory main Lnet/minecraft/util/collection/DefaultedList;
-accessible field net/minecraft/entity/player/PlayerInventory equipment Lnet/minecraft/entity/EntityEquipment;
+accessible field net/minecraft/world/entity/player/Inventory items Lnet/minecraft/core/NonNullList;
+accessible field net/minecraft/world/entity/player/Inventory equipment Lnet/minecraft/world/entity/EntityEquipment;
 
-accessible method net/minecraft/entity/decoration/ArmorStandEntity setMarker (Z)V
+accessible method net/minecraft/world/entity/decoration/ArmorStand setMarker (Z)V
