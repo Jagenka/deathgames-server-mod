@@ -2,7 +2,6 @@ package de.jagenka.gameplay.rendering
 
 import net.minecraft.util.math.Vec3d
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
 

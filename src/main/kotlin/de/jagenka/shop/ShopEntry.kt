@@ -4,13 +4,13 @@ import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 
 abstract class ShopEntry(internal val playerName: String, internal val nameForStat: String)
 {
-    val player: ServerPlayerEntity?
+    val player: ServerPlayer?
         get() = PlayerManager.getOnlinePlayer(playerName)
 
     /**
@@ -60,7 +60,7 @@ abstract class ShopEntry(internal val playerName: String, internal val nameForSt
          * central method to attempt a sale to a player
          * @return if sale was successful
          */
-        fun attemptSale(player: ServerPlayerEntity?, price: Int, saleProcess: () -> Unit): Boolean
+        fun attemptSale(player: ServerPlayer?, price: Int, saleProcess: () -> Unit): Boolean
         {
             if (player == null) return false
             if (getDGMoney(player.name.string) >= price)

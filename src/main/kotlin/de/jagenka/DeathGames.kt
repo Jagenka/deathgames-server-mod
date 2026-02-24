@@ -22,30 +22,28 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.minecraft.command.CommandRegistryAccess
-import net.minecraft.entity.Entity
-import net.minecraft.entity.ItemEntity
-import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.damage.DamageSource
-import net.minecraft.entity.damage.DamageTypes
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.entity.projectile.ProjectileEntity
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.text.Text.literal
-import net.minecraft.text.Texts
-import net.minecraft.util.Formatting
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.GameMode
-import net.minecraft.world.GameRules
+import net.minecraft.ChatFormatting
+import net.minecraft.commands.CommandBuildContext
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ComponentUtils
+import net.minecraft.network.chat.Style
+import net.minecraft.world.damagesource.DamageSource
+import net.minecraft.world.damagesource.DamageTypes
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.entity.projectile.Projectile
+import net.minecraft.world.level.GameType
+import net.minecraft.world.level.gamerules.GameRules
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object DeathGames : DedicatedServerModInitializer
 {
     val logger: Logger = LoggerFactory.getLogger("deathgames-server-mod")
-    lateinit var commandRegistryAccess: CommandRegistryAccess
+    lateinit var commandBuildContext: CommandBuildContext
 
     var running = false
 
@@ -67,8 +65,7 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         ServerLivingEntityEvents.ALLOW_DAMAGE.register { livingEntity: LivingEntity, damageSource: DamageSource, _: Float ->
-            //println(damageSource.name + " " + DamageTypes.FALL.value.path)
-            return@register !(!Config.misc.enableFallDamage && livingEntity.isPlayer && damageSource.name == DamageTypes.FALL.value.path)
+            return@register !(!Config.misc.enableFallDamage && livingEntity is Player && damageSource.`is`(DamageTypes.FALL))
         }
 
         registerCommands()
@@ -81,7 +78,7 @@ object DeathGames : DedicatedServerModInitializer
     private fun registerCommands()
     {
         CommandRegistrationCallback.EVENT.register { dispatcher, commandRegistryAccess, _ ->
-            DeathGames.commandRegistryAccess = commandRegistryAccess
+            DeathGames.commandBuildContext = commandRegistryAccess
             DeathGamesCommand.register(dispatcher)
         }
     }
@@ -92,17 +89,33 @@ object DeathGames : DedicatedServerModInitializer
         if (currentlyStarting) return
         if (PlayerManager.getNonEmptyTeams().size < 2)
         {
-            DisplayManager.sendChatMessage(literal(I18n.get("notEnoughTeams")).getWithStyle(Style.EMPTY.withColor(Formatting.RED))[0])
+            DisplayManager.sendChatMessage(
+                Component.literal(I18n.get("notEnoughTeams")).withColor(ChatFormatting.RED.color ?: 0)
+            )
             return
         }
 
         currentlyStarting = true
 
         PlayerManager.getOnlinePlayers().forEach { player ->
-            player.closeHandledScreen()
-            DisplayManager.sendTitleMessage(player, literal("3"), literal(""), 1.seconds())
-            Timer.schedule(1.seconds()) { DisplayManager.sendTitleMessage(player, literal("2"), literal(""), 1.seconds()) }
-            Timer.schedule(2.seconds()) { DisplayManager.sendTitleMessage(player, literal("1"), literal(""), 1.seconds()) }
+            player.closeContainer()
+            DisplayManager.sendTitleMessage(player, Component.literal("3"), Component.literal(""), 1.seconds())
+            Timer.schedule(1.seconds()) {
+                DisplayManager.sendTitleMessage(
+                    player,
+                    Component.literal("2"),
+                    Component.literal(""),
+                    1.seconds()
+                )
+            }
+            Timer.schedule(2.seconds()) {
+                DisplayManager.sendTitleMessage(
+                    player,
+                    Component.literal("1"),
+                    Component.literal(""),
+                    1.seconds()
+                )
+            }
         }
 
         Timer.schedule(3.seconds()) { startGame() }
@@ -131,26 +144,27 @@ object DeathGames : DedicatedServerModInitializer
         MoneyManager.initMoney()
 
         teamPlayers.forEach {
-            it.clearStatusEffects()
-            it.inventory.clear()
+            it.removeAllEffects()
+            it.inventory.clearContent()
             it.health = 20f //set max hearts
-            it.hungerManager.add(20, 1f) //set max food and saturation
+            it.foodData.eat(20, 1f) //set max food and saturation
             PlayerManager.addParticipant(it.name.string)
-            it.changeGameMode(GameMode.ADVENTURE)
+            it.setGameMode(GameType.ADVENTURE)
         }
 
         // remove items drops and stuck projectiles from map
         ifServerLoaded { server ->
-            server.overworld.iterateEntities().toList().filter {
+            server.overworld().allEntities.toList().filter {
                 it is ItemEntity ||
-                        it is ProjectileEntity ||
-                        (it as? ArmorStandEntity)?.customName?.string == "hook"
+                        it is Projectile ||
+                        (it as? ArmorStand)?.customName?.string == "hook"
             }.forEach { it.remove(Entity.RemovalReason.KILLED) }
         }
         // remove previously laid traps
         TrapManager.reset()
 
-        PlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }.forEach { it.changeGameMode(GameMode.SPECTATOR) }
+        PlayerManager.getOnlinePlayers().filter { it.getDGTeam() == null }
+            .forEach { it.setGameMode(GameType.SPECTATOR) }
 
         SpawnManager.initSpawns()
 
@@ -158,10 +172,10 @@ object DeathGames : DedicatedServerModInitializer
 
         val secondsToSpawnTp = Config.misc.startInShopTpAfterSeconds
         PlayerManager.getOnlinePlayers().forEach {
-            it.closeHandledScreen()
+            it.closeContainer()
             val (x, y, z) = Config.spawns.lobbySpawn
-            // new in 0.10.0-1.21.8: no longer setting spawn in overworld, as map could be in another dimension
-            it.setSpawnPoint(ServerPlayerEntity.Respawn(it.world.registryKey, BlockPos(x, y, z), 0f, true), false)
+            // TODO: does this do the same?
+            it.adjustSpawnLocation(it.level(), BlockPos(x, y, z).asMinecraftBlockPos())
 
             if (Config.misc.startInShop)
             {
@@ -187,13 +201,18 @@ object DeathGames : DedicatedServerModInitializer
     private fun postPrep()
     {
         minecraftServer?.let { server ->
-            server.gameRules[GameRules.DO_DAYLIGHT_CYCLE].set(!Config.misc.freezeTime, server)
-            server.overworld.timeOfDay = Config.misc.timeAtGameStart
+            server.worldData.gameRules.set(GameRules.ADVANCE_TIME, !Config.misc.freezeTime, server)
+            server.overworld().dayTime = Config.misc.timeAtGameStart
         }
 
         PlayerManager.getOnlinePlayers().forEach {
             ShopTask.exitShop(it.name.string)
-            DisplayManager.sendTitleMessage(it, Text.of(I18n.get("startTitle")), Text.of(I18n.get("startSubtitle")), 5.seconds())
+            DisplayManager.sendTitleMessage(
+                it,
+                Component.literal(I18n.get("startTitle")),
+                Component.literal(I18n.get("startSubtitle")),
+                5.seconds()
+            )
         }
 
         // give compass to next bonus platform
@@ -211,23 +230,28 @@ object DeathGames : DedicatedServerModInitializer
 
         currentlyEnding = true
 
-        val winners = mutableListOf<Text>()
+        val winners = mutableListOf<Component>()
         val onlineParticipatingTeams = PlayerManager.getOnlineParticipatingTeams()
         onlineParticipatingTeams.forEach { team ->
             winners.add(team.getFormattedText())
         }
         val winnerCount = onlineParticipatingTeams.count()
-        val winnerPlayers = Texts.join(winners, Text.of(", "))
+        val winnerPlayers = ComponentUtils.formatList(winners, Component.literal(", "))
         winners.clear()
         if (winnerCount != 0)
         {
             winners.add(
-                Text.of(if (winnerCount != 1) I18n.get("winnerPlural") else I18n.get("winnerSingular"))
+                Component.literal(if (winnerCount != 1) I18n.get("winnerPlural") else I18n.get("winnerSingular"))
             )
             winners.add(winnerPlayers)
         }
         PlayerManager.getOnlinePlayers().forEach {
-            DisplayManager.sendTitleMessage(it, Text.of(I18n.get("endTitle")), Texts.join(winners, Text.of(": ")), 5.seconds())
+            DisplayManager.sendTitleMessage(
+                it,
+                Component.literal(I18n.get("endTitle")),
+                ComponentUtils.formatList(winners, Component.literal(": ")),
+                5.seconds()
+            )
         }
 
         if (winnerCount == 1)
@@ -242,10 +266,12 @@ object DeathGames : DedicatedServerModInitializer
 
         BonusManager.disableAllPlatforms()
 
-        PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
+        PlayerManager.getOnlinePlayers().forEach { it.setGameMode(GameType.SPECTATOR) }
 
         DisplayManager.sendChatMessage("")
-        DisplayManager.sendChatMessage(literal("Player K/Ds:").getWithStyle(Style.EMPTY.withBold(true))[0])
+        DisplayManager.sendChatMessage(
+            Component.literal("Player K/Ds:").toFlatList(Style.EMPTY.withBold(true))[0]
+        ) // TODO: einfacher?
         StatManager.getKDs().forEach { (playerName, kills, deaths) ->
             DisplayManager.sendChatMessage("$playerName: $kills / $deaths")
         }
@@ -255,11 +281,11 @@ object DeathGames : DedicatedServerModInitializer
 
         Timer.schedule(10.seconds()) {
             PlayerManager.getOnlinePlayers().forEach {
-                it.changeGameMode(GameMode.ADVENTURE)
-                it.clearStatusEffects()
-                it.inventory.clear()
+                it.setGameMode(GameType.ADVENTURE)
+                it.removeAllEffects()
+                it.inventory.clearContent()
                 it.health = 20f //set max hearts
-                it.hungerManager.add(20, 1f) //set max food and saturation
+                it.foodData.eat(20, 1f) //set max food and saturation
             }
 
             SpawnManager.resetSpawnColoring()

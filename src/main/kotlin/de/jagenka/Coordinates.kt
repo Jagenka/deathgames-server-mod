@@ -21,7 +21,7 @@ data class Coordinates(val x: Int, val y: Int, val z: Int, val yaw: Float, val p
     fun relative(x: Double, y: Double, z: Double) = Coordinates(this.x + x, this.y + y, this.z + z, this.yaw, this.pitch)
     fun relative(x: Int, y: Int, z: Int) = relative(x.toDouble(), y.toDouble(), z.toDouble())
 
-    fun toVec3d() = Vec3(x.toCenter(), y.toDouble(), z.toCenter())
+    fun toVec3() = Vec3(x.toCenter(), y.toDouble(), z.toCenter())
 
     fun asBlockPos() = BlockPos(x, y, z)
 
@@ -44,4 +44,4 @@ data class Coordinates(val x: Int, val y: Int, val z: Int, val yaw: Float, val p
 fun Int.toCenter() = this + 0.5
 
 //fun Vec3d.toDGCoordinates() = Coordinates(this)
-fun ServerPlayer.getDGCoordinates() = Coordinates(this.x, this.y, this.z, this.xRot, this.yRot)
+fun ServerPlayer.getDGCoordinates() = Coordinates(this.x, this.y, this.z, this.yRot, this.xRot)

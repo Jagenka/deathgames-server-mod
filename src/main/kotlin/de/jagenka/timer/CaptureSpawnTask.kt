@@ -72,7 +72,13 @@ object CaptureSpawnTask : TimerTask
         playersOnAnySpawn.forEach forEachPlayer@{ (playerOnSpawn, spawn) ->
             val progress = captureProgress.getValue(spawn)
             val fillAmount = progress.toFloat() / Config.spawns.captureTimeNeeded.toFloat()
-            DisplayManager.setBossBarForPlayer(playerOnSpawn, fillAmount, text = literal(I18n.get("captureProgress")), color = BossBar.Color.BLUE, idSuffix = "capture")
+            DisplayManager.setBossBarForPlayer(
+                playerOnSpawn,
+                fillAmount,
+                textComponent = literal(I18n.get("captureProgress")),
+                color = BossBar.Color.BLUE,
+                idSuffix = "capture"
+            )
         }
 
         PlayerManager.getOnlinePlayers()

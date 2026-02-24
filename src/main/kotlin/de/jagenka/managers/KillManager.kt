@@ -13,9 +13,9 @@ import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
-import net.minecraft.world.GameMode
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.level.GameType
 
 object KillManager
 {
@@ -30,7 +30,7 @@ object KillManager
 
 
     @JvmStatic
-    fun handleDeath(deceased: ServerPlayerEntity)
+    fun handleDeath(deceased: ServerPlayer)
     {
         val playerName = deceased.name.string
 
@@ -63,7 +63,7 @@ object KillManager
         InactivePlayersTask.resetForPlayer(playerName)
     }
 
-    private fun getShutdownText(deceasedName: String, killStreak: Int): Text
+    private fun getShutdownText(deceasedName: String, killStreak: Int): Component
     {
         // first get translated String from I18n, but keep deceased as a placeholder
         val configString = I18n.get("shutdown", mapOf("killStreak" to killStreak, "deceased" to "%deceased"))
@@ -72,7 +72,7 @@ object KillManager
     }
 
     @JvmStatic
-    fun handlePlayerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    fun handlePlayerKill(attacker: ServerPlayer, deceased: ServerPlayer)
     {
         if (!DeathGames.running) return
 
@@ -107,7 +107,7 @@ object KillManager
         }
     }
 
-    private fun resetKillStreak(deceased: ServerPlayerEntity)
+    private fun resetKillStreak(deceased: ServerPlayer)
     {
         val playerName = deceased.name.string
 
@@ -154,7 +154,7 @@ object KillManager
 
     fun getRespawns(playerName: String) = playerRespawns[playerName]
     fun getRespawns(team: DGTeam) = teamRespawns[team]
-    fun getRespawns(player: ServerPlayerEntity): Int?
+    fun getRespawns(player: ServerPlayer): Int?
     {
         return when (livesMode)
         {
@@ -184,7 +184,7 @@ object KillManager
 
         team.getOnlinePlayers().filter { !PlayerManager.isParticipating(it.name.string) }.randomOrNull()?.let { player ->
             PlayerManager.addParticipant(player.name.string)
-            player.changeGameMode(GameMode.ADVENTURE)
+            player.setGameMode(GameType.ADVENTURE)
             SpawnManager.spawnPlayer(player)
             removeOneRespawn(player.name.string)
         }

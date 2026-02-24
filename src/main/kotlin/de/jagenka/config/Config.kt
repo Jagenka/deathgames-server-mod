@@ -3,7 +3,6 @@ package de.jagenka.config
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.shop.ShopEntries
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.minecraft.util.WorldSavePath
 import java.io.File
