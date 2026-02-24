@@ -1,12 +1,12 @@
 package de.jagenka.mixin;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.CompassItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.CompassItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class CompassItemMixin
 {
     @Inject(method = "inventoryTick", at = @At("HEAD"), cancellable = true)
-    private void preventLodestoneTrackerComponentUpdate(ItemStack stack, ServerWorld world, Entity entity, EquipmentSlot slot, CallbackInfo ci)
+    private void preventLodestoneTrackerComponentUpdate(ItemStack stack, ServerLevel world, Entity entity, EquipmentSlot slot, CallbackInfo ci)
     {
-        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+        CustomData nbtComponent = stack.get(DataComponents.CUSTOM_DATA);
         if (nbtComponent != null &&
                 nbtComponent.nbt != null &&
                 nbtComponent.nbt.getBoolean("isDGBonusTracker").orElse(false))
