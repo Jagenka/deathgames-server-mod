@@ -11,11 +11,10 @@ import de.jagenka.team.TeamSelectorUI.notReadySpamProtection
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
-import net.minecraft.text.Text.literal
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 
 object ReadyCheck
 {
@@ -41,7 +40,7 @@ interface UIEntry
 
     val displayItemStack: ItemStack
 
-    fun onClick(player: ServerPlayerEntity)
+    fun onClick(player: ServerPlayer)
 }
 
 class TeamUIEntry(override val team: DGTeam) : UIEntry
@@ -54,10 +53,15 @@ class TeamUIEntry(override val team: DGTeam) : UIEntry
             // first get translated String from I18n, but keep teamName as a placeholder
             val baseString = I18n.get("teamSelectUIHover", mapOf("teamSize" to teamSize, "teamName" to "%teamName"))
             // to then replace the placeholder with colored text
-            return team.getColorBlock().asItem().defaultStack.setCustomName(DisplayManager.getTextWithPlayersAndTeamsColored(baseString, idToTeam = mapOf("%teamName" to team)))
+            return team.getColorBlock().asItem().defaultInstance.setCustomName(
+                DisplayManager.getTextWithPlayersAndTeamsColored(
+                    baseString,
+                    idToTeam = mapOf("%teamName" to team)
+                )
+            )
         }
 
-    override fun onClick(player: ServerPlayerEntity)
+    override fun onClick(player: ServerPlayer)
     {
         if (player.addToDGTeam(team))
         {
@@ -69,9 +73,9 @@ class TeamUIEntry(override val team: DGTeam) : UIEntry
 class SpectatorUIEntry : UIEntry
 {
     override val displayItemStack: ItemStack
-        get() = ItemStack(Items.ENDER_EYE).setCustomName(Text.of(I18n.get("spectator")))
+        get() = ItemStack(Items.ENDER_EYE).setCustomName(Component.literal(I18n.get("spectator")))
 
-    override fun onClick(player: ServerPlayerEntity)
+    override fun onClick(player: ServerPlayer)
     {
         if (player.kickFromDGTeam())
         {
@@ -80,21 +84,21 @@ class SpectatorUIEntry : UIEntry
     }
 }
 
-class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
+class ReadyUIEntry(val player: ServerPlayer) : UIEntry
 {
     override val displayItemStack: ItemStack
         get()
         {
             return if (ReadyCheck.isReady(player.name.string))
             {
-                ItemStack(Items.LIME_DYE).setCustomName(literal(I18n.get("ready")))
+                ItemStack(Items.LIME_DYE).setCustomName(Component.literal(I18n.get("ready")))
             } else
             {
-                ItemStack(Items.RED_DYE).setCustomName(literal(I18n.get("notReady")))
+                ItemStack(Items.RED_DYE).setCustomName(Component.literal(I18n.get("notReady")))
             }
         }
 
-    override fun onClick(player: ServerPlayerEntity)
+    override fun onClick(player: ServerPlayer)
     {
         val playerName = player.name.string
         if (ReadyCheck.isReady(playerName))
@@ -112,9 +116,9 @@ class ReadyUIEntry(val player: ServerPlayerEntity) : UIEntry
 class StartGameUIEntry : UIEntry
 {
     override val displayItemStack: ItemStack
-        get() = ItemStack(Items.AXOLOTL_BUCKET).setCustomName(literal(I18n.get("startGame")))
+        get() = ItemStack(Items.AXOLOTL_BUCKET).setCustomName(Component.literal(I18n.get("startGame")))
 
-    override fun onClick(player: ServerPlayerEntity)
+    override fun onClick(player: ServerPlayer)
     {
         val whoIsNotReady = ReadyCheck.whoIsNotReady()
         if (whoIsNotReady.isEmpty())
@@ -158,5 +162,5 @@ class EmptyUIEntry : UIEntry
     override val displayItemStack: ItemStack
         get() = ItemStack.EMPTY
 
-    override fun onClick(player: ServerPlayerEntity) = Unit
+    override fun onClick(player: ServerPlayer) = Unit
 }

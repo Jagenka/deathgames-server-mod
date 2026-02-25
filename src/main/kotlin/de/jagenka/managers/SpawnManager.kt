@@ -1,5 +1,6 @@
 package de.jagenka.managers
 
+import com.mojang.brigadier.StringReader
 import de.jagenka.BlockCuboid
 import de.jagenka.Coordinates
 import de.jagenka.DeathGames
@@ -12,21 +13,28 @@ import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
 import de.jagenka.util.BiMap
 import kotlinx.serialization.Serializable
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.nbt.StringNbtReader
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.world.GameMode
+import net.minecraft.commands.arguments.CompoundTagArgument
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.level.GameType
 
 object SpawnManager
 {
+    private val compoundTagArgument = CompoundTagArgument.compoundTag()
+
     val defaultSpawn
         get() = Config.spawns.spectatorSpawn
     val platformRadius
         get() = Config.spawns.platformRadius
 
-    val respawnEffects = StringNbtReader.readCompound(
-        Config.spawns.respawnEffectNBTs.joinToString(separator = ",", prefix = "{effects:[", postfix = "]}")
-    ).get("effects", StatusEffectInstance.CODEC.listOf()).orElse(emptyList())
+    val respawnEffects =
+        compoundTagArgument.parse( // TODO: works? changed fun calls to use Argument class and new StringReader
+            StringReader(
+                Config.spawns.respawnEffectNBTs.joinToString(
+                    separator = ",", prefix = "{effects:[", postfix = "]}"
+                )
+            )
+        ).read("effects", MobEffectInstance.CODEC.listOf()).orElse(emptyList())
 
     val respawnItems = Config.spawns.respawnItems.map { (id, amount, components) ->
         Util.parseItemStack(id, components, amount)
@@ -39,7 +47,7 @@ object SpawnManager
 
     fun getTeam(spawn: DGSpawn) = teamSpawns[spawn]
 
-    fun ServerPlayerEntity.getSpawnCoordinates(): Coordinates
+    fun ServerPlayer.getSpawnCoordinates(): Coordinates
     {
         return PlayerManager.getTeam(this)?.let { team ->
             teamSpawns.getKeyForValue(team)?.coordinates
@@ -49,33 +57,33 @@ object SpawnManager
     /**
      * teleports player to their spawn, and adds respawn effects and items, if player is participating (not spectator)
      */
-    fun spawnPlayer(player: ServerPlayerEntity)
+    fun spawnPlayer(player: ServerPlayer)
     {
         // handle position
         val spawnCoordinates = player.getSpawnCoordinates()
         player.teleport(spawnCoordinates)
-        player.yaw = spawnCoordinates.yaw
+        player.yRot = spawnCoordinates.yaw
 
         // check if spectator or player
         if (spawnCoordinates == defaultSpawn)
         {
-            player.changeGameMode(GameMode.SPECTATOR)
+            player.setGameMode(GameType.SPECTATOR)
         } else
         {
             // handle respawn effects/items for participating players only
-            player.clearStatusEffects()
+            player.removeAllEffects()
             applyRespawnEffects(player)
 
             respawnItems.forEach {
-                player.giveItemStack(it.copy())
+                player.addItem(it.copy())
             }
         }
     }
 
-    fun applyRespawnEffects(player: ServerPlayerEntity)
+    fun applyRespawnEffects(player: ServerPlayer)
     {
         respawnEffects.forEach {
-            player.addStatusEffect(StatusEffectInstance(it))
+            player.addEffect(MobEffectInstance(it))
         }
     }
 
@@ -175,5 +183,5 @@ data class DGSpawn(val coordinates: Coordinates, val defaultOwner: DGTeam?)
 {
     fun getCuboid() = BlockCuboid(coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius), coordinates.asBlockPos().relative(platformRadius, 2, platformRadius))
 
-    fun containsPlayer(player: ServerPlayerEntity) = getCuboid().contains(player.pos)
+    fun containsPlayer(player: ServerPlayer) = getCuboid().contains(player.position())
 }

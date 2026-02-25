@@ -3,7 +3,6 @@ package de.jagenka.managers
 import de.jagenka.config.Config
 import de.jagenka.floor
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
-import de.jagenka.managers.MoneyManager.addMoney
 import de.jagenka.managers.MoneyManager.getMoney
 import de.jagenka.managers.MoneyManager.moneyMode
 import de.jagenka.managers.MoneyManager.refundMoney
@@ -12,7 +11,7 @@ import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
 import de.jagenka.util.I18n
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.level.ServerPlayer
 import kotlin.math.abs
 
 object MoneyManager
@@ -23,7 +22,7 @@ object MoneyManager
     private val teamMoney = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
     fun getMoney(playerName: String) = playerMoney.getValue(playerName)
-    fun getMoney(player: ServerPlayerEntity) = getMoney(player.name.string)
+    fun getMoney(player: ServerPlayer) = getMoney(player.name.string)
     fun getMoney(team: DGTeam?) = teamMoney.getValue(team)
 
     fun initMoney()
@@ -93,7 +92,7 @@ object MoneyManager
         setMoney(team, getMoney(team) + amount)
     }
 
-    fun handleMoneyOnPlayerKill(attacker: ServerPlayerEntity, deceased: ServerPlayerEntity)
+    fun handleMoneyOnPlayerKill(attacker: ServerPlayer, deceased: ServerPlayer)
     {
         when (moneyMode)
         {

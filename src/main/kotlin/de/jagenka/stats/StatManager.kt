@@ -6,10 +6,10 @@ import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.shop.ShopEntry
 import de.jagenka.timer.Timer
-import net.minecraft.entity.damage.DamageSource
-import net.minecraft.stat.Stat
-import net.minecraft.stat.Stats
-import net.minecraft.util.WorldSavePath
+import net.minecraft.stats.Stat
+import net.minecraft.stats.Stats
+import net.minecraft.world.damagesource.DamageSource
+import net.minecraft.world.level.storage.LevelResource
 
 object StatManager
 {
@@ -46,7 +46,7 @@ object StatManager
         personalStats.gib(killer).kills.add(
             KillEntry(
                 deceased,
-                damageSource.name,
+                damageSource.msgId, //TODO: is this same as previous name?
                 Timer.now().toLong()
             )
         )
@@ -55,7 +55,7 @@ object StatManager
     @JvmStatic
     fun handleDeathType(damageSource: DamageSource, playerName: String)
     {
-        personalStats.gib(playerName).deaths.add(DeathEntry(damageSource.name, Timer.now().toLong()))
+        personalStats.gib(playerName).deaths.add(DeathEntry(damageSource.msgId, Timer.now().toLong()))
     }
 
     @JvmStatic
@@ -152,7 +152,7 @@ object StatManager
         gameStats.options["refundPercent"] = Config.shopSettings.refundPercent.toString()
         gameStats.options["startInShop"] = Config.misc.startInShop.toString()
 
-        gameStats.map = minecraftServer?.getSavePath(WorldSavePath.ROOT)?.parent?.fileName.toString()
+        gameStats.map = minecraftServer?.getWorldPath(LevelResource.ROOT)?.parent?.fileName.toString()
 
         StatsIO.storeGame(gameStats)
 

@@ -5,8 +5,9 @@ import de.jagenka.DeathGames
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
+import de.jagenka.managers.PlayerManager.isOp
 import de.jagenka.team.TeamSelectorUI
-import net.minecraft.world.GameMode
+import net.minecraft.world.level.GameType
 
 object BasicTpTask : TimerTask
 {
@@ -22,52 +23,52 @@ object BasicTpTask : TimerTask
         if (!DeathGames.running)
         {
             PlayerManager.getOnlinePlayers().forEach { player ->
-                if (!player.interactionManager.isSurvivalLike)
+                if (!player.gameMode.isSurvival)
                 {
-                    if (!player.hasPermissionLevel(2)) player.changeGameMode(GameMode.ADVENTURE)
+                    if (!player.isOp()) player.setGameMode(GameType.ADVENTURE)
 
                     //tp spectators back to arena
                     val (posX, negX) = listOf(Config.general.arenaBounds.secondCorner.x, Config.general.arenaBounds.firstCorner.x).sortedDescending()
                     val (posZ, negZ) = listOf(Config.general.arenaBounds.secondCorner.z, Config.general.arenaBounds.firstCorner.z).sortedDescending()
-                    if (player.pos.x > posX + Config.general.spectatorRadiusPadding) player.teleport(
+                    if (player.position().x > posX + Config.general.spectatorRadiusPadding) player.teleport(
                         Coordinates(
                             posX.toDouble(),
-                            player.pos.y,
-                            player.pos.z,
-                            player.yaw,
-                            player.pitch
+                            player.position().y,
+                            player.position().z,
+                            player.yRot,
+                            player.xRot
                         )
                     )
-                    if (player.pos.x < negX - Config.general.spectatorRadiusPadding) player.teleport(
+                    if (player.position().x < negX - Config.general.spectatorRadiusPadding) player.teleport(
                         Coordinates(
                             negX.toDouble(),
-                            player.pos.y,
-                            player.pos.z,
-                            player.yaw,
-                            player.pitch
+                            player.position().y,
+                            player.position().z,
+                            player.yRot,
+                            player.xRot
                         )
                     )
-                    if (player.pos.z > posZ + Config.general.spectatorRadiusPadding) player.teleport(
+                    if (player.position().z > posZ + Config.general.spectatorRadiusPadding) player.teleport(
                         Coordinates(
-                            player.pos.x,
-                            player.pos.y,
+                            player.position().x,
+                            player.position().y,
                             posZ.toDouble(),
-                            player.yaw,
-                            player.pitch
+                            player.yRot,
+                            player.xRot
                         )
                     )
-                    if (player.pos.z < negZ - Config.general.spectatorRadiusPadding) player.teleport(
+                    if (player.position().z < negZ - Config.general.spectatorRadiusPadding) player.teleport(
                         Coordinates(
-                            player.pos.x,
-                            player.pos.y,
+                            player.position().x,
+                            player.position().y,
                             negZ.toDouble(),
-                            player.yaw,
-                            player.pitch
+                            player.yRot,
+                            player.xRot
                         )
                     )
                     return@forEach
                 }
-                if (!TeamSelectorUI.lobbyBounds.contains(player.pos)) player.teleport(Config.spawns.lobbySpawn)
+                if (!TeamSelectorUI.lobbyBounds.contains(player.position())) player.teleport(Config.spawns.lobbySpawn)
             }
         }
     }

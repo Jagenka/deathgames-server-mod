@@ -6,12 +6,12 @@ import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.component.type.NbtComponent
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.core.component.DataComponents.CUSTOM_DATA
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.component.CustomData
 
 class HookerShopEntry(
     playerName: String,
@@ -24,32 +24,31 @@ class HookerShopEntry(
 
     init
     {
-        val nbt = NbtCompound()
+        val nbt = CompoundTag()
         nbt.putDouble("hookMaxDistance", maxDistance)
         nbt.putInt("hookCooldown", cooldown)
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt))
+        itemStack.set(CUSTOM_DATA, CustomData.of(nbt))
 
-        itemStack.setCustomName(Text.of(displayName).getWithStyle(Style.EMPTY.withItalic(false))[0])
+        itemStack.setCustomName(Component.literal(displayName).withStyle(Style.EMPTY.withItalic(false)))
     }
 
     override fun getPrice(): Int = price
 
     override fun getDisplayItemStack(): ItemStack
     {
-        return BlackjackAndHookers.itemItem.defaultStack.copy().setCustomName(
-            Text.of("${MoneyManager.getCurrencyString(price)}: $displayName x1").getWithStyle(
-                Style.EMPTY.withColor(
-                    if (getDGMoney(playerName) < price) Util.getTextColor(123, 0, 0)
-                    else Util.getTextColor(255, 255, 255)
+        return BlackjackAndHookers.itemItem.defaultInstance.copy().setCustomName(
+            Component.literal("${MoneyManager.getCurrencyString(price)}: $displayName x1")
+                .withColor( // TODO: factor out text coloring, as many items use the same colors
+                    if (getDGMoney(playerName) < price) Util.getRGBInt(123, 0, 0)
+                    else Util.getRGBInt(255, 255, 255)
                 )
-            )[0]
         )
     }
 
     override fun onClick(): Boolean
     {
         return attemptSale(player, price) {
-            player?.giveItemStack(itemStack.copy())
+            player?.addItem(itemStack.copy())
         }
     }
 
@@ -64,6 +63,10 @@ class HookerShopEntry(
             itemAndNbtEqual(itemStack, it)
         }
 
-        player?.inventory?.remove(filter, 1, player!!.inventory) // should be null-safe, as remove will not be called, if player is null
+        player?.inventory?.clearOrCountMatchingItems(
+            filter,
+            1,
+            player!!.inventory
+        ) // should be null-safe, as remove will not be called, if player is null
     }
 }

@@ -4,17 +4,18 @@ import de.jagenka.DeathGames
 import de.jagenka.managers.PlayerManager
 import de.jagenka.plus
 import de.jagenka.shop.Shop
-import net.minecraft.component.DataComponentTypes.CUSTOM_DATA
-import net.minecraft.entity.decoration.ArmorStandEntity
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
-import net.minecraft.util.hit.BlockHitResult
-import net.minecraft.util.hit.HitResult
-import net.minecraft.util.math.Vec3d
-import net.minecraft.world.World
+import de.jagenka.toCenterPos
+import net.minecraft.core.component.DataComponents.CUSTOM_DATA
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.decoration.ArmorStand
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import net.minecraft.world.level.Level
+import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.HitResult
+import net.minecraft.world.phys.Vec3
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.sqrt
 
@@ -33,14 +34,14 @@ object BlackjackAndHookers
         PlayerManager.getOnlinePlayers().forEach { player ->
             if (!isRidingHook(player))
             {
-                player.setNoGravity(false)
+                player.isNoGravity = false
             }
         }
         cooldowns.values.forEach {
             it.tickDown()
         }
         activeHooks.toList().forEach {
-            if (!it.vehicle.hasPlayerRider())
+            if (!it.vehicle.hasControllingPassenger())
             {
                 it.killEntity()
                 activeHooks.remove(it)
@@ -50,8 +51,8 @@ object BlackjackAndHookers
                 val pos = it.getEndPosition()
                 val owner = it.owner
                 it.killEntity()
-                owner.teleport(pos.x, pos.y, pos.z, false)
-                owner.setNoGravity(false)
+                owner.teleportTo(pos.x, pos.y, pos.z) // TODO: works? removed false as par
+                owner.isNoGravity = false
                 activeHooks.remove(it)
             } else it.tick()
         }
@@ -68,12 +69,12 @@ object BlackjackAndHookers
     }
 
     @JvmStatic
-    fun forceTheHooker(world: World, owner: ServerPlayerEntity, itemStackInHand: ItemStack): Boolean
+    fun forceTheHooker(world: Level, owner: ServerPlayer, itemStackInHand: ItemStack): Boolean
     {
         if (!DeathGames.running) return false
 
         itemStackInHand.components?.let { components ->
-            val nbt = components.get(CUSTOM_DATA)?.nbt ?: return false
+            val nbt = components.get(CUSTOM_DATA)?.tag ?: return false
 
             val maxDistance = nbt.getDouble("hookMaxDistance").getOrNull() ?: return false
             val cooldownSetting = nbt.getInt("hookCooldown").getOrNull() ?: return false
@@ -82,43 +83,54 @@ object BlackjackAndHookers
 
             if (Shop.isInShopBounds(owner) || !cooldown.isReady()) return false
 
-            val hitResult = owner.raycast(maxDistance, 0f, false)
+            // confusing name for method "raycast" with old mappings
+            val hitResult = owner.pick(maxDistance, 0f, false)
             if (hitResult.type != HitResult.Type.BLOCK) return false
 
-            val targetPos = (hitResult as BlockHitResult).blockPos.toCenterPos() + Vec3d(0.0, 1.0, 0.0)
+            val targetPos = (hitResult as BlockHitResult).blockPos.toCenterPos() + Vec3(
+                0.0,
+                1.0,
+                0.0
+            ) // TODO: works? added Util fun
 
-            if (owner.pos.y > targetPos.y + 1) return false
+            if (owner.position().y > targetPos.y + 1) return false
 
-            owner.setNoGravity(true)
+            owner.isNoGravity = true
 
-            val yDistance = targetPos.y - owner.pos.y
-            val xDistance = targetPos.x - owner.pos.x
-            val zDistance = targetPos.z - owner.pos.z
+            val yDistance = targetPos.y - owner.position().y
+            val xDistance = targetPos.x - owner.position().x
+            val zDistance = targetPos.z - owner.position().z
 
             val (yVelocity, flightTime) = getVerticalVelocity(yDistance)
             val xVelocity = xDistance / flightTime
             val zVelocity = zDistance / flightTime
 
-            val totalVelocity = Vec3d(xVelocity, yVelocity, zVelocity)
+            val totalVelocity = Vec3(xVelocity, yVelocity, zVelocity)
 
-            val vehicle = ArmorStandEntity(world, owner.pos.x, owner.pos.y, owner.pos.z) // this entity is used for transporting the player
+            val vehicle = ArmorStand(
+                world,
+                owner.position().x,
+                owner.position().y,
+                owner.position().z
+            ) // this entity is used for transporting the player
             vehicle.isMarker = true
             vehicle.isSilent = true
-            vehicle.customName = Text.of("hook")
+            vehicle.customName = Component.literal("hook")
             vehicle.isCustomNameVisible = false
             vehicle.isInvisible = true
             vehicle.setNoGravity(true)
 
-            world.spawnEntity(vehicle)
+            world.addFreshEntity(vehicle)
             activeHooks.add(ArrowHook(vehicle, owner, targetPos, totalVelocity))
-            owner.startRiding(vehicle, true)
+            owner.startRiding(vehicle, true, false) // TODO: works? added false as par
 
             cooldown.goOnCooldown()
-            owner.itemCooldownManager.set(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
+            owner.cooldowns.addCooldown(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
 
             return true
         } ?: return false
     }
+
 
     private fun getVerticalVelocity(yDistance: Double): Pair<Double, Double>
     {
@@ -129,30 +141,39 @@ object BlackjackAndHookers
         return Pair(yVelocity, flightTime)
     }
 
-    fun isRidingHook(player: ServerPlayerEntity): Boolean = activeHooks.filter { it.owner == player }.isNotEmpty()
+    fun isRidingHook(player: ServerPlayer): Boolean = activeHooks.any { it.owner == player }
 
     /**
      * Class for tracking the arrow, which the player is riding on.
      */
-    data class ArrowHook(val vehicle: ArmorStandEntity, val owner: ServerPlayerEntity, private val targetPos: Vec3d, private var velocity: Vec3d = Vec3d.ZERO)
+    data class ArrowHook(
+        val vehicle: ArmorStand,
+        val owner: ServerPlayer,
+        private val targetPos: Vec3,
+        private var velocity: Vec3 = Vec3.ZERO
+    )
     {
         private var previousDist = Double.MAX_VALUE
-        private var recentDist = targetPos.multiply(1.0, 0.0, 1.0).subtract(this@ArrowHook.vehicle.pos.multiply(1.0, 0.0, 1.0)).length()
+        private var recentDist =
+            targetPos.multiply(1.0, 0.0, 1.0).subtract(this@ArrowHook.vehicle.position().multiply(1.0, 0.0, 1.0))
+                .length()
         fun tick()
         {
-            this@ArrowHook.vehicle.setPosition(this@ArrowHook.vehicle.pos + velocity)
-            velocity += Vec3d(0.0, -GRAVITY_ACCELERATION, 0.0)
+            this@ArrowHook.vehicle.setPos(this@ArrowHook.vehicle.position() + velocity)
+            velocity += Vec3(0.0, -GRAVITY_ACCELERATION, 0.0)
             previousDist = recentDist
-            recentDist = targetPos.multiply(1.0, 0.0, 1.0).subtract(this@ArrowHook.vehicle.pos.multiply(1.0, 0.0, 1.0)).length()
+            recentDist =
+                targetPos.multiply(1.0, 0.0, 1.0).subtract(this@ArrowHook.vehicle.position().multiply(1.0, 0.0, 1.0))
+                    .length()
         }
 
         fun isAlive(): Boolean
         {
-            if (owner.isDisconnected) return false
-            return previousDist > recentDist && recentDist > 0.5 && !this@ArrowHook.vehicle.isInsideWall && !this@ArrowHook.vehicle.isOnGround
+            if (owner.hasDisconnected()) return false
+            return previousDist > recentDist && recentDist > 0.5 && !this@ArrowHook.vehicle.isInWall && !this@ArrowHook.vehicle.onGround()
         }
 
-        fun getEndPosition(): Vec3d = this@ArrowHook.vehicle.pos
+        fun getEndPosition(): Vec3 = this@ArrowHook.vehicle.position()
         fun killEntity(): Unit = this@ArrowHook.vehicle.discard()
     }
 

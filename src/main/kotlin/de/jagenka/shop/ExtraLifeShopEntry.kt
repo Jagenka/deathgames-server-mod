@@ -5,9 +5,8 @@ import de.jagenka.managers.KillManager
 import de.jagenka.managers.MoneyManager.getCurrencyString
 import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
-import net.minecraft.item.ItemStack
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
 
 class ExtraLifeShopEntry(playerName: String, private val displayItemStack: ItemStack, private val price: Int, override var displayName: String) :
     ShopEntry(playerName, nameForStat = "EXTRA_LIFE")
@@ -15,12 +14,10 @@ class ExtraLifeShopEntry(playerName: String, private val displayItemStack: ItemS
     override fun getPrice(): Int = price
 
     override fun getDisplayItemStack(): ItemStack = displayItemStack.copy().setCustomName(
-        Text.of("${getCurrencyString(price)}: $displayName").getWithStyle(
-            Style.EMPTY.withColor(
-                if (getDGMoney(playerName) < price) Util.getTextColor(123, 0, 0)
-                else Util.getTextColor(255, 255, 255)
-            )
-        )[0]
+        Component.literal("${getCurrencyString(price)}: $displayName").withColor(
+            if (getDGMoney(playerName) < price) Util.getRGBInt(123, 0, 0)
+            else Util.getRGBInt(255, 255, 255)
+        )
     )
 
     override fun onClick(): Boolean

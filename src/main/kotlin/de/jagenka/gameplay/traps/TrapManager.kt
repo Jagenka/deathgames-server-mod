@@ -1,11 +1,11 @@
 package de.jagenka.gameplay.traps
 
 import de.jagenka.BlockPos
-import net.minecraft.component.DataComponentTypes.CUSTOM_DATA
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.item.ItemStack
-import net.minecraft.item.ItemUsageContext
-import net.minecraft.util.math.Direction
+import net.minecraft.core.Direction
+import net.minecraft.core.component.DataComponents.CUSTOM_DATA
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.context.UseOnContext
 import kotlin.jvm.optionals.getOrNull
 
 object TrapManager
@@ -17,17 +17,17 @@ object TrapManager
      *          false, if Minecraft should continue their default behavior
      */
     @JvmStatic
-    fun handleTrapPlacement(ctx: ItemUsageContext): Boolean
+    fun handleTrapPlacement(ctx: UseOnContext): Boolean
     {
-        if (ctx.side == Direction.UP)
+        if (ctx.clickedFace == Direction.UP)
         {
-            ctx.stack.components?.let { components ->
-                val nbt = components.get(CUSTOM_DATA)?.nbt ?: return false
+            ctx.itemInHand.components?.let { components ->
+                val nbt = components.get(CUSTOM_DATA)?.tag ?: return false
 
                 val trap = Trap(
-                    position = BlockPos(ctx.blockPos.x, ctx.blockPos.y + 1, ctx.blockPos.z),
+                    position = BlockPos(ctx.clickedPos.x, ctx.clickedPos.y + 1, ctx.clickedPos.z),
                     snares = nbt.getBoolean("isSnareTrap").getOrNull() ?: return false, // continue as normal, as nbt in component is invalid
-                    effects = nbt.get("trapEffects", StatusEffectInstance.CODEC.listOf()).getOrNull() ?: return false,
+                    effects = nbt.read("trapEffects", MobEffectInstance.CODEC.listOf()).getOrNull() ?: return false,
                     triggerRange = nbt.getDouble("trapTriggerRange").getOrNull() ?: return false,
                     setupTime = nbt.getInt("trapSetupTime").getOrNull() ?: return false,
                     triggerVisibilityRange = nbt.getDouble("trapTriggerVisibilityRange").getOrNull() ?: return false,
@@ -38,7 +38,7 @@ object TrapManager
 
                 if (trap in traps) return true // trap already exists at this location
                 ctx.player?.let { player ->
-                    if (player.inventory.removeStack(player.inventory.selectedSlot, 1) == ItemStack.EMPTY)
+                    if (player.inventory.removeItem(player.inventory.selectedSlot, 1) == ItemStack.EMPTY)
                     {
                         return false // no item in selected slot -> exit and let Minecraft handle that
                     }

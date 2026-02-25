@@ -6,9 +6,8 @@ import de.jagenka.managers.refundMoney
 import de.jagenka.managers.scaledForRefund
 import de.jagenka.setCustomName
 import de.jagenka.util.I18n
-import net.minecraft.item.ItemStack
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
 
 class RefundShopEntry(playerName: String, private val shopEntryToRefund: ShopEntry) :
     ShopEntry(
@@ -29,16 +28,14 @@ class RefundShopEntry(playerName: String, private val shopEntryToRefund: ShopEnt
 
         return itemStackToDisplay
             .setCustomName(//"Refund ${shopEntryToRefund.getDisplayName()} for ${MoneyManager.getCurrencyString(getRefundAmount(player))}"
-                Text.of(
+                Component.literal(
                     I18n.get(
                         "refundItemText",
                         mapOf("item" to shopEntryToRefund.displayName, "amount" to MoneyManager.getCurrencyString(shopEntryToRefund.getTotalSpentMoney().scaledForRefund()))
                     )
-                ).getWithStyle(
-                    Style.EMPTY.withColor(
-                        Util.getTextColor(255, 255, 255)
-                    )
-                )[0]
+                ).withColor(
+                    Util.getRGBInt(255, 255, 255)
+                )
             )
     }
 

@@ -2,7 +2,7 @@ package de.jagenka.shop
 
 import de.jagenka.Util.parseItemStack
 import de.jagenka.config.Config
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 class PersonalizedShop(private val playerName: String)
 {

@@ -6,10 +6,10 @@ import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.KillManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.util.I18n
-import net.minecraft.entity.boss.BossBar.Color.*
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.entity.effect.StatusEffects
-import net.minecraft.text.Text.literal
+import net.minecraft.network.chat.Component
+import net.minecraft.world.BossEvent
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.effect.MobEffects
 
 object InactivePlayersTask : TimerTask
 {
@@ -42,23 +42,38 @@ object InactivePlayersTask : TimerTask
                         val fillAmount = time.toDouble() / personalRevealTime.toDouble()
                         if (fillAmount < 0.75)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer0")), GREEN, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(
+                                player, fillAmount.toFloat(), Component.literal(I18n.get("revealTimer0")),
+                                BossEvent.BossBarColor.GREEN, idSuffix = "reveal"
+                            )
                         } else if (fillAmount < 1)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer1")), YELLOW, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(
+                                player, fillAmount.toFloat(), Component.literal(I18n.get("revealTimer1")),
+                                BossEvent.BossBarColor.YELLOW, idSuffix = "reveal"
+                            )
                         }
                     } else if (time in personalRevealTime + 1..personalRevealTime + personalShopCloseTime)
                     {
                         val fillAmount = (time - personalRevealTime).toDouble() / personalShopCloseTime.toDouble()
                         if (fillAmount < 0.75)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer2")), RED, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(
+                                player, fillAmount.toFloat(), Component.literal(I18n.get("revealTimer2")),
+                                BossEvent.BossBarColor.RED, idSuffix = "reveal"
+                            )
                         } else if (fillAmount < 1)
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer3")), PINK, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(
+                                player, fillAmount.toFloat(), Component.literal(I18n.get("revealTimer3")),
+                                BossEvent.BossBarColor.PINK, idSuffix = "reveal"
+                            )
                         } else
                         {
-                            DisplayManager.setBossBarForPlayer(player, fillAmount.toFloat(), literal(I18n.get("revealTimer4")), PURPLE, idSuffix = "reveal")
+                            DisplayManager.setBossBarForPlayer(
+                                player, fillAmount.toFloat(), Component.literal(I18n.get("revealTimer4")),
+                                BossEvent.BossBarColor.PURPLE, idSuffix = "reveal"
+                            )
                         }
                     }
                 }
@@ -76,9 +91,10 @@ object InactivePlayersTask : TimerTask
                 }
 
                 highlightedPlayers.add(playerName)
-                if (PlayerManager.getOnlinePlayer(playerName)?.activeStatusEffects?.contains(StatusEffects.INVISIBILITY) != true)
+                if (PlayerManager.getOnlinePlayer(playerName)?.activeEffects?.contains(MobEffectInstance(MobEffects.INVISIBILITY)) != true)
                 {
-                    PlayerManager.getOnlinePlayer(playerName)?.addStatusEffect(StatusEffectInstance(StatusEffects.GLOWING, 2.seconds(), 0, false, false))
+                    PlayerManager.getOnlinePlayer(playerName)
+                        ?.addEffect(MobEffectInstance(MobEffects.GLOWING, 2.seconds(), 0, false, false))
                 }
             } else
             {

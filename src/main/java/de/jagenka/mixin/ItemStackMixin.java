@@ -26,7 +26,7 @@ public class ItemStackMixin
         if (!Config.INSTANCE.isEnabled()) return;
 
         // Traps
-        if (context.getStack().getItem() == Items.BAT_SPAWN_EGG)
+        if (context.getItemInHand().getItem() == Items.BAT_SPAWN_EGG)
         {
             if (TrapManager.handleTrapPlacement(context))
             {

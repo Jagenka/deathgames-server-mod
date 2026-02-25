@@ -3,6 +3,7 @@ package de.jagenka.timer
 import de.jagenka.DeathGames
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
+import de.jagenka.managers.PlayerManager.isOp
 import de.jagenka.team.TeamSelectorUI
 import de.jagenka.util.I18n
 import net.minecraft.text.Text
@@ -23,7 +24,7 @@ object LobbyTask : TimerTask
         DisplayManager.resetBossBars()
 
         PlayerManager.getOnlinePlayers().forEach { player ->
-            if (!player.hasPermissionLevel(2))
+            if (!player.isOp())
             {
                 player.inventory.clear()
             }

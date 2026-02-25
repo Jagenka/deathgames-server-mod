@@ -81,8 +81,8 @@ object DisplayManager
             DGTeam.entries.forEach { color ->
                 server.scoreboard.addPlayerTeam(color.name + "_display")
                 val team = server.scoreboard.getPlayerTeam(color.name + "_display")
-                team?.color = ChatFormatting.getByName(color.name.lowercase())
-                server.scoreboard.addPlayerToTeam(color.getPrettyName(), team)
+                team?.color = ChatFormatting.getByName(color.name.lowercase()) ?: ChatFormatting.WHITE
+                server.scoreboard.addPlayerToTeam(color.getPrettyName(), team!!)
             }
         }
     }
@@ -289,7 +289,7 @@ object DisplayManager
             server.customBossEvents.ids.toList().forEach { id ->
                 val bossBar = server.customBossEvents.get(id)
                 bossBar?.removeAllPlayers()
-                server.customBossEvents.remove(bossBar)
+                server.customBossEvents.remove(bossBar!!)
             }
         }
     }

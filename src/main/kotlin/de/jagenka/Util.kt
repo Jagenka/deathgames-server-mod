@@ -8,6 +8,7 @@ import de.jagenka.managers.Platform
 import de.jagenka.managers.PlayerManager
 import kotlinx.serialization.Serializable
 import net.minecraft.commands.arguments.item.ItemArgument
+import net.minecraft.core.Vec3i
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
@@ -23,8 +24,8 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.gamerules.GameRules
 import net.minecraft.world.phys.Vec3
-import org.joml.AxisAngle4f
-import org.joml.Quaternionf
+import org.joml.AxisAngle4d
+import org.joml.Quaterniond
 import org.joml.Vector3f
 import java.util.regex.Pattern
 import kotlin.math.floor
@@ -285,19 +286,21 @@ operator fun Vec3.minus(other: Vec3): Vec3 = this.subtract(other)
 
 operator fun Vec3.times(factor: Double): Vec3 = this.scale(factor)
 
-fun Vec3.pureQuarternion(): Quaternionf = Quaternionf(this.x.toFloat(), this.y.toFloat(), this.z.toFloat(), 0f)
+fun Vec3i.toCenterPos(): Vec3 = Vec3(this.x + .5, this.y.toDouble(), this.z + .5)
 
-fun Vec3.rotateAroundVector(axis: Vector3f, degrees: Float): Vec3
+fun Vec3.pureQuarternion(): Quaterniond = Quaterniond(this.x, this.y, this.z, 0.0)
+
+fun Vec3.rotateAroundVector(axis: Vec3, degrees: Double): Vec3
 {
-    val rotationQuaternion = Quaternionf(AxisAngle4f(degrees.toRadians(), axis.x, axis.y, axis.z))
+    val rotationQuaternion = Quaterniond(AxisAngle4d(degrees.toRadians(), axis.x, axis.y, axis.z))
     val vectorQuaternion = this.pureQuarternion()
-    val finalQuaternion = Quaternionf(rotationQuaternion)
+    val finalQuaternion = Quaterniond(rotationQuaternion)
 
     finalQuaternion.mul(vectorQuaternion)
     rotationQuaternion.conjugate()
     finalQuaternion.mul(rotationQuaternion)
 
-    return Vec3(finalQuaternion.x.toDouble(), finalQuaternion.y.toDouble(), finalQuaternion.z.toDouble())
+    return Vec3(finalQuaternion.x, finalQuaternion.y, finalQuaternion.z)
 }
 
 infix fun Block.isSame(block: Block) = this.descriptionId == block.descriptionId

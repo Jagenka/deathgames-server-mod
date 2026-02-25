@@ -72,7 +72,7 @@ object PlayerManager
         if (canPlayerJoin.getValue(playerName))
         {
             ifServerLoaded {
-                it.scoreboard.addPlayerToTeam(playerName, it.scoreboard.getPlayerTeam(team.name))
+                it.scoreboard.addPlayerToTeam(playerName, it.scoreboard.getPlayerTeam(team.name)!!)
                 teamRegistry[playerName] = team
             }
             disableTeamJoinForSomeTime(playerName)
@@ -122,7 +122,8 @@ object PlayerManager
         ifServerLoaded { server ->
             DGTeam.entries.forEach { color ->
                 server.scoreboard.addPlayerTeam(color.name)
-                server.scoreboard.getPlayerTeam(color.name)?.color = ChatFormatting.getByName(color.name.lowercase())
+                server.scoreboard.getPlayerTeam(color.name)?.color =
+                    ChatFormatting.getByName(color.name.lowercase()) ?: ChatFormatting.WHITE
             }
         }
     }
@@ -262,4 +263,6 @@ object PlayerManager
         currentlyDead.clear()
         recentlyRespawned.clear()
     }
+
+    fun ServerPlayer.isOp(): Boolean = this.level().server?.playerList?.isOp(this.nameAndId()) == true
 }
