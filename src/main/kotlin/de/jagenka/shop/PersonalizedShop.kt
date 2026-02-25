@@ -16,7 +16,12 @@ class PersonalizedShop(private val playerName: String)
         val buffer = mutableMapOf<Int, ShopEntry>()
 
         Config.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
-            buffer[slot(row, col)] = ItemShopEntry(playerName, parseItemStack(id, nbt, amount), price, name)
+            buffer[slot(row, col)] = ItemShopEntry(
+                playerName,
+                parseItemStack(id, nbt, amount),
+                price,
+                name
+            ) // TODO: infinity enchant is not on rage map bow
         }
 
         Config.shop.shield?.let { (row, col, name, durability, price) ->
