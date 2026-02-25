@@ -30,7 +30,7 @@ public abstract class PlayerMixin
         if (!Config.INSTANCE.isEnabled()) return;
 
         this.addItem(stack);
-        this.inventoryMenu.updateToClient();
+        this.inventoryMenu.sendAllDataToRemote();
     }
 
     @Inject(method = "wantsToStopRiding", at = @At("HEAD"), cancellable = true)

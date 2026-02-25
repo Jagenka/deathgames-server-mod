@@ -36,16 +36,16 @@ public class ItemStackMixin
         }
 
         // Grapple
-        if (context.getPlayer() != null && context.getPlayer().getStackInHand(context.getHand()).getItem() == BlackjackAndHookers.getItemItem())
+        if (context.getPlayer() != null && context.getPlayer().getItemInHand(context.getHand()).getItem() == BlackjackAndHookers.getItemItem())
         {
             if (context.getPlayer() instanceof ServerPlayer player)
             {
-                BlackjackAndHookers.forceTheHooker(context.getWorld(), player, context.getPlayer().getStackInHand(context.getHand()));
+                BlackjackAndHookers.forceTheHooker(context.getLevel(), player, context.getPlayer().getItemInHand(context.getHand()));
             }
         }
 
         // ender pearls in shop
-        if (context.getStack().getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(context.getPlayer()))
+        if (context.getItemInHand().getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(context.getPlayer()))
         {
             cir.setReturnValue(InteractionResult.FAIL);
             cir.cancel();
@@ -57,7 +57,7 @@ public class ItemStackMixin
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
-        ItemStack stackInHand = user.getStackInHand(hand);
+        ItemStack stackInHand = user.getItemInHand(hand);
 
         // Grapple
         if (stackInHand.getItem() == BlackjackAndHookers.getItemItem())
@@ -73,7 +73,7 @@ public class ItemStackMixin
         {
             cir.setReturnValue(InteractionResult.FAIL);
             cir.cancel();
-            user.currentScreenHandler.sendContentUpdates();
+            user.inventoryMenu.sendAllDataToRemote(); // TODO: works?
         }
     }
 }

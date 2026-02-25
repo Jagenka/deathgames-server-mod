@@ -16,14 +16,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerPlayer.class)
 public class ServerPlayerMixin
 {
-    @Inject(method = "onDeath", at = @At("TAIL"))
+    @Inject(method = "die", at = @At("TAIL"))
     private void onDeath(DamageSource damageSource, CallbackInfo ci)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
         try
         {
-            LivingEntity primeAdversary = ((ServerPlayer) (Object) this).getPrimeAdversary();
+            LivingEntity primeAdversary = ((ServerPlayer) (Object) this).getKillCredit(); // TODO: works?
             if (primeAdversary instanceof ServerPlayer killer)
             {
                 KillManager.handlePlayerKill(killer, (ServerPlayer) (Object) this);
@@ -37,17 +37,17 @@ public class ServerPlayerMixin
         StatManager.handleDeathType(damageSource, ((ServerPlayer) (Object) this).getName().getString());
     }
 
-    @Inject(method = "drop", at = @At("HEAD"), cancellable = true)
-    private void preventDrop(boolean entireStack, CallbackInfoReturnable<Boolean> cir)
+    @Inject(method = "drop*", at = @At("HEAD"), cancellable = true)
+    private void preventDrop(CallbackInfoReturnable<Boolean> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
         cir.setReturnValue(false);
         cir.cancel();
-        ((ServerPlayer) (Object) this).playerScreenHandler.updateToClient();
+        ((ServerPlayer) (Object) this).inventoryMenu.sendAllDataToRemote();
     }
 
-    @Inject(method = "increaseStat", at = @At("HEAD"))
+    @Inject(method = "awardStat", at = @At("HEAD"))
     private void increaseStat(Stat<?> stat, int amount, CallbackInfo ci)
     {
         if (!Config.INSTANCE.isEnabled()) return;

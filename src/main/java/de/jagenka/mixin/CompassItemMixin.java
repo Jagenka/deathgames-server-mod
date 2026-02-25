@@ -19,9 +19,7 @@ public class CompassItemMixin
     private void preventLodestoneTrackerComponentUpdate(ItemStack stack, ServerLevel world, Entity entity, EquipmentSlot slot, CallbackInfo ci)
     {
         CustomData nbtComponent = stack.get(DataComponents.CUSTOM_DATA);
-        if (nbtComponent != null &&
-                nbtComponent.nbt != null &&
-                nbtComponent.nbt.getBoolean("isDGBonusTracker").orElse(false))
+        if (nbtComponent != null && nbtComponent.tag.getBoolean("isDGBonusTracker").orElse(false))
         {
             ci.cancel();
         }

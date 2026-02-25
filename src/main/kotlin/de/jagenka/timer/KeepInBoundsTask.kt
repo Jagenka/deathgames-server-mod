@@ -15,10 +15,14 @@ object KeepInBoundsTask : TimerTask
     override fun run()
     {
         PlayerManager.getOnlineParticipatingPlayers().forEach { player ->
-            if (!Config.general.arenaBounds.contains(player.pos) && !PlayerManager.hasRecentlyRespawned(player.name.string))
+            if (!Config.general.arenaBounds.contains(player.position()) && !PlayerManager.hasRecentlyRespawned(player.name.string))
             {
                 // 1.21.3: damage now needs a server world
-                player.damage(player.world, player.damageSources.outOfWorld(), 10f)
+                player.hurtServer(
+                    player.level(),
+                    player.damageSources().outOfBorder(),
+                    10f
+                ) // changed from out of world to out of border
             }
         }
     }

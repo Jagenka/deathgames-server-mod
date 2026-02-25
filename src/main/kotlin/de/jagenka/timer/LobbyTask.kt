@@ -6,7 +6,7 @@ import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isOp
 import de.jagenka.team.TeamSelectorUI
 import de.jagenka.util.I18n
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 object LobbyTask : TimerTask
 {
@@ -26,17 +26,17 @@ object LobbyTask : TimerTask
         PlayerManager.getOnlinePlayers().forEach { player ->
             if (!player.isOp())
             {
-                player.inventory.clear()
+                player.inventory.clearContent()
             }
             if (TeamSelectorUI.isInLobbyBounds(player))
             {
                 if (!DeathGames.currentlyStarting)
                 {
-                    DisplayManager.sendMessageToHotbar(Text.of(I18n.get("openTeamUI")))
+                    DisplayManager.sendMessageToHotbar(Component.literal(I18n.get("openTeamUI")))
                 }
 
                 player.health = 20f //set max hearts
-                player.hungerManager.add(20, 1f) //set max food and saturation
+                player.foodData.eat(20, 1f) //set max food and saturation
             }
         }
     }

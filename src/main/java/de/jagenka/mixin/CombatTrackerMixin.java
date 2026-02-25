@@ -28,7 +28,8 @@ public class CombatTrackerMixin
         if (!(this.mob instanceof Player damagedPlayer)) return;
         StatManager.addDamageTaken(damagedPlayer.getName().getString(), damage);
 
-        if (!(damageSource.getAttacker() instanceof Player attackingPlayer)) return;
+        if (!(damageSource.getEntity() instanceof Player attackingPlayer))
+            return; // TODO: works? or is direct entity right?
         StatManager.addDamageDealt(attackingPlayer.getName().getString(), damage);
     }
 }

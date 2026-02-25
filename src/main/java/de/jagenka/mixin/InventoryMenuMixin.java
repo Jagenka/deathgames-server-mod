@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InventoryMenu.class)
 public class InventoryMenuMixin
 {
-    @Inject(method = "onContentChanged", at = @At("HEAD"), cancellable = true)
-    private void preventOnContentChanged(Container inventory, CallbackInfo ci)
+    @Inject(method = "slotsChanged", at = @At("HEAD"), cancellable = true)
+    private void preventOnContentChanged(Container container, CallbackInfo ci)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 

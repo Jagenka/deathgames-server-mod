@@ -18,7 +18,7 @@ public class ServerGamePacketListenerImplMixin
     @Shadow
     public ServerPlayer player;
 
-    @Inject(method = "onPlayerAction", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "handlePlayerAction", at = @At("HEAD"), cancellable = true)
     private void openShop(ServerboundPlayerActionPacket packet, CallbackInfo ci)
     {
         if (!Config.INSTANCE.isEnabled()) return;
