@@ -130,7 +130,10 @@ object ShopTask : TimerTask
     fun exitShop(playerName: String)
     {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return
-        SpawnManager.spawnPlayer(player)
+        SpawnManager.spawnPlayer(
+            player,
+            giveItems = false
+        ) // no need to give respawn items, as they do not respawn, they just teleport
         player.extinguishFire()
         timeInShop[playerName] = 0
         player.closeContainer()
