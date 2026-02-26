@@ -40,7 +40,7 @@ object Util
     var minecraftServer: MinecraftServer? = null
         private set
 
-    private val itemStringReader = ItemArgument(DeathGames.commandBuildContext)
+    private val itemArgument = ItemArgument(DeathGames.commandBuildContext)
 
     @JvmStatic
     fun onServerLoaded(minecraftServer: MinecraftServer)
@@ -248,9 +248,8 @@ object Util
 
     fun parseItemStack(id: String, nbt: String, amount: Int): ItemStack
     {
-        val itemResult = itemStringReader.parse(StringReader(id + nbt))
-        val itemStack = ItemStack(itemResult.item, amount)
-        itemStack.applyComponents(itemResult.item.components())
+        val itemResult = itemArgument.parse(StringReader(id + nbt))
+        val itemStack = itemResult.createItemStack(amount, false)
         return itemStack
     }
 }
