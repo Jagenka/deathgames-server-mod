@@ -28,7 +28,7 @@ object SpawnManager
         get() = Config.spawns.platformRadius
 
     val respawnEffects =
-        compoundTagArgument.parse( // TODO: works? changed fun calls to use Argument class and new StringReader
+        compoundTagArgument.parse(
             StringReader(
                 Config.spawns.respawnEffectNBTs.joinToString(
                     separator = ",", prefix = "{effects:[", postfix = "]}"
@@ -57,7 +57,7 @@ object SpawnManager
     /**
      * teleports player to their spawn, and adds respawn effects and items, if player is participating (not spectator)
      */
-    fun spawnPlayer(player: ServerPlayer)
+    fun spawnPlayer(player: ServerPlayer, giveItems: Boolean = true)
     {
         // handle position
         val spawnCoordinates = player.getSpawnCoordinates()
@@ -74,8 +74,10 @@ object SpawnManager
             player.removeAllEffects()
             applyRespawnEffects(player)
 
-            respawnItems.forEach {
-                player.addItem(it.copy())
+            if (giveItems) {
+                respawnItems.forEach {
+                    player.addItem(it.copy())
+                }
             }
         }
     }

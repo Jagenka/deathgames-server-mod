@@ -59,7 +59,7 @@ class Trap(
             // play sound
             player.connection.send(
                 ClientboundSoundPacket(
-                    Holder.direct(SoundEvents.IRON_GOLEM_HURT), // TODO: works? rewritten as per playsound command
+                    Holder.direct(SoundEvents.IRON_GOLEM_HURT),
                     SoundSource.PLAYERS,
                     x.toCenter(),
                     y.toDouble(),

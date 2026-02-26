@@ -174,7 +174,6 @@ object DeathGames : DedicatedServerModInitializer
         PlayerManager.getOnlinePlayers().forEach {
             it.closeContainer()
             val (x, y, z) = Config.spawns.lobbySpawn
-            // TODO: does this do the same?
             it.adjustSpawnLocation(it.level(), BlockPos(x, y, z).asMinecraftBlockPos())
 
             if (Config.misc.startInShop)

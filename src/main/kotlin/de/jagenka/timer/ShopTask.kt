@@ -133,7 +133,7 @@ object ShopTask : TimerTask
         SpawnManager.spawnPlayer(player)
         player.extinguishFire()
         timeInShop[playerName] = 0
-        player.closeContainer() // TODO: works? close handled screen, is now close container... close menu?
+        player.closeContainer()
         Shop.clearRecentlyBought(playerName)
     }
 

@@ -300,7 +300,7 @@ object DisplayManager
         team?.let {
             return Component.literal(playerName).withColor(
                 ChatFormatting.getByName(team.name.lowercase())?.color ?: 0
-            ) // TODO: works? call chain changed
+            )
         }
         return Component.literal(playerName)
     }

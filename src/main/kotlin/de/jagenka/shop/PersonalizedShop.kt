@@ -21,7 +21,7 @@ class PersonalizedShop(private val playerName: String)
                 parseItemStack(id, nbt, amount),
                 price,
                 name
-            ) // TODO: infinity enchant is not on rage map bow
+            )
         }
 
         Config.shop.shield?.let { (row, col, name, durability, price) ->
