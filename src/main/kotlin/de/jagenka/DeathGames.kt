@@ -270,8 +270,8 @@ object DeathGames : DedicatedServerModInitializer
 
         DisplayManager.sendChatMessage("")
         DisplayManager.sendChatMessage(
-            Component.literal("Player K/Ds:").toFlatList(Style.EMPTY.withBold(true))[0]
-        ) // TODO: einfacher?
+            Component.literal("Player K/Ds:").withStyle(Style.EMPTY.withBold(true))
+        )
         StatManager.getKDs().forEach { (playerName, kills, deaths) ->
             DisplayManager.sendChatMessage("$playerName: $kills / $deaths")
         }
