@@ -39,7 +39,7 @@ object KillManager
         TrapManager.onPlayerDeath(playerName)
 
         Timer.schedule(5.seconds()) {
-            if (PlayerManager.requestRespawn(deceased)) // TODO: force respawn does not work
+            if (PlayerManager.requestRespawn(deceased))
             {
                 deceased.sendPrivateMessage(I18n.get("forceRespawned"))
             }

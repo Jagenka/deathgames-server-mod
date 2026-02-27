@@ -11,8 +11,8 @@ import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import net.minecraft.ChatFormatting
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.GameType
 
 object PlayerManager
@@ -233,29 +233,19 @@ object PlayerManager
     fun isParticipating(team: DGTeam) = getParticipatingTeams().contains(team)
 
     /**
-     * @return is player was able to respawn (not currently alive)
+     * @return if player was able to respawn (not currently alive)
      */
-    // TODO: test this
     fun requestRespawn(player: ServerPlayer): Boolean
     {
-        if (!isCurrentlyDead(player.name.string)) return false // das is doppelt zu if (player.health > 0.0f)
+        if (!isCurrentlyDead(player.name.string) || player.isAlive) return false
 
-        Util.minecraftServer?.let { server ->
-            if (player.health > 0.0f || player.isAlive)
-            {
-                return false
-            }
+        player.connection.handleClientCommand(
+            ServerboundClientCommandPacket(
+                ServerboundClientCommandPacket.Action.PERFORM_RESPAWN
+            )
+        )
 
-            val newPlayer = server.playerList.respawn(player, true, Entity.RemovalReason.DISCARDED)
-
-//            player.networkHandler.player = server.playerManager.respawnPlayer(player, true, Entity.RemovalReason.DISCARDED)
-//                Criteria.CHANGED_DIMENSION.trigger(player, World.END, World.OVERWORLD)
-//                return true
-
-
-            //player.networkHandler.player = server.playerManager.respawnPlayer(player, false, Entity.RemovalReason.DISCARDED)
-            return true
-        } ?: return false
+        return true
     }
 
     fun resetForGameStart()
