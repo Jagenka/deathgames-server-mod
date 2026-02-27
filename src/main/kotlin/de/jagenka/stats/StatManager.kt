@@ -46,7 +46,7 @@ object StatManager
         personalStats.gib(killer).kills.add(
             KillEntry(
                 deceased,
-                damageSource.msgId, //TODO: is this same as previous name?
+                damageSource.msgId,
                 Timer.now().toLong()
             )
         )

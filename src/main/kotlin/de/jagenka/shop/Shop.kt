@@ -80,7 +80,7 @@ object Shop
         this.currentUpgradableLevels.clear()
     }
 
-    fun isInShopBounds(player: Player?): Boolean // TODO: why Player, not ServerPlayer?
+    fun isInShopBounds(player: Player?): Boolean
     {
         if (player == null) return false
 

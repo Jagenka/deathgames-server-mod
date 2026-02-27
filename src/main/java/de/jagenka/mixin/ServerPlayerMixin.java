@@ -25,7 +25,7 @@ public class ServerPlayerMixin
 
         try
         {
-            LivingEntity primeAdversary = ((ServerPlayer) (Object) this).getKillCredit(); // TODO: works?
+            LivingEntity primeAdversary = ((ServerPlayer) (Object) this).getKillCredit();
             if (primeAdversary instanceof ServerPlayer killer)
             {
                 KillManager.handlePlayerKill(killer, (ServerPlayer) (Object) this);

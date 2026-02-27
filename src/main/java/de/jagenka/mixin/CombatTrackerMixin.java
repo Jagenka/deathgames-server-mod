@@ -29,7 +29,7 @@ public class CombatTrackerMixin
         StatManager.addDamageTaken(damagedPlayer.getName().getString(), damage);
 
         if (!(damageSource.getEntity() instanceof Player attackingPlayer))
-            return; // TODO: works? or is direct entity right?
+            return;
         StatManager.addDamageDealt(attackingPlayer.getName().getString(), damage);
     }
 }

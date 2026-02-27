@@ -73,7 +73,7 @@ public class ItemStackMixin
         {
             cir.setReturnValue(InteractionResult.FAIL);
             cir.cancel();
-            user.inventoryMenu.sendAllDataToRemote(); // TODO: works?
+            user.inventoryMenu.sendAllDataToRemote();
         }
     }
 }

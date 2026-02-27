@@ -349,6 +349,6 @@ val Item.equipmentSlot: EquipmentSlot?
 fun Inventory.removeItemStack(stackToRemove: ItemStack, maxCount: Int = -1): Int
 {
     return this.clearOrCountMatchingItems({ itemStackInInventory ->
-        ItemStack.isSameItemSameComponents(stackToRemove, itemStackInInventory) // TODO: components equality wanted?
+        ItemStack.isSameItemSameComponents(stackToRemove, itemStackInInventory)
     }, maxCount, player.inventoryMenu.craftSlots) // also look in craftSlots for removal
 }
