@@ -129,8 +129,9 @@ object DeathGamesCommand
                     .executes {
                         try
                         {
-                            Config.load() // TODO: check if this really reloads all (especially shop should be reset)
+                            Config.load()
                             I18n.loadI18n()
+
                             it.source.sendSuccess({ Component.literal("config reloaded") }, true)
                         } catch (e: Exception)
                         {

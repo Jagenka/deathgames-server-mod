@@ -16,7 +16,8 @@ import net.minecraft.world.item.ItemStack
 
 object TeamSelectorUI
 {
-    val lobbyBounds = Config.general.lobbyBounds
+    val lobbyBounds
+        get() = Config.general.lobbyBounds
 
     var notReadySpamProtection = false
 

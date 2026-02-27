@@ -171,10 +171,11 @@ object DeathGames : DedicatedServerModInitializer
         DisplayManager.showSidebar()
 
         val secondsToSpawnTp = Config.misc.startInShopTpAfterSeconds
+        val (lobbySpawnX, lobbySpawnY, lobbySpawnZ) = Config.spawns.lobbySpawn
+
         PlayerManager.getOnlinePlayers().forEach {
             it.closeContainer()
-            val (x, y, z) = Config.spawns.lobbySpawn
-            it.adjustSpawnLocation(it.level(), BlockPos(x, y, z).asMinecraftBlockPos())
+            it.adjustSpawnLocation(it.level(), BlockPos(lobbySpawnX, lobbySpawnY, lobbySpawnZ).asMinecraftBlockPos())
 
             if (Config.misc.startInShop)
             {
