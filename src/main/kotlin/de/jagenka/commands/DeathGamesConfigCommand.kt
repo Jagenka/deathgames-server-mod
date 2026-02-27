@@ -3,7 +3,6 @@ package de.jagenka.commands
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import de.jagenka.*
-import de.jagenka.commands.DeathGamesCommand.isOp
 import de.jagenka.config.Config
 import de.jagenka.config.ConfigEntry
 import de.jagenka.managers.Platform
@@ -30,7 +29,7 @@ object DeathGamesConfigCommand {
         val sections = getSectionsFromConfig(ConfigEntry::class.java)
 
         val configLiteral = literal("config")
-        configLiteral.requires { it.isOp() }
+        configLiteral.requires { it.isAdmin() }
 
         for((section, sectionField) in sections) {
             val properties = getPropertiesFromSection(sectionField.type, configPropertyTransformers)
@@ -127,7 +126,7 @@ object DeathGamesConfigCommand {
         }
 
         val argLiteral = literal("args").then(pickLiteral).then(clearLiteral)
-        argLiteral.requires { it.isOp() }
+        argLiteral.requires { it.isAdmin() }
 
         return lab.then(configLiteral).then(argLiteral)
     }

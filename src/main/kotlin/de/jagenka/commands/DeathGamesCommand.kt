@@ -9,7 +9,6 @@ import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.getDGTeam
-import de.jagenka.managers.PlayerManager.isOp
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.team.DGTeam
@@ -29,13 +28,13 @@ object DeathGamesCommand
     {
         val literalArgumentBuilder = Commands.literal("deathgames")
             .then(literal("start")
-                .requires { it.isOp() }
+                .requires { it.isAdmin() }
                 .executes {
                     if (!DeathGames.running) DeathGames.startGameWithCountdown()
                     return@executes 0
                 })
             .then(literal("stop")
-                .requires { it.isOp() }
+                .requires { it.isAdmin() }
                 .executes {
                     if (DeathGames.running) DeathGames.stopGame()
                     else it.source.sendFailure(Component.literal("Game is not running!"))
@@ -43,7 +42,7 @@ object DeathGamesCommand
                 })
             .then(
                 literal("timer")
-                    .requires { it.isOp() }
+                    .requires { it.isAdmin() }
                     .then(literal("resume").executes {
                         Timer.start()
                         it.source.sendSuccess({ Component.literal("Timer is now running.") }, false)
@@ -69,7 +68,7 @@ object DeathGamesCommand
                         return@executes 0
                     }
                         .then(argument("player", StringArgumentType.word())
-                            .requires { it.isOp() }
+                            .requires { it.isAdmin() }
                             .suggests { context, builder ->
                                 SharedSuggestionProvider.suggest(context.source.onlinePlayerNames, builder)
                             }.executes {
@@ -94,7 +93,7 @@ object DeathGamesCommand
                 return@executes 0
             }
                 .then(argument("player", StringArgumentType.word())
-                    .requires { it.isOp() }
+                    .requires { it.isAdmin() }
                     .suggests { context, builder ->
                         SharedSuggestionProvider.suggest(context.source.onlinePlayerNames, builder)
                     }.executes { context ->
@@ -117,7 +116,7 @@ object DeathGamesCommand
             )
             .then(
                 literal("shufflespawns")
-                    .requires { it.isOp() }
+                    .requires { it.isAdmin() }
                     .executes {
                         if (DeathGames.running) SpawnManager.shuffleSpawns()
                         else it.source.sendFailure(Component.literal("Game is not running!"))
@@ -126,11 +125,11 @@ object DeathGamesCommand
             )
             .then(
                 literal("reloadConfig")
-                    .requires { it.isOp() }
+                    .requires { it.isAdmin() }
                     .executes {
                         try
                         {
-                            Config.load()
+                            Config.load() // TODO: check if this really reloads all (especially shop should be reset)
                             I18n.loadI18n()
                             it.source.sendSuccess({ Component.literal("config reloaded") }, true)
                         } catch (e: Exception)
@@ -148,8 +147,6 @@ object DeathGamesCommand
         dispatcher.register(literal("dg").redirect(baseLiteralCommandNode))
         dispatcher.register(literal("deeznutz").redirect(baseLiteralCommandNode))
     }
-
-    fun CommandSourceStack.isOp(): Boolean = this.player?.isOp() == true
 
     private fun handleLeaveTeam(context: CommandContext<CommandSourceStack>, player: ServerPlayer): DGTeam?
     {
@@ -217,3 +214,5 @@ object DeathGamesCommand
         } ?: context.source.sendFailure(Component.literal("You must be a player to do that!"))
     }
 }
+
+fun CommandSourceStack.isAdmin(): Boolean = Commands.LEVEL_ADMINS.check(this.permissions())
