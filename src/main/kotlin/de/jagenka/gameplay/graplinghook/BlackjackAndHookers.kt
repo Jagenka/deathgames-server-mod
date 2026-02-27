@@ -43,13 +43,11 @@ object BlackjackAndHookers
         activeHooks.toList().forEach {
             if (!it.vehicle.hasExactlyOnePlayerPassenger())
             {
-                println("noone riding, will kill")
                 it.killEntity()
                 activeHooks.remove(it)
             }
             if (!it.shouldTick())
             {
-                println("done ticking, will kill")
                 val pos = it.getEndPosition()
                 val owner = it.owner
                 it.killEntity()
