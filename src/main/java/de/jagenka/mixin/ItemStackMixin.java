@@ -53,7 +53,7 @@ public class ItemStackMixin
     }
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    public void use(Level world, Player user, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir)
+    public void use(Level level, Player user, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
@@ -64,7 +64,7 @@ public class ItemStackMixin
         {
             if (user instanceof ServerPlayer player)
             {
-                BlackjackAndHookers.forceTheHooker(world, player, stackInHand);
+                BlackjackAndHookers.forceTheHooker(level, player, stackInHand);
             }
         }
 

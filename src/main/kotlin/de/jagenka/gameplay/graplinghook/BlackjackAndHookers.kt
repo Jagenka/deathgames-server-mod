@@ -41,17 +41,19 @@ object BlackjackAndHookers
             it.tickDown()
         }
         activeHooks.toList().forEach {
-            if (!it.vehicle.hasControllingPassenger())
+            if (!it.vehicle.hasExactlyOnePlayerPassenger())
             {
+                println("noone riding, will kill")
                 it.killEntity()
                 activeHooks.remove(it)
             }
-            if (!it.isAlive())
+            if (!it.shouldTick())
             {
+                println("done ticking, will kill")
                 val pos = it.getEndPosition()
                 val owner = it.owner
                 it.killEntity()
-                owner.teleportTo(pos.x, pos.y, pos.z) // TODO: works? removed false as par
+                owner.teleportTo(pos.x, pos.y, pos.z)
                 owner.isNoGravity = false
                 activeHooks.remove(it)
             } else it.tick()
@@ -73,7 +75,7 @@ object BlackjackAndHookers
     {
         if (!DeathGames.running) return false
 
-        itemStackInHand.components?.let { components ->
+        itemStackInHand.components.let { components ->
             val nbt = components.get(CUSTOM_DATA)?.tag ?: return false
 
             val maxDistance = nbt.getDouble("hookMaxDistance").getOrNull() ?: return false
@@ -91,7 +93,7 @@ object BlackjackAndHookers
                 0.0,
                 1.0,
                 0.0
-            ) // TODO: works? added Util fun
+            )
 
             if (owner.position().y > targetPos.y + 1) return false
 
@@ -118,11 +120,11 @@ object BlackjackAndHookers
             vehicle.customName = Component.literal("hook")
             vehicle.isCustomNameVisible = false
             vehicle.isInvisible = true
-            vehicle.setNoGravity(true)
+            vehicle.isNoGravity = true
 
             world.addFreshEntity(vehicle)
             activeHooks.add(ArrowHook(vehicle, owner, targetPos, totalVelocity))
-            owner.startRiding(vehicle, true, false) // TODO: works? added false as par
+            owner.startRiding(vehicle, true, false)
 
             cooldown.goOnCooldown()
             owner.cooldowns.addCooldown(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
@@ -167,7 +169,7 @@ object BlackjackAndHookers
                     .length()
         }
 
-        fun isAlive(): Boolean
+        fun shouldTick(): Boolean
         {
             if (owner.hasDisconnected()) return false
             return previousDist > recentDist && recentDist > 0.5 && !this@ArrowHook.vehicle.isInWall && !this@ArrowHook.vehicle.onGround()
