@@ -12,7 +12,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
-// TODO: particle spawning only works in overworld
 object ParticleRenderer
 {
     fun generateLine(point1: Vec3, point2: Vec3, vertexSpacing: Double): List<Vec3>
@@ -97,7 +96,7 @@ object ParticleRenderer
         val baseY = player.position().y
         val baseZ = player.position().z
         vertices.forEach { vertex: Vec3 ->
-            server.overworld().sendParticles(
+            player.level().sendParticles(
                 player,
                 particle,
                 true,
@@ -122,7 +121,7 @@ object ParticleRenderer
     )
     {
         vertices.forEach { vertex: Vec3 ->
-            server.overworld()
+            player.level()
                 .sendParticles(player, particle, true, true, vertex.x, vertex.y, vertex.z, 1, 0.0, 0.0, 0.0, 0.0)
         }
     }
