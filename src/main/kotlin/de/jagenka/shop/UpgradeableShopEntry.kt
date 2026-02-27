@@ -1,8 +1,10 @@
 package de.jagenka.shop
 
-import de.jagenka.*
+import de.jagenka.equipmentSlot
+import de.jagenka.isArmor
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.getDGMoney
+import de.jagenka.removeItemStack
+import de.jagenka.setCustomName
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.item.ItemStack
@@ -65,10 +67,7 @@ class UpgradeableShopEntry(
         if (level !in prices.indices) return ItemStack.EMPTY
         val price = prices[level]
         return items[level].getOrElse(0) { ItemStack.EMPTY }.copy().setCustomName(
-            Component.literal("${MoneyManager.getCurrencyString(price)}: $name").withColor(
-                if (getDGMoney(playerName) < price) Util.getRGBInt(123, 0, 0)
-                else Util.getRGBInt(255, 255, 255)
-            )
+            Component.literal("${MoneyManager.getCurrencyString(price)}: $name").coloredForShop()
         )
     }
 

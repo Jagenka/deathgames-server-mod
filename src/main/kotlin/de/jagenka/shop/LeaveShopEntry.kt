@@ -1,6 +1,5 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.setCustomName
 import de.jagenka.timer.ShopTask
@@ -17,9 +16,7 @@ class LeaveShopEntry(playerName: String) : ShopEntry(playerName, nameForStat = "
     {
         return Items.BARRIER.defaultInstance.copy()
             .setCustomName(
-                Component.literal("Leave Shop").withColor(
-                    Util.getRGBInt(255, 255, 255)
-                )
+                Component.literal("Leave Shop").coloredForShop()
             )
     }
 

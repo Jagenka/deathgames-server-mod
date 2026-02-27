@@ -1,8 +1,6 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.getDGMoney
 import de.jagenka.maxDamage
 import de.jagenka.setCustomName
 import de.jagenka.withDamage
@@ -24,10 +22,7 @@ class ShieldShopEntry(playerName: String, private val name: String = "Shield", p
 
     override fun getDisplayItemStack(): ItemStack =
         Items.SHIELD.defaultInstance.copy().setCustomName(
-            Component.literal("${MoneyManager.getCurrencyString(getPrice())}: $name x1").withColor(
-                if (getDGMoney(playerName) < price) Util.getRGBInt(123, 0, 0)
-                else Util.getRGBInt(255, 255, 255)
-            )
+            Component.literal("${MoneyManager.getCurrencyString(getPrice())}: $name x1").coloredForShop()
         )
 
     override fun onClick(): Boolean

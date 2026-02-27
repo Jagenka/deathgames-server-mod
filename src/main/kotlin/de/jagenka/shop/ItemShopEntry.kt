@@ -1,9 +1,7 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
 import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager.getCurrencyString
-import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -20,10 +18,8 @@ class ItemShopEntry(playerName: String, private val boughtItemStack: ItemStack, 
     {
         return boughtItemStack.copy()
             .setCustomName(
-                Component.literal("${getCurrencyString(price)}: $displayName x${boughtItemStack.count}").withColor(
-                    if (getDGMoney(playerName) < price) Util.getRGBInt(123, 0, 0)
-                    else Util.getRGBInt(255, 255, 255)
-                )
+                Component.literal("${getCurrencyString(price)}: $displayName x${boughtItemStack.count}")
+                    .coloredForShop()
             )
     }
 

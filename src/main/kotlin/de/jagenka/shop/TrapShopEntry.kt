@@ -1,10 +1,8 @@
 package de.jagenka.shop
 
 import com.mojang.brigadier.StringReader
-import de.jagenka.Util
 import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
 import net.minecraft.commands.arguments.CompoundTagArgument
 import net.minecraft.core.component.DataComponents.CUSTOM_DATA
@@ -64,10 +62,7 @@ class TrapShopEntry(
 
     override fun getDisplayItemStack(): ItemStack =
         Items.BAT_SPAWN_EGG.defaultInstance.setCustomName(
-            Component.literal("${MoneyManager.getCurrencyString(price)}: $name x1").withColor(
-                if (getDGMoney(playerName) < price) Util.getRGBInt(123, 0, 0)
-                else Util.getRGBInt(255, 255, 255)
-            )
+            Component.literal("${MoneyManager.getCurrencyString(price)}: $name x1").coloredForShop()
         )
 
     override fun onClick(): Boolean

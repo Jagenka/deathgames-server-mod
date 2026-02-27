@@ -1,10 +1,8 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
 import de.jagenka.gameplay.graplinghook.BlackjackAndHookers
 import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
 import net.minecraft.core.component.DataComponents.CUSTOM_DATA
 import net.minecraft.nbt.CompoundTag
@@ -37,11 +35,7 @@ class HookerShopEntry(
     override fun getDisplayItemStack(): ItemStack
     {
         return BlackjackAndHookers.itemItem.defaultInstance.copy().setCustomName(
-            Component.literal("${MoneyManager.getCurrencyString(price)}: $displayName x1")
-                .withColor( // TODO: factor out text coloring, as many items use the same colors
-                    if (getDGMoney(playerName) < price) Util.getRGBInt(123, 0, 0)
-                    else Util.getRGBInt(255, 255, 255)
-                )
+            Component.literal("${MoneyManager.getCurrencyString(price)}: $displayName x1").coloredForShop()
         )
     }
 

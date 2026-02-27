@@ -1,6 +1,5 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
 import de.jagenka.managers.refundMoney
 import de.jagenka.setCustomName
 import de.jagenka.stats.StatManager
@@ -16,9 +15,7 @@ class RefundRecentShopEntry(playerName: String, override var displayName: String
     {
         return Items.NAME_TAG.defaultInstance.copy()
             .setCustomName(
-                Component.literal(displayName).withColor(
-                    Util.getRGBInt(255, 255, 255)
-                )
+                Component.literal(displayName).coloredForShop()
             )
     }
 

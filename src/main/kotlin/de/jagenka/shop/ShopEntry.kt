@@ -1,9 +1,11 @@
 package de.jagenka.shop
 
+import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.deductDGMoney
 import de.jagenka.managers.getDGMoney
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -53,6 +55,13 @@ abstract class ShopEntry(internal val playerName: String, internal val nameForSt
      * removes item from player's inventory
      */
     abstract fun removeGoods()
+
+    fun MutableComponent.coloredForShop(): MutableComponent {
+        return this.withColor(
+            if (getDGMoney(playerName) < getPrice()) Util.getRGBInt(123, 0, 0)
+            else Util.getRGBInt(255, 255, 255)
+        )
+    }
 
     companion object
     {
