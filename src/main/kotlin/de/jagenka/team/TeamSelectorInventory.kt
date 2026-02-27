@@ -1,15 +1,14 @@
 package de.jagenka.team
 
 import de.jagenka.config.Config
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.Inventory
-import net.minecraft.item.ItemStack
-import net.minecraft.item.ItemStack.EMPTY
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.Container
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 
-class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
+class TeamSelectorInventory(val player: ServerPlayer) : Container
 {
-    private val slots: Array<UIEntry> = Array(size()) { EmptyUIEntry() }
+    private val slots: Array<UIEntry> = Array(containerSize) { EmptyUIEntry() }
 
     init
     {
@@ -56,9 +55,9 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
         slots[17] = StartGameUIEntry()
     }
 
-    override fun getStack(slotIndex: Int): ItemStack
+    override fun getItem(slotIndex: Int): ItemStack
     {
-        if (slotIndex !in slots.indices) return EMPTY
+        if (slotIndex !in slots.indices) return ItemStack.EMPTY
         return slots[slotIndex].displayItemStack
     }
 
@@ -68,13 +67,12 @@ class TeamSelectorInventory(val player: ServerPlayerEntity) : Inventory
         slots[slotIndex].onClick(player)
     }
 
-    override fun clear() = Unit
-    override fun size(): Int = 18 // 2 * 9
+    override fun clearContent() = Unit
+    override fun getContainerSize(): Int = 18 // 2 * 9
     override fun isEmpty(): Boolean = false
-    override fun removeStack(slot: Int, amount: Int): ItemStack = EMPTY
-    override fun removeStack(slot: Int): ItemStack = EMPTY
-    override fun setStack(slot: Int, stack: ItemStack?) = Unit
-    override fun markDirty() = Unit
-    override fun canPlayerUse(player: PlayerEntity?): Boolean = true
-    override fun onOpen(player: PlayerEntity?) = Unit
+    override fun removeItem(slot: Int, amount: Int): ItemStack = ItemStack.EMPTY
+    override fun removeItemNoUpdate(slot: Int): ItemStack = ItemStack.EMPTY
+    override fun setItem(slot: Int, stack: ItemStack) = Unit
+    override fun setChanged() = Unit
+    override fun stillValid(player: Player): Boolean = true
 }

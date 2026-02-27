@@ -12,9 +12,9 @@ import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.team.DGTeam
 import de.jagenka.util.I18n
-import net.minecraft.entity.boss.BossBar
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text.literal
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.BossEvent
 
 object CaptureSpawnTask : TimerTask
 {
@@ -33,7 +33,7 @@ object CaptureSpawnTask : TimerTask
 
         if (currentlyEnding) return
 
-        val playersOnAnySpawn = mutableListOf<Pair<ServerPlayerEntity, DGSpawn>>()
+        val playersOnAnySpawn = mutableListOf<Pair<ServerPlayer, DGSpawn>>()
 
         SpawnManager.spawns.forEach forEachSpawn@{ spawn ->
             val playersOnSpawn = PlayerManager.getOnlineParticipatingPlayers().filter { spawn.containsPlayer(it) }
@@ -72,7 +72,13 @@ object CaptureSpawnTask : TimerTask
         playersOnAnySpawn.forEach forEachPlayer@{ (playerOnSpawn, spawn) ->
             val progress = captureProgress.getValue(spawn)
             val fillAmount = progress.toFloat() / Config.spawns.captureTimeNeeded.toFloat()
-            DisplayManager.setBossBarForPlayer(playerOnSpawn, fillAmount, text = literal(I18n.get("captureProgress")), color = BossBar.Color.BLUE, idSuffix = "capture")
+            DisplayManager.setBossBarForPlayer(
+                playerOnSpawn,
+                fillAmount,
+                textComponent = Component.literal(I18n.get("captureProgress")),
+                color = BossEvent.BossBarColor.BLUE,
+                idSuffix = "capture"
+            )
         }
 
         PlayerManager.getOnlinePlayers()

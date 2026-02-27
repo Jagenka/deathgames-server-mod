@@ -1,13 +1,11 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
 import de.jagenka.managers.refundMoney
 import de.jagenka.setCustomName
 import de.jagenka.stats.StatManager
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 
 class RefundRecentShopEntry(playerName: String, override var displayName: String = "Refund recent purchases") : ShopEntry(playerName, nameForStat = "REFUND_RECENT")
 {
@@ -15,13 +13,9 @@ class RefundRecentShopEntry(playerName: String, override var displayName: String
 
     override fun getDisplayItemStack(): ItemStack
     {
-        return Items.NAME_TAG.defaultStack.copy()
+        return Items.NAME_TAG.defaultInstance.copy()
             .setCustomName(
-                Text.of(displayName).getWithStyle(
-                    Style.EMPTY.withColor(
-                        Util.getTextColor(255, 255, 255)
-                    )
-                )[0]
+                Component.literal(displayName).coloredForShop()
             )
     }
 

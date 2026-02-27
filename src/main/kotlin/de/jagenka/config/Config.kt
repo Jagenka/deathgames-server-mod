@@ -3,9 +3,8 @@ package de.jagenka.config
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.shop.ShopEntries
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.minecraft.util.WorldSavePath
+import net.minecraft.world.level.storage.LevelResource
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -59,7 +58,7 @@ object Config
     fun lateLoadConfig()
     {
         Util.minecraftServer?.let { server ->
-            val configFolder = server.getSavePath(WorldSavePath.ROOT).resolve("deathgames")
+            val configFolder = server.getWorldPath(LevelResource.ROOT).resolve("deathgames")
             if (!Files.exists(configFolder))
             {
                 Files.createDirectories(configFolder)

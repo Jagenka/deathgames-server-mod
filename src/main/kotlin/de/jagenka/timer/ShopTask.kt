@@ -11,13 +11,13 @@ import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.shop.Shop
 import de.jagenka.util.I18n
-import net.minecraft.block.Blocks
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.entity.effect.StatusEffects
-import net.minecraft.item.Items
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
-import net.minecraft.util.math.Vec3d
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.effect.MobEffects
+import net.minecraft.world.item.Items
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.phys.Vec3
 
 object ShopTask : TimerTask
 {
@@ -54,15 +54,15 @@ object ShopTask : TimerTask
                         serverPlayerEntity.teleport(it.pos, it.yaw, it.pitch)
                         DisplayManager.sendTitleMessage(
                             serverPlayerEntity,
-                            Text.literal(I18n.get("shopClosedTitle")),
-                            Text.literal(I18n.get("shopClosedSubtitle")),
+                            Component.literal(I18n.get("shopClosedTitle")),
+                            Component.literal(I18n.get("shopClosedSubtitle")),
                             3.seconds()
                         )
                     }
                     return@forEach
                 }
 
-                serverPlayerEntity.addStatusEffect(StatusEffectInstance(StatusEffects.RESISTANCE, 1.seconds(), 255))
+                serverPlayerEntity.addEffect(MobEffectInstance(MobEffects.RESISTANCE, 1.seconds(), 255))
 
                 if (playerName !in currentlyInShop)
                 {
@@ -71,8 +71,8 @@ object ShopTask : TimerTask
 
                     DisplayManager.sendTitleMessage(
                         serverPlayerEntity,
-                        Text.of(I18n.get("shopEnteredTitle")),
-                        Text.of(I18n.get("shopEnteredSubtitle")),
+                        Component.literal(I18n.get("shopEnteredTitle")),
+                        Component.literal(I18n.get("shopEnteredSubtitle")),
                         3.seconds()
                     )
                 }
@@ -95,17 +95,20 @@ object ShopTask : TimerTask
                 }
             } else currentlyInShop.remove(playerName)
 
-            if (playerName !in currentlyInShop && serverPlayerEntity.isOnGround)
+            if (playerName !in currentlyInShop && serverPlayerEntity.onGround())
             {
-                if (!Util.getBlockAt(BlockPos.from(serverPlayerEntity.pos).relative(0, -1, 0)).isSame(Blocks.AIR))
+                if (!Util.getBlockAt(BlockPos.from(serverPlayerEntity.position()).relative(0, -1, 0))
+                        .isSame(Blocks.AIR)
+                )
                 {
-                    lastPosOutOfShop[playerName] = TPPos(serverPlayerEntity.pos, serverPlayerEntity.yaw, serverPlayerEntity.pitch)
+                    lastPosOutOfShop[playerName] =
+                        TPPos(serverPlayerEntity.position(), serverPlayerEntity.yRot, serverPlayerEntity.xRot)
                 }
             }
         }
     }
 
-    fun sendTpOutMessage(player: ServerPlayerEntity, secondsLeft: Int)
+    fun sendTpOutMessage(player: ServerPlayer, secondsLeft: Int)
     {
         if (secondsLeft > 0 && currentlyInShop.contains(player.name.string))
         {
@@ -114,20 +117,34 @@ object ShopTask : TimerTask
         }
     }
 
-    private fun clearIllegalItems(player: ServerPlayerEntity)
+    private fun clearIllegalItems(player: ServerPlayer)
     {
         val illegalItems = listOf(Items.GLASS_BOTTLE, Items.BUCKET)
-        player.inventory.remove({ itemStack -> itemStack.item in illegalItems }, -1, player.playerScreenHandler.craftingInput)
+        player.inventory.clearOrCountMatchingItems(
+            { itemStack -> itemStack.item in illegalItems },
+            -1,
+            player.inventoryMenu.craftSlots
+        )
     }
 
-    fun exitShop(playerName: String)
+    /**
+     * forces player to move to spawn with respawn effects, no respawn items, extinguished, shop parameters reset and menus closed
+     */
+    fun exitShop(player: ServerPlayer)
     {
-        val player = PlayerManager.getOnlinePlayer(playerName) ?: return
-        SpawnManager.spawnPlayer(player)
-        player.extinguish()
+        val playerName = player.name.string
+
+        SpawnManager.spawnPlayer(player, giveItems = false)
+        player.extinguishFire()
         timeInShop[playerName] = 0
-        player.closeHandledScreen()
+        player.closeContainer()
         Shop.clearRecentlyBought(playerName)
+    }
+
+    fun exitShop(playerName: String) {
+        val player = PlayerManager.getOnlinePlayer(playerName) ?: return
+        exitShop(player)
+
     }
 
     override fun reset()
@@ -137,4 +154,4 @@ object ShopTask : TimerTask
     }
 }
 
-data class TPPos(val pos: Vec3d, val yaw: Float, val pitch: Float)
+data class TPPos(val pos: Vec3, val yaw: Float, val pitch: Float)

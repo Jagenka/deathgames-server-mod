@@ -1,13 +1,10 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
 import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager.getCurrencyString
-import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
-import net.minecraft.item.ItemStack
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
 
 class ItemShopEntry(playerName: String, private val boughtItemStack: ItemStack, private val price: Int, override var displayName: String) :
     ShopEntry(playerName = playerName, nameForStat = displayName)
@@ -21,25 +18,21 @@ class ItemShopEntry(playerName: String, private val boughtItemStack: ItemStack, 
     {
         return boughtItemStack.copy()
             .setCustomName(
-                Text.of("${getCurrencyString(price)}: $displayName x${boughtItemStack.count}").getWithStyle(
-                    Style.EMPTY.withColor(
-                        if (getDGMoney(playerName) < price) Util.getTextColor(123, 0, 0)
-                        else Util.getTextColor(255, 255, 255)
-                    )
-                )[0]
+                Component.literal("${getCurrencyString(price)}: $displayName x${boughtItemStack.count}")
+                    .coloredForShop()
             )
     }
 
     override fun onClick(): Boolean
     {
         return attemptSale(player, price) {
-            player?.giveItemStack(boughtItemStack.copy())
+            player?.addItem(boughtItemStack.copy())
         }
     }
 
     override fun hasGoods(): Boolean
     {
-        return player?.inventory?.containsAny {
+        return player?.inventory?.contains {
             itemAndNbtEqual(boughtItemStack, it) &&
                     it.count >= boughtItemStack.count
         } == true
@@ -49,11 +42,12 @@ class ItemShopEntry(playerName: String, private val boughtItemStack: ItemStack, 
     {
         val amount = boughtItemStack.count
 
-        player?.inventory?.remove(
+        player?.inventory?.clearOrCountMatchingItems(
             { itemStackInInventory ->
                 itemAndNbtEqual(boughtItemStack, itemStackInInventory)
             },
-            amount, player!!.playerScreenHandler.craftingInput // should be null-safe, because remove will not be called, if player is null
+            amount, player!!.inventoryMenu.craftSlots // also check in craft slots
+            // should be null-safe, because remove will not be called, if player is null
         )
     }
 

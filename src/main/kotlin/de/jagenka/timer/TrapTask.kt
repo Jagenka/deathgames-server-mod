@@ -4,7 +4,7 @@ import de.jagenka.gameplay.traps.TrapManager
 import de.jagenka.managers.PlayerManager.getOnlineParticipatingPlayersAround
 import de.jagenka.managers.PlayerManager.getOnlinePlayersAround
 import de.jagenka.toCenter
-import net.minecraft.particle.ParticleTypes
+import net.minecraft.core.particles.ParticleTypes
 
 object TrapTask : TimerTask
 {
@@ -25,7 +25,7 @@ object TrapTask : TimerTask
             if (!trap.doneSettingUp) // setup animation
             {
                 playersInGeneralVisibilityRange.forEach { player ->
-                    player.world.spawnParticles(
+                    player.level().sendParticles(
                         player, ParticleTypes.CRIT, true, true, x.toCenter(), y + 0.2, z.toCenter(), 1, 0.05, 0.1, 0.05, 0.1
                     )
                 }
@@ -35,7 +35,7 @@ object TrapTask : TimerTask
             {
                 // play idle animation
                 playersInGeneralVisibilityRange.forEach { player ->
-                    player.world.spawnParticles(
+                    player.level().sendParticles(
                         ParticleTypes.NAUTILUS, x.toCenter(), y - 0.015, z.toCenter(), 0, 0.0, 0.0, 0.0, 0.0
                     )
                 }

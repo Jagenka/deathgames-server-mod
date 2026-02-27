@@ -4,16 +4,16 @@ import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.managers.MoneyManager
 import de.jagenka.util.I18n
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.GenericContainerScreenHandler
-import net.minecraft.screen.NamedScreenHandlerFactory
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.screen.ScreenHandlerType
-import net.minecraft.screen.slot.SlotActionType
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.MenuProvider
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.inventory.ChestMenu
+import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.inventory.MenuType
+import net.minecraft.world.item.ItemStack
 
 object Shop
 {
@@ -26,7 +26,7 @@ object Shop
     const val SLOT_AMOUNT = 9 * 6
 
     @JvmStatic
-    fun showInterfaceIfInShop(player: ServerPlayerEntity): Boolean
+    fun showInterfaceIfInShop(player: ServerPlayer): Boolean
     {
         if (DeathGames.running && isInShopBounds(player))
         {
@@ -36,31 +36,32 @@ object Shop
         return false
     }
 
-    fun showInterface(serverPlayerEntity: ServerPlayerEntity)
+    fun showInterface(serverPlayer: ServerPlayer)
     {
-        object : NamedScreenHandlerFactory
+        object : MenuProvider
         {
-            override fun createMenu(syncId: Int, inv: PlayerInventory?, player: PlayerEntity?): ScreenHandler
+            override fun createMenu(syncId: Int, inv: Inventory, player: Player): AbstractContainerMenu
             {
-                val shopInventory = ShopInventory(serverPlayerEntity.name.string)
+                val shopInventory = ShopInventory(serverPlayer.name.string)
                 val screenHandler =
-                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, inv, shopInventory, 6)
+                    object : ChestMenu(MenuType.GENERIC_9x6, syncId, inv, shopInventory, 6)
                     {
-                        override fun quickMove(player: PlayerEntity?, slot: Int): ItemStack = ItemStack.EMPTY
+                        override fun quickMoveStack(player: Player, slot: Int): ItemStack = ItemStack.EMPTY
 
-                        override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
+                        override fun clicked(slotIndex: Int, button: Int, clickType: ClickType, player: Player)
                         {
-                            if (actionType == SlotActionType.PICKUP) shopInventory.onClick(slotIndex)
-                            player?.playerScreenHandler?.updateToClient()
-                            serverPlayerEntity.playerScreenHandler.updateToClient()
+                            if (clickType == ClickType.PICKUP) shopInventory.onClick(slotIndex)
+                            player.inventoryMenu.sendAllDataToRemote()
+                            serverPlayer.inventoryMenu.sendAllDataToRemote()
                         }
                     }
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of(I18n.get("shopWindowTitle"))
+            override fun getDisplayName(): Component = Component.literal(I18n.get("shopWindowTitle"))
+
         }.let {
-            serverPlayerEntity.openHandledScreen(it)
+            serverPlayer.openMenu(it)
         }
     }
 
@@ -79,11 +80,11 @@ object Shop
         this.currentUpgradableLevels.clear()
     }
 
-    fun isInShopBounds(player: PlayerEntity?): Boolean
+    fun isInShopBounds(player: Player?): Boolean
     {
         if (player == null) return false
 
-        return Config.shopSettings.shopBounds.any { it.contains(player.pos) }
+        return Config.shopSettings.shopBounds.any { it.contains(player.position()) }
 
     }
 

@@ -1,8 +1,7 @@
 package de.jagenka.gameplay.rendering
 
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.phys.Vec3
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
 
@@ -47,7 +46,7 @@ object PlyImporter
                     {
                         vertexList.add(
                             ParticleRenderer.VertexTreeElement(
-                                Vec3d(
+                                Vec3(
                                     elements[0].toDouble(),
                                     elements[1].toDouble(),
                                     elements[2].toDouble()

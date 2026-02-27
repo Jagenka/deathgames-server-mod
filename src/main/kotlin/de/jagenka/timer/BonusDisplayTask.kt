@@ -5,9 +5,9 @@ import de.jagenka.config.Config
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
 import de.jagenka.util.I18n
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
 
 object BonusDisplayTask : TimerTask
 {
@@ -35,8 +35,8 @@ object BonusDisplayTask : TimerTask
             {
                 val (name) = selectedPlatforms[0]
                 DisplayManager.showTimeToBonusMessage(
-                    Text.of(getInactiveString(name, timeToSpawn))
-                        .getWithStyle(Style.EMPTY.withColor(Formatting.DARK_RED).withBold(true))[0]
+                    Component.literal(getInactiveString(name, timeToSpawn))
+                        .withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED).withBold(true))
                 )
             }
         } else if (timeToDespawn != null)
@@ -46,8 +46,8 @@ object BonusDisplayTask : TimerTask
             {
                 val (name) = activePlatforms[0]
                 DisplayManager.showTimeToBonusMessage(
-                    Text.of(getActiveString(name, timeToDespawn))
-                        .getWithStyle(Style.EMPTY.withColor(Formatting.DARK_GREEN).withBold(true))[0]
+                    Component.literal(getActiveString(name, timeToDespawn))
+                        .withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GREEN).withBold(true))
                 )
             }
         }

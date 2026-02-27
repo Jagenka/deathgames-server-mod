@@ -1,8 +1,8 @@
-package de.jagenka.shop;
+package de.jagenka.shop
 
 import de.jagenka.Util.parseItemStack
 import de.jagenka.config.Config
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 class PersonalizedShop(private val playerName: String)
 {
@@ -16,7 +16,12 @@ class PersonalizedShop(private val playerName: String)
         val buffer = mutableMapOf<Int, ShopEntry>()
 
         Config.shop.items.forEach { (row, col, name, id, amount, nbt, price) ->
-            buffer[slot(row, col)] = ItemShopEntry(playerName, parseItemStack(id, nbt, amount), price, name)
+            buffer[slot(row, col)] = ItemShopEntry(
+                playerName,
+                parseItemStack(id, nbt, amount),
+                price,
+                name
+            )
         }
 
         Config.shop.shield?.let { (row, col, name, durability, price) ->

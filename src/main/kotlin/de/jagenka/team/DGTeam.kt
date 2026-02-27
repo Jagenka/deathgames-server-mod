@@ -6,11 +6,10 @@ import de.jagenka.isSame
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isParticipating
 import de.jagenka.util.I18n
-import net.minecraft.block.Block
-import net.minecraft.block.Blocks
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Component
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import org.joml.Vector3f
 
 enum class DGTeam
@@ -38,7 +37,7 @@ enum class DGTeam
         }
     }
 
-    fun getColorInt(): Int = Formatting.byName(this.name.lowercase())?.colorValue ?: 0xFFFFFF
+    fun getColorInt(): Int = ChatFormatting.getByName(this.name.lowercase())?.color ?: 0xFFFFFF
 
     fun getColorVector(): Vector3f = Util.getRGBVector3fForInt(getColorInt())
 
@@ -53,7 +52,8 @@ enum class DGTeam
         return I18n.get("team${this.name.replace('_', ' ').lowercase().capitalizeWords().replace(" ", "")}")
     }
 
-    fun getFormattedText(): Text = Text.literal(this.getPrettyName()).getWithStyle(Style.EMPTY.withColor(Formatting.byName(this.name.lowercase())))[0]
+    fun getFormattedText(): Component =
+        Component.literal(this.getPrettyName()).withColor(ChatFormatting.getByName(this.name.lowercase())?.color ?: 0)
 
     companion object
     {

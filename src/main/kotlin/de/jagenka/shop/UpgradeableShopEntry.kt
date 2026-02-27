@@ -1,12 +1,13 @@
 package de.jagenka.shop
 
-import de.jagenka.*
+import de.jagenka.equipmentSlot
+import de.jagenka.isArmor
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.getDGMoney
-import net.minecraft.entity.EquipmentSlot
-import net.minecraft.item.ItemStack
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import de.jagenka.removeItemStack
+import de.jagenka.setCustomName
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.EquipmentSlot
+import net.minecraft.world.item.ItemStack
 import kotlin.math.max
 import kotlin.math.min
 
@@ -66,12 +67,7 @@ class UpgradeableShopEntry(
         if (level !in prices.indices) return ItemStack.EMPTY
         val price = prices[level]
         return items[level].getOrElse(0) { ItemStack.EMPTY }.copy().setCustomName(
-            Text.of("${MoneyManager.getCurrencyString(price)}: $name").getWithStyle(
-                Style.EMPTY.withColor(
-                    if (getDGMoney(playerName) < price) Util.getTextColor(123, 0, 0)
-                    else Util.getTextColor(255, 255, 255)
-                )
-            )[0]
+            Component.literal("${MoneyManager.getCurrencyString(price)}: $name").coloredForShop()
         )
     }
 
@@ -149,24 +145,24 @@ class UpgradeableShopEntry(
         {
             items[targetLevel].forEach { itemStack ->
                 // if the item is armor, we need to do some fancy stuffs
-                if (itemStack.item.isArmor())
+                if (itemStack.item.isArmor() && itemStack.item.equipmentSlot != null)
                 {
-                    val equipmentSlot = itemStack.item.equipmentSlot
+                    val equipmentSlot = itemStack.item.equipmentSlot!!
                     val slotToPutIn = equipmentSlotToIndexInInventory[equipmentSlot]
 
                     if (slotToPutIn != null)
                     {
                         // if a designated slot was determined for this equipment, re-insert it there
-                        player?.inventory?.insertStack(slotToPutIn, itemStack.copy())
+                        player?.inventory?.setItem(slotToPutIn, itemStack.copy())
                     } else
                     {
                         // else just put it where it belongs
-                        player?.equipStack(equipmentSlot, itemStack.copy())
+                        player?.setItemSlot(equipmentSlot, itemStack.copy())
                     }
                 } else
                 {
                     // otherwise just give the new item, as the old one has been removed before
-                    player?.giveItemStack(itemStack.copy())
+                    player?.addItem(itemStack.copy())
                 }
             }
         }

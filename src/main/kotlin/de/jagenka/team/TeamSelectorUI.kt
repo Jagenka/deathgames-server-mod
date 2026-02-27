@@ -3,16 +3,16 @@ package de.jagenka.team
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.util.I18n
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.GenericContainerScreenHandler
-import net.minecraft.screen.NamedScreenHandlerFactory
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.screen.ScreenHandlerType
-import net.minecraft.screen.slot.SlotActionType
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.MenuProvider
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.inventory.ChestMenu
+import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.inventory.MenuType
+import net.minecraft.world.item.ItemStack
 
 object TeamSelectorUI
 {
@@ -21,7 +21,7 @@ object TeamSelectorUI
     var notReadySpamProtection = false
 
     @JvmStatic
-    fun showInterfaceIfInLobby(player: ServerPlayerEntity): Boolean
+    fun showInterfaceIfInLobby(player: ServerPlayer): Boolean
     {
         if (!DeathGames.running &&!DeathGames.currentlyStarting && isInLobbyBounds(player))
         {
@@ -31,32 +31,32 @@ object TeamSelectorUI
         return false
     }
 
-    fun showInterface(serverPlayerEntity: ServerPlayerEntity)
+    fun showInterface(serverPlayer: ServerPlayer)
     {
-        object : NamedScreenHandlerFactory
+        object : MenuProvider
         {
-            override fun createMenu(syncId: Int, inv: PlayerInventory?, player: PlayerEntity?): ScreenHandler
+            override fun createMenu(syncId: Int, inv: Inventory, player: Player): AbstractContainerMenu
             {
-                val inventory = TeamSelectorInventory(serverPlayerEntity)
+                val teamSelectorInv = TeamSelectorInventory(serverPlayer)
                 val screenHandler =
-                    object : GenericContainerScreenHandler(ScreenHandlerType.GENERIC_9X2, syncId, serverPlayerEntity.inventory, inventory, 2)
+                    object : ChestMenu(MenuType.GENERIC_9x2, syncId, serverPlayer.inventory, teamSelectorInv, 2)
                     {
-                        override fun quickMove(player: PlayerEntity?, slot: Int): ItemStack = ItemStack.EMPTY
+                        override fun quickMoveStack(player: Player, slot: Int): ItemStack = ItemStack.EMPTY
 
-                        override fun onSlotClick(slotIndex: Int, button: Int, actionType: SlotActionType?, player: PlayerEntity?)
+                        override fun clicked(slotIndex: Int, button: Int, actionType: ClickType, player: Player)
                         {
-                            if (actionType == SlotActionType.PICKUP) inventory.onClick(slotIndex)
-                            serverPlayerEntity.playerScreenHandler.updateToClient()
+                            if (actionType == ClickType.PICKUP) teamSelectorInv.onClick(slotIndex)
+                            serverPlayer.inventoryMenu.sendAllDataToRemote()
                         }
                     }
                 return screenHandler
             }
 
-            override fun getDisplayName(): Text = Text.of(I18n.get("teamSelectWindowTitle"))
+            override fun getDisplayName(): Component = Component.literal(I18n.get("teamSelectWindowTitle"))
         }.let {
-            serverPlayerEntity.openHandledScreen(it)
+            serverPlayer.openMenu(it)
         }
     }
 
-    fun isInLobbyBounds(player: ServerPlayerEntity): Boolean = lobbyBounds.contains(player.pos)
+    fun isInLobbyBounds(player: ServerPlayer): Boolean = lobbyBounds.contains(player.position())
 }

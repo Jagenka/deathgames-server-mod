@@ -3,27 +3,27 @@ package de.jagenka.mixin;
 import de.jagenka.config.Config;
 import de.jagenka.shop.Shop;
 import de.jagenka.team.TeamSelectorUI;
-import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ServerPlayNetworkHandler.class)
-public class ServerPlayNetworkHandlerMixin
+@Mixin(ServerGamePacketListenerImpl.class)
+public class ServerGamePacketListenerImplMixin
 {
     @Shadow
-    public ServerPlayerEntity player;
+    public ServerPlayer player;
 
-    @Inject(method = "onPlayerAction", at = @At("HEAD"), cancellable = true)
-    private void openShop(PlayerActionC2SPacket packet, CallbackInfo ci)
+    @Inject(method = "handlePlayerAction", at = @At("HEAD"), cancellable = true)
+    private void openShop(ServerboundPlayerActionPacket packet, CallbackInfo ci)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
-        if (packet.getAction().equals(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND))
+        if (packet.getAction().equals(ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND))
         {
             if (Shop.showInterfaceIfInShop(this.player)) ci.cancel();
             else if (TeamSelectorUI.showInterfaceIfInLobby(this.player)) ci.cancel();

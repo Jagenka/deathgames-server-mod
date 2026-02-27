@@ -1,7 +1,7 @@
 package de.jagenka
 
 import kotlinx.serialization.Serializable
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.phys.Vec3
 import kotlin.math.max
 import kotlin.math.min
 
@@ -36,7 +36,7 @@ class BlockCuboid
         return (pos.x in firstCorner.x..secondCorner.x) && (pos.y in firstCorner.y..secondCorner.y) && (pos.z in firstCorner.z..secondCorner.z)
     }
 
-    fun contains(pos: Vec3d): Boolean
+    fun contains(pos: Vec3): Boolean
     {
         return (pos.x in firstCorner.x.toFloat().rangeTo((secondCorner.x + 1).toFloat()))
                 && (pos.y in firstCorner.y.toFloat().rangeTo((secondCorner.y + 1).toFloat()))

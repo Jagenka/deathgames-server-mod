@@ -1,14 +1,12 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.setCustomName
 import de.jagenka.timer.ShopTask
 import de.jagenka.timer.Timer
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 
 class LeaveShopEntry(playerName: String) : ShopEntry(playerName, nameForStat = "LEAVE_SHOP")
 {
@@ -16,13 +14,9 @@ class LeaveShopEntry(playerName: String) : ShopEntry(playerName, nameForStat = "
 
     override fun getDisplayItemStack(): ItemStack
     {
-        return Items.BARRIER.defaultStack.copy()
+        return Items.BARRIER.defaultInstance.copy()
             .setCustomName(
-                Text.of("Leave Shop").getWithStyle(
-                    Style.EMPTY.withColor(
-                        Util.getTextColor(255, 255, 255)
-                    )
-                )[0]
+                Component.literal("Leave Shop").coloredForShop()
             )
     }
 

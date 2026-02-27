@@ -7,9 +7,8 @@ import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.rotateAroundVector
-import net.minecraft.particle.DustParticleEffect
-import net.minecraft.util.math.Vec3d
-import org.joml.Vector3f
+import net.minecraft.core.particles.DustParticleOptions
+import net.minecraft.world.phys.Vec3
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -65,7 +64,7 @@ object CaptureAnimation
                     val offsetZ = sin(it) * RADIUS
 
                     return@map listOf(
-                        spawn.coordinates.toVec3d().add(Vec3d(offsetX, height, offsetZ)),
+                        spawn.coordinates.toVec3().add(Vec3(offsetX, height, offsetZ)),
 //                        spawn.coordinates.toVec3d().add(Vec3d(offsetX, 0.75 + Math.random() / 2.0, offsetZ)),
                     )
                 }.flatten().toMutableList()
@@ -74,17 +73,19 @@ object CaptureAnimation
                     val randomAngle = Math.random() * Math.PI * 2.0
                     val offsetX = cos(randomAngle) * Math.random() * captureDistance
                     val offsetZ = sin(randomAngle) * Math.random() * captureDistance
-                    particles.add(spawn.coordinates.toVec3d().add(Vec3d(offsetX, 0.1, offsetZ)))
+                    particles.add(spawn.coordinates.toVec3().add(Vec3(offsetX, 0.1, offsetZ)))
                 }
 
                 PlayerManager.getOnlinePlayers().forEach inner@{ player ->
                     // we're using force on the particle, this makes the default range 512 blocks (instead of 32), so let's trim that
-                    if (player.pos.subtract(spawn.coordinates.toVec3d()).lengthSquared() > VISIBILITY_RANGE.pow(2.0))
+                    if (player.position().subtract(spawn.coordinates.toVec3()).lengthSqr() > VISIBILITY_RANGE.pow(2.0))
                     {
                         return@inner
                     }
 
-                    val rgbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorInt() ?: 0xFFFFFF, 4f)
+                    val rgbParticle =
+                        DustParticleOptions(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }
+                            ?.getColorInt() ?: 0xFFFFFF, 4f)
                     ParticleRenderer.drawMultipleParticlesWorld(server, player, rgbParticle, particles)
                 }
 
@@ -107,35 +108,38 @@ object CaptureAnimation
                 val playersOnSpawn = PlayerManager.getOnlineParticipatingPlayers().filter { spawn.containsPlayer(it) }
                 val teamsOnSpawn = playersOnSpawn.map { it.getDGTeam() }.toSet()
 
-                val orb = spawn.coordinates.toVec3d().add(Vec3d(0.0, 6.0, 0.0))
+                val orb = spawn.coordinates.toVec3().add(Vec3(0.0, 6.0, 0.0))
                 val orbM = orbModel.clone()
                 // This is just volume for a sphere solved for radius, using max radius 5.0 (max Volume is 268.1)
                 val orbSize = ((progress.toDouble() / Config.spawns.captureTimeNeeded.toDouble()) * 268.1 * (3.0 / 4.0) / PI).pow(1.0 / 3.0)
                 orbM.translate(orb)
                 orbM.scale(orbSize / 1.5, orb)
-                orbM.rotate(Vector3f(0f, 1f, 0f), Gradient.globalGradient(9000) * 360, orb)
+                orbM.rotate(Vec3(0.0, 1.0, 0.0), Gradient.globalGradient(9000) * 360, orb)
 
-                val beamOrigin = spawn.coordinates.toVec3d().add(Vec3d(1.0, 0.0, 0.0).multiply(Config.spawns.platformRadius.toDouble()))
+                val beamOrigin = spawn.coordinates.toVec3()
+                    .add(Vec3(1.0, 0.0, 0.0).scale(Config.spawns.platformRadius.toDouble()))
                 val beamLine = ParticleRenderer.generateLine(beamOrigin, orb, 0.2)
 
-                val particles = mutableSetOf<Vec3d>()
+                val particles = mutableSetOf<Vec3>()
                 particles.addAll(orbM.getVertices())
 
                 (0 until 8).forEach random@{ vertex ->
                     if (Random.nextDouble() < 0.5) return@random
                     particles.add(beamLine.map { point ->
-                        point.subtract(orb).rotateAroundVector(Vector3f(0f, 1f, 0f), 45f * vertex).add(orb)
-                    }[round(Gradient.globalGradient(2000) * beamLine.lastIndex).toInt()])
+                        point.subtract(orb).rotateAroundVector(Vec3(0.0, 1.0, 0.0), 45.0 * vertex).add(orb)
+                    }[round(Gradient.globalGradient(2000) * (beamLine.size - 1)).toInt()])
                 }
 
                 PlayerManager.getOnlinePlayers().forEach inner@{ player ->
                     // we're using force on the particle, this makes the default range 512 blocks (instead of 32), so let's trim that
-                    if (player.pos.subtract(spawn.coordinates.toVec3d()).lengthSquared() > VISIBILITY_RANGE.pow(2.0))
+                    if (player.position().subtract(spawn.coordinates.toVec3()).lengthSqr() > VISIBILITY_RANGE.pow(2.0))
                     {
                         return@inner
                     }
 
-                    val orbParticle = DustParticleEffect(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }?.getColorInt() ?: 0xFFFFFF, 1f)
+                    val orbParticle =
+                        DustParticleOptions(teamsOnSpawn.find { it != null && it != SpawnManager.getTeam(spawn) }
+                            ?.getColorInt() ?: 0xFFFFFF, 1f)
                     ParticleRenderer.drawMultipleParticlesWorld(server, player, orbParticle, particles)
                 }
             }
@@ -146,7 +150,7 @@ object CaptureAnimation
     {
         companion object
         {
-            val data: Map<Vec3d, Int> = mutableMapOf()
+            val data: Map<Vec3, Int> = mutableMapOf()
 
             /**
              * Calculates the percentage of passed rotation based on given rotation time. This synchronizes all animations using this function.

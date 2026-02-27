@@ -107,7 +107,7 @@
             {
                 "id": "soul_lantern",
                 "amount": 1,
-                "components": "[custom_name='{\"text\":\"Lifesaver\",\"italic\":false}',lore=['{text:\"Prevents death, but teleports you randomly. :)\"}'],minecraft:death_protection={death_effects:[{type:'teleport_randomly'},{type:'apply_effects',effects:[{id:instant_health,amplifier:69,duration:10}]}]}]"
+                "components": "[lore=[[{\"text\":\"Prevents death, but teleports you randomly. :)\",\"italic\":false}]],item_name=[{\"text\":\"Lifesaver\",\"italic\":false}],minecraft:death_protection={death_effects:[{type:'teleport_randomly'},{type:'apply_effects',effects:[{id:instant_health,amplifier:69,duration:10}]}]}]"
             }
         ]
     },

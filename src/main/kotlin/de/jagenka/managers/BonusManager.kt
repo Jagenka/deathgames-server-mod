@@ -3,16 +3,17 @@ package de.jagenka.managers
 import de.jagenka.*
 import de.jagenka.config.Config
 import kotlinx.serialization.Serializable
-import net.minecraft.block.Block
-import net.minecraft.block.Blocks
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.component.type.LodestoneTrackerComponent
-import net.minecraft.component.type.NbtComponent
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.Text
-import net.minecraft.util.math.GlobalPos
+import net.minecraft.core.GlobalPos
+import net.minecraft.core.component.DataComponents.CUSTOM_DATA
+import net.minecraft.core.component.DataComponents.LODESTONE_TRACKER
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import net.minecraft.world.item.component.CustomData
+import net.minecraft.world.item.component.LodestoneTracker
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.abs
@@ -60,19 +61,22 @@ object BonusManager
 
     fun isOnActivePlatform(playerName: String) = getActivePlatforms().any {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return false
-        val dx = abs(it.pos.x.toCenter() - player.pos.x)
-        val dy = abs(it.pos.y.toDouble() - player.pos.y)
-        val dz = abs(it.pos.z.toCenter() - player.pos.z)
+        val dx = abs(it.pos.x.toCenter() - player.position().x)
+        val dy = abs(it.pos.y.toDouble() - player.position().y)
+        val dz = abs(it.pos.z.toCenter() - player.position().z)
         dy < 2 && dx <= Config.bonus.radius + 0.5 && dz <= Config.bonus.radius + 0.5
     }
 
-    private fun colorPlatforms()
-    {
+    private fun colorPlatforms() {
         platforms.forEach { platform ->
             Util.getBlocksInSquareRadiusAtFixY(platform.pos, Config.bonus.radius).forEach { (block, coordinates) ->
                 if (block isSame inactiveBlock || block isSame activeBlock)
                 {
-                    Util.setBlockAt(coordinates, if (platform.isActive()) activeBlock else inactiveBlock)
+                    Util.setBlockAt(
+                        PlayerManager.getMapLevel(),
+                        coordinates,
+                        if (platform.isActive()) activeBlock else inactiveBlock
+                    )
                 }
             }
         }
@@ -83,11 +87,11 @@ object BonusManager
     val bonusCompass: ItemStack
         get()
         {
-            val compass = Items.COMPASS.defaultStack
+            val compass = Items.COMPASS.defaultInstance
 
-            val customCompassNbt = NbtCompound()
+            val customCompassNbt = CompoundTag()
             customCompassNbt.putBoolean("isDGBonusTracker", true)
-            compass.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(customCompassNbt))
+            compass.set(CUSTOM_DATA, CustomData.of(customCompassNbt))
 
             return compass
         }
@@ -99,29 +103,42 @@ object BonusManager
                     player.inventory.combinedInventory()
                         .count {
                             it.item == Items.COMPASS &&
-                                    it.get(DataComponentTypes.CUSTOM_DATA)?.nbt?.getBoolean("isDGBonusTracker")?.getOrNull() == true
+                                    it.get(CUSTOM_DATA)?.tag?.getBoolean("isDGBonusTracker")?.getOrNull() == true
                         }).coerceAtLeast(0)
 
-            val emptyHotbarSlots = player.inventory.main.subList(0, 9).mapIndexed { index, itemStack -> if (itemStack.isEmpty) index else -1 }.filter { it >= 0 }
+            val emptyHotbarSlots = player.inventory.items.subList(0, 9)
+                .mapIndexed { index, itemStack -> if (itemStack.isEmpty) index else -1 }.filter { it >= 0 }
             val fitInHotbar = emptyHotbarSlots.size
-            repeat(fitInHotbar.coerceAtMost(compassesToGive)) { player.inventory.setStack(emptyHotbarSlots.reversed()[it], bonusCompass) }
-            repeat((compassesToGive - fitInHotbar).coerceAtLeast(0)) { player.giveItemStack(bonusCompass) }
+            repeat(fitInHotbar.coerceAtMost(compassesToGive)) {
+                player.inventory.setItem(
+                    emptyHotbarSlots.reversed()[it],
+                    bonusCompass
+                )
+            }
+            repeat((compassesToGive - fitInHotbar).coerceAtLeast(0)) { player.addItem(bonusCompass) }
 
             player.inventory.combinedInventory()
                 .filter {
                     it.item == Items.COMPASS &&
-                            it.get(DataComponentTypes.CUSTOM_DATA)?.nbt?.getBoolean("isDGBonusTracker")?.getOrNull() == true
+                            it.get(CUSTOM_DATA)?.tag?.getBoolean("isDGBonusTracker")?.getOrNull() == true
                 }
                 .forEachIndexed { index, stackInInventory ->
                     if (index !in selectedPlatforms.indices) return@forEachIndexed
 
                     val platform = selectedPlatforms[index]
 
-                    stackInInventory.setCustomName(Text.of(platform.toString().trim()))
+                    stackInInventory.setCustomName(Component.literal(platform.toString().trim()))
 
                     val lodestoneTrackerComponent =
-                        LodestoneTrackerComponent(Optional.of(GlobalPos.create(player.world.registryKey, platform.pos.asMinecraftBlockPos())), true)
-                    stackInInventory.set(DataComponentTypes.LODESTONE_TRACKER, lodestoneTrackerComponent)
+                        LodestoneTracker(
+                            Optional.of(
+                                GlobalPos.of(
+                                    player.level().dimension(),
+                                    platform.pos.asMinecraftBlockPos()
+                                )
+                            ), true
+                        )
+                    stackInInventory.set(LODESTONE_TRACKER, lodestoneTrackerComponent)
                 }
         }
     }

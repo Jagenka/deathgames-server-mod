@@ -10,12 +10,11 @@ import de.jagenka.team.DGTeam
 import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
-import net.minecraft.advancement.criterion.Criteria
-import net.minecraft.entity.Entity
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.Formatting
-import net.minecraft.world.GameMode
-import net.minecraft.world.World
+import net.minecraft.ChatFormatting
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.level.GameType
+import net.minecraft.world.level.Level
 
 object PlayerManager
 {
@@ -28,24 +27,27 @@ object PlayerManager
 
     private val canPlayerJoin = mutableMapOf<String, Boolean>().withDefault { true }
 
-    fun getOnlinePlayer(name: String): ServerPlayerEntity? = getOnlinePlayers().find { it.name.string == name }
+    fun getOnlinePlayer(name: String): ServerPlayer? = getOnlinePlayers().find { it.name.string == name }
 
-    fun getOnlinePlayers(): Set<ServerPlayerEntity>
+    fun getOnlinePlayers(): Set<ServerPlayer>
     {
-        val allPlayers = mutableSetOf<ServerPlayerEntity>()
-        ifServerLoaded { allPlayers.addAll(it.playerManager.playerList) }
+        val allPlayers = mutableSetOf<ServerPlayer>()
+        ifServerLoaded { allPlayers.addAll(it.playerList.players.toList()) }
         return allPlayers.toSet()
     }
 
     fun getOnlineParticipatingPlayers() = getOnlinePlayers().filter { participatingMap.getValue(it.name.string) }
 
-    fun getOnlinePlayersAround(pos: BlockPos, radius: Double) = getOnlinePlayers().filter { pos.hasInRange(it.pos, radius) }
-    fun getOnlineParticipatingPlayersAround(pos: BlockPos, radius: Double) = getOnlineParticipatingPlayers().filter { pos.hasInRange(it.pos, radius) }
+    fun getOnlinePlayersAround(pos: BlockPos, radius: Double) =
+        getOnlinePlayers().filter { pos.hasInRange(it.position(), radius) }
+
+    fun getOnlineParticipatingPlayersAround(pos: BlockPos, radius: Double) =
+        getOnlineParticipatingPlayers().filter { pos.hasInRange(it.position(), radius) }
 
     fun getPlayers(): Set<String>
     {
         ifServerLoaded { server ->
-            server.playerManager.playerList.forEach {
+            server.playerList.players.forEach {
                 if (!playerNames.contains(it.name.string)) playerNames.add(it.name.string)
             }
         }
@@ -53,17 +55,17 @@ object PlayerManager
         return playerNames.toSet()
     }
 
-    fun getTeam(player: ServerPlayerEntity) = getTeam(player.name.string)
+    fun getTeam(player: ServerPlayer) = getTeam(player.name.string)
     fun getTeam(playerName: String) = teamRegistry[playerName]
 
-    fun ServerPlayerEntity.getDGTeam() = getTeam(this)
+    fun ServerPlayer.getDGTeam() = getTeam(this)
 
-    fun ServerPlayerEntity.addToDGTeam(team: DGTeam) = addPlayerToTeam(this, team)
+    fun ServerPlayer.addToDGTeam(team: DGTeam) = addPlayerToTeam(this, team)
 
     /**
      * @return if player was added to team
      */
-    fun addPlayerToTeam(player: ServerPlayerEntity, team: DGTeam): Boolean
+    fun addPlayerToTeam(player: ServerPlayer, team: DGTeam): Boolean
     {
         if (DeathGames.running) return false
         val playerName = player.name.string
@@ -71,7 +73,7 @@ object PlayerManager
         if (canPlayerJoin.getValue(playerName))
         {
             ifServerLoaded {
-                it.scoreboard.addScoreHolderToTeam(playerName, it.scoreboard.getTeam(team.name))
+                it.scoreboard.addPlayerToTeam(playerName, it.scoreboard.getPlayerTeam(team.name)!!)
                 teamRegistry[playerName] = team
             }
             disableTeamJoinForSomeTime(playerName)
@@ -91,18 +93,18 @@ object PlayerManager
         canPlayerJoin[playerName] = true
     }
 
-    fun ServerPlayerEntity.kickFromDGTeam() = kickPlayerFromTeam(this)
+    fun ServerPlayer.kickFromDGTeam() = kickPlayerFromTeam(this)
 
     /**
      * @return if player left their team
      */
-    fun kickPlayerFromTeam(player: ServerPlayerEntity): Boolean
+    fun kickPlayerFromTeam(player: ServerPlayer): Boolean
     {
         val playerName = player.name.string
         if (canPlayerJoin.getValue(playerName))
         {
             ifServerLoaded {
-                it.scoreboard.clearTeam(playerName)
+                it.scoreboard.removePlayerFromTeam(playerName)
                 teamRegistry.remove(playerName)
             }
             disableTeamJoinForSomeTime(playerName)
@@ -120,8 +122,9 @@ object PlayerManager
     {
         ifServerLoaded { server ->
             DGTeam.entries.forEach { color ->
-                server.scoreboard.addTeam(color.name)
-                server.scoreboard.getTeam(color.name)?.color = Formatting.byName(color.name.lowercase())
+                server.scoreboard.addPlayerTeam(color.name)
+                server.scoreboard.getPlayerTeam(color.name)?.color =
+                    ChatFormatting.getByName(color.name.lowercase()) ?: ChatFormatting.WHITE
             }
         }
     }
@@ -133,7 +136,7 @@ object PlayerManager
         return teamRegistry.keys.filter { teamRegistry[it] == team }
     }
 
-    fun getOnlinePlayersInTeam(team: DGTeam): List<ServerPlayerEntity>
+    fun getOnlinePlayersInTeam(team: DGTeam): List<ServerPlayer>
     {
         return getOnlinePlayers().filter { it.getDGTeam() == team }
     }
@@ -145,7 +148,7 @@ object PlayerManager
 
     fun getParticipatingPlayersInTeam(team: DGTeam): List<String> = getParticipatingPlayers().filter { teamRegistry[it] == team }
 
-    fun ServerPlayerEntity.isParticipating() = getParticipatingPlayers().contains(this.name.string)
+    fun ServerPlayer.isParticipating() = getParticipatingPlayers().contains(this.name.string)
 
 
     fun addParticipant(playerName: String)
@@ -158,41 +161,52 @@ object PlayerManager
     fun eliminate(playerName: String)
     {
         participatingMap[playerName] = false
-        getOnlinePlayer(playerName)?.changeGameMode(GameMode.SPECTATOR)
+        getOnlinePlayer(playerName)?.setGameMode(GameType.SPECTATOR)
     }
 
     fun getParticipatingTeams() = DGTeam.entries.filter { getParticipatingPlayersInTeam(it).isNotEmpty() }
     fun getOnlineParticipatingTeams() = DGTeam.entries.filter { it.getOnlineParticipatingPlayers().isNotEmpty() }
 
+    /**
+     * WARNING: this method is more of a placeholder, there is no good way to find out where the game is running
+     * example: map uses overworld and nether - as there is no place to specify where bonus, spawns etc. should be except by coordinate, this method could return wrong info
+     * so TODO: associate level with spawns, bonuses, lobby, etc.
+     * @return the level in which the current game is running
+     */
+    fun getMapLevel(): Level {
+        return getOnlineParticipatingPlayers().randomOrNull()?.level() ?: Util.minecraftServer?.overworld()
+        ?: error("No Level found!")
+    }
+
     @JvmStatic
-    fun onPlayerJoin(player: ServerPlayerEntity)
+    fun onPlayerJoin(player: ServerPlayer)
     {
-        Util.minecraftServer?.let { server -> player.lockRecipes(server.recipeManager.values()) }
+        Util.minecraftServer?.let { server -> player.resetRecipes(server.recipeManager.recipes) }
 
         if (player.getDGTeam() == null)
         {
             ifServerLoaded { server ->
-                server.scoreboard.clearTeam(player.name.string)
+                server.scoreboard.removePlayerFromTeam(player.name.string)
             }
             if (DeathGames.running)
             {
-                SpawnManager.spawnPlayer(player)
-                player.changeGameMode(GameMode.SPECTATOR)
+                SpawnManager.spawnPlayer(player, giveItems = false)
+                player.setGameMode(GameType.SPECTATOR)
             }
         }
 
         DisplayManager.updateLevelDisplay()
         DisplayManager.resetBossBars()
 
-        if (!DeathGames.running && !player.hasPermissionLevel(2)) //is not op
+        if (!DeathGames.running && Util.minecraftServer?.playerList?.isOp(player.nameAndId()) != true) //is not op
         {
-            player.inventory.clear()
-            player.changeGameMode(GameMode.ADVENTURE)
+            player.inventory.clearContent()
+            player.setGameMode(GameType.ADVENTURE)
         }
     }
 
     @JvmStatic
-    fun onPlayerLeave(player: ServerPlayerEntity)
+    fun onPlayerLeave(player: ServerPlayer)
     {
         if (!DeathGames.running) player.kickFromDGTeam()
         ReadyCheck.makeUnready(player.name.string)
@@ -205,11 +219,11 @@ object PlayerManager
     fun hasRecentlyRespawned(playerName: String) = playerName in recentlyRespawned
 
     @JvmStatic
-    fun handleRespawn(player: ServerPlayerEntity)
+    fun handleRespawn(player: ServerPlayer)
     {
         if (DeathGames.running)
         {
-            SpawnManager.spawnPlayer(player)
+            SpawnManager.spawnPlayer(player, giveItems = true)
 
             val playerName = player.name.string
             currentlyDead.remove(playerName)
@@ -231,27 +245,19 @@ object PlayerManager
     fun isParticipating(team: DGTeam) = getParticipatingTeams().contains(team)
 
     /**
-     * @return is player was able to respawn (not currently alive)
+     * @return if player was able to respawn (not currently alive)
      */
-    fun requestRespawn(player: ServerPlayerEntity): Boolean
+    fun requestRespawn(player: ServerPlayer): Boolean
     {
-        if (!isCurrentlyDead(player.name.string)) return false // das is doppelt zu if (player.health > 0.0f)
+        if (!isCurrentlyDead(player.name.string) || player.isAlive) return false
 
-        Util.minecraftServer?.let { server ->
-            if (player.notInAnyWorld)
-            {
-                player.notInAnyWorld = false
-                player.networkHandler.player = server.playerManager.respawnPlayer(player, true, Entity.RemovalReason.DISCARDED)
-                Criteria.CHANGED_DIMENSION.trigger(player, World.END, World.OVERWORLD)
-                return true
-            }
-            if (player.health > 0.0f)
-            {
-                return false
-            }
-            player.networkHandler.player = server.playerManager.respawnPlayer(player, false, Entity.RemovalReason.DISCARDED)
-            return true
-        } ?: return false
+        player.connection.handleClientCommand(
+            ServerboundClientCommandPacket(
+                ServerboundClientCommandPacket.Action.PERFORM_RESPAWN
+            )
+        )
+
+        return true
     }
 
     fun resetForGameStart()
@@ -259,4 +265,6 @@ object PlayerManager
         currentlyDead.clear()
         recentlyRespawned.clear()
     }
+
+    fun ServerPlayer.isOp(): Boolean = this.level().server.playerList.isOp(this.nameAndId())
 }

@@ -3,7 +3,7 @@ package de.jagenka.util
 import de.jagenka.commands.ConfigPropertyTransformer
 import de.jagenka.config.Config
 import de.jagenka.config.Section
-import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.commands.CommandSourceStack
 import java.lang.reflect.Field
 
 fun <T> getDeclaredFields(clazz: Class<T>): List<Field> {
@@ -39,7 +39,7 @@ fun getConfigPropertyTransformer(type: Class<*>, transformers: Map<Class<out Any
 fun setPropertyFromString(
     newValue: String, sectionField: Field, propertyField: Field,
     transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>,
-    source: ServerCommandSource
+    source: CommandSourceStack
 ): Boolean {
     try {
         sectionField.isAccessible = true

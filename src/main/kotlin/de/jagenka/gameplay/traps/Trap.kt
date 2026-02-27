@@ -8,19 +8,19 @@ import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.timer.Timer
 import de.jagenka.toCenter
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket
-import net.minecraft.particle.ParticleTypes
-import net.minecraft.registry.Registries
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvents
+import net.minecraft.core.Holder
+import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.network.protocol.game.ClientboundSoundPacket
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.sounds.SoundSource
+import net.minecraft.world.effect.MobEffectInstance
 
 class Trap(
     val position: BlockPos,
 
     val snares: Boolean,
-    val effects: List<StatusEffectInstance>,
+    val effects: List<MobEffectInstance>,
     val triggerRange: Double,
     val setupTime: Int,
     val triggerVisibilityRange: Double,
@@ -44,7 +44,7 @@ class Trap(
         Timer.schedule(setupTime) { doneSettingUp = true }
     }
 
-    fun trigger(affectedPlayers: Set<ServerPlayerEntity>)
+    fun trigger(affectedPlayers: Set<ServerPlayer>)
     {
         if (!doneSettingUp || triggered) return // cannot trigger, if not set up, or already triggered
 
@@ -53,20 +53,20 @@ class Trap(
         // show/play trigger effects
         getOnlinePlayersAround(position, triggerVisibilityRange).forEach { player ->
             // exploding particles
-            player.world.spawnParticles(
+            player.level().sendParticles(
                 player, ParticleTypes.LARGE_SMOKE, true, true, x.toCenter(), y.toDouble(), z.toCenter(), 500, .0, .0, .0, .5
             )
             // play sound
-            player.networkHandler.sendPacket(
-                PlaySoundS2CPacket(
-                    Registries.SOUND_EVENT.getEntry(SoundEvents.ENTITY_IRON_GOLEM_HURT),
-                    SoundCategory.PLAYERS,
+            player.connection.send(
+                ClientboundSoundPacket(
+                    Holder.direct(SoundEvents.IRON_GOLEM_HURT),
+                    SoundSource.PLAYERS,
                     x.toCenter(),
                     y.toDouble(),
                     z.toCenter(),
                     1f,
                     1f,
-                    player.world.random.nextLong()
+                    player.level().random.nextLong()
                 )
             )
         }
@@ -74,7 +74,7 @@ class Trap(
         // apply potion effects
         affectedPlayers.forEach { player ->
             effects.forEach {
-                player.addStatusEffect(StatusEffectInstance(it))
+                player.addEffect(MobEffectInstance(it))
             }
 
             // increase stat
@@ -93,7 +93,7 @@ class Trap(
         if (!snares) return
 
         snaredPlayers.forEach {
-            if (it.coordinates == null && it.player.isOnGround) // snaring happens after landing
+            if (it.coordinates == null && it.player.onGround()) // snaring happens after landing
             {
                 it.coordinates = it.player.getDGCoordinates()
             } else

@@ -4,8 +4,8 @@ import de.jagenka.DeathGames
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.team.DGTeam
-import net.minecraft.text.Text.literal
-import net.minecraft.world.GameMode
+import net.minecraft.network.chat.Component
+import net.minecraft.world.level.GameType
 
 object GameOverTask : TimerTask
 {
@@ -24,7 +24,7 @@ object GameOverTask : TimerTask
     {
         if (DeathGames.currentlyEnding)
         {
-            PlayerManager.getOnlinePlayers().forEach { it.changeGameMode(GameMode.SPECTATOR) }
+            PlayerManager.getOnlinePlayers().forEach { it.setGameMode(GameType.SPECTATOR) }
         }
 
         if (gameEnded) return
@@ -51,9 +51,9 @@ object GameOverTask : TimerTask
     {
         if (team !in PlayerManager.getParticipatingTeams())
         {
-            val prefix = literal("Game Over for Team ")
+            val prefix = Component.literal("Game Over for Team ")
             val teamText = team.getFormattedText()
-            val suffix = literal(".")
+            val suffix = Component.literal(".")
 
             DisplayManager.sendChatMessage(prefix.append(teamText).append(suffix))
         }

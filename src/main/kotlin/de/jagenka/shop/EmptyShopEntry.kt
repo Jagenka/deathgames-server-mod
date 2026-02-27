@@ -1,6 +1,6 @@
 package de.jagenka.shop
 
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 /**
  * placeholder ShopEntry in case something goes wrong

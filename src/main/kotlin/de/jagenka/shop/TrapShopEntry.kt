@@ -1,19 +1,18 @@
 package de.jagenka.shop
 
-import de.jagenka.Util
+import com.mojang.brigadier.StringReader
 import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager
-import de.jagenka.managers.getDGMoney
 import de.jagenka.setCustomName
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.component.type.NbtComponent
-import net.minecraft.entity.effect.StatusEffectInstance
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.StringNbtReader
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.commands.arguments.CompoundTagArgument
+import net.minecraft.core.component.DataComponents.CUSTOM_DATA
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import net.minecraft.world.item.component.CustomData
 
 class TrapShopEntry(
     playerName: String,
@@ -31,16 +30,22 @@ class TrapShopEntry(
 {
     private val itemStack = ItemStack(Items.BAT_SPAWN_EGG)
 
+    private val compoundTagArgument = CompoundTagArgument.compoundTag()
+
     init
     {
         val combinedNbtString = effects.joinToString(separator = ",", prefix = "{effects:[", postfix = "]}")
 
-        val effectInstances = StringNbtReader.readCompound(combinedNbtString)
-            .get("effects", StatusEffectInstance.CODEC.listOf())
+        val effectInstances = compoundTagArgument.parse(
+            StringReader(
+                combinedNbtString
+            )
+        )
+            .read("effects", MobEffectInstance.CODEC.listOf())
             .orElse(emptyList())
 
-        val nbt = NbtCompound()
-        nbt.put("trapEffects", StatusEffectInstance.CODEC.listOf(), effectInstances)
+        val nbt = CompoundTag()
+        nbt.store("trapEffects", MobEffectInstance.CODEC.listOf(), effectInstances)
         nbt.putBoolean("isSnareTrap", isSnare)
         nbt.putDouble("trapTriggerRange", triggerRange)
         nbt.putInt("trapSetupTime", setupTime)
@@ -48,27 +53,22 @@ class TrapShopEntry(
         nbt.putDouble("trapVisibilityRange", visibilityRange)
         nbt.putDouble("trapAffectedRange", affectedRange)
         nbt.putInt("trapTriggerDuration", triggerDuration)
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt))
+        itemStack.set(CUSTOM_DATA, CustomData.of(nbt))
 
-        itemStack.setCustomName(Text.of(name).getWithStyle(Style.EMPTY.withItalic(false))[0])
+        itemStack.setCustomName(Component.literal(name).withStyle(Style.EMPTY.withItalic(false)))
     }
 
     override fun getPrice(): Int = price
 
     override fun getDisplayItemStack(): ItemStack =
-        Items.BAT_SPAWN_EGG.defaultStack.setCustomName(
-            Text.of("${MoneyManager.getCurrencyString(price)}: $name x1").getWithStyle(
-                Style.EMPTY.withColor(
-                    if (getDGMoney(playerName) < price) Util.getTextColor(123, 0, 0)
-                    else Util.getTextColor(255, 255, 255)
-                )
-            )[0]
+        Items.BAT_SPAWN_EGG.defaultInstance.setCustomName(
+            Component.literal("${MoneyManager.getCurrencyString(price)}: $name x1").coloredForShop()
         )
 
     override fun onClick(): Boolean
     {
         return attemptSale(player, price) {
-            player?.giveItemStack(itemStack.copy())
+            player?.addItem(itemStack.copy())
         }
     }
 
@@ -83,6 +83,10 @@ class TrapShopEntry(
             itemAndNbtEqual(itemStack, it)
         }
 
-        player?.inventory?.remove(filter, 1, player!!.inventory) // should be null-safe, because remove will not be called, if player is null
+        player?.inventory?.clearOrCountMatchingItems(
+            filter,
+            1,
+            player!!.inventory
+        ) // should be null-safe, because remove will not be called, if player is null
     }
 }
