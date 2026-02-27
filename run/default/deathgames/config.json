@@ -201,7 +201,7 @@
         "perTeam": 10
     },
     "money": {
-        "start": 1100,
+        "start": 110,
         "amountPerInterval": 5,
         "interval": 600,
         "perKill": 20,
