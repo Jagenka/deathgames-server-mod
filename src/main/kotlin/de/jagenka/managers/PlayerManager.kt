@@ -211,7 +211,7 @@ object PlayerManager
     {
         if (DeathGames.running)
         {
-            SpawnManager.spawnPlayer(player)
+            SpawnManager.spawnPlayer(player, giveItems = true)
 
             val playerName = player.name.string
             currentlyDead.remove(playerName)

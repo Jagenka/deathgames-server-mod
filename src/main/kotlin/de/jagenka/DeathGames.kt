@@ -205,7 +205,8 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         PlayerManager.getOnlinePlayers().forEach {
-            ShopTask.exitShop(it.name.string)
+            ShopTask.exitShop(it) // beginning the game is the same as exiting shop, even if game doesn't start in shop
+            SpawnManager.giveRespawnItems(it) // we need do manually give respawn items, as leaving the shop should not give items
             DisplayManager.sendTitleMessage(
                 it,
                 Component.literal(I18n.get("startTitle")),

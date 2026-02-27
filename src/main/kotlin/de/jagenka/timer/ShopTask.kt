@@ -127,17 +127,24 @@ object ShopTask : TimerTask
         )
     }
 
-    fun exitShop(playerName: String)
+    /**
+     * forces player to move to spawn with respawn effects, no respawn items, extinguished, shop parameters reset and menus closed
+     */
+    fun exitShop(player: ServerPlayer)
     {
-        val player = PlayerManager.getOnlinePlayer(playerName) ?: return
-        SpawnManager.spawnPlayer(
-            player,
-            giveItems = false
-        ) // no need to give respawn items, as they do not respawn, they just teleport
+        val playerName = player.name.string
+
+        SpawnManager.spawnPlayer(player, giveItems = false)
         player.extinguishFire()
         timeInShop[playerName] = 0
         player.closeContainer()
         Shop.clearRecentlyBought(playerName)
+    }
+
+    fun exitShop(playerName: String) {
+        val player = PlayerManager.getOnlinePlayer(playerName) ?: return
+        exitShop(player)
+
     }
 
     override fun reset()

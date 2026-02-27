@@ -75,10 +75,14 @@ object SpawnManager
             applyRespawnEffects(player)
 
             if (giveItems) {
-                respawnItems.forEach {
-                    player.addItem(it.copy())
-                }
+                giveRespawnItems(player)
             }
+        }
+    }
+
+    fun giveRespawnItems(player: ServerPlayer) {
+        respawnItems.forEach {
+            player.addItem(it.copy())
         }
     }
 
