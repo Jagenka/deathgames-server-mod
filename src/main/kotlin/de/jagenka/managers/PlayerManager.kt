@@ -178,7 +178,7 @@ object PlayerManager
             }
             if (DeathGames.running)
             {
-                SpawnManager.spawnPlayer(player)
+                SpawnManager.spawnPlayer(player, giveItems = false)
                 player.setGameMode(GameType.SPECTATOR)
             }
         }
