@@ -8,6 +8,7 @@ import de.jagenka.toCenterPos
 import net.minecraft.core.component.DataComponents.CUSTOM_DATA
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.util.Mth
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -131,6 +132,39 @@ object BlackjackAndHookers
         } ?: return false
     }
 
+    var yRotO: Float? = null
+    var xRotO: Float? = null
+
+    /**
+     * experimental fun trying out shooting player, instead of letting player ride a shot entity
+     */
+    fun shootPlayer(serverPlayer: ServerPlayer)
+    {
+        // the following is basically copy pasta from arrow shooting - consider analyzing LivingEntity::knockback, as this method should move a player in a gravity arch
+
+        val f = serverPlayer.xRot
+        val g = serverPlayer.yRot // + inaccuracy in original code
+        val h = 0.0
+        val i = 3.0f // anderes f = 3.0f bei vollem bogen
+        val j = 1.0f //anderes g = 1.0f kp das is 1
+
+        val k =
+            -Mth.sin((g * (Math.PI / 180.0).toFloat()).toDouble()) * Mth.cos((f * (Math.PI / 180.0).toFloat()).toDouble())
+        val l = -Mth.sin(((f + h) * (Math.PI / 180.0).toFloat()))
+        val m =
+            Mth.cos((g * (Math.PI / 180.0).toFloat()).toDouble()) * Mth.cos((f * (Math.PI / 180.0).toFloat()).toDouble())
+
+        val vec3: Vec3 = Vec3(k.toDouble(),l.toDouble(),m.toDouble()).normalize().scale(i.toDouble())
+        serverPlayer.deltaMovement = vec3 // this is also essential
+        serverPlayer.needsSync = true // this seems to be essential
+        serverPlayer.yRot = (Mth.atan2(vec3.x, vec3.z) * 180.0f / Math.PI.toFloat()).toFloat()
+        serverPlayer.xRot = (Mth.atan2(vec3.y, vec3.horizontalDistance()) * 180.0f / Math.PI.toFloat()).toFloat()
+        yRotO = serverPlayer.yRot
+        xRotO = serverPlayer.xRot
+
+        val vec3_2: Vec3 = serverPlayer.getKnownMovement()
+        serverPlayer.deltaMovement = serverPlayer.deltaMovement.add(vec3_2.x, if (serverPlayer.onGround()) 0.0 else vec3_2.y, vec3_2.z)
+    }
 
     private fun getVerticalVelocity(yDistance: Double): Pair<Double, Double>
     {
