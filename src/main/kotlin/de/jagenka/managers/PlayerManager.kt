@@ -264,5 +264,5 @@ object PlayerManager
         recentlyRespawned.clear()
     }
 
-    fun ServerPlayer.isOp(): Boolean = this.level().server?.playerList?.isOp(this.nameAndId()) == true
+    fun ServerPlayer.isOp(): Boolean = this.level().server.playerList.isOp(this.nameAndId())
 }
