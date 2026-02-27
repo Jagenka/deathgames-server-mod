@@ -28,7 +28,7 @@ object GPS
                         origin.add(
                             player.forward.normalize().scale(2.0)
                         )
-                    ) // move arrow forward, so it can be seen better TODO: works? using forward instead of rotationVector
+                    ) // move arrow forward, so it can be seen better
                     arrow
                         .makeChildByOffset(lookDirection.scale(-1.0))
                         .up()
