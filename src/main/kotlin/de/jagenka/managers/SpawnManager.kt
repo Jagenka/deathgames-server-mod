@@ -141,12 +141,16 @@ object SpawnManager
             if (team == null)
             {
                 Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
-                    if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
+                    if (block.isDGColorBlock()) {
+                        Util.setBlockAt(PlayerManager.getMapLevel(), coordinates, DGTeam.defaultColorBlock)
+                    }
                 }
             } else
             {
                 Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
-                    if (block.isDGColorBlock()) Util.setBlockAt(coordinates, team.getColorBlock())
+                    if (block.isDGColorBlock()) {
+                        Util.setBlockAt(PlayerManager.getMapLevel(), coordinates, team.getColorBlock())
+                    }
                 }
             }
         }
@@ -156,7 +160,9 @@ object SpawnManager
     {
         spawns.forEach { (coordinates) ->
             Util.getBlocksInSquareRadiusAtFixY(coordinates.asBlockPos().relative(0, -1, 0), platformRadius).forEach { (block, coordinates) ->
-                if (block.isDGColorBlock()) Util.setBlockAt(coordinates, DGTeam.defaultColorBlock)
+                if (block.isDGColorBlock()) {
+                    Util.setBlockAt(PlayerManager.getMapLevel(), coordinates, DGTeam.defaultColorBlock)
+                }
             }
         }
     }

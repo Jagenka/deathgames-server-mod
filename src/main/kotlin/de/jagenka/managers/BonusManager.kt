@@ -67,12 +67,16 @@ object BonusManager
         dy < 2 && dx <= Config.bonus.radius + 0.5 && dz <= Config.bonus.radius + 0.5
     }
 
-    private fun colorPlatforms() { // TODO: does not color platforms in
+    private fun colorPlatforms() {
         platforms.forEach { platform ->
             Util.getBlocksInSquareRadiusAtFixY(platform.pos, Config.bonus.radius).forEach { (block, coordinates) ->
                 if (block isSame inactiveBlock || block isSame activeBlock)
                 {
-                    Util.setBlockAt(coordinates, if (platform.isActive()) activeBlock else inactiveBlock)
+                    Util.setBlockAt(
+                        PlayerManager.getMapLevel(),
+                        coordinates,
+                        if (platform.isActive()) activeBlock else inactiveBlock
+                    )
                 }
             }
         }

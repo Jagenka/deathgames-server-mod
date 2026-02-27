@@ -14,6 +14,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.GameType
+import net.minecraft.world.level.Level
 
 object PlayerManager
 {
@@ -165,6 +166,17 @@ object PlayerManager
 
     fun getParticipatingTeams() = DGTeam.entries.filter { getParticipatingPlayersInTeam(it).isNotEmpty() }
     fun getOnlineParticipatingTeams() = DGTeam.entries.filter { it.getOnlineParticipatingPlayers().isNotEmpty() }
+
+    /**
+     * WARNING: this method is more of a placeholder, there is no good way to find out where the game is running
+     * example: map uses overworld and nether - as there is no place to specify where bonus, spawns etc. should be except by coordinate, this method could return wrong info
+     * so TODO: associate level with spawns, bonuses, lobby, etc.
+     * @return the level in which the current game is running
+     */
+    fun getMapLevel(): Level {
+        return getOnlineParticipatingPlayers().randomOrNull()?.level() ?: Util.minecraftServer?.overworld()
+        ?: error("No Level found!")
+    }
 
     @JvmStatic
     fun onPlayerJoin(player: ServerPlayer)

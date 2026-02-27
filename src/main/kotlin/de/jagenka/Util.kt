@@ -20,6 +20,7 @@ import net.minecraft.world.entity.Relative
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.gamerules.GameRules
@@ -108,14 +109,9 @@ object Util
         return this.teleportTo(level(), vec3.x, vec3.y, vec3.z, emptySet<Relative>(), yaw, pitch, true)
     }
 
-    fun setBlockAt(pos: BlockPos, block: Block)
+    fun setBlockAt(level: Level, pos: BlockPos, block: Block)
     {
-        ifServerLoaded { it.overworld().setBlock(pos.asMinecraftBlockPos(), block.defaultBlockState(), 0) }
-    }
-
-    fun setBlockAt(x: Int, y: Int, z: Int, block: Block)
-    {
-        setBlockAt(BlockPos(x, y, z), block)
+        level.setBlockAndUpdate(pos.asMinecraftBlockPos(), block.defaultBlockState())
     }
 
     fun getBlockAt(x: Int, y: Int, z: Int) = getBlockAt(BlockPos(x, y, z))
