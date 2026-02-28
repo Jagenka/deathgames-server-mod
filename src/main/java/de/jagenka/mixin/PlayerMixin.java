@@ -32,19 +32,4 @@ public abstract class PlayerMixin
         this.addItem(stack);
         this.inventoryMenu.sendAllDataToRemote();
     }
-
-    @Inject(method = "wantsToStopRiding", at = @At("HEAD"), cancellable = true)
-    private void preventDismount(CallbackInfoReturnable<Boolean> cir)
-    {
-        if (!Config.INSTANCE.isEnabled()) return;
-
-        if ((Player) (Object) this instanceof ServerPlayer player)
-        {
-            if (BlackjackAndHookers.INSTANCE.isRidingHook(player))
-            {
-                cir.setReturnValue(false);
-                cir.cancel();
-            }
-        }
-    }
 }
