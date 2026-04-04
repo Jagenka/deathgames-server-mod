@@ -16,10 +16,14 @@ shopClosedSubtitle: a K/D change might help
 shopTpOut: You will be teleported out in {seconds} seconds.
 tpShopToSpawnGameStart: Teleporting to spawn in {time} seconds.
 refundItemText: Refund {item} for {amount}
-bonusInactive: Bonus Money Platform: Spawning in {time}sec
-bonusInactiveWithName: Bonus Money Platform: {name} in {time}sec
-bonusActive: Bonus Money Platform: Active for another {time}sec
-bonusActiveWithName: Bonus Money Platform: {name} for another {time}sec
+bonusInactive:
+  Bonus Money Platform: Spawning in {time}sec
+bonusInactiveWithName:
+  Bonus Money Platform: { name } in {time}sec
+bonusActive:
+  Bonus Money Platform: Active for another {time}sec
+bonusActiveWithName:
+  Bonus Money Platform: { name } for another {time}sec
 revealTimer0: Kill someone to prevent being revealed!
 revealTimer1: You are about to be revealed...
 revealTimer2: You are glowing!
@@ -27,8 +31,8 @@ revealTimer3: Shop is about to close for you...
 revealTimer4: Shop's closed!
 respawns: Respawns
 kill-streak: Kill-streak
-playerLeaveTeam: {playerName} wants to spectate.
-playerJoinTeam: {playerName} joined Team {teamName}.
+playerLeaveTeam: { playerName } wants to spectate.
+playerJoinTeam: { playerName } joined Team {teamName}.
 teamSelectWindowTitle: SELECT TEAM
 teamSelectUIHover: Join {teamName} ({teamSize} Player{teamSize?s})
 spectator: Spectator
@@ -37,13 +41,14 @@ notReady: Not Ready
 nowReady: You are now ready.
 noLongerReady: You are no longer ready.
 startGame: Start Game
-cantStartGame: Can't start game! Not ready: {players}
+cantStartGame:
+  Can't start game! Not ready: { players }
 notEnoughTeams: Cannot start game with less than 2 teams!
 and: and
 openTeamUI: Press F to choose your team.
-nowGlowing: {playerName} is now glowing.
-captureTeamSpawn: {newTeam} captured {oldTeam}'s spawn!
-captureASpawn: {newTeam} captured a spawn!
+nowGlowing: { playerName } is now glowing.
+captureTeamSpawn: { newTeam } captured {oldTeam}'s spawn!
+captureASpawn: { newTeam } captured a spawn!
 captureProgress: capture progress...
 teamBlack: Black
 teamDarkGreen: Dark Green

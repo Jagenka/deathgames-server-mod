@@ -105,7 +105,7 @@ data class RefundRecent(
     var col: Int = 5,
     var name: String = "NONAME",
 )
-    
+
 @Serializable
 data class GrapplingHook(
     var row: Int = 2,

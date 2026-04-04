@@ -24,7 +24,7 @@ object TeamSelectorUI
     @JvmStatic
     fun showInterfaceIfInLobby(player: ServerPlayer): Boolean
     {
-        if (!DeathGames.running &&!DeathGames.currentlyStarting && isInLobbyBounds(player))
+        if (!DeathGames.running && !DeathGames.currentlyStarting && isInLobbyBounds(player))
         {
             showInterface(player)
             return true

@@ -141,7 +141,8 @@ object ShopTask : TimerTask
         Shop.clearRecentlyBought(playerName)
     }
 
-    fun exitShop(playerName: String) {
+    fun exitShop(playerName: String)
+    {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return
         exitShop(player)
 

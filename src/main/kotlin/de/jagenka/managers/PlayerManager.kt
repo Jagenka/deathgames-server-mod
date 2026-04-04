@@ -173,7 +173,8 @@ object PlayerManager
      * so TODO: associate level with spawns, bonuses, lobby, etc.
      * @return the level in which the current game is running
      */
-    fun getMapLevel(): Level {
+    fun getMapLevel(): Level
+    {
         return getOnlineParticipatingPlayers().randomOrNull()?.level() ?: Util.minecraftServer?.overworld()
         ?: error("No Level found!")
     }

@@ -67,7 +67,8 @@ object BonusManager
         dy < 2 && dx <= Config.bonus.radius + 0.5 && dz <= Config.bonus.radius + 0.5
     }
 
-    private fun colorPlatforms() {
+    private fun colorPlatforms()
+    {
         platforms.forEach { platform ->
             Util.getBlocksInSquareRadiusAtFixY(platform.pos, Config.bonus.radius).forEach { (block, coordinates) ->
                 if (block isSame inactiveBlock || block isSame activeBlock)

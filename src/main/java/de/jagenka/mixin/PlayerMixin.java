@@ -1,8 +1,6 @@
 package de.jagenka.mixin;
 
 import de.jagenka.config.Config;
-import de.jagenka.gameplay.graplinghook.BlackjackAndHookers;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;

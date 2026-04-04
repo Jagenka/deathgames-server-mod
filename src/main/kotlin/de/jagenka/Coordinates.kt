@@ -16,6 +16,7 @@ data class Coordinates(val x: Int, val y: Int, val z: Int, val yaw: Float, val p
     infix fun distanceTo(other: Coordinates) = (other - this).length()
     infix fun distanceTo(pos: Vec3) =
         sqrt((this.x.toCenter() - pos.x).pow(2) + (this.y - pos.y).pow(2) + (this.z.toCenter() - pos.z).pow(2))
+
     private fun length() = sqrt(this.x.toDouble().pow(2) + this.y.toDouble().pow(2) + this.z.toDouble().pow(2))
 
     fun relative(x: Double, y: Double, z: Double) = Coordinates(this.x + x, this.y + y, this.z + z, this.yaw, this.pitch)

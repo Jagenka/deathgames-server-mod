@@ -50,7 +50,8 @@ public class ServerPlayerMixin
     }
 
     @Inject(method = "drop(Z)V", at = @At("HEAD"), cancellable = true)
-    private void preventDrop(boolean bl, CallbackInfo ci) {
+    private void preventDrop(boolean bl, CallbackInfo ci)
+    {
         if (!Config.INSTANCE.isEnabled()) return;
 
         ci.cancel();

@@ -19,7 +19,8 @@ import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.GameType
 
-object SpawnManager {
+object SpawnManager
+{
     private val compoundTagArgument = CompoundTagArgument.compoundTag()
 
     val defaultSpawn
@@ -49,7 +50,8 @@ object SpawnManager {
 
     fun getTeam(spawn: DGSpawn) = teamSpawns[spawn]
 
-    fun ServerPlayer.getSpawnCoordinates(): Coordinates {
+    fun ServerPlayer.getSpawnCoordinates(): Coordinates
+    {
         return PlayerManager.getTeam(this)?.let { team ->
             teamSpawns.getKeyForValue(team)?.coordinates
         } ?: defaultSpawn
@@ -58,42 +60,51 @@ object SpawnManager {
     /**
      * teleports player to their spawn, and adds respawn effects and items, if player is participating (not spectator)
      */
-    fun spawnPlayer(player: ServerPlayer, giveItems: Boolean = true) {
+    fun spawnPlayer(player: ServerPlayer, giveItems: Boolean = true)
+    {
         // handle position
         val spawnCoordinates = player.getSpawnCoordinates()
         player.teleport(spawnCoordinates)
         player.yRot = spawnCoordinates.yaw
 
         // check if spectator or player
-        if (spawnCoordinates == defaultSpawn) {
+        if (spawnCoordinates == defaultSpawn)
+        {
             player.setGameMode(GameType.SPECTATOR)
-        } else {
+        } else
+        {
             // handle respawn effects/items for participating players only
             player.removeAllEffects()
             applyRespawnEffects(player)
 
-            if (giveItems) {
+            if (giveItems)
+            {
                 giveRespawnItems(player)
             }
         }
     }
 
-    fun giveRespawnItems(player: ServerPlayer) {
+    fun giveRespawnItems(player: ServerPlayer)
+    {
         respawnItems.forEach {
             player.addItem(it.copy())
         }
     }
 
-    fun applyRespawnEffects(player: ServerPlayer) {
+    fun applyRespawnEffects(player: ServerPlayer)
+    {
         respawnEffects.forEach {
             player.addEffect(MobEffectInstance(it))
         }
     }
 
-    fun initSpawns() {
-        if (Config.spawns.enableShuffle) {
+    fun initSpawns()
+    {
+        if (Config.spawns.enableShuffle)
+        {
             shuffleSpawns()
-        } else {
+        } else
+        {
             val teamsWithoutSpawn = mutableListOf<DGTeam>()
 
             PlayerManager.getNonEmptyTeams().toList().forEach { participatingTeam ->
@@ -108,11 +119,13 @@ object SpawnManager {
         }
     }
 
-    fun shuffleSpawns() {
+    fun shuffleSpawns()
+    {
         shuffleSpawns(PlayerManager.getNonEmptyTeams().toList())
     }
 
-    fun shuffleSpawns(teams: List<DGTeam>) {
+    fun shuffleSpawns(teams: List<DGTeam>)
+    {
         check(teams.size <= spawns.size)
 
         teamSpawns.clear()
@@ -126,20 +139,25 @@ object SpawnManager {
         if (DeathGames.running) sendChatMessage("Spawns shuffled!")
     }
 
-    fun colorSpawns() {
+    fun colorSpawns()
+    {
         spawns.forEach { spawn ->
             val team = teamSpawns[spawn]
-            if (team == null) {
+            if (team == null)
+            {
                 Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius)
                     .forEach { (block, coordinates) ->
-                        if (block.isDGColorBlock()) {
+                        if (block.isDGColorBlock())
+                        {
                             Util.setBlockAt(PlayerManager.getMapLevel(), coordinates, DGTeam.defaultColorBlock)
                         }
                     }
-            } else {
+            } else
+            {
                 Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius)
                     .forEach { (block, coordinates) ->
-                        if (block.isDGColorBlock()) {
+                        if (block.isDGColorBlock())
+                        {
                             Util.setBlockAt(PlayerManager.getMapLevel(), coordinates, team.getColorBlock())
                         }
                     }
@@ -147,11 +165,13 @@ object SpawnManager {
         }
     }
 
-    fun resetSpawnColoring() {
+    fun resetSpawnColoring()
+    {
         spawns.forEach { (coordinates) ->
             Util.getBlocksInSquareRadiusAtFixY(coordinates.asBlockPos().relative(0, -1, 0), platformRadius)
                 .forEach { (block, coordinates) ->
-                    if (block.isDGColorBlock()) {
+                    if (block.isDGColorBlock())
+                    {
                         Util.setBlockAt(PlayerManager.getMapLevel(), coordinates, DGTeam.defaultColorBlock)
                     }
                 }
@@ -163,11 +183,13 @@ object SpawnManager {
     /**
      * @return who owned the spawn before
      */
-    fun reassignSpawn(spawn: DGSpawn, team: DGTeam): DGTeam? {
+    fun reassignSpawn(spawn: DGSpawn, team: DGTeam): DGTeam?
+    {
         teamSpawns.removeForValue(team)
 
         val teamPreviouslyAssignedToSpawn = getTeam(spawn)
-        if (teamPreviouslyAssignedToSpawn != null) {
+        if (teamPreviouslyAssignedToSpawn != null)
+        {
             teamSpawns[getUnassignedSpawns().random()] = teamPreviouslyAssignedToSpawn
         }
 
@@ -180,7 +202,8 @@ object SpawnManager {
 }
 
 @Serializable
-data class DGSpawn(val coordinates: Coordinates, val defaultOwner: DGTeam?) {
+data class DGSpawn(val coordinates: Coordinates, val defaultOwner: DGTeam?)
+{
     fun getCuboid() = BlockCuboid(
         coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius),
         coordinates.asBlockPos().relative(platformRadius, 2, platformRadius)

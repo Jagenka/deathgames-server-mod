@@ -16,10 +16,14 @@ shopClosedSubtitle: auch die Tanke hat zu
 shopTpOut: Du wirst in {seconds} Sekunden heraus teleportiert.
 tpShopToSpawnGameStart: Teleportation zum Auferstehungspunkt in {time} Sekunden.
 refundItemText: Tausche {item} für {amount} um
-bonusInactive: Zusatz Geld Plattform: Erscheint in {time} Sekunden
-bonusInactiveWithName: Zusatz Geld Plattform: {name} in {time} Sekunden
-bonusActive: Zusatz Geld Plattform: Verschwindet in {time} Sekunden
-bonusActiveWithName: Zusatz Geld Plattform: {name} verschwindet in {time} Sekunden
+bonusInactive:
+  Zusatz Geld Plattform: Erscheint in {time} Sekunden
+bonusInactiveWithName:
+  Zusatz Geld Plattform: { name } in {time} Sekunden
+bonusActive:
+  Zusatz Geld Plattform: Verschwindet in {time} Sekunden
+bonusActiveWithName:
+  Zusatz Geld Plattform: { name } verschwindet in {time} Sekunden
 revealTimer0: Töte jemanden damit du nicht aufgedeckt wirst!
 revealTimer1: Du wirst gleich aufgedeckt...
 revealTimer2: Du leuchtest! uwu
@@ -27,8 +31,8 @@ revealTimer3: Es ist kurz vor 8...
 revealTimer4: Feierabend!
 respawns: Auferstehungen
 kill-streak: Tötungsserie
-playerLeaveTeam: {playerName} möchte zuschauen.
-playerJoinTeam: {playerName} ist Team {teamName} beigetreten.
+playerLeaveTeam: { playerName } möchte zuschauen.
+playerJoinTeam: { playerName } ist Team {teamName} beigetreten.
 teamSelectWindowTitle: WÄHLE DEIN TEAM
 teamSelectUIHover: Tritt {teamName} bei ({teamSize} Spieler)
 spectator: Zuschauer
@@ -37,13 +41,14 @@ notReady: Nicht Bereit
 nowReady: Du bist jetzt bereit.
 noLongerReady: Du bist nicht mehr bereit.
 startGame: Starte das Spiel
-cantStartGame: Das Spiel kann nicht gestartet werden! Nicht bereit sind: {players}
+cantStartGame:
+  Das Spiel kann nicht gestartet werden! Nicht bereit sind: { players }
 notEnoughTeams: Das Spiel kann nicht mit weniger als 2 Teams gestartet werden!
 and: und
 openTeamUI: Drücke F um dein Team auszuwählen.
-nowGlowing: {playerName} leuchtet jetzt.
-captureTeamSpawn: {newTeam} hat den Auferstehungspunkt von {oldTeam} eingenommen!
-captureASpawn: {newTeam} hat einen Auferstehungspunkt eingenommen!
+nowGlowing: { playerName } leuchtet jetzt.
+captureTeamSpawn: { newTeam } hat den Auferstehungspunkt von {oldTeam} eingenommen!
+captureASpawn: { newTeam } hat einen Auferstehungspunkt eingenommen!
 captureProgress: Einnahmefortschritt...
 teamBlack: Schwarz
 teamDarkGreen: Dunkelgrün
