@@ -201,8 +201,8 @@ object DeathGames : DedicatedServerModInitializer
     private fun postPrep()
     {
         minecraftServer?.let { server ->
-            server.worldData.gameRules.set(GameRules.ADVANCE_TIME, !Config.misc.freezeTime, server)
-            server.overworld().dayTime = Config.misc.timeAtGameStart
+            server.gameRules.set(GameRules.ADVANCE_TIME, !Config.misc.freezeTime, server)
+            server.clockManager().setTotalTicks(server.overworld().dimensionType().defaultClock.orElse(null) ?: return@let, Config.misc.timeAtGameStart)
         }
 
         PlayerManager.getOnlinePlayers().forEach {

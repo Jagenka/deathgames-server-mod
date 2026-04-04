@@ -260,10 +260,10 @@ object DisplayManager
             var bossBar = server.customBossEvents.get(bossBarId)
             if (bossBar == null)
             {
-                bossBar = server.customBossEvents.create(bossBarId, Component.literal(""))
+                bossBar = server.customBossEvents.create(server.overworld().random, bossBarId, Component.literal(""))
             }
 
-            bossBar?.let {
+            bossBar.let {
                 it.addPlayer(player)
                 it.progress = fillAmount
                 it.color = color

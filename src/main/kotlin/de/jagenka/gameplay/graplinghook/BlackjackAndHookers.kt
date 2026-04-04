@@ -93,21 +93,6 @@ object BlackjackAndHookers
 
     }
 
-    /**
-     * this is what the game does when getting slow falling gravity
-     */
-    val ServerPlayer.effectiveGravity: Double
-        get() = min(this.gravity, 0.01)
-
-    /**
-     * idk if this works
-     */
-    fun ignoreFallDamageFor(serverPlayer: ServerPlayer, ticks: Int)
-    {
-        serverPlayer.setIgnoreFallDamageFromCurrentImpulse(true)
-        serverPlayer.applyPostImpulseGraceTime(ticks)
-    }
-
     fun ServerPlayer.moveAndUpdate(movement: Vec3)
     {
         this.addDeltaMovement(movement)

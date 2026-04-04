@@ -62,20 +62,19 @@ object Util
         this.minecraftServer?.let { server ->
             server.scoreboard.playerTeams.toList().forEach { team -> server.scoreboard.removePlayerTeam(team) }
 
-            server.worldData.gameRules.set(GameRules.SPECTATORS_GENERATE_CHUNKS, false, server)
-            server.worldData.gameRules.set(GameRules.SPAWN_MOBS, false, server)
-            server.worldData.gameRules.set(GameRules.MOB_GRIEFING, false, server)
-            server.worldData.gameRules.set(GameRules.SPAWN_PATROLS, false, server)
-            server.worldData.gameRules.set(GameRules.SPAWN_WANDERING_TRADERS, false, server)
-            server.worldData.gameRules.set(GameRules.SPAWN_WARDENS, false, server)
-            server.worldData.gameRules.set(GameRules.SHOW_ADVANCEMENT_MESSAGES, false, server)
-            server.worldData.gameRules.set(GameRules.KEEP_INVENTORY, true, server)
-            server.worldData.gameRules.set(GameRules.ADVANCE_TIME, false, server)
-            server.worldData.gameRules.set(GameRules.ADVANCE_WEATHER, false, server)
-            server.worldData.gameRules.set(GameRules.LOCATOR_BAR, false, server)
+            server.gameRules.set(GameRules.SPECTATORS_GENERATE_CHUNKS, false, server)
+            server.gameRules.set(GameRules.SPAWN_MOBS, false, server)
+            server.gameRules.set(GameRules.MOB_GRIEFING, false, server)
+            server.gameRules.set(GameRules.SPAWN_PATROLS, false, server)
+            server.gameRules.set(GameRules.SPAWN_WANDERING_TRADERS, false, server)
+            server.gameRules.set(GameRules.SPAWN_WARDENS, false, server)
+            server.gameRules.set(GameRules.SHOW_ADVANCEMENT_MESSAGES, false, server)
+            server.gameRules.set(GameRules.KEEP_INVENTORY, true, server)
+            server.gameRules.set(GameRules.ADVANCE_TIME, false, server)
+            server.gameRules.set(GameRules.ADVANCE_WEATHER, false, server)
+            server.gameRules.set(GameRules.LOCATOR_BAR, false, server)
 
-            server.overworld().setWeatherParameters(Int.MAX_VALUE, 0, false, false)
-            server.overworld().dayTime = 6000 // noon
+            server.setWeatherParameters(Int.MAX_VALUE, 0, false, false)
             server.setDifficulty(Difficulty.NORMAL, false)
 
             PlayerManager.getOnlinePlayers().forEach { player ->
@@ -245,7 +244,7 @@ object Util
     fun parseItemStack(id: String, nbt: String, amount: Int): ItemStack
     {
         val itemResult = itemArgument.parse(StringReader(id + nbt))
-        val itemStack = itemResult.createItemStack(amount, false)
+        val itemStack = itemResult.createItemStack(amount)
         return itemStack
     }
 }

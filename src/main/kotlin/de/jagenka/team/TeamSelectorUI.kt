@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ChestMenu
-import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.inventory.ContainerInput
 import net.minecraft.world.inventory.MenuType
 import net.minecraft.world.item.ItemStack
 
@@ -44,9 +44,9 @@ object TeamSelectorUI
                     {
                         override fun quickMoveStack(player: Player, slot: Int): ItemStack = ItemStack.EMPTY
 
-                        override fun clicked(slotIndex: Int, button: Int, actionType: ClickType, player: Player)
+                        override fun clicked(slotIndex: Int, button: Int, containerInput: ContainerInput, player: Player)
                         {
-                            if (actionType == ClickType.PICKUP) teamSelectorInv.onClick(slotIndex)
+                            if (containerInput == ContainerInput.PICKUP) teamSelectorInv.onClick(slotIndex)
                             serverPlayer.inventoryMenu.sendAllDataToRemote()
                         }
                     }
