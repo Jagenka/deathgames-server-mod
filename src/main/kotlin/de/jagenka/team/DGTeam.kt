@@ -6,10 +6,11 @@ import de.jagenka.isSame
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isParticipating
 import de.jagenka.util.I18n
-import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextColor
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.scores.TeamColor
 import org.joml.Vector3f
 
 enum class DGTeam
@@ -20,24 +21,53 @@ enum class DGTeam
     {
         return when (this)
         {
-            BLACK -> Blocks.BLACK_CONCRETE
-            DARK_GREEN -> Blocks.GREEN_TERRACOTTA
-            DARK_AQUA -> Blocks.CYAN_CONCRETE
-            DARK_RED -> Blocks.RED_CONCRETE
-            DARK_PURPLE -> Blocks.PURPLE_CONCRETE
-            GOLD -> Blocks.ORANGE_CONCRETE
-            GRAY -> Blocks.LIGHT_GRAY_CONCRETE
-            DARK_GRAY -> Blocks.GRAY_CONCRETE
-            BLUE -> Blocks.BLUE_CONCRETE
-            GREEN -> Blocks.LIME_CONCRETE
-            AQUA -> Blocks.LIGHT_BLUE_CONCRETE
-            RED -> Blocks.RED_TERRACOTTA
-            LIGHT_PURPLE -> Blocks.MAGENTA_CONCRETE
-            YELLOW -> Blocks.YELLOW_CONCRETE
+            BLACK -> Blocks.CONCRETE.black
+            DARK_GREEN -> Blocks.DYED_TERRACOTTA.green
+            DARK_AQUA -> Blocks.CONCRETE.cyan
+            DARK_RED -> Blocks.CONCRETE.red
+            DARK_PURPLE -> Blocks.CONCRETE.purple
+            GOLD -> Blocks.CONCRETE.orange
+            GRAY -> Blocks.CONCRETE.lightGray
+            DARK_GRAY -> Blocks.CONCRETE.gray
+            BLUE -> Blocks.CONCRETE.blue
+            GREEN -> Blocks.CONCRETE.lime
+            AQUA -> Blocks.CONCRETE.lightBlue
+            RED -> Blocks.DYED_TERRACOTTA.red
+            LIGHT_PURPLE -> Blocks.CONCRETE.magenta
+            YELLOW -> Blocks.CONCRETE.yellow
         }
     }
 
-    fun getColorInt(): Int = ChatFormatting.getByName(this.name.lowercase())?.color ?: 0xFFFFFF
+    fun getTeamColor(): TeamColor
+    {
+        return when (this)
+        {
+            BLACK -> TeamColor.BLACK
+            DARK_GREEN -> TeamColor.DARK_GREEN
+            DARK_AQUA -> TeamColor.DARK_AQUA
+            DARK_RED -> TeamColor.DARK_RED
+            DARK_PURPLE -> TeamColor.DARK_PURPLE
+            GOLD -> TeamColor.GOLD
+            GRAY -> TeamColor.GRAY
+            DARK_GRAY -> TeamColor.DARK_GRAY
+            BLUE -> TeamColor.BLUE
+            GREEN -> TeamColor.GREEN
+            AQUA -> TeamColor.AQUA
+            RED -> TeamColor.RED
+            LIGHT_PURPLE -> TeamColor.LIGHT_PURPLE
+            YELLOW -> TeamColor.YELLOW
+        }
+    }
+
+    fun getTextColor(): TextColor
+    {
+        return getTeamColor().textColor()
+    }
+
+    fun getColorInt(): Int
+    {
+        return getTeamColor().rgb()
+    }
 
     fun getColorVector(): Vector3f = Util.getRGBVector3fForInt(getColorInt())
 
@@ -52,16 +82,19 @@ enum class DGTeam
         return I18n.get("team${this.name.replace('_', ' ').lowercase().capitalizeWords().replace(" ", "")}")
     }
 
-    fun getFormattedText(): Component =
-        Component.literal(this.getPrettyName()).withColor(ChatFormatting.getByName(this.name.lowercase())?.color ?: 0)
+    fun getFormattedText(): Component
+    {
+        return Component.literal(this.getPrettyName()).withColor(getTextColor())
+    }
 
     companion object
     {
-        val defaultColorBlock: Block = Blocks.WHITE_CONCRETE
+        val defaultColorBlock: Block = Blocks.CONCRETE.white
 
         fun random() = entries.random()
 
-        fun isColorBlock(block: Block) = block isSame defaultColorBlock || entries.any { block isSame it.getColorBlock() }
+        fun isColorBlock(block: Block) =
+            block isSame defaultColorBlock || entries.any { block isSame it.getColorBlock() }
 
         fun getValuesAsStringList(): List<String> = Config.general.enabledTeams.asStringList()
     }
@@ -77,4 +110,5 @@ fun List<DGTeam>.asStringList(): List<String>
 
 fun Block.isDGColorBlock() = DGTeam.isColorBlock(this)
 
-fun String.capitalizeWords() = split(" ").joinToString(separator = " ", transform = { it.replaceFirstChar { char -> char.uppercaseChar() } })
+fun String.capitalizeWords() =
+    split(" ").joinToString(separator = " ", transform = { it.replaceFirstChar { char -> char.uppercaseChar() } })

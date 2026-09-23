@@ -26,8 +26,8 @@ object BonusManager
 
     val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }
 
-    val inactiveBlock: Block = Blocks.RED_CONCRETE
-    val activeBlock: Block = Blocks.LIME_CONCRETE
+    val inactiveBlock: Block = Blocks.CONCRETE.red
+    val activeBlock: Block = Blocks.CONCRETE.lime
 
     fun queueRandomPlatforms(howMany: Int)
     {

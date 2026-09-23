@@ -22,11 +22,11 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.minecraft.ChatFormatting
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentUtils
 import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.damagesource.DamageTypes
 import net.minecraft.world.entity.Entity
@@ -90,7 +90,7 @@ object DeathGames : DedicatedServerModInitializer
         if (PlayerManager.getNonEmptyTeams().size < 2)
         {
             DisplayManager.sendChatMessage(
-                Component.literal(I18n.get("notEnoughTeams")).withColor(ChatFormatting.RED.color ?: 0)
+                Component.literal(I18n.get("notEnoughTeams")).withColor(TextColor.RED)
             )
             return
         }

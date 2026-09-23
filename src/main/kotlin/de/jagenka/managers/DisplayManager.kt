@@ -4,10 +4,10 @@ package de.jagenka.managers
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.asOptional
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.ticks
 import de.jagenka.util.I18n
-import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket
@@ -19,6 +19,7 @@ import net.minecraft.world.BossEvent
 import net.minecraft.world.scores.DisplaySlot
 import net.minecraft.world.scores.Objective
 import net.minecraft.world.scores.ScoreHolder
+import net.minecraft.world.scores.TeamColor
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
 import java.util.regex.Pattern
 
@@ -81,7 +82,7 @@ object DisplayManager
             DGTeam.entries.forEach { color ->
                 server.scoreboard.addPlayerTeam(color.name + "_display")
                 val team = server.scoreboard.getPlayerTeam(color.name + "_display")
-                team?.color = ChatFormatting.getByName(color.name.lowercase()) ?: ChatFormatting.WHITE
+                team?.color = TeamColor.byName(color.name.lowercase()).asOptional()
                 server.scoreboard.addPlayerToTeam(color.getPrettyName(), team!!)
             }
         }
@@ -299,7 +300,7 @@ object DisplayManager
         val team = PlayerManager.getTeam(playerName)
         team?.let {
             return Component.literal(playerName).withColor(
-                ChatFormatting.getByName(team.name.lowercase())?.color ?: 0
+                team.getTextColor()
             )
         }
         return Component.literal(playerName)

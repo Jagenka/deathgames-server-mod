@@ -28,6 +28,7 @@ import net.minecraft.world.phys.Vec3
 import org.joml.AxisAngle4d
 import org.joml.Quaterniond
 import org.joml.Vector3f
+import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.floor
 
@@ -345,5 +346,7 @@ fun Inventory.removeItemStack(stackToRemove: ItemStack, maxCount: Int = -1): Int
 {
     return this.clearOrCountMatchingItems({ itemStackInInventory ->
         ItemStack.isSameItemSameComponents(stackToRemove, itemStackInInventory)
-    }, maxCount, player.inventoryMenu.craftSlots) // also look in craftSlots for removal
+    }, false, maxCount, player.inventoryMenu.craftSlots) // also look in craftSlots for removal
 }
+
+fun <T : Any> T?.asOptional(): Optional<T> = Optional.ofNullable(this)

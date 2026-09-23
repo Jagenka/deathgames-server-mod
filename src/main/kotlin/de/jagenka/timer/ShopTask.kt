@@ -122,6 +122,7 @@ object ShopTask : TimerTask
         val illegalItems = listOf(Items.GLASS_BOTTLE, Items.BUCKET)
         player.inventory.clearOrCountMatchingItems(
             { itemStack -> itemStack.item in illegalItems },
+            false,
             -1,
             player.inventoryMenu.craftSlots
         )
