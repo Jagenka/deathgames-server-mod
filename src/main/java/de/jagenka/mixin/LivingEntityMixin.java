@@ -36,7 +36,5 @@ public class LivingEntityMixin
 
         cir.setReturnValue(null);
         cir.cancel();
-
-        // TODO: send to client?
     }
 }
