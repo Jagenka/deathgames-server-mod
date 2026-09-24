@@ -56,7 +56,8 @@ abstract class ShopEntry(internal val playerName: String, internal val nameForSt
      */
     abstract fun removeGoods()
 
-    fun MutableComponent.coloredForShop(): MutableComponent {
+    fun MutableComponent.coloredForShop(): MutableComponent
+    {
         return this.withColor(
             if (getDGMoney(playerName) < getPrice()) Util.getRGBInt(123, 0, 0)
             else Util.getRGBInt(255, 255, 255)

@@ -40,7 +40,7 @@ public class ItemStackMixin
         {
             if (context.getPlayer() instanceof ServerPlayer player)
             {
-                BlackjackAndHookers.forceTheHooker(context.getLevel(), player, context.getPlayer().getItemInHand(context.getHand()));
+                BlackjackAndHookers.forceTheHooker(player, context.getPlayer().getItemInHand(context.getHand()));
             }
         }
 
@@ -64,7 +64,7 @@ public class ItemStackMixin
         {
             if (user instanceof ServerPlayer player)
             {
-                BlackjackAndHookers.forceTheHooker(level, player, stackInHand);
+                BlackjackAndHookers.forceTheHooker(player, stackInHand);
             }
         }
 

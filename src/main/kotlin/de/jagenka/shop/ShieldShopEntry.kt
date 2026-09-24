@@ -59,6 +59,7 @@ class ShieldShopEntry(playerName: String, private val name: String = "Shield", p
         {
             player?.inventory?.clearOrCountMatchingItems(
                 { it == shield },
+                false,
                 1,
                 player!!.inventory
             ) // should be null-safe, because remove will not be called, if player is null

@@ -5,6 +5,7 @@ import de.jagenka.managers.KillManager;
 import de.jagenka.stats.StatManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -39,8 +40,8 @@ public class ServerPlayerMixin
         StatManager.handleDeathType(damageSource, ((ServerPlayer) (Object) this).getName().getString());
     }
 
-    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"), cancellable = true)
-    private void preventDrop(ItemStack itemStack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir)
+    @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZLnet/minecraft/util/Prediction;)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"), cancellable = true)
+    private void preventDrop(ItemStack itemStack, boolean thrownFromHand, Prediction prediction, CallbackInfoReturnable<ItemEntity> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
@@ -50,7 +51,8 @@ public class ServerPlayerMixin
     }
 
     @Inject(method = "drop(Z)V", at = @At("HEAD"), cancellable = true)
-    private void preventDrop(boolean bl, CallbackInfo ci) {
+    private void preventDrop(boolean all, CallbackInfo ci)
+    {
         if (!Config.INSTANCE.isEnabled()) return;
 
         ci.cancel();

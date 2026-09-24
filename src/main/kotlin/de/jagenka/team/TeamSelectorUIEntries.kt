@@ -91,10 +91,10 @@ class ReadyUIEntry(val player: ServerPlayer) : UIEntry
         {
             return if (ReadyCheck.isReady(player.name.string))
             {
-                ItemStack(Items.LIME_DYE).setCustomName(Component.literal(I18n.get("ready")))
+                ItemStack(Items.DYE.lime).setCustomName(Component.literal(I18n.get("ready")))
             } else
             {
-                ItemStack(Items.RED_DYE).setCustomName(Component.literal(I18n.get("notReady")))
+                ItemStack(Items.DYE.red).setCustomName(Component.literal(I18n.get("notReady")))
             }
         }
 

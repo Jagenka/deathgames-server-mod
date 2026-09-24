@@ -6,7 +6,8 @@ import de.jagenka.config.Section
 import net.minecraft.commands.CommandSourceStack
 import java.lang.reflect.Field
 
-fun <T> getDeclaredFields(clazz: Class<T>): List<Field> {
+fun <T> getDeclaredFields(clazz: Class<T>): List<Field>
+{
     val fields = mutableListOf<Field>()
     fields.addAll(clazz.declaredFields)
 
@@ -21,18 +22,21 @@ fun <T> getDeclaredFields(clazz: Class<T>): List<Field> {
     return fields
 }
 
-fun <T> getSectionsFromConfig(configClass: Class<T>): Map<Section, Field> {
+fun <T> getSectionsFromConfig(configClass: Class<T>): Map<Section, Field>
+{
     return getDeclaredFields(configClass)
         .filter { f -> f.annotations.any { it is Section } }
         .associateBy { it.annotations.filterIsInstance<Section>().first() }
 }
 
-fun getPropertiesFromSection(sectionClass: Class<*>, transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>): List<Field> {
+fun getPropertiesFromSection(sectionClass: Class<*>, transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>): List<Field>
+{
     return getDeclaredFields(sectionClass)
         .filter { prop -> getConfigPropertyTransformer(prop.type, transformers) != null }
 }
 
-fun getConfigPropertyTransformer(type: Class<*>, transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>): ConfigPropertyTransformer<out Any>? {
+fun getConfigPropertyTransformer(type: Class<*>, transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>): ConfigPropertyTransformer<out Any>?
+{
     return transformers.entries.find { type.canonicalName == it.key.canonicalName }?.value
 }
 
@@ -40,8 +44,10 @@ fun setPropertyFromString(
     newValue: String, sectionField: Field, propertyField: Field,
     transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>,
     source: CommandSourceStack
-): Boolean {
-    try {
+): Boolean
+{
+    try
+    {
         sectionField.isAccessible = true
         propertyField.isAccessible = true
 
@@ -51,13 +57,16 @@ fun setPropertyFromString(
         val transformer = getConfigPropertyTransformer(propertyField.type, transformers) ?: return false
         val newValueObject = transformer.fromString(newValue, source)
 
-        if(newValueObject != null) {
+        if (newValueObject != null)
+        {
             propertyField.set(currentSection, newValueObject)
             return true
-        } else {
+        } else
+        {
             return false
         }
-    } catch (e: Exception) {
+    } catch (e: Exception)
+    {
         e.printStackTrace()
         return false
     }
@@ -66,8 +75,10 @@ fun setPropertyFromString(
 fun getStringifiedValueFromProperty(
     sectionField: Field, propertyField: Field,
     transformers: Map<Class<out Any>, ConfigPropertyTransformer<out Any>>
-): String {
-    try {
+): String
+{
+    try
+    {
         sectionField.isAccessible = true
         propertyField.isAccessible = true
 
@@ -80,7 +91,8 @@ fun getStringifiedValueFromProperty(
 
         return currentValueString
 
-    } catch (e: Exception) {
+    } catch (e: Exception)
+    {
         e.printStackTrace()
         return "!! Internal error occured during config access"
     }

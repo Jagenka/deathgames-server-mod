@@ -122,6 +122,7 @@ object ShopTask : TimerTask
         val illegalItems = listOf(Items.GLASS_BOTTLE, Items.BUCKET)
         player.inventory.clearOrCountMatchingItems(
             { itemStack -> itemStack.item in illegalItems },
+            false,
             -1,
             player.inventoryMenu.craftSlots
         )
@@ -141,7 +142,8 @@ object ShopTask : TimerTask
         Shop.clearRecentlyBought(playerName)
     }
 
-    fun exitShop(playerName: String) {
+    fun exitShop(playerName: String)
+    {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return
         exitShop(player)
 

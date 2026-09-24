@@ -59,6 +59,7 @@ class HookerShopEntry(
 
         player?.inventory?.clearOrCountMatchingItems(
             filter,
+            false,
             1,
             player!!.inventory
         ) // should be null-safe, as remove will not be called, if player is null

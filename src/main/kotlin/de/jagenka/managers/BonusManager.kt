@@ -26,8 +26,8 @@ object BonusManager
 
     val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }
 
-    val inactiveBlock: Block = Blocks.RED_CONCRETE
-    val activeBlock: Block = Blocks.LIME_CONCRETE
+    val inactiveBlock: Block = Blocks.CONCRETE.red
+    val activeBlock: Block = Blocks.CONCRETE.lime
 
     fun queueRandomPlatforms(howMany: Int)
     {
@@ -67,7 +67,8 @@ object BonusManager
         dy < 2 && dx <= Config.bonus.radius + 0.5 && dz <= Config.bonus.radius + 0.5
     }
 
-    private fun colorPlatforms() {
+    private fun colorPlatforms()
+    {
         platforms.forEach { platform ->
             Util.getBlocksInSquareRadiusAtFixY(platform.pos, Config.bonus.radius).forEach { (block, coordinates) ->
                 if (block isSame inactiveBlock || block isSame activeBlock)

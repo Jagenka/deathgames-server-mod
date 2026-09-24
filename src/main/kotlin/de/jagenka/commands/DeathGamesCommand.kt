@@ -27,13 +27,15 @@ object DeathGamesCommand
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>)
     {
         val literalArgumentBuilder = Commands.literal("deathgames")
-            .then(literal("start")
+            .then(
+                literal("start")
                 .requires { it.isAdmin() }
                 .executes {
                     if (!DeathGames.running) DeathGames.startGameWithCountdown()
                     return@executes 0
                 })
-            .then(literal("stop")
+            .then(
+                literal("stop")
                 .requires { it.isAdmin() }
                 .executes {
                     if (DeathGames.running) DeathGames.stopGame()
@@ -61,13 +63,15 @@ object DeathGamesCommand
             )
             .then(
                 literal("join")
-                    .then(argument("team", StringArgumentType.word()).suggests { _, builder ->
+                    .then(
+                        argument("team", StringArgumentType.word()).suggests { _, builder ->
                         SharedSuggestionProvider.suggest(DGTeam.getValuesAsStringList(), builder)
                     }.executes {
                         handleJoinTeam(it, it.getArgument("team", String::class.java))
                         return@executes 0
                     }
-                        .then(argument("player", StringArgumentType.word())
+                            .then(
+                                argument("player", StringArgumentType.word())
                             .requires { it.isAdmin() }
                             .suggests { context, builder ->
                                 SharedSuggestionProvider.suggest(context.source.onlinePlayerNames, builder)
@@ -84,7 +88,8 @@ object DeathGamesCommand
                     )
 
             )
-            .then(literal("leave").executes { context ->
+            .then(
+                literal("leave").executes { context ->
                 context.source.player?.let {
                     val leftTeam = handleLeaveTeam(context, it)
                     if (leftTeam == null) context.source.sendFailure(Component.literal("You're not part of a team!"))
@@ -92,7 +97,8 @@ object DeathGamesCommand
                 } ?: context.source.sendFailure(Component.literal("You must be a player to do that!"))
                 return@executes 0
             }
-                .then(argument("player", StringArgumentType.word())
+                    .then(
+                        argument("player", StringArgumentType.word())
                     .requires { it.isAdmin() }
                     .suggests { context, builder ->
                         SharedSuggestionProvider.suggest(context.source.onlinePlayerNames, builder)

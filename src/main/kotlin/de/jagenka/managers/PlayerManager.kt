@@ -5,12 +5,12 @@ import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.teleport
+import de.jagenka.asOptional
 import de.jagenka.config.Config
 import de.jagenka.team.DGTeam
 import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
-import net.minecraft.ChatFormatting
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.GameType
@@ -121,10 +121,9 @@ object PlayerManager
     fun prepareTeams()
     {
         ifServerLoaded { server ->
-            DGTeam.entries.forEach { color ->
-                server.scoreboard.addPlayerTeam(color.name)
-                server.scoreboard.getPlayerTeam(color.name)?.color =
-                    ChatFormatting.getByName(color.name.lowercase()) ?: ChatFormatting.WHITE
+            DGTeam.entries.forEach { teamToCreate ->
+                server.scoreboard.addPlayerTeam(teamToCreate.name)
+                server.scoreboard.getPlayerTeam(teamToCreate.name)?.color = teamToCreate.getTeamColor().asOptional()
             }
         }
     }
@@ -173,7 +172,8 @@ object PlayerManager
      * so TODO: associate level with spawns, bonuses, lobby, etc.
      * @return the level in which the current game is running
      */
-    fun getMapLevel(): Level {
+    fun getMapLevel(): Level
+    {
         return getOnlineParticipatingPlayers().randomOrNull()?.level() ?: Util.minecraftServer?.overworld()
         ?: error("No Level found!")
     }

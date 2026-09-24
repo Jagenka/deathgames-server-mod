@@ -54,8 +54,7 @@ object PlyImporter
                             )
                         )
                         vertex_count--
-                    }
-                    else if (face_count > 0)
+                    } else if (face_count > 0)
                     {
                         faceList.add(elements.drop(1).map { e -> e.toInt() } as MutableList<Int>)
                         face_count--

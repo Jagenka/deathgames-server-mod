@@ -46,7 +46,7 @@ class ItemShopEntry(playerName: String, private val boughtItemStack: ItemStack, 
             { itemStackInInventory ->
                 itemAndNbtEqual(boughtItemStack, itemStackInInventory)
             },
-            amount, player!!.inventoryMenu.craftSlots // also check in craft slots
+            false, amount, player!!.inventoryMenu.craftSlots // also check in craft slots
             // should be null-safe, because remove will not be called, if player is null
         )
     }
