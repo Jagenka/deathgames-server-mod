@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.gameplay.graplinghook.BlackjackAndHookers
+import de.jagenka.gameplay.graplinghook.GrapplingHook
 
 object GrapplingTask : TimerTask
 {
@@ -13,11 +13,11 @@ object GrapplingTask : TimerTask
 
     override fun run()
     {
-        BlackjackAndHookers.tick()
+        GrapplingHook.getDefault().tick()
     }
 
     override fun reset()
     {
-        BlackjackAndHookers.reset()
+        GrapplingHook.getDefault().reset()
     }
 }
