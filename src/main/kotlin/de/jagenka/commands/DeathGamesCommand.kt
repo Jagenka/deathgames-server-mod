@@ -20,6 +20,7 @@ import net.minecraft.commands.Commands.argument
 import net.minecraft.commands.Commands.literal
 import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.network.chat.Component
+import net.minecraft.server.dedicated.DedicatedServer
 import net.minecraft.server.level.ServerPlayer
 
 object DeathGamesCommand
@@ -29,19 +30,19 @@ object DeathGamesCommand
         val literalArgumentBuilder = Commands.literal("deathgames")
             .then(
                 literal("start")
-                .requires { it.isAdmin() }
-                .executes {
-                    if (!DeathGames.running) DeathGames.startGameWithCountdown()
-                    return@executes 0
-                })
+                    .requires { it.isAdmin() }
+                    .executes {
+                        if (!DeathGames.running) DeathGames.startGameWithCountdown()
+                        return@executes 0
+                    })
             .then(
                 literal("stop")
-                .requires { it.isAdmin() }
-                .executes {
-                    if (DeathGames.running) DeathGames.stopGame()
-                    else it.source.sendFailure(Component.literal("Game is not running!"))
-                    return@executes 0
-                })
+                    .requires { it.isAdmin() }
+                    .executes {
+                        if (DeathGames.running) DeathGames.stopGame()
+                        else it.source.sendFailure(Component.literal("Game is not running!"))
+                        return@executes 0
+                    })
             .then(
                 literal("timer")
                     .requires { it.isAdmin() }
@@ -65,60 +66,60 @@ object DeathGamesCommand
                 literal("join")
                     .then(
                         argument("team", StringArgumentType.word()).suggests { _, builder ->
-                        SharedSuggestionProvider.suggest(DGTeam.getValuesAsStringList(), builder)
-                    }.executes {
-                        handleJoinTeam(it, it.getArgument("team", String::class.java))
-                        return@executes 0
-                    }
+                            SharedSuggestionProvider.suggest(DGTeam.getValuesAsStringList(), builder)
+                        }.executes {
+                            handleJoinTeam(it, it.getArgument("team", String::class.java))
+                            return@executes 0
+                        }
                             .then(
                                 argument("player", StringArgumentType.word())
-                            .requires { it.isAdmin() }
-                            .suggests { context, builder ->
-                                SharedSuggestionProvider.suggest(context.source.onlinePlayerNames, builder)
-                            }.executes {
-                                ifServerLoaded { minecraftServer ->
-                                    val playerArgument = it.getArgument("player", String::class.java)
-                                    val player = minecraftServer.playerList.getPlayer(playerArgument)
-                                    if (player == null) it.source.sendFailure(Component.literal("$playerArgument is not a player!"))
-                                    else handleJoinTeamForSomeoneElse(it, it.getArgument("team", String::class.java), player)
-                                }
+                                    .requires { it.isAdmin() }
+                                    .suggests { context, builder ->
+                                        SharedSuggestionProvider.suggest(context.source.onlinePlayerNames, builder)
+                                    }.executes {
+                                        ifServerLoaded { minecraftServer ->
+                                            val playerArgument = it.getArgument("player", String::class.java)
+                                            val player = minecraftServer.playerList.getPlayer(playerArgument)
+                                            if (player == null) it.source.sendFailure(Component.literal("$playerArgument is not a player!"))
+                                            else handleJoinTeamForSomeoneElse(it, it.getArgument("team", String::class.java), player)
+                                        }
 
-                                return@executes 0
-                            })
+                                        return@executes 0
+                                    })
                     )
 
             )
             .then(
                 literal("leave").executes { context ->
-                context.source.player?.let {
-                    val leftTeam = handleLeaveTeam(context, it)
-                    if (leftTeam == null) context.source.sendFailure(Component.literal("You're not part of a team!"))
-                    else context.source.sendSuccess({ Component.literal("Successfully left $leftTeam.") }, false)
-                } ?: context.source.sendFailure(Component.literal("You must be a player to do that!"))
-                return@executes 0
-            }
+                    context.source.player?.let {
+                        val leftTeam = handleLeaveTeam(context, it)
+                        if (leftTeam == null) context.source.sendFailure(Component.literal("You're not part of a team!"))
+                        else context.source.sendSuccess({ Component.literal("Successfully left $leftTeam.") }, false)
+                    } ?: context.source.sendFailure(Component.literal("You must be a player to do that!"))
+                    return@executes 0
+                }
                     .then(
                         argument("player", StringArgumentType.word())
-                    .requires { it.isAdmin() }
-                    .suggests { context, builder ->
-                        SharedSuggestionProvider.suggest(context.source.onlinePlayerNames, builder)
-                    }.executes { context ->
-                        ifServerLoaded { minecraftServer ->
-                            val playerArgument = context.getArgument("player", String::class.java)
-                            val player = minecraftServer.playerList.getPlayer(playerArgument)
-                            if (player == null) context.source.sendFailure(Component.literal("$playerArgument is not a player!"))
-                            else
-                            {
-                                val leftTeam = handleLeaveTeam(context, player)
-                                if (leftTeam == null) context.source.sendFailure(Component.literal("${player.name.string} is not part of a team!"))
-                                else context.source.sendSuccess(
-                                    { Component.literal("Successfully kicked ${player.name.string} from $leftTeam.") },
-                                    false
-                                )
-                            }
-                        }
-                        return@executes 0
-                    })
+                            .requires { it.isAdmin() }
+                            .suggests { context, builder ->
+                                SharedSuggestionProvider.suggest(context.source.onlinePlayerNames, builder)
+                            }.executes { context ->
+                                ifServerLoaded { minecraftServer ->
+                                    val playerArgument = context.getArgument("player", String::class.java)
+                                    val player = minecraftServer.playerList.getPlayer(playerArgument)
+                                    if (player == null) context.source.sendFailure(Component.literal("$playerArgument is not a player!"))
+                                    else
+                                    {
+                                        val leftTeam = handleLeaveTeam(context, player)
+                                        if (leftTeam == null) context.source.sendFailure(Component.literal("${player.name.string} is not part of a team!"))
+                                        else context.source.sendSuccess(
+                                            { Component.literal("Successfully kicked ${player.name.string} from $leftTeam.") },
+                                            false
+                                        )
+                                    }
+                                }
+                                return@executes 0
+                            })
             )
             .then(
                 literal("shufflespawns")
@@ -143,6 +144,15 @@ object DeathGamesCommand
                         {
                             it.source.sendFailure(Component.literal("error reloading config"))
                         }
+                        return@executes 0
+                    }
+            )
+            .then(
+                literal("map")
+                    .requires { it.isAdmin() }
+                    .executes {
+                        val response = "Current map: ${(it.source.server as? DedicatedServer)?.properties?.levelName ?: "an error occurred"}"
+                        it.source.sendSuccess({ Component.literal(response) }, false)
                         return@executes 0
                     }
             )
