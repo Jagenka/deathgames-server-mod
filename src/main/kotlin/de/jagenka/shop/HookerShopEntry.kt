@@ -1,6 +1,6 @@
 package de.jagenka.shop
 
-import de.jagenka.gameplay.graplinghook.BlackjackAndHookers
+import de.jagenka.gameplay.graplinghook.GrapplingHook
 import de.jagenka.itemAndNbtEqual
 import de.jagenka.managers.MoneyManager
 import de.jagenka.setCustomName
@@ -18,7 +18,7 @@ class HookerShopEntry(
     cooldown: Int
 ) : ShopEntry(playerName, nameForStat = displayName)
 {
-    private val itemStack = ItemStack(BlackjackAndHookers.itemItem)
+    private val itemStack = ItemStack(GrapplingHook.itemItem)
 
     init
     {
@@ -34,7 +34,7 @@ class HookerShopEntry(
 
     override fun getDisplayItemStack(): ItemStack
     {
-        return BlackjackAndHookers.itemItem.defaultInstance.copy().setCustomName(
+        return GrapplingHook.itemItem.defaultInstance.copy().setCustomName(
             Component.literal("${MoneyManager.getCurrencyString(price)}: $displayName x1").coloredForShop()
         )
     }

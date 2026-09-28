@@ -1,7 +1,7 @@
 package de.jagenka.mixin;
 
 import de.jagenka.config.Config;
-import de.jagenka.gameplay.graplinghook.BlackjackAndHookers;
+import de.jagenka.gameplay.graplinghook.GrapplingHook;
 import de.jagenka.gameplay.traps.TrapManager;
 import de.jagenka.shop.Shop;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,15 +35,6 @@ public class ItemStackMixin
             }
         }
 
-        // Grapple
-        if (context.getPlayer() != null && context.getPlayer().getItemInHand(context.getHand()).getItem() == BlackjackAndHookers.getItemItem())
-        {
-            if (context.getPlayer() instanceof ServerPlayer player)
-            {
-                BlackjackAndHookers.forceTheHooker(player, context.getPlayer().getItemInHand(context.getHand()));
-            }
-        }
-
         // ender pearls in shop
         if (context.getItemInHand().getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(context.getPlayer()))
         {
@@ -53,27 +44,24 @@ public class ItemStackMixin
     }
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    public void use(Level level, Player user, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir)
+    public void use(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
-        ItemStack stackInHand = user.getItemInHand(hand);
-
         // Grapple
-        if (stackInHand.getItem() == BlackjackAndHookers.getItemItem())
+        if (player instanceof ServerPlayer serverPlayer && serverPlayer.getItemInHand(hand).getItem() == GrapplingHook.Companion.getItemItem())
         {
-            if (user instanceof ServerPlayer player)
-            {
-                BlackjackAndHookers.forceTheHooker(player, stackInHand);
-            }
+            GrapplingHook.Companion.getDefault().forceTheHooker(serverPlayer, serverPlayer.getItemInHand(hand));
         }
 
         // ender pearls in shop
-        if (stackInHand.getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(user))
+        ItemStack stackInHand = player.getItemInHand(hand);
+
+        if (stackInHand.getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(player))
         {
             cir.setReturnValue(InteractionResult.FAIL);
             cir.cancel();
-            user.inventoryMenu.sendAllDataToRemote();
+            player.inventoryMenu.sendAllDataToRemote();
         }
     }
 }

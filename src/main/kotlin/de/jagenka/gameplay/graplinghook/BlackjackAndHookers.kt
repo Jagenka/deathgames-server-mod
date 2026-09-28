@@ -7,9 +7,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.effect.MobEffects
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import kotlin.jvm.optionals.getOrNull
@@ -17,23 +15,19 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-object BlackjackAndHookers
+object BlackjackAndHookers : GrapplingHook
 {
-    @JvmStatic
-    val itemItem: Item = Items.CARROT_ON_A_STICK
-
-    fun tick()
+    override fun tick()
     {
 
     }
 
-    fun reset()
+    override fun reset()
     {
 
     }
 
-    @JvmStatic
-    fun forceTheHooker(serverPlayer: ServerPlayer, itemStackInHand: ItemStack): Boolean
+    override fun forceTheHooker(serverPlayer: ServerPlayer, itemStackInHand: ItemStack): Boolean
     {
         if (!DeathGames.running) return false
 
@@ -53,9 +47,10 @@ object BlackjackAndHookers
         }
     }
 
-    fun determineMovementAndMove(serverPlayer: ServerPlayer, maxDistance: Double = 20.0)
+    private fun determineMovementAndMove(serverPlayer: ServerPlayer, maxDistance: Double = 20.0)
     {
         val hitResult = serverPlayer.pick(maxDistance, 0f, false) // raycast to block
+
         when (hitResult.type)
         {
             HitResult.Type.BLOCK ->
@@ -66,7 +61,7 @@ object BlackjackAndHookers
                 val delta = targetPos.subtract(serverPlayer.position())
 
                 // constant
-                val k = 3 // arcing factor
+                val k = 2 // arcing factor
                 val airDeceleration = 0.09 // air resistance
 
                 val vY = sqrt(2 * serverPlayer.gravity * ((delta.y / 2) + k))
@@ -74,9 +69,8 @@ object BlackjackAndHookers
                 val vX = (delta.x * airDeceleration) / (1 - (1 - airDeceleration).pow(flightTime))
                 val vZ = (delta.z * airDeceleration) / (1 - (1 - airDeceleration).pow(flightTime))
 
-                val v = Vec3(vX, vY, vZ).scale(1.3)
+                val v = Vec3(vX, vY, vZ).scale(1.2)
 
-                serverPlayer.addEffect(MobEffectInstance(MobEffects.SLOW_FALLING, (flightTime * 1.5).toInt()))
                 serverPlayer.moveAndUpdate(v)
             }
 
@@ -87,11 +81,9 @@ object BlackjackAndHookers
                 serverPlayer.moveAndUpdate(v)
             }
         }
-
-
     }
 
-    fun ServerPlayer.moveAndUpdate(movement: Vec3)
+    private fun ServerPlayer.moveAndUpdate(movement: Vec3)
     {
         this.addDeltaMovement(movement)
         this.connection.send(ClientboundSetEntityMotionPacket(this))
