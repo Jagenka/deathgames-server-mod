@@ -157,9 +157,7 @@ object DeathGamesCommand
                     }
             )
 
-        val literalArgumentBuilderAfterConfig = DeathGamesConfigCommand.generateConfigCommand(literalArgumentBuilder)
-
-        val baseLiteralCommandNode = dispatcher.register(literalArgumentBuilderAfterConfig)
+        val baseLiteralCommandNode = dispatcher.register(literalArgumentBuilder)
 
         dispatcher.register(literal("dg").redirect(baseLiteralCommandNode))
         dispatcher.register(literal("deeznutz").redirect(baseLiteralCommandNode))
