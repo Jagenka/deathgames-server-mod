@@ -3,21 +3,21 @@ locale: en
 arenaBounds:
   firstCorner:
     x: -128
-    'y': 48
+    y: 48
     z: -128
   secondCorner:
     x: 127
-    'y': 152
+    y: 152
     z: 127
 spectatorRadiusPadding: 20
 lobbyBounds:
   firstCorner:
     x: -29
-    'y': 18
+    y: 18
     z: -29
   secondCorner:
     x: 29
-    'y': 34
+    y: 34
     z: 29
 enabledTeams:
   - BLACK
@@ -38,56 +38,56 @@ spawns:
   spawnPositions:
     - coordinates:
         x: -38
-        'y': 63
+        y: 63
         z: -91
         yaw: 0
         pitch: 0
       defaultOwner: null
     - coordinates:
         x: 38
-        'y': 63
+        y: 63
         z: -91
         yaw: 0
         pitch: 0
       defaultOwner: null
     - coordinates:
         x: 91
-        'y': 63
+        y: 63
         z: -38
         yaw: 90
         pitch: 0
       defaultOwner: null
     - coordinates:
         x: 91
-        'y': 72
+        y: 72
         z: 38
         yaw: 90
         pitch: 0
       defaultOwner: null
     - coordinates:
         x: 38
-        'y': 72
+        y: 72
         z: 91
         yaw: 180
         pitch: 0
       defaultOwner: null
     - coordinates:
         x: -38
-        'y': 72
+        y: 72
         z: 91
         yaw: 180
         pitch: 0
       defaultOwner: null
     - coordinates:
         x: -91
-        'y': 70
+        y: 70
         z: 38
         yaw: 270
         pitch: 0
       defaultOwner: null
     - coordinates:
         x: -91
-        'y': 63
+        y: 63
         z: -38
         yaw: 270
         pitch: 0
@@ -95,13 +95,13 @@ spawns:
   platformRadius: 4
   spectatorSpawn:
     x: 0
-    'y': 80
+    y: 80
     z: 0
     yaw: 0
     pitch: 0
   lobbySpawn:
     x: 0
-    'y': 20
+    y: 20
     z: 0
     yaw: 0
     pitch: 0
@@ -121,22 +121,22 @@ bonus:
       - name: Village Corner
         pos:
           x: 119
-          'y': 70
+          y: 70
           z: 119
       - name: Nether Corner
         pos:
           x: -120
-          'y': 68
+          y: 68
           z: 119
       - name: Desert Corner
         pos:
           x: -120
-          'y': 62
+          y: 62
           z: -120
       - name: Water Corner
         pos:
           x: 119
-          'y': 63
+          y: 63
           z: -120
   radius: 2
   spawnInterval: 3600
@@ -156,11 +156,11 @@ shopSettings:
   shopBounds:
     - firstCorner:
         x: -5
-        'y': 57
+        y: 57
         z: -5
       secondCorner:
         x: 5
-        'y': 62
+        y: 62
         z: 5
   tpOutOfShopAfter: 600
   refundPercent: 100
