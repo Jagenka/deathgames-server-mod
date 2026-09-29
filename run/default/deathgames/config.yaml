@@ -1,39 +1,40 @@
-enabled: true
-locale: en
-arenaBounds:
-  firstCorner:
-    x: -128
-    y: 48
-    z: -128
-  secondCorner:
-    x: 127
-    y: 152
-    z: 127
-spectatorRadiusPadding: 20
-lobbyBounds:
-  firstCorner:
-    x: -29
-    y: 18
-    z: -29
-  secondCorner:
-    x: 29
-    y: 34
-    z: 29
-enabledTeams:
-  - BLACK
-  - DARK_GREEN
-  - DARK_AQUA
-  - DARK_RED
-  - DARK_PURPLE
-  - GOLD
-  - GRAY
-  - DARK_GRAY
-  - BLUE
-  - GREEN
-  - AQUA
-  - RED
-  - LIGHT_PURPLE
-  - YELLOW
+general:
+  enabled: true
+  locale: en
+  arenaBounds:
+    firstCorner:
+      x: -128
+      y: 48
+      z: -128
+    secondCorner:
+      x: 127
+      y: 152
+      z: 127
+  spectatorRadiusPadding: 20
+  lobbyBounds:
+    firstCorner:
+      x: -29
+      y: 18
+      z: -29
+    secondCorner:
+      x: 29
+      y: 34
+      z: 29
+  enabledTeams:
+    - BLACK
+    - DARK_GREEN
+    - DARK_AQUA
+    - DARK_RED
+    - DARK_PURPLE
+    - GOLD
+    - GRAY
+    - DARK_GRAY
+    - BLUE
+    - GREEN
+    - AQUA
+    - RED
+    - LIGHT_PURPLE
+    - YELLOW
 spawns:
   spawnPositions:
     - coordinates:
