@@ -23,8 +23,8 @@ object Config
         )
     )
 
-    lateinit var internalConfigEntry: MainConfig
-    lateinit var shopConfig: ShopConfig
+    var internalConfigEntry = MainConfig()
+    var shopConfig = ShopConfig()
 
     val isEnabled
         get() = internalConfigEntry.general.enabled
@@ -70,16 +70,15 @@ object Config
             if (!Files.exists(pathToConfFile))
             {
                 Files.createFile(pathToConfFile)
-                internalConfigEntry = MainConfig()
+                writeGeneralConfig()
             }
 
             pathToShopConfFile = configFolder.resolve("shop.yaml")
             if (!Files.exists(pathToShopConfFile))
             {
                 Files.createFile(pathToShopConfFile)
-                shopConfig = ShopConfig()
+                writeShopConfig()
             }
-            store()
 
             load()
         } ?: error("Failed loading DeathGames config - Server not loaded yet.")
@@ -89,27 +88,52 @@ object Config
 
     fun load()
     {
+        loadGeneralConfig()
+        loadShopConfig()
+    }
+
+    fun loadGeneralConfig()
+    {
         try
         {
             internalConfigEntry = serializer.decodeFromString(pathToConfFile.toFile().readText())
+        } catch (e: Exception)
+        {
+            DeathGames.logger.error("Error while reading general config!", e)
+        }
+    }
 
+    fun loadShopConfig()
+    {
+        try
+        {
             shopConfig = serializer.decodeFromString(pathToShopConfFile.toFile().readText())
             ShopEntries.reloadShop()
         } catch (e: Exception)
         {
-            DeathGames.logger.error("Error while reading config!", e)
+            DeathGames.logger.error("Error while reading shop config!", e)
         }
     }
 
-    fun store()
+    fun writeGeneralConfig()
     {
         try
         {
             Files.writeString(pathToConfFile, serializer.encodeToString(internalConfigEntry))
+        } catch (e: Exception)
+        {
+            DeathGames.logger.error("Error while storing general config!", e)
+        }
+    }
+
+    fun writeShopConfig()
+    {
+        try
+        {
             Files.writeString(pathToShopConfFile, serializer.encodeToString(shopConfig))
         } catch (e: Exception)
         {
-            DeathGames.logger.error("Error while storing config!", e)
+            DeathGames.logger.error("Error while storing shop config!", e)
         }
     }
 }
