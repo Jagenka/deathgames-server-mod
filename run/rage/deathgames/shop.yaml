@@ -86,7 +86,10 @@ traps:
     visibilityRange: 5
     affectedRange: 5
     triggerDuration: 120
-refundRecent: null
+refundRecent:
+  name: Refund recent purchases
+  row: 5
+  col: 0
 hook:
   row: 3
   col: 8
