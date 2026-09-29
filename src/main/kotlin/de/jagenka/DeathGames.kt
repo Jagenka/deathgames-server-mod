@@ -17,6 +17,7 @@ import de.jagenka.timer.Timer
 import de.jagenka.timer.Timer.tick
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
+import de.jagenka.util.cuboidCenter
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
@@ -179,7 +180,7 @@ object DeathGames : DedicatedServerModInitializer
 
             if (Config.misc.startInShop)
             {
-                it.teleport(Config.shopSettings.shopBounds.random().center)
+                it.teleport(Config.shopSettings.shopBounds.random().cuboidCenter())
                 Timer.schedule((secondsToSpawnTp - 5).coerceAtLeast(0).seconds()) { ShopTask.sendTpOutMessage(it, 5) }
             }
         }

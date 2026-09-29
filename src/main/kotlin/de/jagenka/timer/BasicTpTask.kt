@@ -7,6 +7,9 @@ import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isOp
 import de.jagenka.team.TeamSelectorUI
+import de.jagenka.util.cuboidBigCorner
+import de.jagenka.util.cuboidContains
+import de.jagenka.util.cuboidSmallCorner
 import net.minecraft.world.level.GameType
 
 object BasicTpTask : TimerTask
@@ -28,8 +31,8 @@ object BasicTpTask : TimerTask
                     if (!player.isOp()) player.setGameMode(GameType.ADVENTURE)
 
                     //tp spectators back to arena
-                    val (posX, negX) = listOf(Config.general.arenaBounds.secondCorner.x, Config.general.arenaBounds.firstCorner.x).sortedDescending()
-                    val (posZ, negZ) = listOf(Config.general.arenaBounds.secondCorner.z, Config.general.arenaBounds.firstCorner.z).sortedDescending()
+                    val (posX, negX) = listOf(Config.general.arenaBounds.cuboidBigCorner().x, Config.general.arenaBounds.cuboidSmallCorner().x).sortedDescending()
+                    val (posZ, negZ) = listOf(Config.general.arenaBounds.cuboidBigCorner().z, Config.general.arenaBounds.cuboidSmallCorner().z).sortedDescending()
                     if (player.position().x > posX + Config.general.spectatorRadiusPadding) player.teleport(
                         Coordinates(
                             posX.toDouble(),
@@ -68,7 +71,7 @@ object BasicTpTask : TimerTask
                     )
                     return@forEach
                 }
-                if (!TeamSelectorUI.lobbyBounds.contains(player.position())) player.teleport(Config.spawns.lobbySpawn)
+                if (!TeamSelectorUI.lobbyBounds.cuboidContains(player.position())) player.teleport(Config.spawns.lobbySpawn)
             }
         }
     }

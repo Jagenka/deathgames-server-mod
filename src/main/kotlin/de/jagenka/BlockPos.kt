@@ -19,7 +19,7 @@ data class BlockPos(val x: Int, val y: Int, val z: Int)
     operator fun minus(other: BlockPos) = this.relative(-other.x, -other.y, -other.z)
 
     fun asMinecraftBlockPos(): net.minecraft.core.BlockPos = net.minecraft.core.BlockPos(x, y, z)
-    fun toVec3d(): Vec3 = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
+    fun toVec3(): Vec3 = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
 
     companion object
     {

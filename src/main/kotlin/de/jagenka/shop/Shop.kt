@@ -4,6 +4,7 @@ import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.managers.MoneyManager
 import de.jagenka.util.I18n
+import de.jagenka.util.cuboidContains
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.MenuProvider
@@ -82,9 +83,7 @@ object Shop
 
     fun isInShopBounds(player: Player?): Boolean
     {
-        if (player == null) return false
-
-        return Config.shopSettings.shopBounds.any { it.contains(player.position()) }
+        return player != null && Config.shopSettings.shopBounds.any { it.cuboidContains(player.position()) }
 
     }
 

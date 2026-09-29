@@ -1,7 +1,6 @@
 package de.jagenka.managers
 
 import com.mojang.brigadier.StringReader
-import de.jagenka.BlockCuboid
 import de.jagenka.Coordinates
 import de.jagenka.DeathGames
 import de.jagenka.Util
@@ -12,6 +11,7 @@ import de.jagenka.managers.SpawnManager.platformRadius
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
 import de.jagenka.util.BiMap
+import de.jagenka.util.cuboidContains
 import kotlinx.serialization.Serializable
 import net.minecraft.commands.arguments.CompoundTagArgument
 import net.minecraft.server.level.ServerPlayer
@@ -204,10 +204,10 @@ object SpawnManager
 @Serializable
 data class DGSpawn(val coordinates: Coordinates, val defaultOwner: DGTeam?)
 {
-    fun getCuboid() = BlockCuboid(
-        coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius),
-        coordinates.asBlockPos().relative(platformRadius, 2, platformRadius)
-    )
+    fun getCuboid() =
+        coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius) to
+                coordinates.asBlockPos().relative(platformRadius, 2, platformRadius)
 
-    fun containsPlayer(player: ServerPlayer) = getCuboid().contains(player.position())
+
+    fun containsPlayer(player: ServerPlayer) = getCuboid().cuboidContains(player.position())
 }

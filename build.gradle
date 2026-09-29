@@ -53,6 +53,9 @@ dependencies {
 
     implementation "org.xerial:sqlite-jdbc:3.48.0.0"
     include "org.xerial:sqlite-jdbc:3.48.0.0"
+
+    implementation "com.charleskorn.kaml:kaml:0.104.0"
+    include "com.charleskorn.kaml:kaml:0.104.0"
 }
 
 processResources {
