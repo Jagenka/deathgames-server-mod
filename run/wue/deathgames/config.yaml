@@ -1,0 +1,116 @@
+general:
+  enabled: false
+  locale: "en"
+  arenaBounds:
+    first:
+      x: -10
+      y: -10
+      z: -10
+    second:
+      x: 10
+      y: 10
+      z: 10
+  spectatorRadiusPadding: 10
+  lobbyBounds:
+    first:
+      x: -10
+      y: 20
+      z: -10
+    second:
+      x: 10
+      y: 30
+      z: 10
+  enabledTeams:
+    - "BLACK"
+    - "DARK_GREEN"
+    - "DARK_AQUA"
+    - "DARK_RED"
+    - "DARK_PURPLE"
+    - "GOLD"
+    - "GRAY"
+    - "DARK_GRAY"
+    - "BLUE"
+    - "GREEN"
+    - "AQUA"
+    - "RED"
+    - "LIGHT_PURPLE"
+    - "YELLOW"
+spawns:
+  spawnPositions:
+    - coordinates:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0.0
+        pitch: 0.0
+      defaultOwner: "BLACK"
+  platformRadius: 4
+  spectatorSpawn:
+    x: 0
+    y: 5
+    z: 0
+    yaw: 0.0
+    pitch: 0.0
+  lobbySpawn:
+    x: 0
+    y: 25
+    z: 0
+    yaw: 0.0
+    pitch: 0.0
+  enableShuffle: false
+  shuffleInterval: 2400
+  shuffleDelayAfterKill: 200
+  enableCapture: true
+  captureTimeNeeded: 400
+  respawnEffectNBTs:
+    - "{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"
+  respawnItems:
+    - id: "minecraft:apple"
+      amount: 1
+      components: ""
+bonus:
+  enableBonusPlatforms: true
+  platforms:
+    - name: "bonus1"
+      pos:
+        x: 7
+        y: 0
+        z: 0
+  radius: 2
+  spawnInterval: 3600
+  stayTime: 2400
+  initialSpawn: 1800
+  moneyAmount: 5
+  moneyInterval: 200
+respawns:
+  perTeam: 10
+money:
+  start: 110
+  amountPerInterval: 5
+  interval: 600
+  perKill: 20
+  perKillStreakKill: 10
+shopSettings:
+  shopBounds:
+    - first:
+        x: -10
+        y: -10
+        z: -10
+      second:
+        x: -5
+        y: -5
+        z: -5
+  tpOutOfShopAfter: 600
+  refundPercent: 100
+misc:
+  enableReveal: true
+  revealTimePerPlayer: 2400
+  shopCloseTimeAfterReveal: 2400
+  killStreakPenaltyCap: 10
+  startInShop: true
+  startInShopTpAfterSeconds: 30
+  enableFallDamage: true
+  freezeTime: true
+  timeAtGameStart: 6000
+displayedText:
+  currency: "$%amount"

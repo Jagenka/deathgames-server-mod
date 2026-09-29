@@ -1,0 +1,66 @@
+items:
+  - row: 0
+    col: 0
+    name: "NONAME"
+    id: "minecraft:fishing_rod"
+    amount: 1
+    components: ""
+    price: 69
+shield:
+  row: 0
+  col: 1
+  name: "NONAME"
+  durability: 120
+  price: 0
+extraLife:
+  row: 0
+  col: 4
+  name: "NONAME"
+  id: "minecraft:turtle_egg"
+  amount: 1
+  components: ""
+  price: 69
+leaveShop:
+  row: 0
+  col: 8
+upgrades:
+  - row: 0
+    col: 2
+    name: "NONAME"
+    id: "bow"
+    levels:
+      - items:
+          - id: "minecraft:bow"
+            amount: 1
+            components: ""
+        price: 420
+refunds:
+  - row: 0
+    col: 3
+    targetRow: 0
+    targetCol: 2
+traps:
+  - row: 0
+    col: 5
+    name: "NONAME"
+    price: 69
+    snare: true
+    effectNBTs:
+      - "{ambient:0b,amplifier:100b,duration:60,id:blindness,show_icon:0b,show_particles:0b}"
+    triggerRange: 0.5
+    setupTime: 200
+    triggerVisibilityRange: 30.0
+    visibilityRange: 10.0
+    affectedRange: 1.5
+    triggerDuration: 120
+refundRecent:
+  row: 3
+  col: 5
+  name: "NONAME"
+hook:
+  row: 2
+  col: 5
+  name: "NONAME"
+  price: 0
+  maxDistance: 40.0
+  cooldown: 40
