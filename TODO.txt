@@ -1,6 +1,5 @@
-- respawn in shop
-- only one hook
-- hook cancelable
 - mace
 - spear
 - ready command
+- check if respawn items work
+- multiple different hooks are not supported i think
