@@ -1,0 +1,3 @@
+- improve bonus announcements
+- respawn in shop
+- some text is empty
