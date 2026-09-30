@@ -23,6 +23,36 @@ upgrades:
             components: '[unbreakable={},enchantments={sharpness:255}]'
         price: 10
   - row: 0
+    col: 4
+    name: Spear
+    id: spear
+    levels:
+      - items:
+          - id: 'minecraft:golden_spear'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 10
+      - items:
+          - id: 'minecraft:copper_spear'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 10
+      - items:
+          - id: 'minecraft:iron_spear'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 10
+      - items:
+          - id: 'minecraft:diamond_spear'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 10
+      - items:
+          - id: 'minecraft:netherite_spear'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 10
+  - row: 0
     col: 5
     name: Bow
     id: bow
@@ -35,6 +65,20 @@ upgrades:
             amount: 1
             components: ''
         price: 10
+  - row: 0
+    col: 8
+    name: Wings
+    id: wings
+    levels:
+      - items:
+          - id: 'minecraft:elytra'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:firework_rocket'
+            amount: 1
+            components: '[fireworks={flight_duration:3},custom_data={infinite:true}]'
+        price: 10
+
 refunds:
   - row: 1
     col: 3
@@ -44,6 +88,14 @@ refunds:
     col: 5
     targetRow: 0
     targetCol: 5
+  - row: 1
+    col: 4
+    targetRow: 0
+    targetCol: 4
+  - row: 1
+    col: 8
+    targetRow: 0
+    targetCol: 8
 traps:
   - row: 3
     col: 3
