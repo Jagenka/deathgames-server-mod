@@ -1,81 +1,136 @@
 general:
   enabled: false
-  locale: "en"
+  locale: en
   arenaBounds:
     first:
-      x: -10
-      y: -10
-      z: -10
+      x: 0
+      y: -64
+      z: 0
     second:
-      x: 10
-      y: 10
-      z: 10
-  spectatorRadiusPadding: 10
+      x: 1333
+      y: 250
+      z: 1235
+  spectatorRadiusPadding: 20
   lobbyBounds:
     first:
-      x: -10
-      y: 20
-      z: -10
+      x: 529
+      y: 251
+      z: 528
     second:
-      x: 10
-      y: 30
-      z: 10
+      x: 549
+      y: 260
+      z: 545
   enabledTeams:
-    - "BLACK"
-    - "DARK_GREEN"
-    - "DARK_AQUA"
-    - "DARK_RED"
-    - "DARK_PURPLE"
-    - "GOLD"
-    - "GRAY"
-    - "DARK_GRAY"
-    - "BLUE"
-    - "GREEN"
-    - "AQUA"
-    - "RED"
-    - "LIGHT_PURPLE"
-    - "YELLOW"
+    - BLACK
+    - DARK_RED
+    - GOLD
+    - GREEN
+    - BLUE
+    - LIGHT_PURPLE
 spawns:
   spawnPositions:
+    # Wagnerplatz
     - coordinates:
-        x: 0
-        y: 0
-        z: 0
-        yaw: 0.0
-        pitch: 0.0
-      defaultOwner: "BLACK"
-  platformRadius: 4
+        x: 1103
+        y: -45
+        z: 97
+        yaw: 45
+        pitch: 0
+      defaultOwner: null
+    # Johanniter
+    - coordinates:
+        x: 1308
+        y: -36
+        z: 610
+        yaw: 90
+        pitch: 0
+      defaultOwner: null
+    # Rotes Kreuz
+    - coordinates:
+        x: 1050
+        y: -36
+        z: 929
+        yaw: 135
+        pitch: 0
+      defaultOwner: null
+    # Käppele
+    - coordinates:
+        x: 273
+        y: 3
+        z: 1132
+        yaw: -135
+        pitch: 0
+      defaultOwner: null
+    # DHG
+    - coordinates:
+        x: 214
+        y: -46
+        z: 552
+        yaw: -90
+        pitch: 0
+      defaultOwner: null
+    # Kraftwerk
+    - coordinates:
+        x: 159
+        y: -57
+        z: 62
+        yaw: -45
+        pitch: 0
+      defaultOwner: null
+  platformRadius: 2
   spectatorSpawn:
-    x: 0
-    y: 5
-    z: 0
-    yaw: 0.0
-    pitch: 0.0
+    x: 521
+    y: -38
+    z: 536
+    yaw: -90
+    pitch: 25
   lobbySpawn:
-    x: 0
-    y: 25
-    z: 0
-    yaw: 0.0
-    pitch: 0.0
-  enableShuffle: false
-  shuffleInterval: 2400
-  shuffleDelayAfterKill: 200
-  enableCapture: true
+    x: 539
+    y: 252
+    z: 536
+    yaw: -90
+    pitch: 45
+  enableShuffle: true
+  shuffleInterval: 2400 # 2 min
+  shuffleDelayAfterKill: 200 # after kill: ensure at least 10 sec before new shuffle
+  enableCapture: false
   captureTimeNeeded: 400
   respawnEffectNBTs:
-    - "{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"
-  respawnItems:
-    - id: "minecraft:apple"
-      amount: 1
-      components: ""
+    - '{ambient:0,amplifier:255,duration:100,id:resistance,show_icon:0,show_particles:0}'
+  respawnItems: [ ]
 bonus:
   enableBonusPlatforms: true
   platforms:
-    - name: "bonus1"
+    - name: Festung
       pos:
-        x: 7
-        y: 0
-        z: 0
+        x: 235
+        y: 15
+        z: 796
+    - name: Talaveraschlössle
+      pos:
+        x: 191
+        y: -54
+        z: 260
+    - name: Residenz
+      pos:
+        x: 873
+        y: -49
+        z: 625
+    - name: Sanderrasen
+      pos:
+        x: 708
+        y: -52
+        z: 1073
+    - name: Hauptbahnhof
+      pos:
+        x: 764
+        y: -51
+        z: 169
+    - name: Berliner Ring
+      pos:
+        x: 1023
+        y: -50
+        z: 315
   radius: 2
   spawnInterval: 3600
   stayTime: 2400
@@ -93,14 +148,14 @@ money:
 shopSettings:
   shopBounds:
     - first:
-        x: -10
-        y: -10
-        z: -10
+        x: 529
+        y: -52
+        z: 528
       second:
-        x: -5
-        y: -5
-        z: -5
-  tpOutOfShopAfter: 600
+        x: 549
+        y: -49
+        z: 545
+  tpOutOfShopAfter: 600 # 30 sec
   refundPercent: 100
 misc:
   enableReveal: true
@@ -113,4 +168,4 @@ misc:
   freezeTime: true
   timeAtGameStart: 6000
 displayedText:
-  currency: "$%amount"
+  currency: \%amount€
