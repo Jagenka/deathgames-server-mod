@@ -131,13 +131,28 @@ class StartGameUIEntry : UIEntry
             notReadySpamProtection = true
             Timer.schedule(1.seconds()) { notReadySpamProtection = false }
 
-            val whoIsNotReadyString = whoIsNotReady.withIndex().joinToString(separator = ", ") { (index, value) -> "$value$index" }
+            // this part is pretty complicated because i want to add a localized "and" between the last two entries
+            var whoIsNotReadyString = ""
+            repeat(whoIsNotReady.size) { index ->
+                if (index != 0)
+                {
+                    whoIsNotReadyString +=
+                        if (index == whoIsNotReady.lastIndex)
+                        {
+                            " ${I18n.get("and")} "
+                        } else
+                        {
+                            ", "
+                        }
+                }
+                whoIsNotReadyString += "%playerName$index"
+            }
 
             // first get translated String from I18n, but keep non-ready players as a placeholder
             val notReadyString = I18n.get("cantStartGame", mapOf("players" to whoIsNotReadyString))
             val idToPlayer = whoIsNotReady.mapIndexed { index, playerName -> index to playerName }.associate { (index, playerName) -> "%playerName$index" to playerName }
             // to then replace the placeholder with colored text
-            DisplayManager.sendChatMessage(DisplayManager.getTextWithPlayersAndTeamsColored(notReadyString, idToPlayer = idToPlayer)) // TODO: empty text
+            DisplayManager.sendChatMessage(DisplayManager.getTextWithPlayersAndTeamsColored(notReadyString, idToPlayer = idToPlayer))
         }
     }
 }

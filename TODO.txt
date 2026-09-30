@@ -1,3 +1,5 @@
 - improve bonus announcements
 - respawn in shop
-- some text is empty
+- tp to lobby command for operators
+- I18n for Minecraft Components?
+- configure hook parameters
