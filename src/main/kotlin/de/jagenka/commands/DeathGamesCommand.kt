@@ -13,6 +13,7 @@ import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.team.DGTeam
+import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.util.I18n
 import de.jagenka.util.cuboidCenter
@@ -122,6 +123,25 @@ object DeathGamesCommand
                                 }
                                 return@executes 0
                             })
+            )
+            .then(
+                literal("ready").executes {
+                    it.source.player?.let { player ->
+                        val playerName = player.name.string
+                        if (ReadyCheck.isReady(playerName))
+                        {
+                            ReadyCheck.makeUnready(playerName)
+                            it.source.sendSuccess({ Component.literal(I18n.get("noLongerReady")) }, false)
+                            return@executes 0
+                        } else
+                        {
+                            ReadyCheck.makeReady(playerName)
+                            it.source.sendSuccess({ Component.literal(I18n.get("nowReady")) }, false)
+                            return@executes 0
+                        }
+                    }
+                    return@executes 1
+                }
             )
             .then(
                 literal("shufflespawns")
