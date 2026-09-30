@@ -1,4 +1,3 @@
 - respawn in shop
-- tp to lobby command for operators
 - I18n for Minecraft Components?
 - configure hook parameters

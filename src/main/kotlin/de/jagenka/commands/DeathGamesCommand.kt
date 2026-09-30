@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
@@ -14,6 +15,7 @@ import de.jagenka.managers.SpawnManager
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.Timer
 import de.jagenka.util.I18n
+import de.jagenka.util.cuboidCenter
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.Commands.argument
@@ -155,6 +157,31 @@ object DeathGamesCommand
                         it.source.sendSuccess({ Component.literal(response) }, false)
                         return@executes 0
                     }
+            )
+            .then(
+                literal("tp")
+                    .requires { it.isAdmin() }
+                    .then(
+                        literal("lobby")
+                            .executes {
+                                it.source.player?.teleport(Config.internalConfigEntry.spawns.lobbySpawn)
+                                0
+                            }
+                    )
+                    .then(
+                        literal("shop")
+                            .executes {
+                                it.source.player?.teleport(Config.internalConfigEntry.shopSettings.shopBounds.random().cuboidCenter())
+                                0
+                            }
+                    )
+                    .then(
+                        literal("spectatorSpawn")
+                            .executes {
+                                it.source.player?.teleport(Config.internalConfigEntry.spawns.spectatorSpawn)
+                                0
+                            }
+                    )
             )
 
         val baseLiteralCommandNode = dispatcher.register(literalArgumentBuilder)
