@@ -37,12 +37,15 @@ object EnsureRightModeAndLocationTask : TimerTask
                     if (!player.isOp())
                     {
                         player.setGameMode(GameType.ADVENTURE)
+                    }
+                }
 
-                        //this keeps normies in lobby, when game is not running
-                        if (!Config.general.lobbyBounds.cuboidContains(player.position()))
-                        {
-                            player.teleport(Config.spawns.lobbySpawn)
-                        }
+                if (!player.isOp())
+                {
+                    //this keeps normies in lobby, when game is not running
+                    if (!Config.general.lobbyBounds.cuboidContains(player.position()))
+                    {
+                        player.teleport(Config.spawns.lobbySpawn)
                     }
                 }
             }
