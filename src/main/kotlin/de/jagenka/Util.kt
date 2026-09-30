@@ -55,15 +55,10 @@ object Util
 
         if (!isEnabled) return
 
-        initOnServerStart()
-    }
-
-    fun initOnServerStart()
-    {
         this.minecraftServer?.let { server ->
             server.scoreboard.playerTeams.toList().forEach { team -> server.scoreboard.removePlayerTeam(team) }
 
-            server.gameRules.set(GameRules.SPECTATORS_GENERATE_CHUNKS, false, server)
+            server.gameRules.set(GameRules.SPECTATORS_GENERATE_CHUNKS, true, server)
             server.gameRules.set(GameRules.SPAWN_MOBS, false, server)
             server.gameRules.set(GameRules.MOB_GRIEFING, false, server)
             server.gameRules.set(GameRules.SPAWN_PATROLS, false, server)

@@ -20,7 +20,7 @@ object Timer
     {
         with(tasks)
         {
-            add(BasicTpTask)
+            add(EnsureRightModeAndLocationTask)
             add(MoneyTask)
             add(GameOverTask)
             add(InactivePlayersTask)
