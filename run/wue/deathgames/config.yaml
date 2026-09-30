@@ -168,4 +168,5 @@ misc:
   freezeTime: true
   timeAtGameStart: 6000
 displayedText:
-  currency: \%amount€
+  currency: |-
+    %amount€
