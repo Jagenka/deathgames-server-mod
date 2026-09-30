@@ -95,9 +95,13 @@ object ShopTask : TimerTask
                 }
             } else currentlyInShop.remove(playerName)
 
-            if (playerName !in currentlyInShop && serverPlayerEntity.onGround())
+            if (playerName !in currentlyInShop)
             {
-                if (!Util.getBlockAt(BlockPos.from(serverPlayerEntity.position()).relative(0, -1, 0))
+                // needs to be called, when exiting shop on foot
+                timeInShop[playerName] = 0
+                Shop.clearRecentlyBought(playerName)
+
+                if (serverPlayerEntity.onGround() && !Util.getBlockAt(BlockPos.from(serverPlayerEntity.position()).relative(0, -1, 0))
                         .isSame(Blocks.AIR)
                 )
                 {
