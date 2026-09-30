@@ -49,7 +49,7 @@ fun Pair<BlockPos, BlockPos>.cuboidContains(pos: Vec3): Boolean
     val bigCorner = this.cuboidBigCorner()
     val smallCorner = this.cuboidSmallCorner()
 
-    return smallCorner.x <= pos.x && pos.x <= bigCorner.x &&
-            smallCorner.y <= pos.y && pos.y <= bigCorner.y &&
-            smallCorner.z <= pos.z && pos.z <= bigCorner.z
+    return smallCorner.x <= pos.x && pos.x <= bigCorner.x + 1 &&
+            smallCorner.y <= pos.y && pos.y <= bigCorner.y + 1 &&
+            smallCorner.z <= pos.z && pos.z <= bigCorner.z + 1
 }
