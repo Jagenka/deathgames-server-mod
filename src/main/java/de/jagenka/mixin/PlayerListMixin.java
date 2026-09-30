@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerListMixin
 {
     @Inject(method = "respawn", at = @At("TAIL"))
-    private void respawnPlayer(ServerPlayer player, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir)
+    private void respawnPlayer(ServerPlayer serverPlayer, boolean keepAllPlayerData, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 
@@ -25,7 +25,7 @@ public class PlayerListMixin
     }
 
     @Inject(method = "placeNewPlayer", at = @At("TAIL"))
-    private void onPlayerConnect(Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci)
+    private void onPlayerConnect(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci)
     {
         if (!Config.INSTANCE.isEnabled()) return;
 

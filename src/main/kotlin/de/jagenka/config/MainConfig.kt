@@ -98,6 +98,8 @@ class MiscConfigEntry(
     var killStreakPenaltyCap: Int = 10,
     var startInShop: Boolean = true,
     var startInShopTpAfterSeconds: Int = 30,
+    var respawnInShop: Boolean = true,
+    var respawnInShopTpAfterSeconds: Int = 30,
     var enableFallDamage: Boolean = true,
     var freezeTime: Boolean = true,
     var timeAtGameStart: Long = 6000,

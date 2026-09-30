@@ -58,9 +58,9 @@ object SpawnManager
     }
 
     /**
-     * teleports player to their spawn, and adds respawn effects and items, if player is participating (not spectator)
+     * teleports player to their spawn, and adds respawn effects if player is participating (not spectator)
      */
-    fun spawnPlayer(player: ServerPlayer, giveItems: Boolean = true)
+    fun teleportPlayerToSpawn(player: ServerPlayer)
     {
         // handle position
         val spawnCoordinates = player.getSpawnCoordinates()
@@ -76,11 +76,6 @@ object SpawnManager
             // handle respawn effects/items for participating players only
             player.removeAllEffects()
             applyRespawnEffects(player)
-
-            if (giveItems)
-            {
-                giveRespawnItems(player)
-            }
         }
     }
 

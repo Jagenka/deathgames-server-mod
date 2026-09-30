@@ -1,3 +1,6 @@
 - respawn in shop
-- I18n for Minecraft Components?
-- configure hook parameters
+- only one hook
+- hook cancelable
+- mace
+- spear
+- ready command

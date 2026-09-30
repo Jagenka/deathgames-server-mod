@@ -170,6 +170,8 @@ misc:
   killStreakPenaltyCap: 10
   startInShop: true
   startInShopTpAfterSeconds: 30
+  respawnInShop: true
+  respawnInShopTpAfterSeconds: 30
   enableFallDamage: true
   freezeTime: false
   timeAtGameStart: 6000

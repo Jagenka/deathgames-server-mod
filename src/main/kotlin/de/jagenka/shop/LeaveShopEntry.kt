@@ -1,8 +1,8 @@
 package de.jagenka.shop
 
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
+import de.jagenka.managers.ShopManager
 import de.jagenka.setCustomName
-import de.jagenka.timer.ShopTask
 import de.jagenka.timer.Timer
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -27,7 +27,7 @@ class LeaveShopEntry(playerName: String) : ShopEntry(playerName, nameForStat = "
             player?.sendPrivateMessage("Cannot leave right now!")
             return false
         }
-        ShopTask.exitShop(playerName)
+        ShopManager.exitShop(player ?: return false)
         return true
     }
 

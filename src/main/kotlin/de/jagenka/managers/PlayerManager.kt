@@ -190,7 +190,7 @@ object PlayerManager
             }
             if (DeathGames.running)
             {
-                SpawnManager.spawnPlayer(player, giveItems = false)
+                SpawnManager.teleportPlayerToSpawn(player)
                 player.setGameMode(GameType.SPECTATOR)
             }
         }
@@ -223,15 +223,28 @@ object PlayerManager
     {
         if (DeathGames.running)
         {
-            SpawnManager.spawnPlayer(player, giveItems = true)
-
             val playerName = player.name.string
             currentlyDead.remove(playerName)
             recentlyRespawned.add(playerName)
             Timer.schedule(1.seconds()) { recentlyRespawned.remove(playerName) }
+
+            doRespawn(player)
         } else
         {
             player.teleport(Config.spawns.lobbySpawn)
+        }
+    }
+
+    fun doRespawn(player: ServerPlayer)
+    {
+        SpawnManager.giveRespawnItems(player)
+
+        if (Config.internalConfigEntry.misc.respawnInShop)
+        {
+            ShopManager.enterShop(player, ShopManager.EntryType.RESPAWN, -1)
+        } else
+        {
+            SpawnManager.teleportPlayerToSpawn(player)
         }
     }
 

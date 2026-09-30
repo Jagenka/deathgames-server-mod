@@ -2,7 +2,6 @@ package de.jagenka
 
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.minecraftServer
-import de.jagenka.Util.teleport
 import de.jagenka.commands.DeathGamesCommand
 import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
@@ -12,12 +11,10 @@ import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
-import de.jagenka.timer.ShopTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.Timer.tick
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
-import de.jagenka.util.cuboidCenter
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
@@ -180,15 +177,12 @@ object DeathGames : DedicatedServerModInitializer
 
             if (Config.misc.startInShop)
             {
-                it.teleport(Config.shopSettings.shopBounds.random().cuboidCenter())
-                Timer.schedule((secondsToSpawnTp - 5).coerceAtLeast(0).seconds()) { ShopTask.sendTpOutMessage(it, 5) }
+                ShopManager.enterShop(it, ShopManager.EntryType.GAME_START, -1)
             }
         }
 
         if (Config.misc.startInShop)
         {
-            ShopTask.tpOutActive = false
-            DisplayManager.sendChatMessage(I18n.get("tpShopToSpawnGameStart", mapOf("time" to secondsToSpawnTp)))
             Timer.schedule(secondsToSpawnTp.seconds()) { postPrep() }
         } else
         {
@@ -207,8 +201,8 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         PlayerManager.getOnlinePlayers().forEach {
-            ShopTask.exitShop(it) // beginning the game is the same as exiting shop, even if game doesn't start in shop
-            SpawnManager.giveRespawnItems(it) // we need do manually give respawn items, as leaving the shop should not give items
+            SpawnManager.giveRespawnItems(it) // we need to manually give respawn items, replacing starting items
+            SpawnManager.teleportPlayerToSpawn(it)
             DisplayManager.sendTitleMessage(
                 it,
                 Component.literal(I18n.get("startTitle")),
@@ -220,7 +214,6 @@ object DeathGames : DedicatedServerModInitializer
         // give compass to next bonus platform
         BonusManager.updateAllCompasses()
 
-        ShopTask.tpOutActive = true
         Timer.gameMechsPaused = false
     }
 
