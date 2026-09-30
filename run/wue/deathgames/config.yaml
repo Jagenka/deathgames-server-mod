@@ -1,5 +1,5 @@
 general:
-  enabled: false
+  enabled: true
   locale: en
   arenaBounds:
     first:
@@ -32,7 +32,7 @@ spawns:
     # Wagnerplatz
     - coordinates:
         x: 1103
-        y: -45
+        y: -44
         z: 97
         yaw: 45
         pitch: 0
@@ -40,7 +40,7 @@ spawns:
     # Johanniter
     - coordinates:
         x: 1308
-        y: -36
+        y: -35
         z: 610
         yaw: 90
         pitch: 0
@@ -48,7 +48,7 @@ spawns:
     # Rotes Kreuz
     - coordinates:
         x: 1050
-        y: -36
+        y: -35
         z: 929
         yaw: 135
         pitch: 0
@@ -56,7 +56,7 @@ spawns:
     # Käppele
     - coordinates:
         x: 273
-        y: 3
+        y: 4
         z: 1132
         yaw: -135
         pitch: 0
@@ -64,7 +64,7 @@ spawns:
     # DHG
     - coordinates:
         x: 214
-        y: -46
+        y: -45
         z: 552
         yaw: -90
         pitch: 0
@@ -72,7 +72,7 @@ spawns:
     # Kraftwerk
     - coordinates:
         x: 159
-        y: -57
+        y: -56
         z: 62
         yaw: -45
         pitch: 0
