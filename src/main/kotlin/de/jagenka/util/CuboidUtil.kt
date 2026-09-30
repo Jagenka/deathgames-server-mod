@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3
 import kotlin.math.max
 import kotlin.math.min
 
-// Util to replace BlockCuboid
+// Util to replace BlockCuboid TODO: investigate BoundingBox class from Minecraft
 
 fun Pair<BlockPos, BlockPos>.cuboidSmallCorner(): BlockPos
 {
