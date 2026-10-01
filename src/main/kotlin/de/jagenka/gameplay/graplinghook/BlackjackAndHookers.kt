@@ -2,7 +2,6 @@ package de.jagenka.gameplay.graplinghook
 
 import de.jagenka.DeathGames
 import de.jagenka.shop.Shop
-import net.minecraft.core.component.DataComponents.CUSTOM_DATA
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
@@ -10,12 +9,11 @@ import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
-import kotlin.jvm.optionals.getOrNull
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-object BlackjackAndHookers : GrapplingHook
+class BlackjackAndHookers(override val maxDistance: Double, override val cooldownSetting: Int) : GrapplingHook()
 {
     override fun tick()
     {
@@ -30,21 +28,19 @@ object BlackjackAndHookers : GrapplingHook
     override fun forceTheHooker(serverPlayer: ServerPlayer, itemStackInHand: ItemStack): Boolean
     {
         if (!DeathGames.running) return false
+        if (Shop.isInShopBounds(serverPlayer)) return false
 
-        itemStackInHand.components.let { components ->
-            val nbt = components.get(CUSTOM_DATA)?.tag ?: return false
+        determineMovementAndMove(serverPlayer, maxDistance)
 
-            val maxDistance = nbt.getDouble("hookMaxDistance").getOrNull() ?: return false
-            val cooldownSetting = nbt.getInt("hookCooldown").getOrNull() ?: return false
+        serverPlayer.cooldowns.addCooldown(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
 
-            if (Shop.isInShopBounds(serverPlayer)) return false
+        return true
 
-            determineMovementAndMove(serverPlayer, maxDistance)
+    }
 
-            serverPlayer.cooldowns.addCooldown(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
-
-            return true
-        }
+    override fun cancelFlight(serverPlayer: ServerPlayer)
+    {
+        // nothing to do
     }
 
     private fun determineMovementAndMove(serverPlayer: ServerPlayer, maxDistance: Double = 20.0)

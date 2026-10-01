@@ -13,11 +13,11 @@ object GrapplingTask : TimerTask
 
     override fun run()
     {
-        GrapplingHook.getDefault().tick()
+        GrapplingHook.usableHooks.forEach { it.tick() }
     }
 
     override fun reset()
     {
-        GrapplingHook.getDefault().reset()
+        GrapplingHook.usableHooks.forEach { it.reset() }
     }
 }

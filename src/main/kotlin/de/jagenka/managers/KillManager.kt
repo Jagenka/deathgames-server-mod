@@ -2,7 +2,7 @@ package de.jagenka.managers
 
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
-import de.jagenka.gameplay.graplinghook.RubberBandHook
+import de.jagenka.gameplay.graplinghook.GrapplingHook
 import de.jagenka.gameplay.traps.TrapManager
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager.getDGTeam
@@ -38,7 +38,7 @@ object KillManager
         PlayerManager.registerAsCurrentlyDead(playerName)
 
         TrapManager.onPlayerDeath(playerName)
-        RubberBandHook.cancelFlight(deceased)
+        GrapplingHook.usableHooks.forEach { it.cancelFlight(deceased) }
 
         Timer.schedule(5.seconds()) {
             if (PlayerManager.requestRespawn(deceased))
