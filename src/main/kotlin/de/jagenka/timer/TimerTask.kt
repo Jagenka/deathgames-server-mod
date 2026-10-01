@@ -4,7 +4,7 @@ interface TimerTask
 {
     /**
      * if true, this task will only run, when the game has started.
-     * if `isGameMechanic` is false, this task will run starting with start in shop.
+     * if additionally `isGameMechanic` is false, this task will run starting with start in shop.
      */
     val onlyInGame: Boolean
 

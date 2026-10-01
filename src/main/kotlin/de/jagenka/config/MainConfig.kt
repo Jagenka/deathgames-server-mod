@@ -1,9 +1,7 @@
 package de.jagenka.config
 
-import de.jagenka.BlockCuboid
 import de.jagenka.BlockPos
 import de.jagenka.Coordinates
-import de.jagenka.PlatformList
 import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.Platform
 import de.jagenka.team.DGTeam
@@ -15,7 +13,7 @@ import kotlinx.serialization.Serializable
 annotation class Section(val name: String)
 
 @Serializable
-class ConfigEntry(
+class MainConfig(
     @Section("general") val general: GeneralConfigEntry = GeneralConfigEntry(),
     @Section("spawns") val spawns: SpawnsConfigEntry = SpawnsConfigEntry(),
     @Section("bonus") val bonus: BonusPlatformsConfigEntry = BonusPlatformsConfigEntry(),
@@ -24,16 +22,15 @@ class ConfigEntry(
     @Section("shopSettings") val shopSettings: ShopSettingsConfigEntry = ShopSettingsConfigEntry(),
     @Section("misc") val misc: MiscConfigEntry = MiscConfigEntry(),
     @Section("displayedText") val displayedText: DisplayedTextConfigEntry = DisplayedTextConfigEntry(),
-    @Section("shop") val shop: ShopConfig = ShopConfig()
 )
 
 @Serializable
 class GeneralConfigEntry(
     var enabled: Boolean = false,
     var locale: String = "en",
-    var arenaBounds: BlockCuboid = BlockCuboid(BlockPos(-10, -10, -10), BlockPos(10, 10, 10)),
+    var arenaBounds: Pair<BlockPos, BlockPos> = BlockPos(-10, -10, -10) to BlockPos(10, 10, 10),
     var spectatorRadiusPadding: Int = 10,
-    var lobbyBounds: BlockCuboid = BlockCuboid(BlockPos(-10, 20, -10), BlockPos(10, 30, 10)),
+    var lobbyBounds: Pair<BlockPos, BlockPos> = BlockPos(-10, 20, -10) to BlockPos(10, 30, 10),
     var enabledTeams: List<DGTeam> = listOf(BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW)
 )
 
@@ -62,7 +59,7 @@ data class RespawnItem(
 @Serializable
 class BonusPlatformsConfigEntry(
     var enableBonusPlatforms: Boolean = true,
-    var platforms: PlatformList = PlatformList(listOf(Platform("bonus1", BlockPos(7, 0, 0)))),
+    var platforms: List<Platform> = listOf(Platform("bonus1", BlockPos(7, 0, 0))),
     var radius: Int = 2,
     var spawnInterval: Int = 3600,
     var stayTime: Int = 2400,
@@ -87,7 +84,8 @@ class MoneyConfigEntry(
 
 @Serializable
 class ShopSettingsConfigEntry(
-    var shopBounds: List<BlockCuboid> = listOf(BlockCuboid(BlockPos(-10, -10, -10), BlockPos(-5, -5, -5))),
+    // can have multiple shops
+    var shopBounds: List<Pair<BlockPos, BlockPos>> = listOf(BlockPos(-10, -10, -10) to BlockPos(-5, -5, -5)),
     var tpOutOfShopAfter: Int = 600,
     var refundPercent: Int = 100
 )
@@ -100,6 +98,8 @@ class MiscConfigEntry(
     var killStreakPenaltyCap: Int = 10,
     var startInShop: Boolean = true,
     var startInShopTpAfterSeconds: Int = 30,
+    var respawnInShop: Boolean = true,
+    var respawnInShopTpAfterSeconds: Int = 30,
     var enableFallDamage: Boolean = true,
     var freezeTime: Boolean = true,
     var timeAtGameStart: Long = 6000,

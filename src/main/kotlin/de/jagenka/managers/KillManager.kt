@@ -2,6 +2,7 @@ package de.jagenka.managers
 
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
+import de.jagenka.gameplay.graplinghook.GrapplingHook
 import de.jagenka.gameplay.traps.TrapManager
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager.getDGTeam
@@ -37,6 +38,7 @@ object KillManager
         PlayerManager.registerAsCurrentlyDead(playerName)
 
         TrapManager.onPlayerDeath(playerName)
+        GrapplingHook.usableHooks.forEach { it.cancelFlight(deceased) }
 
         Timer.schedule(5.seconds()) {
             if (PlayerManager.requestRespawn(deceased))
@@ -185,7 +187,7 @@ object KillManager
         team.getOnlinePlayers().filter { !PlayerManager.isParticipating(it.name.string) }.randomOrNull()?.let { player ->
             PlayerManager.addParticipant(player.name.string)
             player.setGameMode(GameType.ADVENTURE)
-            SpawnManager.spawnPlayer(player, giveItems = true)
+            PlayerManager.doRespawn(player)
             removeOneRespawn(player.name.string)
         }
     }

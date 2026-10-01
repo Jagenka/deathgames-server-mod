@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
+import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
@@ -12,8 +13,10 @@ import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.team.DGTeam
+import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.util.I18n
+import de.jagenka.util.cuboidCenter
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.Commands.argument
@@ -122,6 +125,25 @@ object DeathGamesCommand
                             })
             )
             .then(
+                literal("ready").executes {
+                    it.source.player?.let { player ->
+                        val playerName = player.name.string
+                        if (ReadyCheck.isReady(playerName))
+                        {
+                            ReadyCheck.makeUnready(playerName)
+                            it.source.sendSuccess({ Component.literal(I18n.get("noLongerReady")) }, false)
+                            return@executes 0
+                        } else
+                        {
+                            ReadyCheck.makeReady(playerName)
+                            it.source.sendSuccess({ Component.literal(I18n.get("nowReady")) }, false)
+                            return@executes 0
+                        }
+                    }
+                    return@executes 1
+                }
+            )
+            .then(
                 literal("shufflespawns")
                     .requires { it.isAdmin() }
                     .executes {
@@ -156,10 +178,33 @@ object DeathGamesCommand
                         return@executes 0
                     }
             )
+            .then(
+                literal("tp")
+                    .requires { it.isAdmin() }
+                    .then(
+                        literal("lobby")
+                            .executes {
+                                it.source.player?.teleport(Config.internalConfigEntry.spawns.lobbySpawn)
+                                0
+                            }
+                    )
+                    .then(
+                        literal("shop")
+                            .executes {
+                                it.source.player?.teleport(Config.internalConfigEntry.shopSettings.shopBounds.random().cuboidCenter())
+                                0
+                            }
+                    )
+                    .then(
+                        literal("spectatorSpawn")
+                            .executes {
+                                it.source.player?.teleport(Config.internalConfigEntry.spawns.spectatorSpawn)
+                                0
+                            }
+                    )
+            )
 
-        val literalArgumentBuilderAfterConfig = DeathGamesConfigCommand.generateConfigCommand(literalArgumentBuilder)
-
-        val baseLiteralCommandNode = dispatcher.register(literalArgumentBuilderAfterConfig)
+        val baseLiteralCommandNode = dispatcher.register(literalArgumentBuilder)
 
         dispatcher.register(literal("dg").redirect(baseLiteralCommandNode))
         dispatcher.register(literal("deeznutz").redirect(baseLiteralCommandNode))

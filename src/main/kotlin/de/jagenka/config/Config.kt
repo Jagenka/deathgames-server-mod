@@ -1,28 +1,30 @@
 package de.jagenka.config
 
+import com.charleskorn.kaml.SequenceStyle
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.shop.ShopEntries
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import net.minecraft.world.level.storage.LevelResource
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
 object Config
 {
     private lateinit var pathToConfFile: Path
+    private lateinit var pathToShopConfFile: Path
 
-    private val serializer = Json {
-        prettyPrint = true
-        ignoreUnknownKeys = true
-        encodeDefaults = true // WHO EVEN THOUGHT THIS WOULD BE A GOOD IDEA AS FALSE BY DEFAULT? WTF? WHAT IF I SEND A MESSAGE OVER THE NETWORK?
-    }
+    private val serializer = Yaml(
+        configuration = YamlConfiguration(
+            sequenceStyle = SequenceStyle.Block,
+        )
+    )
 
-    /**
-     * do not use this if not absolutely necessary
-     */
-    lateinit var internalConfigEntry: ConfigEntry
+    var internalConfigEntry = MainConfig()
+    var shopConfig = ShopConfig()
 
     val isEnabled
         get() = internalConfigEntry.general.enabled
@@ -52,7 +54,7 @@ object Config
         get() = internalConfigEntry.displayedText
 
     val shop
-        get() = internalConfigEntry.shop
+        get() = shopConfig
 
 
     fun lateLoadConfig()
@@ -63,15 +65,22 @@ object Config
             {
                 Files.createDirectories(configFolder)
             }
-            pathToConfFile = configFolder.resolve("config.json")
+
+            pathToConfFile = configFolder.resolve("config.yaml")
             if (!Files.exists(pathToConfFile))
             {
                 Files.createFile(pathToConfFile)
-                internalConfigEntry = ConfigEntry()
-                store()
+                writeGeneralConfig()
             }
-            load()
 
+            pathToShopConfFile = configFolder.resolve("shop.yaml")
+            if (!Files.exists(pathToShopConfFile))
+            {
+                Files.createFile(pathToShopConfFile)
+                writeShopConfig()
+            }
+
+            load()
         } ?: error("Failed loading DeathGames config - Server not loaded yet.")
 
         DeathGames.logger.info("Successfully loaded DeathGames config!")
@@ -79,19 +88,52 @@ object Config
 
     fun load()
     {
-        loadJSON(pathToConfFile.toFile())
-        ShopEntries.reloadShop()
+        loadGeneralConfig()
+        loadShopConfig()
     }
 
-    fun loadJSON(jsonConfFile: File)
+    fun loadGeneralConfig()
     {
-        internalConfigEntry = serializer.decodeFromString(jsonConfFile.readText())
+        try
+        {
+            internalConfigEntry = serializer.decodeFromString(pathToConfFile.toFile().readText())
+        } catch (e: Exception)
+        {
+            DeathGames.logger.error("Error while reading general config!", e)
+        }
     }
 
-    fun store()
+    fun loadShopConfig()
     {
-        val json = serializer.encodeToString(internalConfigEntry)
+        try
+        {
+            shopConfig = serializer.decodeFromString(pathToShopConfFile.toFile().readText())
+            ShopEntries.reloadShop()
+        } catch (e: Exception)
+        {
+            DeathGames.logger.error("Error while reading shop config!", e)
+        }
+    }
 
-        Files.writeString(pathToConfFile, json)
+    fun writeGeneralConfig()
+    {
+        try
+        {
+            Files.writeString(pathToConfFile, serializer.encodeToString(internalConfigEntry))
+        } catch (e: Exception)
+        {
+            DeathGames.logger.error("Error while storing general config!", e)
+        }
+    }
+
+    fun writeShopConfig()
+    {
+        try
+        {
+            Files.writeString(pathToShopConfFile, serializer.encodeToString(shopConfig))
+        } catch (e: Exception)
+        {
+            DeathGames.logger.error("Error while storing shop config!", e)
+        }
     }
 }

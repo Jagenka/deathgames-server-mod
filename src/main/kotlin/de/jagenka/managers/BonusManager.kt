@@ -21,7 +21,7 @@ import kotlin.math.abs
 object BonusManager
 {
     val platforms
-        get() = Config.bonus.platforms.plats
+        get() = Config.bonus.platforms
     val selectedPlatforms = mutableListOf<Platform>()
 
     val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }

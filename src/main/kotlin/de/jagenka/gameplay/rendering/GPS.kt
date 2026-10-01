@@ -18,7 +18,7 @@ object GPS
         ifServerLoaded { server: MinecraftServer ->
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayer ->
                 BonusManager.selectedPlatforms.forEach platforms@{
-                    var lookDirection = it.pos.toVec3d().subtract(player.position().add(origin))
+                    var lookDirection = it.pos.toVec3().subtract(player.position().add(origin))
                     if (lookDirection.length() < 10) return@platforms
                     lookDirection = lookDirection.normalize()
                     val lookDirectionXZImage =

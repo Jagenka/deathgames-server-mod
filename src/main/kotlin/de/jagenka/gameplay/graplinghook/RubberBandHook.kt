@@ -3,7 +3,6 @@ package de.jagenka.gameplay.graplinghook
 import de.jagenka.DeathGames
 import de.jagenka.shop.Shop
 import net.minecraft.core.Holder
-import net.minecraft.core.component.DataComponents.CUSTOM_DATA
 import net.minecraft.core.particles.BlockParticleOption
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
@@ -16,19 +15,27 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
-import kotlin.jvm.optionals.getOrNull
 
-object RubberBandHook : GrapplingHook
+class RubberBandHook(
+    override val maxDistance: Double,
+    override val cooldownSetting: Int,
+) : GrapplingHook()
 {
-    const val HOOK_TICK_LIMIT = 200 // 10 seconds
-    const val HOOK_SPEED = .08 // blocks per tick
-    const val HOOK_DISENGAGE_RANGE = 3 // this value is squared
+    companion object
+    {
+        const val HOOK_TICK_LIMIT = 200 // 10 seconds
+        const val HOOK_SPEED = .08 // blocks per tick
+        const val HOOK_DISENGAGE_RANGE = 4 // this value is squared
+    }
 
-    val activeFlights = mutableListOf<FlightTask>()
+    /**
+     * playerName to current flight task
+     */
+    val activeFlights = mutableMapOf<String, FlightTask>()
 
     override fun tick()
     {
-        val it = activeFlights.iterator()
+        val it = activeFlights.values.iterator()
         while (it.hasNext())
         {
             val task = it.next()
@@ -52,9 +59,7 @@ object RubberBandHook : GrapplingHook
 
             if (task.tick >= HOOK_TICK_LIMIT || delta.lengthSqr() < HOOK_DISENGAGE_RANGE)
             {
-                player.isNoGravity = false
-
-                it.remove()
+                cancelFlight(player)
             }
         }
     }
@@ -67,29 +72,26 @@ object RubberBandHook : GrapplingHook
     override fun forceTheHooker(serverPlayer: ServerPlayer, itemStackInHand: ItemStack): Boolean
     {
         if (!DeathGames.running) return false
+        if (Shop.isInShopBounds(serverPlayer)) return false
 
-        itemStackInHand.components.let { components ->
-            val nbt = components.get(CUSTOM_DATA)?.tag ?: return false
-
-            val maxDistance = nbt.getDouble("hookMaxDistance").getOrNull() ?: return false
-            val cooldownSetting = nbt.getInt("hookCooldown").getOrNull() ?: return false
-
-            if (Shop.isInShopBounds(serverPlayer)) return false
-
-            val hitResult = serverPlayer.pick(maxDistance, 0f, false) // ray-cast to block
-            if (hitResult.type == HitResult.Type.BLOCK && hitResult is BlockHitResult)
-            {
-                val targetPos = Vec3(hitResult.blockPos.x.toDouble() + .5, (hitResult.blockPos.y + 1.0), hitResult.blockPos.z.toDouble() + .5)
-                launchPlayer(serverPlayer, targetPos)
-            }
-
-            serverPlayer.cooldowns.addCooldown(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
-
+        if (serverPlayer.name.string in activeFlights.keys) // already hooking
+        {
+            // cancel hooking
+            cancelFlight(serverPlayer)
             return true
         }
+
+        val hitResult = serverPlayer.pick(maxDistance, 0f, false) // ray-cast to block
+        if (hitResult.type == HitResult.Type.BLOCK && hitResult is BlockHitResult)
+        {
+            val targetPos = Vec3(hitResult.blockPos.x.toDouble() + .5, (hitResult.blockPos.y + 1.0), hitResult.blockPos.z.toDouble() + .5)
+            launchPlayer(serverPlayer, targetPos, itemStackInHand, cooldownSetting)
+        }
+
+        return true
     }
 
-    private fun launchPlayer(player: ServerPlayer, target: Vec3)
+    private fun launchPlayer(player: ServerPlayer, target: Vec3, itemStackInHand: ItemStack, cooldownSetting: Int)
     {
         player.isNoGravity = true
 
@@ -106,17 +108,41 @@ object RubberBandHook : GrapplingHook
             )
         )
 
-        activeFlights.add(
-            FlightTask(
-                player = player,
-                target = target,
+        activeFlights[player.name.string] = FlightTask(
+            player,
+            target,
+            itemStackInHand,
+            cooldownSetting
+        )
+    }
+
+    override fun cancelFlight(serverPlayer: ServerPlayer)
+    {
+        val flight = activeFlights.remove(serverPlayer.name.string) ?: return
+        serverPlayer.deltaMovement = serverPlayer.deltaMovement.scale(.3)
+        serverPlayer.connection.send(ClientboundSetEntityMotionPacket(serverPlayer))
+        serverPlayer.isNoGravity = false
+
+        serverPlayer.connection.send(
+            ClientboundSoundPacket(
+                Holder.direct(SoundEvents.CHAIN_BREAK),
+                SoundSource.PLAYERS,
+                serverPlayer.position().x,
+                serverPlayer.position().y,
+                serverPlayer.position().z,
+                1f,
+                1.2f,
+                serverPlayer.level().random.nextLong()
             )
         )
+
+        serverPlayer.cooldowns.addCooldown(flight.itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
     }
 }
 
 data class FlightTask(
     val player: ServerPlayer,
     val target: Vec3,
+    val itemStackInHand: ItemStack,
     var tick: Int = 0,
 )
