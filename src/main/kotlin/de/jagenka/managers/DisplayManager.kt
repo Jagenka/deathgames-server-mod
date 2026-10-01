@@ -40,9 +40,9 @@ object DisplayManager
                 )
             } catch (_: IllegalArgumentException)
             {
-                DeathGames.logger.info("sidebar objective already exists")
+                // exception gets thrown, if objective already exists: noting to do
             }
-            // server.scoreboard.setObjectiveSlot(Scoreboard.SIDEBAR_DISPLAY_SLOT_ID, getObjective("sidebar"))
+            // no need to set objective to sidebar, as DisplayManager::showSidebar gets called on game start
 
             try
             {
@@ -56,7 +56,7 @@ object DisplayManager
                 )
             } catch (_: IllegalArgumentException)
             {
-                DeathGames.logger.info("tabList objective already exists")
+                // exception gets thrown, if objective already exists: noting to do
             }
             server.scoreboard.setDisplayObjective(DisplaySlot.LIST, getObjective("tabList"))
 
