@@ -45,17 +45,20 @@ dependencies {
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     implementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
+    // db
     implementation "org.jetbrains.exposed:exposed-core:0.58.0"
     include "org.jetbrains.exposed:exposed-core:0.58.0"
-
     implementation "org.jetbrains.exposed:exposed-jdbc:0.58.0"
     include "org.jetbrains.exposed:exposed-jdbc:0.58.0"
-
     implementation "org.xerial:sqlite-jdbc:3.48.0.0"
     include "org.xerial:sqlite-jdbc:3.48.0.0"
 
+    // yaml serialization
     implementation "com.charleskorn.kaml:kaml:0.104.0"
     include "com.charleskorn.kaml:kaml:0.104.0"
+    include "it.krzeminski:snakeyaml-engine-kmp:4.0.1"
+    include "com.squareup.okio:okio:3.16.4"
+    include "net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0"
 }
 
 processResources {
