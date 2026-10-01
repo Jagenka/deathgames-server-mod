@@ -118,13 +118,6 @@ items:
     amount: 4
     components: '[potion_contents={potion:poison}]'
     price: 25
-  - row: 4
-    col: 8
-    name: Pls fix me.
-    id: 'minecraft:trident'
-    amount: 1
-    components: ''
-    price: 69420
   - row: 2
     col: 8
     name: An Lüter Mülsch
@@ -355,6 +348,26 @@ upgrades:
             amount: 1
             components: '[unbreakable={},enchantments={quick_charge:5}]'
         price: 150
+  - row: 0
+    col: 4
+    name: Mace
+    id: mace
+    levels:
+      - items:
+          - id: 'minecraft:mace'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 100
+  - row: 0
+    col: 5
+    name: Spear
+    id: spear
+    levels:
+      - items:
+          - id: 'minecraft:iron_spear'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 100
 refunds:
   - row: 1
     col: 0
@@ -376,6 +389,14 @@ refunds:
     col: 7
     targetRow: 0
     targetCol: 7
+  - row: 1
+    col: 4
+    targetRow: 0
+    targetCol: 4
+  - row: 1
+    col: 5
+    targetRow: 0
+    targetCol: 5
 traps:
   - row: 3
     col: 7
@@ -424,8 +445,8 @@ refundRecent:
   name: Refund recent purchases
 hook:
   row: 4
-  col: 4
-  name: (Blackjack and )Hook(ers)
+  col: 8
+  name: Grappling Hook
   price: 35
-  maxDistance: 40
+  maxDistance: 30
   cooldown: 40

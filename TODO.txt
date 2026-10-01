@@ -1,3 +1,0 @@
-- mace
-- spear
-- check if respawn items work
