@@ -1,0 +1,120 @@
+general:
+  enabled: false # change to true, when done editing this file
+  locale: en # currently available: en, de, jp
+  arenaBounds: # cuboid corners of arena bounds. players will be kept inside / get damaged outside while game is running.
+    first:
+      x: -128
+      y: 48
+      z: -128
+    second:
+      x: 127
+      y: 152
+      z: 127
+  spectatorRadiusPadding: 20 # how far out spectators are allowed to fly.
+  lobbyBounds: # cuboid corners of pre-game lobby. players (except operators, use /dg tp) will be kept inside while game is not running.
+    first:
+      x: -29
+      y: 18
+      z: -29
+    second:
+      x: 29
+      y: 34
+      z: 29
+  enabledTeams: # what teams will be up for selection in lobby. order will be considered in UI.
+    - BLACK
+    - DARK_GREEN
+    - DARK_AQUA
+    - DARK_RED
+    - DARK_PURPLE
+    - GOLD
+    - GRAY
+    - DARK_GRAY
+    - BLUE
+    - GREEN
+    - AQUA
+    - RED
+    - LIGHT_PURPLE
+    - YELLOW
+spawns:
+  spawnPositions: # preset spawn locations (list) which get colored in depending on team ownership. use white concrete where recoloring should happen.
+    - coordinates: # use player location above, not block position in spawn platform
+        x: -38
+        y: 63
+        z: -91
+        yaw: 0
+        pitch: 0
+      defaultOwner: null # preset which team this spawn belongs to
+  platformRadius: 4 # radius from center in which recoloring should happen
+  spectatorSpawn: # where spectators should spawn on game start
+    x: 0
+    y: 80
+    z: 0
+    yaw: 0
+    pitch: 0
+  lobbySpawn: # spawn point within lobby bounds
+    x: 0
+    y: 20
+    z: 0
+    yaw: 0
+    pitch: 0
+  enableShuffle: false # whether spawn locations should be shuffled every so often
+  shuffleInterval: 2400 # (in ticks) interval between shuffles, if enabled
+  shuffleDelayAfterKill: 200 # (in ticks) minimum time after a kill before spawns can get shuffled again
+  enableCapture: true # whether spawns can be captured by enemy teams. captured team's spawn will be randomly re-assigned.
+  captureTimeNeeded: 100 # (in ticks) time needed to capture a spawn
+  respawnEffectNBTs: # (in string NBT format) what potion effects to apply on tp to spawn
+    - '{ambient:0,amplifier:255,duration:100,id:resistance,show_icon:0,show_particles:0}'
+  respawnItems: # items to give players on respawning after death
+    - id: soul_lantern
+      amount: 1
+      components: |- # (in string NBT format) data components of the item to give. see shop config about infinite consumables.
+        [lore=[[{"text":"Prevents death, but teleports you randomly. :)","italic":false}]],item_name=[{"text":"Lifesaver","italic":false}],minecraft:death_protection={death_effects:[{type:'teleport_randomly'},{type:'apply_effects',effects:[{id:instant_health,amplifier:69,duration:10}]}]}]
+bonus:
+  enableBonusPlatforms: true # state of bonus platform logic. standing on an active bonus platform can give loads of money, depending on configuration below.
+  platforms: # one of these list entries will be selected at random
+    - name: Village Corner # name will be shown to players
+      pos: # use block position of center block. (in-) active platforms use (red) lime concrete as indicator.
+        x: 119
+        y: 70
+        z: 119
+  radius: 2 # radius from center in which to recolor based on state
+  spawnInterval: 3600 # (in ticks) time between when new platforms get active
+  stayTime: 2400 # (in ticks) how long platforms stay active
+  initialSpawn: 1800 # (in ticks) delay after game start, before the first platform activates
+  moneyAmount: 5 # how much money will be given each interval while standing on an active platform
+  moneyInterval: 200 # (in ticks) after how long money will be given
+respawns:
+  perTeam: 10 # amount of times each team is allowed to respawn
+money:
+  start: 110 # starting money as shown in exp bar
+  amountPerInterval: 5 # how much money will be given each interval while the game is running (passive income)
+  interval: 600 # (in ticks) after how long money will be given
+  perKill: 20 # money kill reward
+  perKillStreakKill: 10 # on player kill, gain extra money multiplied by their kill-streak
+shopSettings:
+  shopBounds: # list of cuboid corners marking shops. there can be more than one!
+    - first:
+        x: -5
+        y: 57
+        z: -5
+      second:
+        x: 5
+        y: 62
+        z: 5
+  tpOutOfShopAfter: 600 # (in ticks) time after which shopper gets teleported to their spawn point to prevent loitering
+  refundPercent: 100 # (in %) how much money players get back when refunding items (except on refund recent, which is always 100%)
+misc:
+  enableReveal: true # mark players with glowing effect after some time
+  revealTimePerPlayer: 2400 # (in ticks) after which said glowing effect is applied
+  shopCloseTimeAfterReveal: 2400 # (in ticks) when reveal is enabled, prevent players from entering shops after this time (after applying glow)
+  killStreakPenaltyCap: 10 # (in amount of kills) the above values get shorter with increasing kill-streak. this value sets a cap, after which the player is always glowing and cannot enter shops.
+  startInShop: true # whether to start the game with all players in shop
+  startInShopTpAfterSeconds: 30 # (in seconds) how long players can shop at game start
+  respawnInShop: true # whether players respawn in shop, before getting teleported to their spawn point
+  respawnInShopTpAfterSeconds: 30 # how long recently respawned player have in shop
+  enableFallDamage: true # whether players can be damaged by falling
+  freezeTime: false # whether the world's time is advanced
+  timeAtGameStart: 6000 # (in ticks) world time at start of game (see /time vanilla command)
+displayedText:
+  currency: |- # how currency should be displayed in shop. %amount will be replaced with a number.
+    $%amount

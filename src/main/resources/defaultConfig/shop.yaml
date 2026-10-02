@@ -1,0 +1,454 @@
+# this file describes all shop entries in a double chest inventory interface. row and col are 0-indexed, which means 0 <= col <= 8 and 0 <= row <= 5
+# i have preset a lot of options from which you can be inspired to create a crazy custom shop!
+items: # standard items, that can be bought indefinitely. items: []  to disable.
+  - row: 3
+    col: 0
+    name: Melon # will be shown on hover
+    id: 'minecraft:melon_slice' # what item will be given. is also the appearance of item in shop inventory.
+    amount: 8 # how many will be given
+    components: '[custom_data={infinite:true}]' # (in string NBT format) additional components. when setting infinite:true in custom data, the item cannot be consumed.
+    price: 5
+  - row: 0
+    col: 8
+    name: Arrows
+    id: 'minecraft:arrow'
+    amount: 4
+    components: ''
+    price: 5
+  - row: 3
+    col: 4
+    name: Ender Pearl
+    id: 'minecraft:ender_pearl'
+    amount: 2
+    components: ''
+    price: 10
+  - row: 3
+    col: 1
+    name: Beef
+    id: 'minecraft:cooked_beef'
+    amount: 1
+    components: ''
+    price: 10
+  - row: 4
+    col: 7
+    name: Le Fishe
+    id: 'minecraft:fishing_rod'
+    amount: 1
+    components: ''
+    price: 30
+  - row: 4
+    col: 6
+    name: '420'
+    id: 'minecraft:blaze_rod'
+    amount: 1
+    components: '[enchantments={fire_aspect:2}]'
+    price: 40
+  - row: 2
+    col: 0
+    name: Invisibility
+    id: 'minecraft:potion'
+    amount: 1
+    components: '[custom_name={text:"Invisibility",italic:false},potion_contents={custom_effects:[{id:invisibility,amplifier:0,duration:1200}]}]'
+    price: 35
+  - row: 2
+    col: 1
+    name: Speed
+    id: 'minecraft:potion'
+    amount: 1
+    components: '[custom_name={text:"Speed",italic:false},potion_contents={custom_effects:[{id:speed,amplifier:0,duration:3600}]}]'
+    price: 30
+  - row: 2
+    col: 2
+    name: Fire Resistance
+    id: 'minecraft:potion'
+    amount: 1
+    components: '[custom_name={text:"Fire Resistance",italic:false},potion_contents={custom_effects:[{id:fire_resistance,amplifier:0,duration:3600}]}]'
+    price: 20
+  - row: 2
+    col: 3
+    name: Strength
+    id: 'minecraft:potion'
+    amount: 1
+    components: '[custom_name={text:"Strength",italic:false},potion_contents={custom_effects:[{id:strength,amplifier:0,duration:3600}]}]'
+    price: 45
+  - row: 2
+    col: 4
+    name: Regeneration
+    id: 'minecraft:potion'
+    amount: 1
+    components: '[custom_name={text:"Regeneration",italic:false},potion_contents={custom_effects:[{id:regeneration,amplifier:0,duration:3600}]}]'
+    price: 25
+  - row: 2
+    col: 5
+    name: Dolphins Grace
+    id: 'minecraft:potion'
+    amount: 1
+    components: '[custom_name={text:"Dolphins Grace",italic:false},potion_contents={custom_effects:[{id:dolphins_grace,amplifier:0,duration:3600}]}]'
+    price: 20
+  - row: 2
+    col: 6
+    name: Lingering Pain
+    id: 'minecraft:lingering_potion'
+    amount: 1
+    components: '[custom_name={text:"Lingering Pain",italic:false},potion_contents={custom_effects:[{id:instant_damage,amplifier:0,duration:100}]}]'
+    price: 20
+  - row: 2
+    col: 7
+    name: Slowness
+    id: 'minecraft:splash_potion'
+    amount: 1
+    components: '[custom_name={text:"Splash Slowness",italic:false},potion_contents={custom_effects:[{id:slowness,amplifier:0,duration:1800}]}]'
+    price: 40
+  - row: 3
+    col: 2
+    name: Gold Apple
+    id: 'minecraft:enchanted_golden_apple'
+    amount: 1
+    components: ''
+    price: 150
+  - row: 4
+    col: 0
+    name: Totem
+    id: 'minecraft:totem_of_undying'
+    amount: 1
+    components: ''
+    price: 150
+  - row: 1
+    col: 8
+    name: Poison Arrow
+    id: 'minecraft:tipped_arrow'
+    amount: 4
+    components: '[potion_contents={potion:poison}]'
+    price: 25
+  - row: 2
+    col: 8
+    name: An Lüter Mülsch
+    id: 'minecraft:milk_bucket'
+    amount: 1
+    components: ''
+    price: 5
+shield: # shields are handled separately, so that durability can be added on multiple buy operations. shield: null  to disable.
+  row: 0
+  col: 3
+  name: Shield
+  durability: 120 # how much durability should be added on existing shields. if no shields exist, player will get a new one with this amount of durability.
+  price: 50
+extraLife: # players can buy one additional respawn at a time and even respawn dead players when no respawns are left. extraLife: null  to disable.
+  row: 4
+  col: 1
+  name: Extra Life
+  id: 'minecraft:turtle_egg' # which item gets displayed
+  amount: 1 # NOT HOW MANY LIVES GET ADDED, just determines how many items are displayed
+  components: '' # data components of display item
+  price: 100
+leaveShop: # players can leave shop early to tp to their spawn point. leaveShop: null  to disable
+  row: 5
+  col: 8
+upgrades: # items that can be upgraded or should only exist once at max can be defined here. upgrades: []  to disable.
+  - row: 0
+    col: 0
+    name: Armor Upgrade
+    id: armor # arbitrary value, just needs to be unique within all upgrades
+    levels: # first buy of item will give first list entry, etc. game will try to replace items where they were and equip on new buy.
+      - items:
+          - id: 'minecraft:leather_helmet'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:leather_chestplate'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:leather_leggings'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:leather_boots'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 40 # price for this upgrade level. can be different as items may not scale linearly.
+      - items:
+          - id: 'minecraft:iron_helmet'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:leather_chestplate'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:iron_leggings'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:leather_boots'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 60
+      - items:
+          - id: 'minecraft:iron_helmet'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:iron_chestplate'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:iron_leggings'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:iron_boots'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 80
+      - items:
+          - id: 'minecraft:diamond_helmet'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:iron_chestplate'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:diamond_leggings'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:iron_boots'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 100
+      - items:
+          - id: 'minecraft:diamond_helmet'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:diamond_chestplate'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:diamond_leggings'
+            amount: 1
+            components: '[unbreakable={}]'
+          - id: 'minecraft:diamond_boots'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 120
+  - row: 0
+    col: 1
+    name: Sword Upgrade
+    id: sword
+    levels:
+      - items:
+          - id: 'minecraft:wooden_sword'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 50
+      - items:
+          - id: 'minecraft:stone_sword'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 50
+      - items:
+          - id: 'minecraft:iron_sword'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 50
+      - items:
+          - id: 'minecraft:diamond_sword'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 50
+      - items:
+          - id: 'minecraft:netherite_sword'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 50
+  - row: 0
+    col: 2
+    name: Axe Upgrade
+    id: axe
+    levels:
+      - items:
+          - id: 'minecraft:wooden_axe'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 120
+      - items:
+          - id: 'minecraft:stone_axe'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 40
+      - items:
+          - id: 'minecraft:iron_axe'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 40
+      - items:
+          - id: 'minecraft:diamond_axe'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 40
+      - items:
+          - id: 'minecraft:netherite_axe'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 40
+  - row: 0
+    col: 6
+    name: Bow Upgrade
+    id: bow
+    levels:
+      - items:
+          - id: 'minecraft:bow'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 75
+      - items:
+          - id: 'minecraft:bow'
+            amount: 1
+            components: '[unbreakable={},enchantments={power:1}]'
+        price: 100
+      - items:
+          - id: 'minecraft:bow'
+            amount: 1
+            components: '[unbreakable={},enchantments={power:2}]'
+        price: 100
+      - items:
+          - id: 'minecraft:bow'
+            amount: 1
+            components: '[unbreakable={},enchantments={power:3}]'
+        price: 100
+      - items:
+          - id: 'minecraft:bow'
+            amount: 1
+            components: '[unbreakable={},enchantments={power:4}]'
+        price: 100
+      - items:
+          - id: 'minecraft:bow'
+            amount: 1
+            components: '[unbreakable={},enchantments={power:5}]'
+        price: 100
+  - row: 0
+    col: 7
+    name: Crossbow Upgrade
+    id: crossbow
+    levels:
+      - items:
+          - id: 'minecraft:crossbow'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 75
+      - items:
+          - id: 'minecraft:crossbow'
+            amount: 1
+            components: '[unbreakable={},enchantments={quick_charge:1}]'
+        price: 25
+      - items:
+          - id: 'minecraft:crossbow'
+            amount: 1
+            components: '[unbreakable={},enchantments={quick_charge:2}]'
+        price: 50
+      - items:
+          - id: 'minecraft:crossbow'
+            amount: 1
+            components: '[unbreakable={},enchantments={quick_charge:3}]'
+        price: 100
+      - items:
+          - id: 'minecraft:crossbow'
+            amount: 1
+            components: '[unbreakable={},enchantments={quick_charge:4}]'
+        price: 150
+      - items:
+          - id: 'minecraft:crossbow'
+            amount: 1
+            components: '[unbreakable={},enchantments={quick_charge:5}]'
+        price: 150
+  - row: 0
+    col: 4
+    name: Mace
+    id: mace
+    levels: # this is an example of an item without upgrades, that may only be acquired once
+      - items:
+          - id: 'minecraft:mace'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 100
+  - row: 0
+    col: 5
+    name: Spear
+    id: spear
+    levels:
+      - items:
+          - id: 'minecraft:iron_spear'
+            amount: 1
+            components: '[unbreakable={}]'
+        price: 100
+refunds: # shop entries that refund other shop entries. works best with upgrades. item display is based on buy option. refunds: []  to disable.
+  - row: 1 # where the refund button sits
+    col: 0
+    targetRow: 0 # where the buy option sits, that should get refunded.
+    targetCol: 0
+  - row: 1
+    col: 1
+    targetRow: 0
+    targetCol: 1
+  - row: 1
+    col: 2
+    targetRow: 0
+    targetCol: 2
+  - row: 1
+    col: 6
+    targetRow: 0
+    targetCol: 6
+  - row: 1
+    col: 7
+    targetRow: 0
+    targetCol: 7
+  - row: 1
+    col: 4
+    targetRow: 0
+    targetCol: 4
+  - row: 1
+    col: 5
+    targetRow: 0
+    targetCol: 5
+traps: # custom trap implementation that applies potion effects on trigger and may snare if wanted. use item on top of a block. traps: []  to disable.
+  - row: 3
+    col: 7
+    name: 'Stop right there, criminal scum!'
+    price: 10
+    snare: true # whether trapped players are unable to move including camera.
+    effectNBTs: # list of string NBT potion effects
+      - '{ambient:0b,amplifier:100b,duration:140,id:blindness,show_icon:0b,show_particles:0b}'
+    triggerRange: 0.5 # (in blocks) how far away a player must be to activate trap
+    setupTime: 200 # (in ticks) how long after placing the trap can be triggered
+    triggerVisibilityRange: 30 # (in blocks) range in which other players can see that a trap has been triggered
+    visibilityRange: 10 # (in blocks) range in which a placed trap can theoretically be seen
+    affectedRange: 1.5 # (in blocks) on trigger, apply effects to all players in this range
+    triggerDuration: 120 # (in ticks) only relevant when snaring. how long a player will be snared.
+  - row: 3
+    col: 8
+    name: The Abyss
+    price: 10
+    snare: false
+    effectNBTs:
+      - '{ambient:0b,amplifier:100b,duration:140,id:blindness,show_icon:0b,show_particles:0b}'
+      - '{ambient:0b,amplifier:0b,duration:120,id:slowness,show_icon:0b,show_particles:0b}'
+      - '{ambient:0b,amplifier:0b,duration:120,id:levitation,show_icon:0b,show_particles:0b}'
+    triggerRange: 0.5
+    setupTime: 200
+    triggerVisibilityRange: 30
+    visibilityRange: 10
+    affectedRange: 1.5
+    triggerDuration: 120
+  - row: 3
+    col: 6
+    name: Sonicification
+    price: 10
+    snare: false
+    effectNBTs:
+      - '{ambient:0b,amplifier:100b,duration:40,id:speed,show_icon:0b,show_particles:0b}'
+    triggerRange: 1
+    setupTime: 40
+    triggerVisibilityRange: 30
+    visibilityRange: 5
+    affectedRange: 5
+    triggerDuration: 120
+refundRecent: # button for refunding recent purchases. only works until the player leaves shop. refundRecent: null  to disable.
+  row: 5
+  col: 4
+  name: Refund recent purchases
+hook: # custom grappling hook implementation. right click to launch towards targeted block. right click again to cancel flight. hook: null  to disable.
+  row: 4
+  col: 8
+  name: Grappling Hook
+  price: 35
+  maxDistance: 30 # (in blocks) how far the hook can reach
+  cooldown: 40 # (in ticks) how long the hook will be disabled for after disengaging
