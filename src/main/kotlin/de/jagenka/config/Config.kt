@@ -119,7 +119,11 @@ object Config
     {
         try
         {
-            Files.writeString(pathToConfFile, serializer.encodeToString(internalConfigEntry))
+            val stringToWrite = Config::class.java.getResourceAsStream("/defaultConfig/config.yaml").use { stream ->
+                stream?.bufferedReader()?.readText()
+            } ?: serializer.encodeToString(internalConfigEntry)
+
+            Files.writeString(pathToConfFile, stringToWrite)
         } catch (e: Exception)
         {
             DeathGames.logger.error("Error while storing general config!", e)
@@ -130,7 +134,11 @@ object Config
     {
         try
         {
-            Files.writeString(pathToShopConfFile, serializer.encodeToString(shopConfig))
+            val stringToWrite = Config::class.java.getResourceAsStream("/defaultConfig/shop.yaml").use { stream ->
+                stream?.bufferedReader()?.readText()
+            } ?: serializer.encodeToString(shopConfig)
+
+            Files.writeString(pathToShopConfFile, stringToWrite)
         } catch (e: Exception)
         {
             DeathGames.logger.error("Error while storing shop config!", e)
