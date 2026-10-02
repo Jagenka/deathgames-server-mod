@@ -151,6 +151,8 @@ object StatManager
         gameStats.options["respawnsPerTeam"] = Config.respawns.perTeam.toString()
         gameStats.options["refundPercent"] = Config.shopSettings.refundPercent.toString()
         gameStats.options["startInShop"] = Config.misc.startInShop.toString()
+        gameStats.options["respawnInShop"] = Config.misc.respawnInShop.toString()
+        gameStats.options["enableFallDamage"] = Config.misc.enableFallDamage.toString()
 
         gameStats.map = minecraftServer?.getWorldPath(LevelResource.ROOT)?.parent?.fileName.toString()
 
