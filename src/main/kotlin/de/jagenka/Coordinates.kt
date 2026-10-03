@@ -1,11 +1,6 @@
 package de.jagenka
 
-import kotlinx.serialization.Serializable
-import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.phys.Vec3
-import kotlin.math.pow
-import kotlin.math.sqrt
-
+/*
 @Serializable
 data class Coordinates(val x: Int, val y: Int, val z: Int, val yaw: Float, val pitch: Float)
 {
@@ -46,3 +41,4 @@ fun Int.toCenter() = this + 0.5
 
 //fun Vec3d.toDGCoordinates() = Coordinates(this)
 fun ServerPlayer.getDGCoordinates() = Coordinates(this.x, this.y, this.z, this.yRot, this.xRot)
+*/

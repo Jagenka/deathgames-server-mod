@@ -5,6 +5,7 @@ import de.jagenka.managers.BonusManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.rotateAroundVector
 import de.jagenka.toRadians
+import de.jagenka.util.center
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -18,7 +19,7 @@ object GPS
         ifServerLoaded { server: MinecraftServer ->
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayer ->
                 BonusManager.getSelectedPlatforms().forEach platforms@{
-                    var lookDirection = it.pos.toVec3().subtract(player.position().add(origin))
+                    var lookDirection = it.pos.center().subtract(player.position().add(origin))
                     if (lookDirection.length() < 10) return@platforms
                     lookDirection = lookDirection.normalize()
                     val lookDirectionXZImage =

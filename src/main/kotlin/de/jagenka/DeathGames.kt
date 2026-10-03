@@ -15,6 +15,7 @@ import de.jagenka.timer.Timer
 import de.jagenka.timer.Timer.tick
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
+import de.jagenka.util.surroundingBlockPos
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
@@ -169,11 +170,10 @@ object DeathGames : DedicatedServerModInitializer
         DisplayManager.showSidebar()
 
         val secondsToSpawnTp = Config.misc.startInShopTpAfterSeconds
-        val (lobbySpawnX, lobbySpawnY, lobbySpawnZ) = Config.spawns.lobbySpawn
 
         PlayerManager.getOnlinePlayers().forEach {
             it.closeContainer()
-            it.adjustSpawnLocation(it.level(), BlockPos(lobbySpawnX, lobbySpawnY, lobbySpawnZ).asMinecraftBlockPos())
+            it.adjustSpawnLocation(it.level(), Config.spawns.lobbySpawn.position().surroundingBlockPos())
 
             if (Config.misc.startInShop)
             {

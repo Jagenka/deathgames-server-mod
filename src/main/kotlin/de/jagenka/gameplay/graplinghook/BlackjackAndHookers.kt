@@ -1,7 +1,7 @@
 package de.jagenka.gameplay.graplinghook
 
 import de.jagenka.DeathGames
-import de.jagenka.shop.Shop
+import de.jagenka.managers.ShopManager.isInShopBounds
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
@@ -28,7 +28,7 @@ class BlackjackAndHookers(override val maxDistance: Double, override val cooldow
     override fun forceTheHooker(serverPlayer: ServerPlayer, itemStackInHand: ItemStack): Boolean
     {
         if (!DeathGames.running) return false
-        if (Shop.isInShopBounds(serverPlayer)) return false
+        if (serverPlayer.isInShopBounds) return false
 
         determineMovementAndMove(serverPlayer, maxDistance)
 

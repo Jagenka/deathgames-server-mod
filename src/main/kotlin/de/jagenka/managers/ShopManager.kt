@@ -1,6 +1,5 @@
 package de.jagenka.managers
 
-import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.shop.Shop
@@ -8,10 +7,10 @@ import de.jagenka.timer.ScheduledTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.timer.ticks
-import de.jagenka.util.I18n
-import de.jagenka.util.cuboidCenter
+import de.jagenka.util.*
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.player.Player
 
 object ShopManager
 {
@@ -52,7 +51,9 @@ object ShopManager
         val legalIndices = Config.shopSettings.shopBounds.indices
         val chosenIndex = if (shopIndex in legalIndices) shopIndex else legalIndices.random()
 
-        val teleportLocation = Config.shopSettings.shopBounds[chosenIndex].cuboidCenter()
+        val teleportLocation =
+            Config.shopSettings.shopBounds[chosenIndex].center // TODO: center may not be a suitable tp location! find solid ground first
+                .bottomCenter().withRotation(0f, 0f)
 
         didEnterHow[playerName] = entryType
         inWhichShop[playerName] = chosenIndex
@@ -69,14 +70,14 @@ object ShopManager
 
             EntryType.GAME_START ->
             {
-                player.teleport(teleportLocation)
+                player.teleportTo(teleportLocation)
                 tpDelay = Config.misc.startInShopTpAfterSeconds.seconds()
 
             }
 
             EntryType.RESPAWN ->
             {
-                player.teleport(teleportLocation)
+                player.teleportTo(teleportLocation)
                 tpDelay = Config.misc.respawnInShopTpAfterSeconds.seconds()
             }
         }
@@ -128,15 +129,32 @@ object ShopManager
 
     fun sendTpOutMessage(player: ServerPlayer, secondsLeft: Int)
     {
-        if (secondsLeft > 0 && player.isInAShop)
+        if (secondsLeft > 0 && player.isOfficiallyInAShop)
         {
             player.sendPrivateMessage(I18n.get("shopTpOut", mapOf("seconds" to secondsLeft)))
             Timer.schedule(1.seconds()) { sendTpOutMessage(player, secondsLeft - 1) }
         }
     }
 
-    val ServerPlayer.isInAShop: Boolean
+    val ServerPlayer.isOfficiallyInAShop: Boolean
         get() = this.name.string in inAShop
+
+    /**
+     * @return index as set in {@link ShopSettingsConfigEntry#shopBounds config} where given player is inside. returns the first hit, or null if in none
+     */
+    fun getShopBoundsIndexContaining(player: Player?): Int?
+    {
+        if (player == null) return null
+
+        val playerPos = player.position().surroundingBlockPos()
+        Config.shopSettings.shopBounds.forEachIndexed { index, box ->
+            if (box.isInside(playerPos)) return index
+        }
+        return null
+    }
+
+    val Player?.isInShopBounds: Boolean
+        get() = getShopBoundsIndexContaining(this) != null
 
     enum class EntryType
     {

@@ -1,6 +1,6 @@
 package de.jagenka.gameplay.traps
 
-import de.jagenka.Coordinates
+import net.minecraft.core.PositionAndRotation
 import net.minecraft.server.level.ServerPlayer
 
-data class SnaredPlayer(val player: ServerPlayer, var coordinates: Coordinates?)
+data class SnaredPlayer(val player: ServerPlayer, var positionAndRotation: PositionAndRotation?)

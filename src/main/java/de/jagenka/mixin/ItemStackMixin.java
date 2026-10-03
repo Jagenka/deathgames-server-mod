@@ -3,7 +3,7 @@ package de.jagenka.mixin;
 import de.jagenka.config.Config;
 import de.jagenka.gameplay.graplinghook.GrapplingHook;
 import de.jagenka.gameplay.traps.TrapManager;
-import de.jagenka.shop.Shop;
+import de.jagenka.managers.ShopManager;
 import kotlin.jvm.optionals.OptionalsKt;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,7 +43,7 @@ public class ItemStackMixin
         }
 
         // No Ender Pearls in shop
-        if (context.getItemInHand().getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(context.getPlayer()))
+        if (context.getItemInHand().getItem() == Items.ENDER_PEARL && ShopManager.INSTANCE.isInShopBounds(context.getPlayer()))
         {
             cir.setReturnValue(InteractionResult.FAIL);
             cir.cancel();
@@ -76,7 +76,7 @@ public class ItemStackMixin
         }
 
         // No Ender Pearls in shop
-        if (stackInHand.getItem() == Items.ENDER_PEARL && Shop.INSTANCE.isInShopBounds(player))
+        if (stackInHand.getItem() == Items.ENDER_PEARL && ShopManager.INSTANCE.isInShopBounds(player))
         {
             cir.setReturnValue(InteractionResult.FAIL);
             cir.cancel();

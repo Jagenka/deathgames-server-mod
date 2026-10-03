@@ -1,13 +1,14 @@
 package de.jagenka.gameplay.traps
 
-import de.jagenka.BlockPos
-import de.jagenka.Util.teleport
-import de.jagenka.getDGCoordinates
 import de.jagenka.managers.PlayerManager.getOnlinePlayersAround
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.gib
 import de.jagenka.timer.Timer
-import de.jagenka.toCenter
+import de.jagenka.util.component1
+import de.jagenka.util.component2
+import de.jagenka.util.component3
+import de.jagenka.util.teleportTo
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Holder
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.protocol.game.ClientboundSoundPacket
@@ -15,10 +16,10 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.phys.Vec3
 
 class Trap(
     val position: BlockPos,
-
     val snares: Boolean,
     val effects: List<MobEffectInstance>,
     val triggerRange: Double,
@@ -48,22 +49,22 @@ class Trap(
     {
         if (!doneSettingUp || triggered) return // cannot trigger, if not set up, or already triggered
 
-        val (x, y, z) = position
+        val (x, y, z) = Vec3.atBottomCenterOf(position)
 
         // show/play trigger effects
         getOnlinePlayersAround(position, triggerVisibilityRange).forEach { player ->
             // exploding particles
             player.level().sendParticles(
-                player, ParticleTypes.LARGE_SMOKE, true, true, x.toCenter(), y.toDouble(), z.toCenter(), 500, .0, .0, .0, .5
+                player, ParticleTypes.LARGE_SMOKE, true, true, x, y, z, 500, .0, .0, .0, .5
             )
             // play sound
             player.connection.send(
                 ClientboundSoundPacket(
                     Holder.direct(SoundEvents.IRON_GOLEM_HURT),
                     SoundSource.PLAYERS,
-                    x.toCenter(),
-                    y.toDouble(),
-                    z.toCenter(),
+                    x,
+                    y,
+                    z,
                     1f,
                     1f,
                     player.level().random.nextLong()
@@ -93,12 +94,12 @@ class Trap(
         if (!snares) return
 
         snaredPlayers.forEach {
-            if (it.coordinates == null && it.player.onGround()) // snaring happens after landing
+            if (it.positionAndRotation == null && it.player.onGround()) // snaring happens after landing
             {
-                it.coordinates = it.player.getDGCoordinates()
+                it.positionAndRotation = it.player.storePositionAndRotation() // cannot comprehend why fun name...
             } else
             {
-                it.player.teleport(it.coordinates)
+                it.player.teleportTo(it.positionAndRotation)
             }
         }
     }

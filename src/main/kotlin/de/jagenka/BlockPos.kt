@@ -1,10 +1,6 @@
 package de.jagenka
 
-import kotlinx.serialization.Serializable
-import net.minecraft.world.phys.Vec3
-import kotlin.math.pow
-import kotlin.math.sqrt
-
+/*
 @Serializable
 data class BlockPos(val x: Int, val y: Int, val z: Int)
 {
@@ -32,3 +28,4 @@ data class BlockPos(val x: Int, val y: Int, val z: Int)
         return "($x, $y, $z)"
     }
 }
+ */

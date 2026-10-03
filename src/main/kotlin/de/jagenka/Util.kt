@@ -4,19 +4,19 @@ import com.mojang.brigadier.StringReader
 import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.DisplayManager
-import de.jagenka.managers.Platform
 import de.jagenka.managers.PlayerManager
-import kotlinx.serialization.Serializable
+import de.jagenka.util.component1
+import de.jagenka.util.component2
+import de.jagenka.util.component3
 import net.minecraft.commands.arguments.item.ItemArgument
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
 import net.minecraft.server.MinecraftServer
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.Difficulty
 import net.minecraft.world.entity.EquipmentSlot
-import net.minecraft.world.entity.Relative
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -29,13 +29,7 @@ import org.joml.AxisAngle4d
 import org.joml.Quaterniond
 import org.joml.Vector3f
 import java.util.*
-import java.util.regex.Pattern
 import kotlin.math.floor
-
-fun log(message: String)
-{
-    println(message)
-}
 
 object Util
 {
@@ -86,34 +80,19 @@ object Util
     fun ifServerLoaded(lambda: (MinecraftServer) -> Unit)
     {
         minecraftServer?.let { lambda(it) }
-            ?: log("Minecraft Server not yet initialized")
-    }
-
-    fun ServerPlayer.teleport(coordinates: Coordinates?)
-    {
-        if (coordinates == null) return
-        val (x, y, z, yaw, pitch) = coordinates
-
-        this.teleportTo(level(), x.toCenter(), y.toDouble(), z.toCenter(), emptySet<Relative>(), yaw, pitch, true)
-    }
-
-    fun ServerPlayer.teleport(vec3: Vec3, yaw: Float, pitch: Float): Boolean
-    {
-        // new in 1.21.3: PositionFlags if relative tp and resetCamera (why not?)
-        // new in 0.10.0-1.21.8: no longer teleporting to overworld, as map could be in another dimension
-        return this.teleportTo(level(), vec3.x, vec3.y, vec3.z, emptySet<Relative>(), yaw, pitch, true)
+            ?: DeathGames.logger.error("Minecraft Server not yet initialized")
     }
 
     fun setBlockAt(level: Level, pos: BlockPos, block: Block)
     {
-        level.setBlockAndUpdate(pos.asMinecraftBlockPos(), block.defaultBlockState())
+        level.setBlockAndUpdate(pos, block.defaultBlockState())
     }
 
     fun getBlockAt(x: Int, y: Int, z: Int) = getBlockAt(BlockPos(x, y, z))
     fun getBlockAt(pos: BlockPos): Block
     {
         var block = Blocks.AIR // default
-        ifServerLoaded { block = it.overworld().getBlockState(pos.asMinecraftBlockPos()).block }
+        ifServerLoaded { block = it.overworld().getBlockState(pos).block }
         return block
     }
 
@@ -123,13 +102,14 @@ object Util
 
         for (dy in -radius..radius)
         {
-            result.addAll(getBlocksInSquareRadiusAtFixY(pos.relative(0, dy, 0), radius))
+            result.addAll(getBlocksInSquareRadiusAtFixY(pos.offset(0, dy, 0), radius))
         }
 
 
         return result.toList()
     }
 
+    // TODO: make Iterable?
     fun getBlocksInSquareRadiusAtFixY(pos: BlockPos, radius: Int): List<BlockAtPos>
     {
         val result = mutableListOf<BlockAtPos>()
@@ -163,79 +143,6 @@ object Util
     fun getRGBInt(r: Int, g: Int, b: Int): Int = (r shl 16) or (g shl 8) or (b)
     fun getTextColor(r: Int, g: Int, b: Int): TextColor = TextColor.fromRgb(getRGBInt(r, g, b))
 
-    val coordinatePattern: Pattern =
-        Pattern.compile("\\((x\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(z\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(y\\s*=\\s*)?(\\d*\\.?\\d+)\\s*,\\s*(p\\s*=\\s*)?(\\d*\\.?\\d+)\\)")
-
-    fun getCoordinateFromString(str: String): Coordinates?
-    {
-        val matcher = coordinatePattern.matcher(str)
-        if (!matcher.matches())
-        {
-            return null
-        }
-
-        try
-        {
-            val coordinate = Coordinates(
-                matcher.group(2).toDouble(),
-                matcher.group(4).toDouble(),
-                matcher.group(6).toDouble(),
-                matcher.group(8).toFloat(),
-                matcher.group(10).toFloat()
-            )
-            return coordinate
-        } catch (e: NumberFormatException)
-        {
-            return null
-        }
-    }
-
-    fun getBlockPosFromString(str: String): BlockPos?
-    {
-        val matcher = coordinatePattern.matcher(str)
-        if (!matcher.matches())
-        {
-            return null
-        }
-
-        try
-        {
-            return BlockPos(
-                matcher.group(2).toInt(),
-                matcher.group(4).toInt(),
-                matcher.group(6).toInt()
-            )
-        } catch (e: NumberFormatException)
-        {
-            return null
-        }
-    }
-
-    fun getCoordinateListFromString(str: String): List<Coordinates>?
-    {
-        val individualStrings = str.split(";")
-
-        try
-        {
-            return individualStrings.map { getCoordinateFromString(it) }.requireNoNulls().toList()
-        } catch (e: IllegalArgumentException)
-        {
-            return null
-        }
-    }
-
-    fun getBlockPosListFromString(str: String): List<BlockPos>?
-    {
-        val individualStrings = str.split(";")
-
-        try
-        {
-            return individualStrings.map { getBlockPosFromString(it) }.requireNoNulls().toList()
-        } catch (e: IllegalArgumentException)
-        {
-            return null
-        }
-    }
 
     fun parseItemStack(id: String, nbt: String, amount: Int): ItemStack
     {
@@ -246,19 +153,6 @@ object Util
 }
 
 data class BlockAtPos(val block: Block, val pos: BlockPos)
-
-// this is needed so the config command transformer can correctly deduce the non generic type of the list
-@Serializable
-class CoordinateList(val coords: List<Coordinates>)
-{
-    override fun toString() = "[" + coords.joinToString(", ") { it.toString() } + "]"
-}
-
-@Serializable
-class PlatformList(val plats: List<Platform>)
-{
-    override fun toString() = "[" + plats.joinToString(", ") { it.toString() } + "]"
-}
 
 fun Double.floor() = floor(this).toInt()
 
@@ -278,12 +172,12 @@ operator fun Vec3.times(factor: Double): Vec3 = this.scale(factor)
 
 fun Vec3i.toCenterPos(): Vec3 = Vec3(this.x + .5, this.y.toDouble(), this.z + .5)
 
-fun Vec3.pureQuarternion(): Quaterniond = Quaterniond(this.x, this.y, this.z, 0.0)
+fun Vec3.pureQuaternion(): Quaterniond = Quaterniond(this.x, this.y, this.z, 0.0)
 
 fun Vec3.rotateAroundVector(axis: Vec3, degrees: Double): Vec3
 {
     val rotationQuaternion = Quaterniond(AxisAngle4d(degrees.toRadians(), axis.x, axis.y, axis.z))
-    val vectorQuaternion = this.pureQuarternion()
+    val vectorQuaternion = this.pureQuaternion()
     val finalQuaternion = Quaterniond(rotationQuaternion)
 
     finalQuaternion.mul(vectorQuaternion)

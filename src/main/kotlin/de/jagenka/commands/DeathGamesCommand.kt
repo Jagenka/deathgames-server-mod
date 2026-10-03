@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import de.jagenka.DeathGames
 import de.jagenka.Util.ifServerLoaded
-import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
@@ -16,7 +15,9 @@ import de.jagenka.team.DGTeam
 import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.util.I18n
-import de.jagenka.util.cuboidCenter
+import de.jagenka.util.center
+import de.jagenka.util.teleportTo
+import de.jagenka.util.withRotation
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.Commands.argument
@@ -184,21 +185,24 @@ object DeathGamesCommand
                     .then(
                         literal("lobby")
                             .executes {
-                                it.source.player?.teleport(Config.internalConfigEntry.spawns.lobbySpawn)
+                                it.source.player?.teleportTo(Config.internalConfigEntry.spawns.lobbySpawn)
                                 0
                             }
                     )
                     .then(
                         literal("shop")
                             .executes {
-                                it.source.player?.teleport(Config.internalConfigEntry.shopSettings.shopBounds.random().cuboidCenter())
+                                it.source.player?.teleportTo(
+                                    Config.internalConfigEntry.shopSettings.shopBounds.random().center.center()
+                                        .withRotation(0f, 0f)
+                                )
                                 0
                             }
                     )
                     .then(
                         literal("spectatorSpawn")
                             .executes {
-                                it.source.player?.teleport(Config.internalConfigEntry.spawns.spectatorSpawn)
+                                it.source.player?.teleportTo(Config.internalConfigEntry.spawns.spectatorSpawn)
                                 0
                             }
                     )

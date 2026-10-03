@@ -1,14 +1,8 @@
 package de.jagenka.util
 
-import de.jagenka.BlockPos
-import de.jagenka.Coordinates
-import de.jagenka.toCenter
-import net.minecraft.world.phys.Vec3
-import kotlin.math.max
-import kotlin.math.min
+// Util to replace BlockCuboid TODO: investigate BoundingBox class from Minecraft or AABB?
 
-// Util to replace BlockCuboid TODO: investigate BoundingBox class from Minecraft
-
+/*
 fun Pair<BlockPos, BlockPos>.cuboidSmallCorner(): BlockPos
 {
     return BlockPos(min(this.first.x, this.second.x), min(this.first.y, this.second.y), min(this.first.z, this.second.z))
@@ -19,12 +13,12 @@ fun Pair<BlockPos, BlockPos>.cuboidBigCorner(): BlockPos
     return BlockPos(max(this.first.x, this.second.x), max(this.first.y, this.second.y), max(this.first.z, this.second.z))
 }
 
-fun Pair<BlockPos, BlockPos>.cuboidCenter(): Coordinates
+fun Pair<BlockPos, BlockPos>.cuboidCenter(): Vec3
 {
     val (dx, dy, dz) = this.cuboidSize()
     val smallCorner = this.cuboidSmallCorner()
 
-    return Coordinates(smallCorner.x + dx / 2, smallCorner.y + dy / 2, smallCorner.z + dz / 2, 0f, 0f)
+    return Vec3(smallCorner.x + dx / 2, smallCorner.y + dy / 2, smallCorner.z + dz / 2)
 }
 
 fun Pair<BlockPos, BlockPos>.cuboidSize(): Triple<Double, Double, Double>
@@ -33,20 +27,15 @@ fun Pair<BlockPos, BlockPos>.cuboidSize(): Triple<Double, Double, Double>
     val smallCorner = this.cuboidSmallCorner()
 
     return Triple(
-        bigCorner.x.toCenter() - smallCorner.x.toCenter(),
-        (bigCorner.y - smallCorner.y).toDouble(),
-        bigCorner.z.toCenter() - smallCorner.z.toCenter()
+        (bigCorner.x + 1 - smallCorner.x).toDouble(),
+        (bigCorner.y + 1 - smallCorner.y).toDouble(),
+        (bigCorner.z + 1 - smallCorner.z).toDouble()
     )
 }
 
-fun Pair<BlockPos, BlockPos>.cuboidContains(pos: net.minecraft.core.BlockPos?): Boolean
+fun Pair<BlockPos, BlockPos>.cuboidContains(pos: BlockPos?): Boolean
 {
-    return pos != null && this.cuboidContains(Vec3.atCenterOf(pos))
-}
-
-fun Pair<BlockPos, BlockPos>.cuboidContains(pos: BlockPos): Boolean
-{
-    return this.cuboidContains(pos.toVec3())
+    return pos != null && this.cuboidContains(pos.center())
 }
 
 fun Pair<BlockPos, BlockPos>.cuboidContains(pos: Vec3): Boolean
@@ -58,3 +47,4 @@ fun Pair<BlockPos, BlockPos>.cuboidContains(pos: Vec3): Boolean
             smallCorner.y <= pos.y && pos.y <= bigCorner.y + 1 &&
             smallCorner.z <= pos.z && pos.z <= bigCorner.z + 1
 }
+ */

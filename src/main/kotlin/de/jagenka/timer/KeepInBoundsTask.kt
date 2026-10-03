@@ -2,7 +2,7 @@ package de.jagenka.timer
 
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
-import de.jagenka.util.cuboidContains
+import de.jagenka.util.surroundingBlockPos
 
 object KeepInBoundsTask : TimerTask
 {
@@ -16,7 +16,9 @@ object KeepInBoundsTask : TimerTask
     override fun run()
     {
         PlayerManager.getOnlineParticipatingPlayers().forEach { player ->
-            if (!Config.general.arenaBounds.cuboidContains(player.position()) && !PlayerManager.hasRecentlyRespawned(player.name.string))
+            if (!Config.general.arenaBounds.isInside(player.position().surroundingBlockPos()) && // TODO: works?
+                !PlayerManager.hasRecentlyRespawned(player.name.string)
+            )
             {
                 // 1.21.3: damage now needs a server world
                 player.hurtServer(

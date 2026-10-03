@@ -1,10 +1,8 @@
 package de.jagenka.managers
 
 import com.mojang.brigadier.StringReader
-import de.jagenka.Coordinates
 import de.jagenka.DeathGames
 import de.jagenka.Util
-import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager.sendChatMessage
 import de.jagenka.managers.PlayerManager.getDGTeam
@@ -12,16 +10,20 @@ import de.jagenka.managers.SpawnManager.platformRadius
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
 import de.jagenka.util.BiMap
-import de.jagenka.util.cuboidContains
+import de.jagenka.util.center
+import de.jagenka.util.surroundingBlockPos
+import de.jagenka.util.teleportTo
 import kotlinx.serialization.Serializable
 import net.minecraft.commands.arguments.CompoundTagArgument
 import net.minecraft.core.BlockPos
+import net.minecraft.core.PositionAndRotation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.GameType
+import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.Vec3
 import kotlin.math.max
 import kotlin.random.Random
@@ -68,8 +70,7 @@ object SpawnManager
         // handle position
         val spawnCoordinates = getSpawnCoordinates(player)
 
-        player.teleport(spawnCoordinates)
-        player.yRot = spawnCoordinates.yaw
+        player.teleportTo(spawnCoordinates)
 
         // check if spectator or player
         if (spawnCoordinates == spectatorSpawn)
@@ -83,7 +84,7 @@ object SpawnManager
         }
     }
 
-    private fun getSpawnCoordinates(player: ServerPlayer): Coordinates // TODO: gets called twice on game start? maybe?
+    private fun getSpawnCoordinates(player: ServerPlayer): PositionAndRotation // TODO: gets called twice on game start? maybe?
     {
         // players without team must be spectators
         if (player.getDGTeam() == null) return spectatorSpawn
@@ -109,7 +110,7 @@ object SpawnManager
                     //DeathGames.logger.info("$dist, $pitch, $yaw")
 
                     val target = BlockPos.containing(
-                        Vec3.atCenterOf(platform.pos.asMinecraftBlockPos().above())
+                        Vec3.atCenterOf(platform.pos.above())
                             .add(Vec3.directionFromRotation(pitch.toFloat(), yaw.toFloat()).normalize().scale(dist))
                     )
 
@@ -119,7 +120,7 @@ object SpawnManager
 
                     val finalPos = findNearestSpawnLocationOnYAxis(level, target)
 
-                    return@mapNotNull if (Config.general.arenaBounds.cuboidContains(finalPos)) finalPos else null
+                    return@mapNotNull if (finalPos != null && Config.general.arenaBounds.isInside(finalPos)) finalPos else null
                 }
             }
             // TODO: fallback? need at least one position
@@ -136,15 +137,11 @@ object SpawnManager
                     return@map pos to (enemyDist - teamDist)
                 }
                 .sortedByDescending { it.second }
-                .map { pair ->
+                .map { pair -> // first: tp position, second: viability score
                     val rotation = pair.first.vectorTo(
-                        Vec3.atCenterOf(
-                            selectedPlatforms.minBy {
-                                it.pos.distanceTo(pair.first)
-                            }.pos.asMinecraftBlockPos().above()
-                        )
+                        selectedPlatforms.minBy { it.pos.center().distanceTo(pair.first) }.pos.above().center()
                     ).rotation()
-                    return@map Coordinates(pair.first, rotation.y, rotation.x)
+                    return@map PositionAndRotation.of(pair.first, rotation.y, rotation.x) // TODO: this right?
                 }
 
             return sortedResults.firstOrNull() ?: spectatorSpawn
@@ -152,7 +149,7 @@ object SpawnManager
         } else // default behavior: pre-set spawn locations
         {
             return PlayerManager.getTeam(player)?.let { team ->
-                teamSpawns.getKeyForValue(team)?.coordinates
+                teamSpawns.getKeyForValue(team)?.positionAndRotation
             } ?: spectatorSpawn
         }
     }
@@ -246,7 +243,7 @@ object SpawnManager
             val team = teamSpawns[spawn]
             if (team == null)
             {
-                Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius)
+                Util.getBlocksInSquareRadiusAtFixY(spawn.positionAndRotation.position().surroundingBlockPos().offset(0, -1, 0), platformRadius)
                     .forEach { (block, coordinates) ->
                         if (block.isDGColorBlock())
                         {
@@ -255,7 +252,7 @@ object SpawnManager
                     }
             } else
             {
-                Util.getBlocksInSquareRadiusAtFixY(spawn.coordinates.asBlockPos().relative(0, -1, 0), platformRadius)
+                Util.getBlocksInSquareRadiusAtFixY(spawn.positionAndRotation.position().surroundingBlockPos().offset(0, -1, 0), platformRadius)
                     .forEach { (block, coordinates) ->
                         if (block.isDGColorBlock())
                         {
@@ -268,8 +265,10 @@ object SpawnManager
 
     fun resetSpawnColoring()
     {
-        spawns.forEach { (coordinates) ->
-            Util.getBlocksInSquareRadiusAtFixY(coordinates.asBlockPos().relative(0, -1, 0), platformRadius)
+        spawns.forEach { (positionAndRotation) ->
+            Util.getBlocksInSquareRadiusAtFixY(
+                positionAndRotation.position().surroundingBlockPos().offset(0, -1, 0), platformRadius
+            )
                 .forEach { (block, coordinates) ->
                     if (block.isDGColorBlock())
                     {
@@ -303,12 +302,12 @@ object SpawnManager
 }
 
 @Serializable
-data class DGSpawn(val coordinates: Coordinates, val defaultOwner: DGTeam?)
+data class DGSpawn(val positionAndRotation: PositionAndRotation, val defaultOwner: DGTeam?)
 {
-    fun getCuboid() =
-        coordinates.asBlockPos().relative(-platformRadius, 0, -platformRadius) to
-                coordinates.asBlockPos().relative(platformRadius, 2, platformRadius)
+    fun getBoundingBox(): BoundingBox = BoundingBox.fromCorners(
+        positionAndRotation.position().surroundingBlockPos().offset(-platformRadius, 0, -platformRadius),
+        positionAndRotation.position().surroundingBlockPos().offset(platformRadius, 2, platformRadius)
+    )
 
-
-    fun containsPlayer(player: ServerPlayer) = getCuboid().cuboidContains(player.position())
+    fun containsPlayer(player: ServerPlayer) = getBoundingBox().isInside(player.position().surroundingBlockPos()) // TODO: does this work?
 }

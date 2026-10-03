@@ -1,22 +1,30 @@
 package de.jagenka.managers
 
-import de.jagenka.*
+import de.jagenka.Util
+import de.jagenka.combinedInventory
 import de.jagenka.config.Config
+import de.jagenka.isSame
+import de.jagenka.managers.SpawnManager.platformRadius
+import de.jagenka.setCustomName
+import de.jagenka.util.BlockPosSerializer
+import de.jagenka.util.surroundingBlockPos
 import kotlinx.serialization.Serializable
+import net.minecraft.core.BlockPos
 import net.minecraft.core.GlobalPos
 import net.minecraft.core.component.DataComponents.CUSTOM_DATA
 import net.minecraft.core.component.DataComponents.LODESTONE_TRACKER
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.CustomData
 import net.minecraft.world.item.component.LodestoneTracker
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.levelgen.structure.BoundingBox
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
-import kotlin.math.abs
 
 object BonusManager
 {
@@ -61,12 +69,9 @@ object BonusManager
 
     fun getSelectedPlatforms() = selectedPlatforms.toList()
 
-    fun isOnActivePlatform(playerName: String) = getActivePlatforms().any {
+    fun isOnActivePlatform(playerName: String): Boolean = getActivePlatforms().any {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return false
-        val dx = abs(it.pos.x.toCenter() - player.position().x)
-        val dy = abs(it.pos.y.toDouble() - player.position().y)
-        val dz = abs(it.pos.z.toCenter() - player.position().z)
-        dy < 2 && dx <= Config.bonus.radius + 0.5 && dz <= Config.bonus.radius + 0.5
+        it.containsPlayer(player)
     }
 
     private fun colorPlatforms()
@@ -137,7 +142,7 @@ object BonusManager
                             Optional.of(
                                 GlobalPos.of(
                                     player.level().dimension(),
-                                    platform.pos.asMinecraftBlockPos()
+                                    platform.pos
                                 )
                             ), true
                         )
@@ -148,7 +153,14 @@ object BonusManager
 }
 
 @Serializable
-data class Platform(val name: String, val pos: BlockPos)
+data class Platform(val name: String, @Serializable(with = BlockPosSerializer::class) val pos: BlockPos)
 {
+    fun getBoundingBox(): BoundingBox = BoundingBox.fromCorners(
+        pos.offset(-platformRadius, 0, -platformRadius),
+        pos.offset(platformRadius, 2, platformRadius)
+    )
+
+    fun containsPlayer(player: ServerPlayer) = getBoundingBox().isInside(player.position().surroundingBlockPos()) // TODO: does this work?
+
     override fun toString() = "$name $pos"
 }

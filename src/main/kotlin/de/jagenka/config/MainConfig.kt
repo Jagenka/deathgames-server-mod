@@ -1,12 +1,18 @@
+@file:UseSerializers(BoundingBoxSerializer::class)
+
 package de.jagenka.config
 
-import de.jagenka.BlockPos
-import de.jagenka.Coordinates
 import de.jagenka.managers.DGSpawn
 import de.jagenka.managers.Platform
 import de.jagenka.team.DGTeam
 import de.jagenka.team.DGTeam.*
+import de.jagenka.util.BoundingBoxSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
+import net.minecraft.core.BlockPos
+import net.minecraft.core.PositionAndRotation
+import net.minecraft.world.level.levelgen.structure.BoundingBox
+import net.minecraft.world.phys.Vec3
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
@@ -28,18 +34,18 @@ class MainConfig(
 class GeneralConfigEntry(
     var enabled: Boolean = false,
     var locale: String = "en",
-    var arenaBounds: Pair<BlockPos, BlockPos> = BlockPos(-10, -10, -10) to BlockPos(10, 10, 10),
+    var arenaBounds: BoundingBox = BoundingBox.fromCorners(BlockPos(-10, -10, -10), BlockPos(10, 10, 10)),
     var spectatorRadiusPadding: Int = 10,
-    var lobbyBounds: Pair<BlockPos, BlockPos> = BlockPos(-10, 20, -10) to BlockPos(10, 30, 10),
+    var lobbyBounds: BoundingBox = BoundingBox.fromCorners(BlockPos(-10, 20, -10), BlockPos(10, 30, 10)),
     var enabledTeams: List<DGTeam> = listOf(BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW)
 )
 
 @Serializable
 class SpawnsConfigEntry(
-    var spawnPositions: List<DGSpawn> = listOf(DGSpawn(Coordinates(0, 0, 0, 0f, 0f), defaultOwner = BLACK)),
+    var spawnPositions: List<DGSpawn> = listOf(DGSpawn(PositionAndRotation.of(Vec3.ZERO, 0f, 0f), defaultOwner = BLACK)),
     var platformRadius: Int = 4,
-    var spectatorSpawn: Coordinates = Coordinates(0, 5, 0, 0f, 0f),
-    var lobbySpawn: Coordinates = Coordinates(0, 25, 0, 0f, 0f),
+    var spectatorSpawn: PositionAndRotation = PositionAndRotation.of(Vec3(0.0, 5.0, 0.0), 0f, 0f),
+    var lobbySpawn: PositionAndRotation = PositionAndRotation.of(Vec3(0.0, 25.0, 0.0), 0f, 0f),
     var enableShuffle: Boolean = false,
     var shuffleInterval: Int = 2400,
     var shuffleDelayAfterKill: Int = 200,
@@ -85,7 +91,7 @@ class MoneyConfigEntry(
 @Serializable
 class ShopSettingsConfigEntry(
     // can have multiple shops
-    var shopBounds: List<Pair<BlockPos, BlockPos>> = listOf(BlockPos(-10, -10, -10) to BlockPos(-5, -5, -5)),
+    var shopBounds: List<BoundingBox> = listOf(BoundingBox.fromCorners(BlockPos(-5, 57, -5), BlockPos(5, 62, 5))),
     var tpOutOfShopAfter: Int = 600,
     var refundPercent: Int = 100
 )
