@@ -1,10 +1,12 @@
-items:
+# this file describes all shop entries in a double chest inventory interface. row and col are 0-indexed, which means 0 <= col <= 8 and 0 <= row <= 5
+# i have preset a lot of options from which you can be inspired to create a crazy custom shop!
+items: # standard items, that can be bought indefinitely. items: []  to disable.
   - row: 3
     col: 0
-    name: Melon
-    id: 'minecraft:melon_slice'
-    amount: 8
-    components: ''
+    name: Melon # will be shown on hover
+    id: 'minecraft:melon_slice' # what item will be given. is also the appearance of item in shop inventory.
+    amount: 8 # how many will be given
+    components: '[custom_data={infinite:true}]' # (in string NBT format) additional components. when setting infinite:true in custom data, the item cannot be consumed.
     price: 5
   - row: 0
     col: 8
@@ -125,29 +127,29 @@ items:
     amount: 1
     components: ''
     price: 5
-shield:
+shield: # shields are handled separately, so that durability can be added on multiple buy operations. shield: null  to disable.
   row: 0
   col: 3
   name: Shield
-  durability: 120
+  durability: 120 # how much durability should be added on existing shields. if no shields exist, player will get a new one with this amount of durability.
   price: 50
-extraLife:
+extraLife: # players can buy one additional respawn at a time and even respawn dead players when no respawns are left. extraLife: null  to disable.
   row: 4
   col: 1
   name: Extra Life
-  id: 'minecraft:turtle_egg'
-  amount: 1
-  components: ''
+  id: 'minecraft:turtle_egg' # which item gets displayed
+  amount: 1 # NOT HOW MANY LIVES GET ADDED, just determines how many items are displayed
+  components: '' # data components of display item
   price: 100
-leaveShop:
+leaveShop: # players can leave shop early to tp to their spawn point. leaveShop: null  to disable
   row: 5
   col: 8
-upgrades:
+upgrades: # items that can be upgraded or should only exist once at max can be defined here. upgrades: []  to disable.
   - row: 0
     col: 0
     name: Armor Upgrade
-    id: armor
-    levels:
+    id: armor # arbitrary value, just needs to be unique within all upgrades
+    levels: # first buy of item will give first list entry, etc. game will try to replace items where they were and equip on new buy.
       - items:
           - id: 'minecraft:leather_helmet'
             amount: 1
@@ -161,7 +163,7 @@ upgrades:
           - id: 'minecraft:leather_boots'
             amount: 1
             components: '[unbreakable={}]'
-        price: 40
+        price: 40 # price for this upgrade level. can be different as items may not scale linearly.
       - items:
           - id: 'minecraft:iron_helmet'
             amount: 1
@@ -352,7 +354,7 @@ upgrades:
     col: 4
     name: Mace
     id: mace
-    levels:
+    levels: # this is an example of an item without upgrades, that may only be acquired once
       - items:
           - id: 'minecraft:mace'
             amount: 1
@@ -368,10 +370,10 @@ upgrades:
             amount: 1
             components: '[unbreakable={}]'
         price: 100
-refunds:
-  - row: 1
+refunds: # shop entries that refund other shop entries. works best with upgrades. item display is based on buy option. refunds: []  to disable.
+  - row: 1 # where the refund button sits
     col: 0
-    targetRow: 0
+    targetRow: 0 # where the buy option sits, that should get refunded.
     targetCol: 0
   - row: 1
     col: 1
@@ -397,20 +399,20 @@ refunds:
     col: 5
     targetRow: 0
     targetCol: 5
-traps:
+traps: # custom trap implementation that applies potion effects on trigger and may snare if wanted. use item on top of a block. traps: []  to disable.
   - row: 3
     col: 7
     name: 'Stop right there, criminal scum!'
     price: 10
-    snare: true
-    effectNBTs:
+    snare: true # whether trapped players are unable to move including camera.
+    effectNBTs: # list of string NBT potion effects
       - '{ambient:0b,amplifier:100b,duration:140,id:blindness,show_icon:0b,show_particles:0b}'
-    triggerRange: 0.5
-    setupTime: 200
-    triggerVisibilityRange: 30
-    visibilityRange: 10
-    affectedRange: 1.5
-    triggerDuration: 120
+    triggerRange: 0.5 # (in blocks) how far away a player must be to activate trap
+    setupTime: 200 # (in ticks) how long after placing the trap can be triggered
+    triggerVisibilityRange: 30 # (in blocks) range in which other players can see that a trap has been triggered
+    visibilityRange: 10 # (in blocks) range in which a placed trap can theoretically be seen
+    affectedRange: 1.5 # (in blocks) on trigger, apply effects to all players in this range
+    triggerDuration: 120 # (in ticks) only relevant when snaring. how long a player will be snared.
   - row: 3
     col: 8
     name: The Abyss
@@ -439,14 +441,14 @@ traps:
     visibilityRange: 5
     affectedRange: 5
     triggerDuration: 120
-refundRecent:
+refundRecent: # button for refunding recent purchases. only works until the player leaves shop. refundRecent: null  to disable.
   row: 5
   col: 4
   name: Refund recent purchases
-hook:
+hook: # custom grappling hook implementation. right click to launch towards targeted block. right click again to cancel flight. hook: null  to disable.
   row: 4
   col: 8
   name: Grappling Hook
   price: 35
-  maxDistance: 30
-  cooldown: 40
+  maxDistance: 30 # (in blocks) how far the hook can reach
+  cooldown: 40 # (in ticks) how long the hook will be disabled for after disengaging

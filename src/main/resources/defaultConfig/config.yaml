@@ -2,21 +2,21 @@ general:
   enabled: false # change to true, when done editing this file
   locale: en # currently available: en, de, jp
   arenaBounds: # cuboid corners of arena bounds. players will be kept inside / get damaged outside while game is running.
-    first:
+    minCorner:
       x: -128
       y: 48
       z: -128
-    second:
+    maxCorner:
       x: 127
       y: 152
       z: 127
   spectatorRadiusPadding: 20 # how far out spectators are allowed to fly.
   lobbyBounds: # cuboid corners of pre-game lobby. players (except operators, use /dg tp) will be kept inside while game is not running.
-    first:
+    minCorner:
       x: -29
       y: 18
       z: -29
-    second:
+    maxCorner:
       x: 29
       y: 34
       z: 29
@@ -37,26 +37,29 @@ general:
     - YELLOW
 spawns:
   spawnPositions: # preset spawn locations (list) which get colored in depending on team ownership. use white concrete where recoloring should happen.
-    - coordinates: # use player location above, not block position in spawn platform
-        x: -38
-        y: 63
-        z: -91
-        yaw: 0
-        pitch: 0
+    - positionAndRotation: # use player location above, not block position in spawn platform. also, block center has .5 coordinates.
+        position:
+          x: -37.5
+          y: 63.0
+          z: -90.5
+        yRot: 0.0
+        xRot: 0.0
       defaultOwner: null # preset which team this spawn belongs to
   platformRadius: 4 # radius from center in which recoloring should happen
   spectatorSpawn: # where spectators should spawn on game start
-    x: 0
-    y: 80
-    z: 0
-    yaw: 0
-    pitch: 0
+    position:
+      x: 0.5
+      y: 80.0
+      z: 0.5
+    yRot: 0.0
+    xRot: 0.0
   lobbySpawn: # spawn point within lobby bounds
-    x: 0
-    y: 20
-    z: 0
-    yaw: 0
-    pitch: 0
+    position:
+      x: 0.5
+      y: 25.0
+      z: 0.5
+    yRot: 0.0
+    xRot: 0.0
   enableShuffle: false # whether spawn locations should be shuffled every so often
   shuffleInterval: 2400 # (in ticks) interval between shuffles, if enabled
   shuffleDelayAfterKill: 200 # (in ticks) minimum time after a kill before spawns can get shuffled again
@@ -93,11 +96,11 @@ money:
   perKillStreakKill: 10 # on player kill, gain extra money multiplied by their kill-streak
 shopSettings:
   shopBounds: # list of cuboid corners marking shops. there can be more than one!
-    - first:
+    - minCorner:
         x: -5
         y: 57
         z: -5
-      second:
+      maxCorner:
         x: 5
         y: 62
         z: 5

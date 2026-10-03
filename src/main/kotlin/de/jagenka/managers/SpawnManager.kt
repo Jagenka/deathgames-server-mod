@@ -9,10 +9,7 @@ import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager.platformRadius
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
-import de.jagenka.util.BiMap
-import de.jagenka.util.center
-import de.jagenka.util.surroundingBlockPos
-import de.jagenka.util.teleportTo
+import de.jagenka.util.*
 import kotlinx.serialization.Serializable
 import net.minecraft.commands.arguments.CompoundTagArgument
 import net.minecraft.core.BlockPos
@@ -302,7 +299,7 @@ object SpawnManager
 }
 
 @Serializable
-data class DGSpawn(val positionAndRotation: PositionAndRotation, val defaultOwner: DGTeam?)
+data class DGSpawn(@Serializable(with = PositionAndRotationSerializer::class) val positionAndRotation: PositionAndRotation, val defaultOwner: DGTeam?)
 {
     fun getBoundingBox(): BoundingBox = BoundingBox.fromCorners(
         positionAndRotation.position().surroundingBlockPos().offset(-platformRadius, 0, -platformRadius),

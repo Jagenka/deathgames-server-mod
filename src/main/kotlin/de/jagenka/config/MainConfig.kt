@@ -1,4 +1,4 @@
-@file:UseSerializers(BoundingBoxSerializer::class)
+@file:UseSerializers(BoundingBoxSerializer::class, PositionAndRotationSerializer::class)
 
 package de.jagenka.config
 
@@ -7,6 +7,7 @@ import de.jagenka.managers.Platform
 import de.jagenka.team.DGTeam
 import de.jagenka.team.DGTeam.*
 import de.jagenka.util.BoundingBoxSerializer
+import de.jagenka.util.PositionAndRotationSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import net.minecraft.core.BlockPos

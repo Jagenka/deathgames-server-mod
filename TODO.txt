@@ -1,2 +1,2 @@
-- Idea: spawn near bonus, no spawn platforms needed
+- Idea: spawn near bonus, no spawn platforms needed CONFIG!
 - ensure config in stats db!
