@@ -20,11 +20,11 @@ import kotlin.math.abs
 
 object BonusManager
 {
-    val platforms
+    private val platforms
         get() = Config.bonus.platforms
-    val selectedPlatforms = mutableListOf<Platform>()
+    private val selectedPlatforms = mutableListOf<Platform>()
 
-    val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }
+    private val activePlatforms = mutableMapOf<Platform, Boolean>().withDefault { false }
 
     val inactiveBlock: Block = Blocks.CONCRETE.red
     val activeBlock: Block = Blocks.CONCRETE.lime
@@ -58,6 +58,8 @@ object BonusManager
     }
 
     fun getActivePlatforms() = activePlatforms.keys.filter { it.isActive() }
+
+    fun getSelectedPlatforms() = selectedPlatforms.toList()
 
     fun isOnActivePlatform(playerName: String) = getActivePlatforms().any {
         val player = PlayerManager.getOnlinePlayer(playerName) ?: return false

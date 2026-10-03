@@ -39,6 +39,11 @@ fun Pair<BlockPos, BlockPos>.cuboidSize(): Triple<Double, Double, Double>
     )
 }
 
+fun Pair<BlockPos, BlockPos>.cuboidContains(pos: net.minecraft.core.BlockPos?): Boolean
+{
+    return pos != null && this.cuboidContains(Vec3.atCenterOf(pos))
+}
+
 fun Pair<BlockPos, BlockPos>.cuboidContains(pos: BlockPos): Boolean
 {
     return this.cuboidContains(pos.toVec3())

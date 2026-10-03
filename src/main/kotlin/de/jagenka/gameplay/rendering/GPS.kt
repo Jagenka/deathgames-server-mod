@@ -17,7 +17,7 @@ object GPS
         val origin = Vec3(0.0, 4.0, 0.0)
         ifServerLoaded { server: MinecraftServer ->
             PlayerManager.getOnlinePlayers().forEach { player: ServerPlayer ->
-                BonusManager.selectedPlatforms.forEach platforms@{
+                BonusManager.getSelectedPlatforms().forEach platforms@{
                     var lookDirection = it.pos.toVec3().subtract(player.position().add(origin))
                     if (lookDirection.length() < 10) return@platforms
                     lookDirection = lookDirection.normalize()

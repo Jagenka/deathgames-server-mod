@@ -7,6 +7,7 @@ import de.jagenka.Util
 import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager.sendChatMessage
+import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager.platformRadius
 import de.jagenka.team.DGTeam
 import de.jagenka.team.isDGColorBlock
@@ -14,16 +15,22 @@ import de.jagenka.util.BiMap
 import de.jagenka.util.cuboidContains
 import kotlinx.serialization.Serializable
 import net.minecraft.commands.arguments.CompoundTagArgument
+import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.tags.BlockTags
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.GameType
+import net.minecraft.world.phys.Vec3
+import kotlin.math.max
+import kotlin.random.Random
 
 object SpawnManager
 {
     private val compoundTagArgument = CompoundTagArgument.compoundTag()
 
-    val defaultSpawn
+    val spectatorSpawn
         get() = Config.spawns.spectatorSpawn
     val platformRadius
         get() = Config.spawns.platformRadius
@@ -48,14 +55,10 @@ object SpawnManager
 
     private val teamSpawns = BiMap<DGSpawn, DGTeam>()
 
-    fun getTeam(spawn: DGSpawn) = teamSpawns[spawn]
+    val spawnRandomlyNearBonus: Boolean
+        get() = true // TODO: move to config
 
-    fun ServerPlayer.getSpawnCoordinates(): Coordinates
-    {
-        return PlayerManager.getTeam(this)?.let { team ->
-            teamSpawns.getKeyForValue(team)?.coordinates
-        } ?: defaultSpawn
-    }
+    fun getTeam(spawn: DGSpawn) = teamSpawns[spawn]
 
     /**
      * teleports player to their spawn, and adds respawn effects if player is participating (not spectator)
@@ -63,12 +66,13 @@ object SpawnManager
     fun teleportPlayerToSpawn(player: ServerPlayer)
     {
         // handle position
-        val spawnCoordinates = player.getSpawnCoordinates()
+        val spawnCoordinates = getSpawnCoordinates(player)
+
         player.teleport(spawnCoordinates)
         player.yRot = spawnCoordinates.yaw
 
         // check if spectator or player
-        if (spawnCoordinates == defaultSpawn)
+        if (spawnCoordinates == spectatorSpawn)
         {
             player.setGameMode(GameType.SPECTATOR)
         } else
@@ -77,6 +81,108 @@ object SpawnManager
             player.removeAllEffects()
             applyRespawnEffects(player)
         }
+    }
+
+    private fun getSpawnCoordinates(player: ServerPlayer): Coordinates // TODO: gets called twice on game start? maybe?
+    {
+        // players without team must be spectators
+        if (player.getDGTeam() == null) return spectatorSpawn
+
+        if (spawnRandomlyNearBonus) // ignore spawn locations from config and find spawn near bonus
+        {
+            // idea: spawn as near as possible to a team member, but as far away as possible to enemies. apply min and max radius, make sure to intersect with arena bounds
+
+            val minRadiusFromBonus = 50.0 // TODO: move to config
+            val maxRadiusFromBonus = 100.0 // if possible TODO: move to config
+            val tries = 1000
+
+            val level = player.level()
+            val selectedPlatforms = BonusManager.getSelectedPlatforms() // TODO: what to do if empty, especially when bonus is disabled lol
+
+            // find potential spawn locations:
+            val possibleTargets = 0.rangeUntil(tries).mapNotNull {
+                selectedPlatforms.randomOrNull()?.let { platform ->
+                    val dist = Random.nextDouble(minRadiusFromBonus, maxRadiusFromBonus)
+                    val pitch = Random.nextDouble(-45.0, 45.0)
+                    val yaw = Random.nextDouble(-180.0, 180.0)
+
+                    //DeathGames.logger.info("$dist, $pitch, $yaw")
+
+                    val target = BlockPos.containing(
+                        Vec3.atCenterOf(platform.pos.asMinecraftBlockPos().above())
+                            .add(Vec3.directionFromRotation(pitch.toFloat(), yaw.toFloat()).normalize().scale(dist))
+                    )
+
+                    // TODO: check if in arena bounds
+
+                    //DeathGames.logger.info("$target")
+
+                    val finalPos = findNearestSpawnLocationOnYAxis(level, target)
+
+                    return@mapNotNull if (Config.general.arenaBounds.cuboidContains(finalPos)) finalPos else null
+                }
+            }
+            // TODO: fallback? need at least one position
+
+            val (teamMembers, enemies) = PlayerManager.getOnlineParticipatingPlayers().partition { it.team == player.team }
+
+            val sortedResults = possibleTargets
+                .map { Vec3.atBottomCenterOf(it) }
+                .map { pos ->
+                    // when there are now enemies found, this position is perfect
+                    val enemyDist = enemies.minOfOrNull { it.position().distanceToSqr(pos) } ?: Double.MAX_VALUE
+                    // when no mates are found, just look an enemy distance
+                    val teamDist = teamMembers.minOfOrNull { it.position().distanceToSqr(pos) } ?: 0.0 // TODO: weigh this more?
+                    return@map pos to (enemyDist - teamDist)
+                }
+                .sortedByDescending { it.second }
+                .map { pair ->
+                    val rotation = pair.first.vectorTo(
+                        Vec3.atCenterOf(
+                            selectedPlatforms.minBy {
+                                it.pos.distanceTo(pair.first)
+                            }.pos.asMinecraftBlockPos().above()
+                        )
+                    ).rotation()
+                    return@map Coordinates(pair.first, rotation.y, rotation.x)
+                }
+
+            return sortedResults.firstOrNull() ?: spectatorSpawn
+
+        } else // default behavior: pre-set spawn locations
+        {
+            return PlayerManager.getTeam(player)?.let { team ->
+                teamSpawns.getKeyForValue(team)?.coordinates
+            } ?: spectatorSpawn
+        }
+    }
+
+    private fun findNearestSpawnLocationOnYAxis(level: BlockGetter, pos: BlockPos): BlockPos?
+    {
+        var isAir1: Boolean
+        var isAir2: Boolean
+        var isGroundSolid: Boolean
+
+        for (i in 0.rangeTo(max(level.maxY - pos.y, pos.y)))
+        {
+            // up
+            isAir2 = level.getBlockState(pos.offset(0, i + 1, 0)).isAir
+            isAir1 = level.getBlockState(pos.offset(0, i, 0)).isAir
+            var groundBlockState = level.getBlockState(pos.offset(0, i - 1, 0))
+            isGroundSolid = !groundBlockState.isAir && !groundBlockState.liquid() && groundBlockState.`is`(BlockTags.ENTITIES_CAN_TELEPORT_TO)
+
+            if (isAir1 && isAir2 && isGroundSolid) return pos.offset(0, i, 0)
+
+            // down
+            isAir2 = level.getBlockState(pos.offset(0, -i + 1, 0)).isAir
+            isAir1 = level.getBlockState(pos.offset(0, -i, 0)).isAir
+            groundBlockState = level.getBlockState(pos.offset(0, -i - 1, 0))
+            isGroundSolid = !groundBlockState.isAir && !groundBlockState.liquid() && groundBlockState.`is`(BlockTags.ENTITIES_CAN_TELEPORT_TO)
+
+            if (isAir1 && isAir2 && isGroundSolid) return pos.offset(0, -i, 0)
+        }
+
+        return null
     }
 
     fun giveRespawnItems(player: ServerPlayer)

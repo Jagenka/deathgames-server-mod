@@ -1,2 +1,3 @@
 - Idea: spawn near bonus, no spawn platforms needed
 - ensure config in stats db!
+- use Minecraft BlockPos (which is Vec3i) and Vec3 etc.
