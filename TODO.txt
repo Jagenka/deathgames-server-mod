@@ -1,2 +1,3 @@
 - Idea: spawn near bonus, no spawn platforms needed CONFIG!
 - ensure config in stats db!
+- bonus platform radius is way larger ingame
