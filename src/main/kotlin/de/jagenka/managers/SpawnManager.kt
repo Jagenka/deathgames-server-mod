@@ -54,8 +54,8 @@ object SpawnManager
 
     private val teamSpawns = BiMap<DGSpawn, DGTeam>()
 
-    val spawnRandomlyNearBonus: Boolean
-        get() = true // TODO: move to config
+    val useRandomSpawnLocation: Boolean
+        get() = Config.spawns.spawnPositions.isEmpty()
 
     fun getTeam(spawn: DGSpawn) = teamSpawns[spawn]
 
@@ -86,41 +86,49 @@ object SpawnManager
         // players without team must be spectators
         if (player.getDGTeam() == null) return spectatorSpawn
 
-        if (spawnRandomlyNearBonus) // ignore spawn locations from config and find spawn near bonus
+        if (useRandomSpawnLocation) // ignore spawn locations from config and find spawn near bonus
         {
-            // idea: spawn as near as possible to a team member, but as far away as possible to enemies. apply min and max radius, make sure to intersect with arena bounds
-
-            val minRadiusFromBonus = 50.0 // TODO: move to config
-            val maxRadiusFromBonus = 100.0 // if possible TODO: move to config
             val tries = 1000
 
             val level = player.level()
-            val selectedPlatforms = BonusManager.getSelectedPlatforms() // TODO: what to do if empty, especially when bonus is disabled lol
+            val selectedPlatforms = BonusManager.getSelectedPlatforms()
 
-            // find potential spawn locations:
-            val possibleTargets = 0.rangeUntil(tries).mapNotNull {
-                selectedPlatforms.randomOrNull()?.let { platform ->
-                    val dist = Random.nextDouble(minRadiusFromBonus, maxRadiusFromBonus)
-                    val pitch = Random.nextDouble(-45.0, 45.0)
-                    val yaw = Random.nextDouble(-180.0, 180.0)
+            // find potential spawn locations TODO: flood fill to determine path to bonus/shop OR stuck command
+            val possibleTargets = if (selectedPlatforms.isNotEmpty())
+            { // try spawning near a bonus platform
+                0.rangeUntil(tries).mapNotNull {
+                    selectedPlatforms.randomOrNull()?.let { platform ->
+                        val dist = Random.nextDouble(Config.spawns.minTpDistanceFromBonus, Config.spawns.maxTpDistanceFromBonus)
+                        val pitch = Random.nextDouble(-45.0, 45.0)
+                        val yaw = Random.nextDouble(-180.0, 180.0)
 
-                    //DeathGames.logger.info("$dist, $pitch, $yaw")
+                        //DeathGames.logger.info("$dist, $pitch, $yaw")
 
-                    val target = BlockPos.containing(
-                        Vec3.atCenterOf(platform.pos.above())
-                            .add(Vec3.directionFromRotation(pitch.toFloat(), yaw.toFloat()).normalize().scale(dist))
-                    )
+                        val target = BlockPos.containing(
+                            Vec3.atCenterOf(platform.pos.above())
+                                .add(Vec3.directionFromRotation(pitch.toFloat(), yaw.toFloat()).normalize().scale(dist))
+                        )
 
-                    // TODO: check if in arena bounds
+                        //DeathGames.logger.info("$target")
 
-                    //DeathGames.logger.info("$target")
+                        val finalPos = findNearestSpawnLocationOnYAxis(level, target)
 
-                    val finalPos = findNearestSpawnLocationOnYAxis(level, target)
+                        return@mapNotNull if (finalPos != null && Config.general.arenaBounds.isInside(finalPos)) finalPos else null
+                    }
+                }
+            } else // if no bonus platforms are scheduled, find random spots in arenaBounds
+            {
+                val arenaBounds = Config.general.arenaBounds
+                0.rangeUntil(tries).mapNotNull {
+                    val x = Random.nextInt(arenaBounds.minX(), arenaBounds.maxX() + 1)
+                    val y = Random.nextInt(arenaBounds.minY(), arenaBounds.maxY() + 1)
+                    val z = Random.nextInt(arenaBounds.minZ(), arenaBounds.maxZ() + 1)
 
-                    return@mapNotNull if (finalPos != null && Config.general.arenaBounds.isInside(finalPos)) finalPos else null
+                    val finalPos = findNearestSpawnLocationOnYAxis(level, BlockPos(x, y, z))
+
+                    return@mapNotNull if (finalPos != null && finalPos.isLegalSpawnPosition(level)) finalPos else null
                 }
             }
-            // TODO: fallback? need at least one position
 
             val (teamMembers, enemies) = PlayerManager.getOnlineParticipatingPlayers().partition { it.team == player.team }
 
@@ -136,9 +144,11 @@ object SpawnManager
                 .sortedByDescending { it.second }
                 .map { pair -> // first: tp position, second: viability score
                     val rotation = pair.first.vectorTo(
-                        selectedPlatforms.minBy { it.pos.center().distanceTo(pair.first) }.pos.above().center()
+                        selectedPlatforms.minByOrNull { it.pos.center().distanceTo(pair.first) }?.pos?.above()?.center()
+                            ?: Config.shopSettings.shopBounds.randomOrNull()?.center?.center()
+                            ?: Vec3.ZERO
                     ).rotation()
-                    return@map PositionAndRotation.of(pair.first, rotation.y, rotation.x) // TODO: this right?
+                    return@map PositionAndRotation.of(pair.first, rotation.y, rotation.x)
                 }
 
             return sortedResults.firstOrNull() ?: spectatorSpawn
@@ -149,6 +159,16 @@ object SpawnManager
                 teamSpawns.getKeyForValue(team)?.positionAndRotation
             } ?: spectatorSpawn
         }
+    }
+
+    private fun BlockPos.isLegalSpawnPosition(level: BlockGetter): Boolean
+    {
+        val blockState = level.getBlockState(this)
+        return blockState.`is`(BlockTags.ENTITIES_CAN_TELEPORT_TO) &&
+                !blockState.`is`(BlockTags.DANGEROUS_FOR_TELEPORTATION) &&
+                !blockState.`is`(BlockTags.ENDERMAN_DOES_NOT_TELEPORT_TO) &&
+                Config.general.arenaBounds.isInside(this) &&
+                Config.shopSettings.shopBounds.none { it.isInside(this) }
     }
 
     private fun findNearestSpawnLocationOnYAxis(level: BlockGetter, pos: BlockPos): BlockPos?
@@ -195,6 +215,9 @@ object SpawnManager
 
     fun initSpawns()
     {
+        // in this case, nothing needs to be initialized
+        if (useRandomSpawnLocation) return
+
         if (Config.spawns.enableShuffle)
         {
             shuffleSpawns()

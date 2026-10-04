@@ -4,7 +4,6 @@ import de.jagenka.Util
 import de.jagenka.combinedInventory
 import de.jagenka.config.Config
 import de.jagenka.isSame
-import de.jagenka.managers.SpawnManager.platformRadius
 import de.jagenka.setCustomName
 import de.jagenka.util.BlockPosSerializer
 import de.jagenka.util.surroundingBlockPos
@@ -156,8 +155,8 @@ object BonusManager
 data class Platform(val name: String, @Serializable(with = BlockPosSerializer::class) val pos: BlockPos)
 {
     fun getBoundingBox(): BoundingBox = BoundingBox.fromCorners(
-        pos.offset(-platformRadius, 0, -platformRadius),
-        pos.offset(platformRadius, 2, platformRadius)
+        pos.offset(-Config.bonus.radius, 0, -Config.bonus.radius),
+        pos.offset(Config.bonus.radius, 2, Config.bonus.radius)
     )
 
     fun containsPlayer(player: ServerPlayer) = getBoundingBox().isInside(player.position().surroundingBlockPos()) // TODO: does this work?

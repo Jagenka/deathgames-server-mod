@@ -38,10 +38,16 @@ import net.minecraft.world.level.GameType
 import net.minecraft.world.level.gamerules.GameRules
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.lang.management.ManagementFactory
 
 object DeathGames : DedicatedServerModInitializer
 {
     val logger: Logger = LoggerFactory.getLogger("deathgames-server-mod")
+
+    val isDebug: Boolean = ManagementFactory.getRuntimeMXBean()
+        .inputArguments
+        .any { it.startsWith("-agentlib:jdwp") || it.contains("jdwp=") }
+
     lateinit var commandBuildContext: CommandBuildContext
 
     var running = false
@@ -71,6 +77,7 @@ object DeathGames : DedicatedServerModInitializer
 
         StatsIO.loadStats()
 
+        if (isDebug) logger.info("CURRENTLY DEBUGGING")
         logger.info("DeathGames Mod initialized!")
     }
 

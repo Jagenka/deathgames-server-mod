@@ -52,6 +52,8 @@ class SpawnsConfigEntry(
     var shuffleDelayAfterKill: Int = 200,
     var enableCapture: Boolean = true,
     var captureTimeNeeded: Int = 400,
+    var minTpDistanceFromBonus: Double = 50.0,
+    var maxTpDistanceFromBonus: Double = 100.0,
     var respawnEffectNBTs: List<String> = listOf("{ambient:0b,amplifier:255b,duration:100,id:resistance,show_icon:0b,show_particles:0b}"),
     var respawnItems: List<RespawnItem> = listOf(RespawnItem()),
 )
