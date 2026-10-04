@@ -8,9 +8,12 @@ import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.timer.ticks
 import de.jagenka.util.*
+import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.BlockGetter
+import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 
 object ShopManager
@@ -53,7 +56,7 @@ object ShopManager
         val chosenIndex = if (shopIndex in legalIndices) shopIndex else legalIndices.random()
 
         val teleportLocation =
-            getSpawnInShop(chosenIndex)
+            getSpawnInShop(player.level(), chosenIndex)
                 .withRotation(0f, 0f)
 
         didEnterHow[playerName] = entryType
@@ -140,14 +143,27 @@ object ShopManager
     /**
      * get tp position for a specific shop or a random one if index is missing or invalid
      */
-    fun getSpawnInShop(index: Int = Config.shopSettings.shopBounds.indices.random()): Vec3
+    fun getSpawnInShop(level: BlockGetter, index: Int = Config.shopSettings.shopBounds.indices.random()): Vec3
     {
         if (index !in Config.shopSettings.shopBounds.indices)
         {
-            return getSpawnInShop()
+            return getSpawnInShop(level)
         }
 
-        return Config.shopSettings.shopBounds[index].center.center() // TODO: change to find better location
+        val box = AABB.of(Config.shopSettings.shopBounds[index])
+        var destination: Vec3? = null
+        val bottomCenter = box.bottomCenter
+
+        for (i in 0 until box.ysize.toInt())
+        {
+            if (bottomCenter.relative(Direction.UP, i.toDouble() + .05).getBlockPossBelow().any { SpawnManager.canBeTeleportedOnTop(level, it) })
+            {
+                destination = bottomCenter
+                break
+            }
+        }
+
+        return destination ?: bottomCenter // default is shit, but i donut care
     }
 
     val ServerPlayer.isOfficiallyInAShop: Boolean

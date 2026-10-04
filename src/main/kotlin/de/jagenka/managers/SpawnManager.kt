@@ -145,7 +145,7 @@ object SpawnManager
                 .map { pair -> // first: tp position, second: viability score
                     val rotation = pair.first.vectorTo(
                         selectedPlatforms.minByOrNull { it.pos.center().distanceTo(pair.first) }?.pos?.above()?.center()
-                            ?: ShopManager.getSpawnInShop()
+                            ?: ShopManager.getSpawnInShop(level)
                     ).rotation()
                     return@map PositionAndRotation.of(pair.first, rotation.y, rotation.x)
                 }
@@ -170,29 +170,27 @@ object SpawnManager
                 Config.shopSettings.shopBounds.none { it.isInside(this) }
     }
 
+    fun canBeTeleportedOnTop(level: BlockGetter, pos: BlockPos): Boolean
+    {
+        val blockState = level.getBlockState(pos)
+        return !level.getBlockState(pos).isAir &&
+                !level.getBlockState(pos).liquid() &&
+                level.getBlockState(pos.above()).isAir &&
+                level.getBlockState(pos.above(2)).isAir &&
+                blockState.`is`(BlockTags.ENTITIES_CAN_TELEPORT_TO) &&
+                !blockState.`is`(BlockTags.DANGEROUS_FOR_TELEPORTATION) &&
+                !blockState.`is`(BlockTags.ENDERMAN_DOES_NOT_TELEPORT_TO)
+
+    }
+
     private fun findNearestSpawnLocationOnYAxis(level: BlockGetter, pos: BlockPos): BlockPos?
     {
-        var isAir1: Boolean
-        var isAir2: Boolean
-        var isGroundSolid: Boolean
-
         for (i in 0.rangeTo(max(level.maxY - pos.y, pos.y)))
         {
             // up
-            isAir2 = level.getBlockState(pos.offset(0, i + 1, 0)).isAir
-            isAir1 = level.getBlockState(pos.offset(0, i, 0)).isAir
-            var groundBlockState = level.getBlockState(pos.offset(0, i - 1, 0))
-            isGroundSolid = !groundBlockState.isAir && !groundBlockState.liquid() && groundBlockState.`is`(BlockTags.ENTITIES_CAN_TELEPORT_TO)
-
-            if (isAir1 && isAir2 && isGroundSolid) return pos.offset(0, i, 0)
-
+            if (canBeTeleportedOnTop(level, pos.offset(0, i, 0))) return pos.offset(0, i, 0)
             // down
-            isAir2 = level.getBlockState(pos.offset(0, -i + 1, 0)).isAir
-            isAir1 = level.getBlockState(pos.offset(0, -i, 0)).isAir
-            groundBlockState = level.getBlockState(pos.offset(0, -i - 1, 0))
-            isGroundSolid = !groundBlockState.isAir && !groundBlockState.liquid() && groundBlockState.`is`(BlockTags.ENTITIES_CAN_TELEPORT_TO)
-
-            if (isAir1 && isAir2 && isGroundSolid) return pos.offset(0, -i, 0)
+            if (canBeTeleportedOnTop(level, pos.offset(0, -i, 0))) return pos.offset(0, -i, 0)
         }
 
         return null

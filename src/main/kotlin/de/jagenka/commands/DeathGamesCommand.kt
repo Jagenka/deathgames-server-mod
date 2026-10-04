@@ -193,9 +193,9 @@ object DeathGamesCommand
                         literal("shop")
                             .executes {
                                 it.source.player?.teleportTo(
-                                    ShopManager.getSpawnInShop()
+                                    ShopManager.getSpawnInShop(it.source.player?.level() ?: return@executes -1)
                                         .withRotation(0f, 0f)
-                                )
+                                ) ?: return@executes -1
                                 0
                             }
                     )

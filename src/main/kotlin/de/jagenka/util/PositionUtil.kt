@@ -3,6 +3,8 @@ package de.jagenka.util
 import net.minecraft.core.BlockPos
 import net.minecraft.core.PositionAndRotation
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.level.BlockGetter
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 
 /**
@@ -43,6 +45,30 @@ fun ServerPlayer.teleportTo(positionAndRotation: PositionAndRotation?): Boolean
     if (positionAndRotation == null) return false
     val (x, y, z, yRot, xRot) = positionAndRotation
     return this.teleportTo(level(), x, y, z, emptySet(), yRot, xRot, true)
+}
+
+fun Vec3.getBlockStatesBelow(level: BlockGetter): List<BlockState>
+{
+    return this.getBlockPossBelow().map { level.getBlockState(it) }
+}
+
+fun Vec3.getBlockPossBelow(): List<BlockPos>
+{
+    val result = mutableListOf<BlockPos>()
+
+    if (this.x - this.x.toInt() == 0.0)
+    {
+        result.add(this.surroundingBlockPos())
+        result.add(this.surroundingBlockPos().offset(-1, 0, 0))
+    }
+
+    if (this.z - this.z.toInt() == 0.0)
+    {
+        result.add(this.surroundingBlockPos())
+        result.add(this.surroundingBlockPos().offset(0, 0, -1))
+    }
+
+    return result.map { it.below() }
 }
 
 operator fun PositionAndRotation.component1(): Double = this.position().x

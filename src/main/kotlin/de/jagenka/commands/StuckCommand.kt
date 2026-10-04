@@ -37,7 +37,7 @@ object StuckCommand
                 {
                     if (DeathGames.running)
                     {
-                        val teleportDestination = getSpawnInShop().withRotation(0f, 0f)
+                        val teleportDestination = getSpawnInShop(player.level()).withRotation(0f, 0f)
                         if (player.teleportTo(teleportDestination))
                         {
                             onCooldown += player.name.string
