@@ -157,6 +157,11 @@ fun Int.seconds() = this * DGUnit.SECONDS.factor
 fun Int.minutes() = this * DGUnit.MINUTES.factor
 fun Int.hours() = this * DGUnit.HOURS.factor
 
+fun Int.inTicks() = this / DGUnit.TICKS.factor
+fun Int.inSeconds() = this / DGUnit.SECONDS.factor
+fun Int.inMinutes() = this / DGUnit.MINUTES.factor
+fun Int.inHours() = this / DGUnit.HOURS.factor
+
 enum class DGUnit(val factor: Int)
 {
     TICKS(1), SECONDS(20), MINUTES(1200), HOURS(72000);

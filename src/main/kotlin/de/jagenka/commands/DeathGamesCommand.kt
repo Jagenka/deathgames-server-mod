@@ -10,12 +10,12 @@ import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager.addToDGTeam
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.kickFromDGTeam
+import de.jagenka.managers.ShopManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.team.DGTeam
 import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.util.I18n
-import de.jagenka.util.center
 import de.jagenka.util.teleportTo
 import de.jagenka.util.withRotation
 import net.minecraft.commands.CommandSourceStack
@@ -193,7 +193,7 @@ object DeathGamesCommand
                         literal("shop")
                             .executes {
                                 it.source.player?.teleportTo(
-                                    Config.internalConfigEntry.shopSettings.shopBounds.random().center.center()
+                                    ShopManager.getSpawnInShop()
                                         .withRotation(0f, 0f)
                                 )
                                 0

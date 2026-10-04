@@ -3,6 +3,7 @@ package de.jagenka
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.minecraftServer
 import de.jagenka.commands.DeathGamesCommand
+import de.jagenka.commands.StuckCommand
 import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
 import de.jagenka.gameplay.traps.TrapManager
@@ -84,8 +85,9 @@ object DeathGames : DedicatedServerModInitializer
     private fun registerCommands()
     {
         CommandRegistrationCallback.EVENT.register { dispatcher, commandRegistryAccess, _ ->
-            DeathGames.commandBuildContext = commandRegistryAccess
+            commandBuildContext = commandRegistryAccess
             DeathGamesCommand.register(dispatcher)
+            StuckCommand.register(dispatcher)
         }
     }
 

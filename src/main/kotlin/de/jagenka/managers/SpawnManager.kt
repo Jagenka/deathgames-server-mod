@@ -145,8 +145,7 @@ object SpawnManager
                 .map { pair -> // first: tp position, second: viability score
                     val rotation = pair.first.vectorTo(
                         selectedPlatforms.minByOrNull { it.pos.center().distanceTo(pair.first) }?.pos?.above()?.center()
-                            ?: Config.shopSettings.shopBounds.randomOrNull()?.center?.center()
-                            ?: Vec3.ZERO
+                            ?: ShopManager.getSpawnInShop()
                     ).rotation()
                     return@map PositionAndRotation.of(pair.first, rotation.y, rotation.x)
                 }

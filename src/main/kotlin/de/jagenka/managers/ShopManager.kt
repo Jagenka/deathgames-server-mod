@@ -11,6 +11,7 @@ import de.jagenka.util.*
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.phys.Vec3
 
 object ShopManager
 {
@@ -52,8 +53,8 @@ object ShopManager
         val chosenIndex = if (shopIndex in legalIndices) shopIndex else legalIndices.random()
 
         val teleportLocation =
-            Config.shopSettings.shopBounds[chosenIndex].center // TODO: center may not be a suitable tp location! find solid ground first
-                .bottomCenter().withRotation(0f, 0f)
+            getSpawnInShop(chosenIndex)
+                .withRotation(0f, 0f)
 
         didEnterHow[playerName] = entryType
         inWhichShop[playerName] = chosenIndex
@@ -134,6 +135,19 @@ object ShopManager
             player.sendPrivateMessage(I18n.get("shopTpOut", mapOf("seconds" to secondsLeft)))
             Timer.schedule(1.seconds()) { sendTpOutMessage(player, secondsLeft - 1) }
         }
+    }
+
+    /**
+     * get tp position for a specific shop or a random one if index is missing or invalid
+     */
+    fun getSpawnInShop(index: Int = Config.shopSettings.shopBounds.indices.random()): Vec3
+    {
+        if (index !in Config.shopSettings.shopBounds.indices)
+        {
+            return getSpawnInShop()
+        }
+
+        return Config.shopSettings.shopBounds[index].center.center() // TODO: change to find better location
     }
 
     val ServerPlayer.isOfficiallyInAShop: Boolean
