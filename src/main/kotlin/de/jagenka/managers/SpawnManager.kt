@@ -163,7 +163,7 @@ object SpawnManager
 
     private fun BlockPos.isLegalSpawnPosition(level: BlockGetter): Boolean
     {
-        val blockState = level.getBlockState(this)
+        val blockState = level.getBlockState(this.below())
         return blockState.`is`(BlockTags.ENTITIES_CAN_TELEPORT_TO) &&
                 !blockState.`is`(BlockTags.DANGEROUS_FOR_TELEPORTATION) &&
                 !blockState.`is`(BlockTags.ENDERMAN_DOES_NOT_TELEPORT_TO) &&
