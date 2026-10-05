@@ -270,6 +270,8 @@ object DeathGames : DedicatedServerModInitializer
 
         BonusManager.disableAllPlatforms()
 
+        ShopManager.reset()
+
         PlayerManager.getOnlinePlayers().forEach { it.setGameMode(GameType.SPECTATOR) }
 
         DisplayManager.sendChatMessage("")

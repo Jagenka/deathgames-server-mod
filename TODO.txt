@@ -5,4 +5,3 @@
 - BUG: mod disabled - set enable in file - dg reloadConfig - team selector doesn't work
 - starting in shop: spectators also tp there
 - passive money income on bonus? should work imo, as bonus implies
-- tp out timer not canceled on game end?

@@ -187,6 +187,15 @@ object ShopManager
     val Player?.isInShopBounds: Boolean
         get() = getShopBoundsIndexContaining(this) != null
 
+    fun reset()
+    {
+        inAShop.clear()
+        didEnterHow.clear()
+        inWhichShop.clear()
+        exitTasks.values.forEach { Timer.unscheduleTask(it) }
+        exitTasks.clear()
+    }
+
     enum class EntryType
     {
         WALK, GAME_START, RESPAWN
