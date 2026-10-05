@@ -165,7 +165,8 @@ object DeathGamesCommand
                             it.source.sendSuccess({ Component.literal("config reloaded") }, true)
                         } catch (e: Exception)
                         {
-                            it.source.sendFailure(Component.literal("error reloading config"))
+                            it.source.sendFailure(Component.literal("Error reloading config. See server logs for details."))
+                            DeathGames.logger.info("Error reloading config.", e)
                         }
                         return@executes 0
                     }
