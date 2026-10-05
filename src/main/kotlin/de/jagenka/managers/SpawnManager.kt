@@ -81,7 +81,7 @@ object SpawnManager
         }
     }
 
-    private fun getSpawnCoordinates(player: ServerPlayer): PositionAndRotation // TODO: gets called twice on game start? maybe?
+    private fun getSpawnCoordinates(player: ServerPlayer): PositionAndRotation
     {
         // players without team must be spectators
         if (player.getDGTeam() == null) return spectatorSpawn
@@ -93,7 +93,7 @@ object SpawnManager
             val level = player.level()
             val selectedPlatforms = BonusManager.getSelectedPlatforms()
 
-            // find potential spawn locations TODO: flood fill to determine path to bonus/shop OR stuck command
+            // find potential spawn locations TODO: improve not getting impossible locations
             val possibleTargets = if (selectedPlatforms.isNotEmpty())
             { // try spawning near a bonus platform
                 0.rangeUntil(tries).mapNotNull {
@@ -188,9 +188,9 @@ object SpawnManager
         for (i in 0.rangeTo(max(level.maxY - pos.y, pos.y)))
         {
             // up
-            if (canBeTeleportedOnTop(level, pos.offset(0, i, 0))) return pos.offset(0, i, 0)
+            if (canBeTeleportedOnTop(level, pos.offset(0, i - 1, 0))) return pos.offset(0, i, 0)
             // down
-            if (canBeTeleportedOnTop(level, pos.offset(0, -i, 0))) return pos.offset(0, -i, 0)
+            if (canBeTeleportedOnTop(level, pos.offset(0, -i - 1, 0))) return pos.offset(0, -i, 0)
         }
 
         return null

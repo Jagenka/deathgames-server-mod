@@ -156,9 +156,10 @@ object ShopManager
 
         for (i in 0 until box.ysize.toInt())
         {
-            if (bottomCenter.relative(Direction.UP, i.toDouble() + .05).getBlockPossBelow().any { SpawnManager.canBeTeleportedOnTop(level, it) })
+            val potential = bottomCenter.relative(Direction.UP, i.toDouble())
+            if (potential.getBlockPossBelow().any { SpawnManager.canBeTeleportedOnTop(level, it) })
             {
-                destination = bottomCenter
+                destination = potential
                 break
             }
         }

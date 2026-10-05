@@ -56,15 +56,14 @@ fun Vec3.getBlockPossBelow(): List<BlockPos>
 {
     val result = mutableListOf<BlockPos>()
 
+    result.add(this.surroundingBlockPos())
     if (this.x - this.x.toInt() == 0.0)
     {
-        result.add(this.surroundingBlockPos())
         result.add(this.surroundingBlockPos().offset(-1, 0, 0))
     }
 
     if (this.z - this.z.toInt() == 0.0)
     {
-        result.add(this.surroundingBlockPos())
         result.add(this.surroundingBlockPos().offset(0, 0, -1))
     }
 
