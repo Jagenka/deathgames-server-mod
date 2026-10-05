@@ -1,7 +1,4 @@
 - ensure config in stats db!
-- shop tp location center is bad, need method to find nearest legal spawn, preferably above or below
 - start in shop, but walk out? no countdown appears, get tp-ed anyway
 - lobby unnecessary? lobby in arena bounds?
 - BUG: mod disabled - set enable in file - dg reloadConfig - team selector doesn't work
-- starting in shop: spectators also tp there
-- passive money income on bonus? should work imo, as bonus implies
