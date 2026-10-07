@@ -96,35 +96,20 @@ object Util
         return block
     }
 
-    fun getBlocksInCubeRadius(pos: BlockPos, radius: Int): List<BlockAtPos>
+    fun getBlocksInSquareRadiusAtFixY(pos: BlockPos, radius: Int): Iterable<BlockAtPos>
     {
-        val result = mutableListOf<BlockAtPos>()
-
-        for (dy in -radius..radius)
-        {
-            result.addAll(getBlocksInSquareRadiusAtFixY(pos.offset(0, dy, 0), radius))
-        }
-
-
-        return result.toList()
-    }
-
-    // TODO: make Iterable?
-    fun getBlocksInSquareRadiusAtFixY(pos: BlockPos, radius: Int): List<BlockAtPos>
-    {
-        val result = mutableListOf<BlockAtPos>()
-
-        val (centerX, centerY, centerZ) = pos
-
-        for (x in centerX - radius..centerX + radius)
-        {
-            for (z in centerZ - radius..centerZ + radius)
-            {
-                result.add(BlockAtPos(getBlockAt(x, centerY, z), BlockPos(x, centerY, z)))
+        return Iterable {
+            iterator {
+                val (centerX, centerY, centerZ) = pos
+                for (x in centerX - radius..centerX + radius)
+                {
+                    for (z in centerZ - radius..centerZ + radius)
+                    {
+                        yield(BlockAtPos(getBlockAt(x, centerY, z), BlockPos(x, centerY, z)))
+                    }
+                }
             }
         }
-
-        return result.toList()
     }
 
     fun getRGBTripleForInt(rgb: Int): Triple<Int, Int, Int> = Triple((rgb shr 16) and 0xFF, (rgb shr 8) and 0xFF, rgb and 0xFF)
