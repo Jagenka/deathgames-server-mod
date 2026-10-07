@@ -326,5 +326,5 @@ data class DGSpawn(@Serializable(with = PositionAndRotationSerializer::class) va
         positionAndRotation.position().surroundingBlockPos().offset(platformRadius, 2, platformRadius)
     )
 
-    fun containsPlayer(player: ServerPlayer) = getBoundingBox().isInside(player.position().surroundingBlockPos()) // TODO: does this work?
+    fun containsPlayer(player: ServerPlayer) = getBoundingBox().isInside(player.position().surroundingBlockPos())
 }

@@ -42,7 +42,7 @@ object EnsureRightModeAndLocationTask : TimerTask
                 if (!player.isOp())
                 {
                     //this keeps normies in lobby, when game is not running
-                    if (!Config.general.lobbyBounds.isInside(player.position().surroundingBlockPos())) // TODO: works?
+                    if (!Config.general.lobbyBounds.isInside(player.position().surroundingBlockPos()))
                     {
                         player.teleportTo(Config.spawns.lobbySpawn)
                     }

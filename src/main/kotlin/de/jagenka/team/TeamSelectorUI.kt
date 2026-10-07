@@ -60,5 +60,5 @@ object TeamSelectorUI
         }
     }
 
-    fun isInLobbyBounds(player: ServerPlayer): Boolean = lobbyBounds.isInside(player.position().surroundingBlockPos()) // TODO: works?
+    fun isInLobbyBounds(player: ServerPlayer): Boolean = lobbyBounds.isInside(player.position().surroundingBlockPos())
 }

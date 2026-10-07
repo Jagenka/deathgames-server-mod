@@ -16,7 +16,7 @@ object KeepInBoundsTask : TimerTask
     override fun run()
     {
         PlayerManager.getOnlineParticipatingPlayers().forEach { player ->
-            if (!Config.general.arenaBounds.isInside(player.position().surroundingBlockPos()) && // TODO: works?
+            if (!Config.general.arenaBounds.isInside(player.position().surroundingBlockPos()) &&
                 !PlayerManager.hasRecentlyRespawned(player.name.string)
             )
             {
