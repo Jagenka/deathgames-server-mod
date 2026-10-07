@@ -9,7 +9,7 @@ import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.SpawnManager
 import de.jagenka.stats.StatManager
-import de.jagenka.stats.gib
+import de.jagenka.stats.getOrPutDefaultIfMissing
 import de.jagenka.team.DGTeam
 import de.jagenka.util.I18n
 import net.minecraft.network.chat.Component
@@ -50,7 +50,7 @@ object CaptureSpawnTask : TimerTask
 
                         sendCaptureMessage(oldTeam, newTeam)
 
-                        playersOnSpawn.filter { it.getDGTeam() == newTeam }.forEach { StatManager.personalStats.gib(it.name.string).spawnsCaptured++ }
+                        playersOnSpawn.filter { it.getDGTeam() == newTeam }.forEach { StatManager.personalStats.getOrPutDefaultIfMissing(it.name.string).spawnsCaptured++ }
                     } else
                     {
                         captureProgress[spawn] = captureProgress.getValue(spawn) + 1

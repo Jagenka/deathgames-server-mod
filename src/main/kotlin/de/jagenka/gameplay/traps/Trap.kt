@@ -2,7 +2,7 @@ package de.jagenka.gameplay.traps
 
 import de.jagenka.managers.PlayerManager.getOnlinePlayersAround
 import de.jagenka.stats.StatManager
-import de.jagenka.stats.gib
+import de.jagenka.stats.getOrPutDefaultIfMissing
 import de.jagenka.timer.Timer
 import de.jagenka.util.component1
 import de.jagenka.util.component2
@@ -79,7 +79,7 @@ class Trap(
             }
 
             // increase stat
-            StatManager.personalStats.gib(player.name.string).timesCaughtInTrap++
+            StatManager.personalStats.getOrPutDefaultIfMissing(player.name.string).timesCaughtInTrap++
         }
 
         // snaring happens only after landing, so we cannot determine snare location here

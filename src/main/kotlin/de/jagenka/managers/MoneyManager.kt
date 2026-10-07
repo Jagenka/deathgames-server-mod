@@ -8,7 +8,7 @@ import de.jagenka.managers.MoneyManager.moneyMode
 import de.jagenka.managers.MoneyManager.refundMoney
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.stats.StatManager
-import de.jagenka.stats.gib
+import de.jagenka.stats.getOrPutDefaultIfMissing
 import de.jagenka.team.DGTeam
 import de.jagenka.util.I18n
 import net.minecraft.server.level.ServerPlayer
@@ -33,7 +33,7 @@ object MoneyManager
         {
             Mode.PLAYER -> players.forEach {
                 setMoney(it, Config.money.start)
-                StatManager.personalStats.gib(it).moneyEarned += Config.money.start
+                StatManager.personalStats.getOrPutDefaultIfMissing(it).moneyEarned += Config.money.start
             }
 
             Mode.TEAM ->
@@ -41,7 +41,7 @@ object MoneyManager
                 PlayerManager.getParticipatingTeams().forEach { participatingTeam ->
                     val teamSize = participatingTeam.getPlayers().size
                     setMoney(participatingTeam, teamSize * Config.money.start)
-                    participatingTeam.getPlayers().forEach { StatManager.personalStats.gib(it).moneyEarned += teamSize * Config.money.start }
+                    participatingTeam.getPlayers().forEach { StatManager.personalStats.getOrPutDefaultIfMissing(it).moneyEarned += teamSize * Config.money.start }
                 }
             }
         }
@@ -65,7 +65,7 @@ object MoneyManager
         setMoney(playerName, getMoney(playerName) + amount)
         if (amount >= 0)
         {
-            StatManager.personalStats.gib(playerName).moneyEarned += amount
+            StatManager.personalStats.getOrPutDefaultIfMissing(playerName).moneyEarned += amount
         }
     }
 
@@ -76,7 +76,7 @@ object MoneyManager
         if (amount >= 0)
         {
             team.getPlayers().forEach { playerName ->
-                StatManager.personalStats.gib(playerName).moneyEarned += amount
+                StatManager.personalStats.getOrPutDefaultIfMissing(playerName).moneyEarned += amount
             }
         }
     }
@@ -153,7 +153,7 @@ fun refundMoney(playerName: String, amount: Int)
  */
 fun deductDGMoney(playerName: String, amount: Int)
 {
-    StatManager.personalStats.gib(playerName).moneySpent += amount
+    StatManager.personalStats.getOrPutDefaultIfMissing(playerName).moneySpent += amount
     when (moneyMode)
     {
         Mode.PLAYER -> refundMoney(playerName, -amount)
