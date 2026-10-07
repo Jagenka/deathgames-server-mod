@@ -48,6 +48,9 @@ object ShopManager
     fun enterShop(player: ServerPlayer, entryType: EntryType, shopIndex: Int)
     {
         val playerName = player.name.string
+
+        clear(player) // remove old info about the player being in a shop, the newer entry counts
+
         inAShop.add(playerName)
 
         // DeathGames.logger.info("$playerName entering shop $shopIndex via $entryType")
