@@ -5,3 +5,6 @@
 - would be good: config versions and auto migration
 - BlockPos toString missing - Compass to Bonus looks weird
 - horses
+- bread, no melon
+- unstuck when shop closed...
+- stuck command respawns instead of tp to shop?
