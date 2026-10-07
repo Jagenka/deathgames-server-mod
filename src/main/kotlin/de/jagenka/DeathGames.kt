@@ -158,6 +158,7 @@ object DeathGames : DedicatedServerModInitializer
             it.foodData.eat(20, 1f) //set max food and saturation
             PlayerManager.addParticipant(it.name.string)
             it.setGameMode(GameType.ADVENTURE)
+            it.isNoGravity = false
         }
 
         // remove items drops and stuck projectiles from map

@@ -5,4 +5,3 @@
 - would be good: config versions and auto migration
 - BlockPos toString missing - Compass to Bonus looks weird
 - horses
-- no gravity when server crash during hook
