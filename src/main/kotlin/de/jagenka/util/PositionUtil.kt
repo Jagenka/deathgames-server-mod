@@ -44,7 +44,13 @@ fun ServerPlayer.teleportTo(positionAndRotation: PositionAndRotation?): Boolean
 {
     if (positionAndRotation == null) return false
     val (x, y, z, yRot, xRot) = positionAndRotation
-    return this.teleportTo(level(), x, y, z, emptySet(), yRot, xRot, true)
+    this.connection.teleport(x, y, z, yRot, xRot)
+    val success = this.teleportTo(level(), x, y, z, emptySet(), yRot, xRot, true)
+    if (success)
+    {
+        this.forceSetRotation(yRot, false, xRot, false)
+    }
+    return success
 }
 
 fun Vec3.getBlockStatesBelow(level: BlockGetter): List<BlockState>
