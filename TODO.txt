@@ -3,3 +3,6 @@
 - BUG: mod disabled - set enable in file - dg reloadConfig - team selector doesn't work
 - more teams than spawns? -> use random spawn as fallback? needs to be tested to find errors.
 - would be good: config versions and auto migration
+- BlockPos toString missing - Compass to Bonus looks weird
+- horses
+- unstuck command redirect bowoken

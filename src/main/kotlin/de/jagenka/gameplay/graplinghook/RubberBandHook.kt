@@ -35,10 +35,7 @@ class RubberBandHook(
 
     override fun tick()
     {
-        val it = activeFlights.values.iterator()
-        while (it.hasNext())
-        {
-            val task = it.next()
+        activeFlights.values.toList().forEach { task ->
             task.tick++
 
             val player = task.player
