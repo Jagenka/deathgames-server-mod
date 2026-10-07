@@ -86,7 +86,9 @@ object SpawnManager
         // players without team must be spectators
         if (player.getDGTeam() == null) return spectatorSpawn
 
-        if (useRandomSpawnLocation) // ignore spawn locations from config and find spawn near bonus
+        if (useRandomSpawnLocation || // ignore spawn locations from config and find spawn near bonus
+            PlayerManager.getTeam(player)?.let { teamSpawns.getKeyForValue(it)?.positionAndRotation } == null // no spawn platform found for player, maybe because all captured
+        )
         {
             val tries = 1000
 
