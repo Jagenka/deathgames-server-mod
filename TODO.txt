@@ -1,5 +1,5 @@
-- ensure config in stats db!
 - start in shop, but walk out? no countdown appears, get tp-ed anyway
 - lobby unnecessary? lobby in arena bounds?
 - BUG: mod disabled - set enable in file - dg reloadConfig - team selector doesn't work
 - more teams than spawns? -> use random spawn as fallback? needs to be tested to find errors.
+- would be good: config versions and auto migration
