@@ -133,6 +133,21 @@ bonus:
         x: 119
         y: 70
         z: 119
+    - name: Nether Corner
+      pos:
+        x: -120
+        y: 68
+        z: 119
+    - name: Desert Corner
+      pos:
+        x: -120
+        y: 62
+        z: -120
+    - name: Water Corner
+      pos:
+        x: 119
+        y: 63
+        z: -120
   radius: 2 # radius from center in which to recolor based on state
   spawnInterval: 3600 # (in ticks) time between when new platforms get active
   stayTime: 2400 # (in ticks) how long platforms stay active
