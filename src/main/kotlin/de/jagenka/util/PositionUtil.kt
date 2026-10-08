@@ -1,5 +1,6 @@
 package de.jagenka.util
 
+import de.jagenka.gameplay.graplinghook.GrapplingHook
 import net.minecraft.core.BlockPos
 import net.minecraft.core.PositionAndRotation
 import net.minecraft.server.level.ServerPlayer
@@ -49,6 +50,8 @@ fun ServerPlayer.teleportTo(positionAndRotation: PositionAndRotation?): Boolean
     if (success)
     {
         this.forceSetRotation(yRot, false, xRot, false)
+
+        GrapplingHook.usableHooks.forEach { it.cancelFlight(this) }
     }
     return success
 }
