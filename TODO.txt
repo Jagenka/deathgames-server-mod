@@ -4,3 +4,4 @@
 - more teams than spawns? -> use random spawn as fallback? needs to be tested to find errors.
 - would be good: config versions and auto migration
 - horses
+- ready system weird... un-ready kinda random
