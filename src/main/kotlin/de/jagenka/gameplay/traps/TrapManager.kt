@@ -1,6 +1,5 @@
 package de.jagenka.gameplay.traps
 
-import de.jagenka.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.component.DataComponents.CUSTOM_DATA
 import net.minecraft.world.effect.MobEffectInstance
@@ -21,11 +20,11 @@ object TrapManager
     {
         if (ctx.clickedFace == Direction.UP)
         {
-            ctx.itemInHand.components?.let { components ->
+            ctx.itemInHand.components.let { components ->
                 val nbt = components.get(CUSTOM_DATA)?.tag ?: return false
 
                 val trap = Trap(
-                    position = BlockPos(ctx.clickedPos.x, ctx.clickedPos.y + 1, ctx.clickedPos.z),
+                    position = ctx.clickedPos.above(),
                     snares = nbt.getBoolean("isSnareTrap").getOrNull() ?: return false, // continue as normal, as nbt in component is invalid
                     effects = nbt.read("trapEffects", MobEffectInstance.CODEC.listOf()).getOrNull() ?: return false,
                     triggerRange = nbt.getDouble("trapTriggerRange").getOrNull() ?: return false,

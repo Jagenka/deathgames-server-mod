@@ -1,7 +1,7 @@
 package de.jagenka.gameplay.graplinghook
 
 import de.jagenka.DeathGames
-import de.jagenka.shop.Shop
+import de.jagenka.managers.ShopManager.isInShopBounds
 import net.minecraft.core.Holder
 import net.minecraft.core.particles.BlockParticleOption
 import net.minecraft.core.particles.ParticleTypes
@@ -35,10 +35,7 @@ class RubberBandHook(
 
     override fun tick()
     {
-        val it = activeFlights.values.iterator()
-        while (it.hasNext())
-        {
-            val task = it.next()
+        activeFlights.values.toList().forEach { task ->
             task.tick++
 
             val player = task.player
@@ -72,7 +69,7 @@ class RubberBandHook(
     override fun forceTheHooker(serverPlayer: ServerPlayer, itemStackInHand: ItemStack): Boolean
     {
         if (!DeathGames.running) return false
-        if (Shop.isInShopBounds(serverPlayer)) return false
+        if (serverPlayer.isInShopBounds) return false // TODO: move to ItemStackMixin
 
         if (serverPlayer.name.string in activeFlights.keys) // already hooking
         {

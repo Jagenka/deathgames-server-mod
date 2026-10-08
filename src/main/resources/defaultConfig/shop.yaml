@@ -3,10 +3,10 @@
 items: # standard items, that can be bought indefinitely. items: []  to disable.
   - row: 3
     col: 0
-    name: Bread # will be shown on hover
-    id: 'minecraft:bread' # what item will be given. is also the appearance of item in shop inventory.
-    amount: 2 # how many will be given
-    components: '' # (in string NBT format) additional components. when setting infinite:true in custom data, the item cannot be consumed.
+    name: Melon # will be shown on hover
+    id: 'minecraft:melon_slice' # what item will be given. is also the appearance of item in shop inventory.
+    amount: 8 # how many will be given
+    components: '[custom_data={infinite:true}]' # (in string NBT format) additional components. when setting infinite:true in custom data, the item cannot be consumed.
     price: 5
   - row: 0
     col: 8

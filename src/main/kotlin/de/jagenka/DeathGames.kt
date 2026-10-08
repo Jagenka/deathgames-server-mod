@@ -3,6 +3,7 @@ package de.jagenka
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.Util.minecraftServer
 import de.jagenka.commands.DeathGamesCommand
+import de.jagenka.commands.StuckCommand
 import de.jagenka.config.Config
 import de.jagenka.config.Config.isEnabled
 import de.jagenka.gameplay.traps.TrapManager
@@ -12,9 +13,9 @@ import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
 import de.jagenka.timer.Timer
-import de.jagenka.timer.Timer.tick
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
+import de.jagenka.util.surroundingBlockPos
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
@@ -37,10 +38,16 @@ import net.minecraft.world.level.GameType
 import net.minecraft.world.level.gamerules.GameRules
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.lang.management.ManagementFactory
 
 object DeathGames : DedicatedServerModInitializer
 {
     val logger: Logger = LoggerFactory.getLogger("deathgames-server-mod")
+
+    val isDebug: Boolean = ManagementFactory.getRuntimeMXBean()
+        .inputArguments
+        .any { it.startsWith("-agentlib:jdwp") || it.contains("jdwp=") }
+
     lateinit var commandBuildContext: CommandBuildContext
 
     var running = false
@@ -59,7 +66,7 @@ object DeathGames : DedicatedServerModInitializer
 
         ServerTickEvents.START_SERVER_TICK.register {
             if (!isEnabled) return@register
-            tick()
+            Timer.tick()
         }
 
         ServerLivingEntityEvents.ALLOW_DAMAGE.register { livingEntity: LivingEntity, damageSource: DamageSource, _: Float ->
@@ -70,14 +77,16 @@ object DeathGames : DedicatedServerModInitializer
 
         StatsIO.loadStats()
 
+        if (isDebug) logger.info("CURRENTLY DEBUGGING")
         logger.info("DeathGames Mod initialized!")
     }
 
     private fun registerCommands()
     {
         CommandRegistrationCallback.EVENT.register { dispatcher, commandRegistryAccess, _ ->
-            DeathGames.commandBuildContext = commandRegistryAccess
+            commandBuildContext = commandRegistryAccess
             DeathGamesCommand.register(dispatcher)
+            StuckCommand.register(dispatcher)
         }
     }
 
@@ -148,6 +157,7 @@ object DeathGames : DedicatedServerModInitializer
             it.foodData.eat(20, 1f) //set max food and saturation
             PlayerManager.addParticipant(it.name.string)
             it.setGameMode(GameType.ADVENTURE)
+            it.isNoGravity = false
         }
 
         // remove items drops and stuck projectiles from map
@@ -169,11 +179,10 @@ object DeathGames : DedicatedServerModInitializer
         DisplayManager.showSidebar()
 
         val secondsToSpawnTp = Config.misc.startInShopTpAfterSeconds
-        val (lobbySpawnX, lobbySpawnY, lobbySpawnZ) = Config.spawns.lobbySpawn
 
         PlayerManager.getOnlinePlayers().forEach {
             it.closeContainer()
-            it.adjustSpawnLocation(it.level(), BlockPos(lobbySpawnX, lobbySpawnY, lobbySpawnZ).asMinecraftBlockPos())
+            it.adjustSpawnLocation(it.level(), Config.spawns.lobbySpawn.position().surroundingBlockPos())
 
             if (Config.misc.startInShop)
             {
@@ -260,6 +269,8 @@ object DeathGames : DedicatedServerModInitializer
         DisplayManager.updateLevelDisplay()
 
         BonusManager.disableAllPlatforms()
+
+        ShopManager.reset()
 
         PlayerManager.getOnlinePlayers().forEach { it.setGameMode(GameType.SPECTATOR) }
 

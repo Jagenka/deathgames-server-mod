@@ -31,7 +31,7 @@ object StatsIO
                 it[winner] = gameEntry.winner?.name ?: "null"
             }
 
-            gameEntry.options.forEach { id, value ->
+            gameEntry.options.forEach { (id, value) ->
                 Options.insert {
                     it[gameStart] = gameEntry.gameId
                     it[optionID] = id

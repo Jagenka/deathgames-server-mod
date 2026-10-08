@@ -1,16 +1,16 @@
 package de.jagenka.managers
 
-import de.jagenka.BlockPos
 import de.jagenka.DeathGames
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
-import de.jagenka.Util.teleport
 import de.jagenka.asOptional
 import de.jagenka.config.Config
 import de.jagenka.team.DGTeam
 import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
+import de.jagenka.util.teleportTo
+import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.GameType
@@ -39,10 +39,10 @@ object PlayerManager
     fun getOnlineParticipatingPlayers() = getOnlinePlayers().filter { participatingMap.getValue(it.name.string) }
 
     fun getOnlinePlayersAround(pos: BlockPos, radius: Double) =
-        getOnlinePlayers().filter { pos.hasInRange(it.position(), radius) }
+        getOnlinePlayers().filter { pos.closerToCenterThan(it.position(), radius) }
 
     fun getOnlineParticipatingPlayersAround(pos: BlockPos, radius: Double) =
-        getOnlineParticipatingPlayers().filter { pos.hasInRange(it.position(), radius) }
+        getOnlineParticipatingPlayers().filter { pos.closerToCenterThan(it.position(), radius) }
 
     fun getPlayers(): Set<String>
     {
@@ -231,7 +231,7 @@ object PlayerManager
             doRespawn(player)
         } else
         {
-            player.teleport(Config.spawns.lobbySpawn)
+            player.teleportTo(Config.spawns.lobbySpawn)
         }
     }
 

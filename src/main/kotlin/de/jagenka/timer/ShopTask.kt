@@ -1,16 +1,16 @@
 package de.jagenka.timer
 
-import de.jagenka.BlockPos
 import de.jagenka.Util
-import de.jagenka.Util.teleport
 import de.jagenka.config.Config
 import de.jagenka.isSame
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.ShopManager
-import de.jagenka.managers.ShopManager.isInAShop
+import de.jagenka.managers.ShopManager.isOfficiallyInAShop
 import de.jagenka.util.I18n
-import de.jagenka.util.cuboidContains
+import de.jagenka.util.surroundingBlockPos
+import de.jagenka.util.teleportTo
+import de.jagenka.util.withRotation
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
@@ -39,10 +39,12 @@ object ShopTask : TimerTask
 
             if (PlayerManager.isCurrentlyDead(playerName)) return@forEach
 
-            if (player.isInAShop) // a player has legally entered a shop, an is currently in
+            val shopBoundsIndex = ShopManager.getShopBoundsIndexContaining(player)
+
+            if (player.isOfficiallyInAShop) // a player has legally entered a shop, an is currently in
             {
                 // player left shop bounds
-                if (Config.shopSettings.shopBounds.none { it.cuboidContains(player.position()) })
+                if (shopBoundsIndex == null)
                 {
                     // ignore shortly after respawning, as shop entering/exiting triggers more than once
                     if (!PlayerManager.hasRecentlyRespawned(playerName))
@@ -58,34 +60,33 @@ object ShopTask : TimerTask
             {
                 var foundInShopBounds = false
                 // but entered shop bounds
-                Config.shopSettings.shopBounds.forEachIndexed { index, bounds ->
-                    if (bounds.cuboidContains(player.position()))
+                if (shopBoundsIndex != null && shopBoundsIndex in Config.shopSettings.shopBounds.indices)
+                {
+                    foundInShopBounds = true
+                    // if their shop is closed, yeet them out!
+                    if (InactivePlayersTask.hasShopClosed(playerName))
                     {
-                        foundInShopBounds = true
-                        // if their shop is closed, yeet them out!
-                        if (InactivePlayersTask.hasShopClosed(playerName))
-                        {
-                            lastPosOutOfShop[playerName]?.let {
-                                player.teleport(it.pos, it.yaw, it.pitch)
-                                DisplayManager.sendTitleMessage(
-                                    player,
-                                    Component.literal(I18n.get("shopClosedTitle")),
-                                    Component.literal(I18n.get("shopClosedSubtitle")),
-                                    3.seconds()
-                                )
-                            }
-                        } else
-                        {
-                            // shop open for them and they entered: welcome walk-in!
-                            ShopManager.enterShop(player, ShopManager.EntryType.WALK, index)
+                        lastPosOutOfShop[playerName]?.let {
+                            player.teleportTo(it.pos.withRotation(it.yRot, it.xRot))
+                            DisplayManager.sendTitleMessage(
+                                player,
+                                Component.literal(I18n.get("shopClosedTitle")),
+                                Component.literal(I18n.get("shopClosedSubtitle")),
+                                3.seconds()
+                            )
                         }
+                    } else
+                    {
+                        // shop open for them and they entered: welcome walk-in!
+                        ShopManager.enterShop(player, ShopManager.EntryType.WALK, shopBoundsIndex)
                     }
                 }
+
                 // player is definitely in no shop
                 if (!foundInShopBounds)
                 {
                     // register their last position for shop close logic
-                    if (player.onGround() && !Util.getBlockAt(BlockPos.from(player.position()).relative(0, -1, 0))
+                    if (player.onGround() && !Util.getBlockAt(player.position().surroundingBlockPos().below())
                             .isSame(Blocks.AIR)
                     )
                     {
@@ -114,4 +115,4 @@ object ShopTask : TimerTask
     }
 }
 
-data class TPPos(val pos: Vec3, val yaw: Float, val pitch: Float)
+data class TPPos(val pos: Vec3, val yRot: Float, val xRot: Float)

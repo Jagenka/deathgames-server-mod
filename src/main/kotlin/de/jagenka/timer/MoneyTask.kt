@@ -50,5 +50,6 @@ object MoneyTask : TimerTask
 
     override fun reset()
     {
+        moneyTimer.clear()
     }
 }

@@ -1,7 +1,6 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames
-import kotlin.time.ExperimentalTime
 
 object Timer
 {
@@ -106,7 +105,6 @@ object Timer
         intervalTasks.removeIf { it.name == name }
     }
 
-    @OptIn(ExperimentalTime::class)
     fun newCustomTimer(name: String = kotlin.time.Clock.System.now().toString()): CustomTimer
     {
         val customTimer = CustomTimer(name)
@@ -121,8 +119,6 @@ object Timer
 
     fun now() = ticks
 
-    fun isRunning() = running
-
     fun start()
     {
         running = true
@@ -135,18 +131,12 @@ object Timer
 
     fun reset()
     {
-        running = false
         ticks = 0
         gameMechsPaused = true
         tasks.forEach { it.reset() }
         scheduledTasks.clear()
         intervalTasks.clear()
         customTimers.clear()
-    }
-
-    fun toggle()
-    {
-        running = !running
     }
 
     fun now(unit: DGUnit) = ticks / unit.factor
@@ -156,6 +146,11 @@ fun Int.ticks() = this * DGUnit.TICKS.factor
 fun Int.seconds() = this * DGUnit.SECONDS.factor
 fun Int.minutes() = this * DGUnit.MINUTES.factor
 fun Int.hours() = this * DGUnit.HOURS.factor
+
+fun Int.inTicks() = this / DGUnit.TICKS.factor
+fun Int.inSeconds() = this / DGUnit.SECONDS.factor
+fun Int.inMinutes() = this / DGUnit.MINUTES.factor
+fun Int.inHours() = this / DGUnit.HOURS.factor
 
 enum class DGUnit(val factor: Int)
 {

@@ -1,5 +1,6 @@
 package de.jagenka.shop
 
+import de.jagenka.commands.StuckCommand
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.ShopManager
 import de.jagenka.setCustomName
@@ -22,7 +23,9 @@ class LeaveShopEntry(playerName: String) : ShopEntry(playerName, nameForStat = "
 
     override fun onClick(): Boolean
     {
-        if (Timer.gameMechsPaused)
+        if (Timer.gameMechsPaused ||
+            StuckCommand.onCooldown.contains(playerName) // if recently unstuck, disable tp out
+        )
         {
             player?.sendPrivateMessage("Cannot leave right now!")
             return false

@@ -3,7 +3,7 @@ package de.jagenka.team
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
 import de.jagenka.util.I18n
-import de.jagenka.util.cuboidContains
+import de.jagenka.util.surroundingBlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.MenuProvider
@@ -60,5 +60,5 @@ object TeamSelectorUI
         }
     }
 
-    fun isInLobbyBounds(player: ServerPlayer): Boolean = lobbyBounds.cuboidContains(player.position())
+    fun isInLobbyBounds(player: ServerPlayer): Boolean = lobbyBounds.isInside(player.position().surroundingBlockPos())
 }

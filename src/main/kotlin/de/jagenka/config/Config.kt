@@ -20,6 +20,7 @@ object Config
     private val serializer = Yaml(
         configuration = YamlConfiguration(
             sequenceStyle = SequenceStyle.Block,
+            encodeDefaults = true,
         )
     )
 
@@ -70,14 +71,14 @@ object Config
             if (!Files.exists(pathToConfFile))
             {
                 Files.createFile(pathToConfFile)
-                writeGeneralConfig()
+                writeGeneralConfigIfMissing()
             }
 
             pathToShopConfFile = configFolder.resolve("shop.yaml")
             if (!Files.exists(pathToShopConfFile))
             {
                 Files.createFile(pathToShopConfFile)
-                writeShopConfig()
+                writeShopConfigIfMissing()
             }
 
             load()
@@ -115,25 +116,85 @@ object Config
         }
     }
 
-    fun writeGeneralConfig()
+    private fun writeGeneralConfigIfMissing()
     {
+        val stringFromDefault = Config::class.java.getResourceAsStream("/defaultConfig/config.yaml").use { stream ->
+            stream?.bufferedReader()?.readText()
+        }
+
+        var stringToWrite = ""
+
+        if (stringFromDefault != null)
+        {
+            try
+            {
+                // if default is decodable, copy default later
+                serializer.decodeFromString<MainConfig>(stringFromDefault)
+                stringToWrite = stringFromDefault
+            } catch (_: Exception)
+            {
+            }
+        }
+
+        if (stringToWrite.isEmpty())
+        {
+            // if default wasn't decodable, use Config defaults
+            stringToWrite = serializer.encodeToString(MainConfig())
+        }
+
         try
         {
-            Files.writeString(pathToConfFile, serializer.encodeToString(internalConfigEntry))
+            // write working defaults to file
+            Files.writeString(pathToConfFile, stringToWrite)
         } catch (e: Exception)
         {
             DeathGames.logger.error("Error while storing general config!", e)
         }
     }
 
-    fun writeShopConfig()
+    fun writeShopConfigIfMissing()
     {
+        val stringFromDefault = Config::class.java.getResourceAsStream("/defaultConfig/shop.yaml").use { stream ->
+            stream?.bufferedReader()?.readText()
+        }
+
+        var stringToWrite = ""
+
+        if (stringFromDefault != null)
+        {
+            try
+            {
+                // if default is decodable, copy default later
+                serializer.decodeFromString<ShopConfig>(stringFromDefault)
+                stringToWrite = stringFromDefault
+            } catch (_: Exception)
+            {
+            }
+        }
+
+        if (stringToWrite.isEmpty())
+        {
+            // if default wasn't decodable, use Config defaults
+            stringToWrite = serializer.encodeToString(ShopConfig())
+        }
+
         try
         {
-            Files.writeString(pathToShopConfFile, serializer.encodeToString(shopConfig))
+            // write working defaults to file
+            Files.writeString(pathToShopConfFile, stringToWrite)
         } catch (e: Exception)
         {
-            DeathGames.logger.error("Error while storing shop config!", e)
+            DeathGames.logger.error("Error while storing general config!", e)
         }
+    }
+
+    fun debugSerializeDefaultConfig(): String
+    {
+        return serializer.encodeToString(internalConfigEntry)
+    }
+
+    fun debugSerializeShopConfig(): String
+    {
+        return serializer.encodeToString(shopConfig)
     }
 }

@@ -8,7 +8,7 @@ import de.jagenka.managers.DisplayManager.sendPrivateMessage
 import de.jagenka.managers.PlayerManager.getDGTeam
 import de.jagenka.managers.PlayerManager.getTeam
 import de.jagenka.stats.StatManager
-import de.jagenka.stats.gib
+import de.jagenka.stats.getOrPutDefaultIfMissing
 import de.jagenka.team.DGTeam
 import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
@@ -88,9 +88,9 @@ object KillManager
             Mode.PLAYER -> playerKillStreak[attackerName] = playerKillStreak.getValue(attackerName) + 1
             Mode.TEAM -> teamKillStreak[attacker.getDGTeam()] = teamKillStreak.getValue(attacker.getDGTeam()) + 1
         }
-        if (getKillStreak(attackerName) > StatManager.personalStats.gib(attackerName).highestKillStreak)
+        if (getKillStreak(attackerName) > StatManager.personalStats.getOrPutDefaultIfMissing(attackerName).highestKillStreak)
         {
-            StatManager.personalStats.gib(attackerName).highestKillStreak = getKillStreak(attackerName)
+            StatManager.personalStats.getOrPutDefaultIfMissing(attackerName).highestKillStreak = getKillStreak(attackerName)
         }
 
         MoneyManager.handleMoneyOnPlayerKill(attacker, deceased)

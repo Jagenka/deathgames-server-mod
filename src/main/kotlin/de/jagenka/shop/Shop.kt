@@ -1,10 +1,9 @@
 package de.jagenka.shop
 
 import de.jagenka.DeathGames
-import de.jagenka.config.Config
 import de.jagenka.managers.MoneyManager
+import de.jagenka.managers.ShopManager.isInShopBounds
 import de.jagenka.util.I18n
-import de.jagenka.util.cuboidContains
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.MenuProvider
@@ -29,7 +28,7 @@ object Shop
     @JvmStatic
     fun showInterfaceIfInShop(player: ServerPlayer): Boolean
     {
-        if (DeathGames.running && isInShopBounds(player))
+        if (DeathGames.running && player.isInShopBounds)
         {
             showInterface(player)
             return true
@@ -79,12 +78,6 @@ object Shop
     fun reset()
     {
         this.currentUpgradableLevels.clear()
-    }
-
-    fun isInShopBounds(player: Player?): Boolean
-    {
-        return player != null && Config.shopSettings.shopBounds.any { it.cuboidContains(player.position()) }
-
     }
 
     fun getNotEnoughMoneyString(price: Int) = I18n.get("notEnoughMoney", mapOf("amount" to MoneyManager.getCurrencyString(price)))
