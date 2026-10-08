@@ -81,7 +81,7 @@ object SpawnManager
         }
     }
 
-    private fun getSpawnCoordinates(player: ServerPlayer): PositionAndRotation
+    fun getSpawnCoordinates(player: ServerPlayer): PositionAndRotation
     {
         // players without team must be spectators
         if (player.getDGTeam() == null) return spectatorSpawn

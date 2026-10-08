@@ -4,7 +4,9 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import de.jagenka.DeathGames
 import de.jagenka.config.Config
-import de.jagenka.managers.ShopManager.getSpawnInShop
+import de.jagenka.managers.ShopManager
+import de.jagenka.managers.SpawnManager
+import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.inSeconds
 import de.jagenka.timer.seconds
@@ -14,15 +16,17 @@ import de.jagenka.util.teleportTo
 import de.jagenka.util.withRotation
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
+import net.minecraft.network.chat.Component
 
 object StuckCommand
 {
     /**
-     * set of player names, that cannot use stuck command right now
+     * map of player names to ticks remaining, in which they cannot use stuck command
      */
     val onCooldown = mutableSetOf<String>()
 
     val cooldownTime = 30.seconds()
+    val unstuckDelay = 5.seconds()
 
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>)
     {
@@ -50,19 +54,26 @@ object StuckCommand
         {
             if (DeathGames.running)
             {
-                val teleportDestination = getSpawnInShop(player.level()).withRotation(0f, 0f)
-                if (player.teleportTo(teleportDestination))
-                {
-                    onCooldown += player.name.string
-                    Timer.schedule(cooldownTime) {
-                        onCooldown -= player.name.string
+                it.source.sendSystemMessage(Component.literal("Un-stucking in ${unstuckDelay.inSeconds()} seconds..."))
+                Timer.schedule(unstuckDelay) {
+                    val teleportDestination = if (!InactivePlayersTask.hasShopClosed(player.name.string))
+                    {
+                        ShopManager.getSpawnInShop(player.level()).withRotation(0f, 0f)
+                    } else
+                    {
+                        SpawnManager.getSpawnCoordinates(player)
                     }
-                    sendSuccess(it.source, "Unstuck! Command on cooldown for ${cooldownTime.inSeconds()} seconds.")
-                    return 0
-                } else
-                {
-                    sendFailure(it.source, "Error :(")
-                    return -1
+                    if (player.teleportTo(teleportDestination))
+                    {
+                        onCooldown += player.name.string
+                        Timer.schedule(cooldownTime) {
+                            onCooldown -= player.name.string
+                        }
+                        sendSuccess(it.source, "Unstuck! Command on cooldown for ${cooldownTime.inSeconds()} seconds.")
+                    } else
+                    {
+                        sendFailure(it.source, "Error :(")
+                    }
                 }
             } else
             {
@@ -70,13 +81,12 @@ object StuckCommand
                 if (player.teleportTo(teleportDestination))
                 {
                     sendSuccess(it.source, "Unstuck!")
-                    return 0
                 } else
                 {
                     sendFailure(it.source, "Error :(")
-                    return -1
                 }
             }
         }
+        return 0
     }
 }
