@@ -161,5 +161,5 @@ data class Platform(val name: String, @Serializable(with = BlockPosSerializer::c
 
     fun containsPlayer(player: ServerPlayer) = getBoundingBox().isInside(player.position().surroundingBlockPos())
 
-    override fun toString() = "$name $pos"
+    override fun toString() = "$name (${pos.x}, ${pos.y}, ${pos.z})"
 }
