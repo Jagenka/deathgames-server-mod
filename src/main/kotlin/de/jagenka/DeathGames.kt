@@ -13,7 +13,6 @@ import de.jagenka.shop.Shop
 import de.jagenka.stats.StatManager
 import de.jagenka.stats.StatsIO
 import de.jagenka.timer.Timer
-import de.jagenka.timer.Timer.tick
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
 import de.jagenka.util.surroundingBlockPos
@@ -67,7 +66,7 @@ object DeathGames : DedicatedServerModInitializer
 
         ServerTickEvents.START_SERVER_TICK.register {
             if (!isEnabled) return@register
-            tick()
+            Timer.tick()
         }
 
         ServerLivingEntityEvents.ALLOW_DAMAGE.register { livingEntity: LivingEntity, damageSource: DamageSource, _: Float ->
