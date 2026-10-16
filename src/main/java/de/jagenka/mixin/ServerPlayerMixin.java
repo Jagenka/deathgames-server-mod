@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.config.Config;
+import de.jagenka.GameState;
 import de.jagenka.managers.KillManager;
 import de.jagenka.stats.StatManager;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +22,7 @@ public class ServerPlayerMixin
     @Inject(method = "die", at = @At("TAIL"))
     private void onDeath(DamageSource damageSource, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         try
         {
@@ -43,7 +43,7 @@ public class ServerPlayerMixin
     @Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZLnet/minecraft/util/Prediction;)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"), cancellable = true)
     private void preventDrop(ItemStack itemStack, boolean thrownFromHand, Prediction prediction, CallbackInfoReturnable<ItemEntity> cir)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         cir.setReturnValue(null);
         cir.cancel();
@@ -53,7 +53,7 @@ public class ServerPlayerMixin
     @Inject(method = "drop(Z)V", at = @At("HEAD"), cancellable = true)
     private void preventDrop(boolean all, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         ci.cancel();
         ((ServerPlayer) (Object) this).inventoryMenu.sendAllDataToRemote();
@@ -62,7 +62,7 @@ public class ServerPlayerMixin
     @Inject(method = "awardStat", at = @At("HEAD"))
     private void increaseStat(Stat<?> stat, int amount, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         if (!((ServerPlayer) (Object) this).isSpectator())
         {

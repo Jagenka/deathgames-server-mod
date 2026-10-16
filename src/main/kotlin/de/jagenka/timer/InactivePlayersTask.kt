@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames.currentlyEnding
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.KillManager
@@ -29,7 +29,7 @@ object InactivePlayersTask : TimerTask
         // if reveal is disabled, don't do anything
         if (!Config.misc.enableReveal) return
 
-        if (currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         inactiveTimer.forEach { (playerName, time) ->
             val personalRevealTime = getPersonalRevealTime(playerName).toInt()

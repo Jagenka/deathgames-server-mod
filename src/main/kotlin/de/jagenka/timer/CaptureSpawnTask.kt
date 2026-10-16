@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames.currentlyEnding
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.gameplay.rendering.CaptureAnimation
 import de.jagenka.managers.DGSpawn
@@ -31,7 +31,7 @@ object CaptureSpawnTask : TimerTask
     {
         if (!Config.spawns.enableCapture) return
 
-        if (currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         val playersOnAnySpawn = mutableListOf<Pair<ServerPlayer, DGSpawn>>()
 

@@ -1,6 +1,6 @@
 package de.jagenka.shop
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.managers.MoneyManager
 import de.jagenka.managers.ShopManager.isInShopBounds
 import de.jagenka.util.I18n
@@ -28,7 +28,7 @@ object Shop
     @JvmStatic
     fun showInterfaceIfInShop(player: ServerPlayer): Boolean
     {
-        if (DeathGames.running && player.isInShopBounds)
+        if (GameState.current in listOf(GameState.STARTING, GameState.RUNNING) && player.isInShopBounds) // TODO for later: show interface also in preparing lobby?
         {
             showInterface(player)
             return true

@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.config.Config;
+import de.jagenka.GameState;
 import de.jagenka.stats.StatManager;
 import net.minecraft.world.damagesource.CombatTracker;
 import net.minecraft.world.damagesource.DamageSource;
@@ -21,14 +21,14 @@ public class CombatTrackerMixin
     private LivingEntity mob;
 
     @Inject(method = "recordDamage", at = @At("TAIL"))
-    private void trackPlayerDamage(DamageSource damageSource, float damage, CallbackInfo ci)
+    private void trackPlayerDamage(DamageSource source, float damage, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         if (!(this.mob instanceof Player damagedPlayer)) return;
         StatManager.addDamageTaken(damagedPlayer.getName().getString(), damage);
 
-        if (!(damageSource.getEntity() instanceof Player attackingPlayer))
+        if (!(source.getEntity() instanceof Player attackingPlayer))
             return;
         StatManager.addDamageDealt(attackingPlayer.getName().getString(), damage);
     }

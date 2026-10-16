@@ -1,6 +1,7 @@
 package de.jagenka.timer
 
 import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.team.DGTeam
@@ -22,7 +23,7 @@ object GameOverTask : TimerTask
 
     override fun run()
     {
-        if (DeathGames.currentlyEnding)
+        if (GameState.current == GameState.ENDING)
         {
             PlayerManager.getOnlinePlayers().forEach { it.setGameMode(GameType.SPECTATOR) }
         }

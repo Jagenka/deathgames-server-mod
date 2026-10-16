@@ -5,7 +5,6 @@ import de.jagenka.Util.minecraftServer
 import de.jagenka.commands.DeathGamesCommand
 import de.jagenka.commands.StuckCommand
 import de.jagenka.config.Config
-import de.jagenka.config.Config.isEnabled
 import de.jagenka.gameplay.traps.TrapManager
 import de.jagenka.managers.*
 import de.jagenka.managers.PlayerManager.getDGTeam
@@ -50,11 +49,7 @@ object DeathGames : DedicatedServerModInitializer
 
     lateinit var commandBuildContext: CommandBuildContext
 
-    var running = false
-
-    var currentlyStarting = false
-    var currentlyEnding = false
-
+    // TODO: move current game id somewhere else?
     var gameId: Long? = null
         private set
 
@@ -65,7 +60,7 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         ServerTickEvents.START_SERVER_TICK.register {
-            if (!isEnabled) return@register
+            if (GameState.modDisabled) return@register
             Timer.tick()
         }
 
@@ -76,6 +71,8 @@ object DeathGames : DedicatedServerModInitializer
         registerCommands()
 
         StatsIO.loadStats()
+
+        GameState.current = if (Config.general.enabled) GameState.PREPARING else GameState.DISABLED
 
         if (isDebug) logger.info("CURRENTLY DEBUGGING")
         logger.info("DeathGames Mod initialized!")
@@ -92,8 +89,8 @@ object DeathGames : DedicatedServerModInitializer
 
     fun startGameWithCountdown()
     {
-        if (!isEnabled) return
-        if (currentlyStarting) return
+        if (GameState.modDisabled) return
+        if (GameState.current == GameState.STARTING) return
         if (PlayerManager.getNonEmptyTeams().size < 2)
         {
             DisplayManager.sendChatMessage(
@@ -102,7 +99,7 @@ object DeathGames : DedicatedServerModInitializer
             return
         }
 
-        currentlyStarting = true
+        GameState.current = GameState.STARTING
 
         PlayerManager.getOnlinePlayers().forEach { player ->
             player.closeContainer()
@@ -130,11 +127,9 @@ object DeathGames : DedicatedServerModInitializer
 
     fun startGame()
     {
-        if (!isEnabled) return
+        if (GameState.modDisabled) return
 
         gameId = System.currentTimeMillis()
-
-        currentlyStarting = false
 
         val teamPlayers = PlayerManager.getTeamPlayers()
 
@@ -199,7 +194,7 @@ object DeathGames : DedicatedServerModInitializer
         }
 
         Timer.start()
-        running = true
+        GameState.current = GameState.RUNNING
     }
 
     private fun postPrep()
@@ -228,11 +223,11 @@ object DeathGames : DedicatedServerModInitializer
 
     fun stopGame()
     {
-        if (!isEnabled) return
+        if (GameState.modDisabled) return
 
         StatManager.gameStats.gameEnd = System.currentTimeMillis()
 
-        currentlyEnding = true
+        GameState.current = GameState.ENDING
 
         val winners = mutableListOf<Component>()
         val onlineParticipatingTeams = PlayerManager.getOnlineParticipatingTeams()
@@ -297,8 +292,7 @@ object DeathGames : DedicatedServerModInitializer
             SpawnManager.resetSpawnColoring()
 
             PlayerManager.clearParticipatingStatusForEveryone()
-            running = false
-            currentlyEnding = false
+            GameState.current = GameState.PREPARING
         }
     }
 }

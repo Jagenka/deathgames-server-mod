@@ -1,6 +1,6 @@
 package de.jagenka.gameplay.graplinghook
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.managers.ShopManager.isInShopBounds
 import net.minecraft.core.Holder
 import net.minecraft.core.particles.BlockParticleOption
@@ -68,7 +68,7 @@ class RubberBandHook(
 
     override fun forceTheHooker(serverPlayer: ServerPlayer, itemStackInHand: ItemStack): Boolean
     {
-        if (!DeathGames.running) return false
+        if (GameState.current != GameState.RUNNING) return false
         if (serverPlayer.isInShopBounds) return false // TODO: move to ItemStackMixin
 
         if (serverPlayer.name.string in activeFlights.keys) // already hooking

@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 
 object Timer
 {
@@ -43,13 +43,13 @@ object Timer
     {
         if (!this.running) return
 
-        if (!DeathGames.running) DeathGames.currentlyEnding = false
+        // TODO: if (!DeathGames.running) DeathGames.currentlyEnding = false ???
 
         ticks++
 
         tasks.forEach {
             if (gameMechsPaused && it.isGameMechanic) return@forEach
-            if (it.onlyInGame && !DeathGames.running) return@forEach
+            if (it.onlyInGame && GameState.current != GameState.RUNNING) return@forEach
             if (ticks % it.runEvery == 0) it.run()
         }
 

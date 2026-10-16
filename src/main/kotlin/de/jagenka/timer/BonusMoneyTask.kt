@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.managers.BonusManager
 import de.jagenka.managers.DisplayManager
@@ -30,7 +30,7 @@ object BonusMoneyTask : TimerTask
         // if bonus platforms are disabled, don't do anything
         if (!Config.bonus.enableBonusPlatforms) return
 
-        if (DeathGames.currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         PlayerManager.getOnlinePlayers().forEach {
             val playerName = it.name.string

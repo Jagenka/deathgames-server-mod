@@ -1,6 +1,6 @@
 package de.jagenka.managers
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.gameplay.graplinghook.GrapplingHook
 import de.jagenka.gameplay.traps.TrapManager
@@ -47,7 +47,7 @@ object KillManager
             }
         }
 
-        if (!DeathGames.running) return
+        if (GameState.current != GameState.RUNNING) return
 
         removeOneRespawn(deceased.name.string)
 
@@ -76,7 +76,7 @@ object KillManager
     @JvmStatic
     fun handlePlayerKill(attacker: ServerPlayer, deceased: ServerPlayer)
     {
-        if (!DeathGames.running) return
+        if (GameState.current != GameState.RUNNING) return
 
         if (attacker == deceased) return
         if (attacker.getDGTeam() == deceased.getDGTeam()) return

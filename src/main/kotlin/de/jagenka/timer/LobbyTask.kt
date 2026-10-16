@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isOp
@@ -19,7 +19,7 @@ object LobbyTask : TimerTask
 
     override fun run()
     {
-        if (DeathGames.running) return
+        if (GameState.current == GameState.RUNNING) return
 
         DisplayManager.resetBossBars()
 
@@ -30,7 +30,7 @@ object LobbyTask : TimerTask
             }
             if (TeamSelectorUI.isInLobbyBounds(player))
             {
-                if (!DeathGames.currentlyStarting)
+                if (GameState.current == GameState.PREPARING)
                 {
                     DisplayManager.sendMessageToHotbar(Component.literal(I18n.get("openTeamUI")))
                 }

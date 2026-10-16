@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager
@@ -31,19 +32,20 @@ object DeathGamesCommand
 {
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>)
     {
-        val literalArgumentBuilder = Commands.literal("deathgames")
+        val literalArgumentBuilder = literal("deathgames")
             .then(
                 literal("start")
                     .requires { it.isAdmin() }
                     .executes {
-                        if (!DeathGames.running) DeathGames.startGameWithCountdown()
+                        if (GameState.current == GameState.PREPARING) DeathGames.startGameWithCountdown()
+                        else it.source.sendFailure(Component.literal("Game is already running!"))
                         return@executes 0
                     })
             .then(
                 literal("stop")
                     .requires { it.isAdmin() }
                     .executes {
-                        if (DeathGames.running) DeathGames.stopGame()
+                        if (GameState.current == GameState.RUNNING) DeathGames.stopGame()
                         else it.source.sendFailure(Component.literal("Game is not running!"))
                         return@executes 0
                     })
@@ -148,7 +150,7 @@ object DeathGamesCommand
                 literal("shufflespawns")
                     .requires { it.isAdmin() }
                     .executes {
-                        if (DeathGames.running) SpawnManager.shuffleSpawns()
+                        if (GameState.current == GameState.RUNNING) SpawnManager.shuffleSpawns()
                         else it.source.sendFailure(Component.literal("Game is not running!"))
                         return@executes 0
                     }
@@ -233,7 +235,7 @@ object DeathGamesCommand
         player: ServerPlayer
     )
     {
-        if (DeathGames.running)
+        if (GameState.current == GameState.RUNNING)
         {
             context.source.sendFailure(Component.literal("Cannot join while game is running!"))
             return
@@ -258,7 +260,7 @@ object DeathGamesCommand
 
     private fun handleJoinTeam(context: CommandContext<CommandSourceStack>, teamName: String)
     {
-        if (DeathGames.running)
+        if (GameState.current == GameState.RUNNING)
         {
             context.source.sendFailure(Component.literal("Cannot join while game is running!"))
             return

@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.config.Config;
+import de.jagenka.GameState;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +14,7 @@ public class InventoryMenuMixin
     @Inject(method = "slotsChanged", at = @At("HEAD"), cancellable = true)
     private void preventOnContentChanged(Container container, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         ci.cancel();
     }

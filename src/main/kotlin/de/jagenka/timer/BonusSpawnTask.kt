@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames.currentlyEnding
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.managers.BonusManager
 import de.jagenka.timer.BonusSpawnState.*
@@ -22,7 +22,7 @@ object BonusSpawnTask : TimerTask
         // if bonus platforms are disabled, don't do anything
         if (!Config.bonus.enableBonusPlatforms) return
 
-        if (currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         if (time >= when (currentState)
             {

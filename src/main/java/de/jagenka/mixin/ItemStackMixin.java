@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.config.Config;
+import de.jagenka.GameState;
 import de.jagenka.gameplay.graplinghook.GrapplingHook;
 import de.jagenka.gameplay.traps.TrapManager;
 import de.jagenka.managers.ShopManager;
@@ -30,7 +30,7 @@ public class ItemStackMixin
     @Inject(method = "useOn", at = @At("HEAD"), cancellable = true)
     public void useOnBlock(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         // Traps
         if (context.getItemInHand().getItem() == Items.BAT_SPAWN_EGG)
@@ -53,7 +53,7 @@ public class ItemStackMixin
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void use(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         ItemStack stackInHand = player.getItemInHand(hand);
 
@@ -90,7 +90,7 @@ public class ItemStackMixin
     @Inject(method = "consume", at = @At("HEAD"), cancellable = true)
     private void preventConsumptionOnInfiniteItems(int amount, LivingEntity owner, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         CustomData customData = ((ItemStack) (Object) this).getComponents().get(DataComponents.CUSTOM_DATA);
         if (customData != null && OptionalsKt.getOrDefault(customData.tag.getBoolean("infinite"), false))

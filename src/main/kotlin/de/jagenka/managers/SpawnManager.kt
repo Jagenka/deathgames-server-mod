@@ -1,7 +1,7 @@
 package de.jagenka.managers
 
 import com.mojang.brigadier.StringReader
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.Util
 import de.jagenka.config.Config
 import de.jagenka.managers.DisplayManager.sendChatMessage
@@ -253,7 +253,7 @@ object SpawnManager
 
         colorSpawns()
 
-        if (DeathGames.running) sendChatMessage("Spawns shuffled!")
+        if (GameState.current == GameState.RUNNING) sendChatMessage("Spawns shuffled!")
     }
 
     fun colorSpawns()

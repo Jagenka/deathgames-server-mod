@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.config.Config;
+import de.jagenka.GameState;
 import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
@@ -18,7 +18,7 @@ public class PlayerListMixin
     @Inject(method = "respawn", at = @At("TAIL"))
     private void respawnPlayer(ServerPlayer serverPlayer, boolean keepAllPlayerData, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         ServerPlayer newPlayer = cir.getReturnValue();
         de.jagenka.managers.PlayerManager.handleRespawn(newPlayer);
@@ -27,7 +27,7 @@ public class PlayerListMixin
     @Inject(method = "placeNewPlayer", at = @At("TAIL"))
     private void onPlayerConnect(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         de.jagenka.managers.PlayerManager.onPlayerJoin(player);
     }
@@ -35,7 +35,7 @@ public class PlayerListMixin
     @Inject(method = "remove", at = @At("HEAD"))
     private void onPlayerLeave(ServerPlayer player, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         de.jagenka.managers.PlayerManager.onPlayerLeave(player);
     }

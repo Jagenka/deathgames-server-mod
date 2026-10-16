@@ -27,9 +27,6 @@ object Config
     var internalConfigEntry = MainConfig()
     var shopConfig = ShopConfig()
 
-    val isEnabled
-        get() = internalConfigEntry.general.enabled
-
     val general
         get() = internalConfigEntry.general
 

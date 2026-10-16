@@ -1,6 +1,6 @@
 package de.jagenka.mixin;
 
-import de.jagenka.config.Config;
+import de.jagenka.GameState;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +21,7 @@ public class CraftingMenuMixin
     @Inject(method = "slotChangedCraftingGrid", at = @At("HEAD"), cancellable = true)
     private static void preventResultUpdating(AbstractContainerMenu abstractContainerMenu, ServerLevel serverLevel, Player player, CraftingContainer craftingContainer, ResultContainer resultContainer, @org.jspecify.annotations.Nullable RecipeHolder<CraftingRecipe> recipeHolder, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         ci.cancel();
     }
@@ -29,7 +29,7 @@ public class CraftingMenuMixin
     @Inject(method = "slotsChanged", at = @At("HEAD"), cancellable = true)
     private void preventOnContentChanged(Container container, CallbackInfo ci)
     {
-        if (!Config.INSTANCE.isEnabled()) return;
+        if (GameState.Companion.getModDisabled()) return;
 
         ci.cancel();
     }

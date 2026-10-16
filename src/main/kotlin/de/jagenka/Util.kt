@@ -2,7 +2,6 @@ package de.jagenka
 
 import com.mojang.brigadier.StringReader
 import de.jagenka.config.Config
-import de.jagenka.config.Config.isEnabled
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.util.component1
@@ -47,7 +46,7 @@ object Util
             Config.lateLoadConfig()
         }
 
-        if (!isEnabled) return
+        if (GameState.modDisabled) return
 
         this.minecraftServer?.let { server ->
             server.scoreboard.playerTeams.toList().forEach { team -> server.scoreboard.removePlayerTeam(team) }

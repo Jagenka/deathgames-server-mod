@@ -1,6 +1,6 @@
 package de.jagenka.managers
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.Util
 import de.jagenka.Util.ifServerLoaded
 import de.jagenka.asOptional
@@ -67,7 +67,9 @@ object PlayerManager
      */
     fun addPlayerToTeam(player: ServerPlayer, team: DGTeam): Boolean
     {
-        if (DeathGames.running) return false
+        // can only join team when in preparing state
+        if (GameState.current != GameState.PREPARING) return false
+
         val playerName = player.name.string
         if (teamRegistry[playerName] == team) return false
         if (canPlayerJoin.getValue(playerName))
@@ -188,7 +190,7 @@ object PlayerManager
             ifServerLoaded { server ->
                 server.scoreboard.removePlayerFromTeam(player.name.string)
             }
-            if (DeathGames.running)
+            if (GameState.current != GameState.PREPARING)
             {
                 SpawnManager.teleportPlayerToSpawn(player)
                 player.setGameMode(GameType.SPECTATOR)
@@ -198,7 +200,7 @@ object PlayerManager
         DisplayManager.updateLevelDisplay()
         DisplayManager.resetBossBars()
 
-        if (!DeathGames.running && Util.minecraftServer?.playerList?.isOp(player.nameAndId()) != true) //is not op
+        if (GameState.current == GameState.PREPARING && player.isNotOp())
         {
             player.inventory.clearContent()
             player.setGameMode(GameType.ADVENTURE)
@@ -208,7 +210,7 @@ object PlayerManager
     @JvmStatic
     fun onPlayerLeave(player: ServerPlayer)
     {
-        if (!DeathGames.running) player.kickFromDGTeam()
+        if (GameState.current == GameState.PREPARING) player.kickFromDGTeam()
         ReadyCheck.makeUnready(player.name.string)
     }
 
@@ -221,7 +223,7 @@ object PlayerManager
     @JvmStatic
     fun handleRespawn(player: ServerPlayer)
     {
-        if (DeathGames.running)
+        if (GameState.current != GameState.PREPARING)
         {
             val playerName = player.name.string
             currentlyDead.remove(playerName)
@@ -273,6 +275,7 @@ object PlayerManager
         return true
     }
 
+    // TODO: remove?
     fun resetForGameStart()
     {
         currentlyDead.clear()
@@ -280,4 +283,5 @@ object PlayerManager
     }
 
     fun ServerPlayer.isOp(): Boolean = this.level().server.playerList.isOp(this.nameAndId())
+    fun ServerPlayer.isNotOp(): Boolean = !this.isOp()
 }

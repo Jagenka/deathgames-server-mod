@@ -2,7 +2,7 @@ package de.jagenka.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.managers.ShopManager
 import de.jagenka.managers.SpawnManager
@@ -52,38 +52,48 @@ object StuckCommand
             return -1
         } else
         {
-            if (DeathGames.running)
+            when (GameState.current)
             {
-                it.source.sendSystemMessage(Component.literal("Un-stucking in ${unstuckDelay.inSeconds()} seconds..."))
-                Timer.schedule(unstuckDelay) {
-                    val teleportDestination = if (!InactivePlayersTask.hasShopClosed(player.name.string))
-                    {
-                        ShopManager.getSpawnInShop(player.level()).withRotation(0f, 0f)
-                    } else
-                    {
-                        SpawnManager.getSpawnCoordinates(player)
+                GameState.RUNNING ->
+                {
+                    it.source.sendSystemMessage(Component.literal("Un-stucking in ${unstuckDelay.inSeconds()} seconds..."))
+                    Timer.schedule(unstuckDelay) {
+                        val teleportDestination = if (!InactivePlayersTask.hasShopClosed(player.name.string))
+                        {
+                            ShopManager.getSpawnInShop(player.level()).withRotation(0f, 0f)
+                        } else
+                        {
+                            SpawnManager.getSpawnCoordinates(player)
+                        }
+                        if (player.teleportTo(teleportDestination))
+                        {
+                            onCooldown += player.name.string
+                            Timer.schedule(cooldownTime) {
+                                onCooldown -= player.name.string
+                            }
+                            sendSuccess(it.source, "Unstuck! Command on cooldown for ${cooldownTime.inSeconds()} seconds.")
+                        } else
+                        {
+                            sendFailure(it.source, "Error :(")
+                        }
                     }
+                }
+
+                GameState.PREPARING ->
+                {
+                    val teleportDestination = Config.spawns.lobbySpawn
                     if (player.teleportTo(teleportDestination))
                     {
-                        onCooldown += player.name.string
-                        Timer.schedule(cooldownTime) {
-                            onCooldown -= player.name.string
-                        }
-                        sendSuccess(it.source, "Unstuck! Command on cooldown for ${cooldownTime.inSeconds()} seconds.")
+                        sendSuccess(it.source, "Unstuck!")
                     } else
                     {
                         sendFailure(it.source, "Error :(")
                     }
                 }
-            } else
-            {
-                val teleportDestination = Config.spawns.lobbySpawn
-                if (player.teleportTo(teleportDestination))
+
+                else ->
                 {
-                    sendSuccess(it.source, "Unstuck!")
-                } else
-                {
-                    sendFailure(it.source, "Error :(")
+                    sendFailure(it.source, "Not right now!")
                 }
             }
         }

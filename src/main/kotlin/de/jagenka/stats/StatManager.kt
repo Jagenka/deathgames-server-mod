@@ -1,6 +1,7 @@
 package de.jagenka.stats
 
 import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.Util.minecraftServer
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
@@ -62,7 +63,7 @@ object StatManager
     @JvmStatic
     fun addDamageTaken(playerName: String, amount: Float)
     {
-        if (!DeathGames.running || DeathGames.currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         personalStats.getOrPutDefaultIfMissing(playerName).damageTaken += amount
     }
@@ -70,7 +71,7 @@ object StatManager
     @JvmStatic
     fun addDamageDealt(playerName: String, amount: Float)
     {
-        if (!DeathGames.running || DeathGames.currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         personalStats.getOrPutDefaultIfMissing(playerName).damageDealt += amount
     }
@@ -78,7 +79,7 @@ object StatManager
     @JvmStatic
     fun handleStatIncrease(playerName: String, stat: Stat<*>, amount: Int)
     {
-        if (!DeathGames.running || DeathGames.currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         when (stat.value)
         {
@@ -103,7 +104,7 @@ object StatManager
 
     fun updateAccountBalanceAverage(playerName: String, currentAccountBalance: Int)
     {
-        if (!DeathGames.running || DeathGames.currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         val playerStats = personalStats.getOrPutDefaultIfMissing(playerName)
         val currentAverage = playerStats.accountBalanceAverage
@@ -115,7 +116,7 @@ object StatManager
     @JvmStatic
     fun addHealAmount(playerName: String, amount: Float)
     {
-        if (!DeathGames.running || DeathGames.currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         personalStats.getOrPutDefaultIfMissing(playerName).healthRegenerated += amount
     }
@@ -140,7 +141,7 @@ object StatManager
      */
     fun saveAllStatsAfterGame(): Boolean
     {
-        if (!DeathGames.currentlyEnding) return false
+        if (GameState.current != GameState.ENDING) return false
 
         gameStats.gameId = DeathGames.gameId ?: return false
 

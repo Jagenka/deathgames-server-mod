@@ -1,6 +1,6 @@
 package de.jagenka.team
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.util.I18n
 import de.jagenka.util.surroundingBlockPos
@@ -25,7 +25,7 @@ object TeamSelectorUI
     @JvmStatic
     fun showInterfaceIfInLobby(player: ServerPlayer): Boolean
     {
-        if (!DeathGames.running && !DeathGames.currentlyStarting && isInLobbyBounds(player))
+        if (GameState.current == GameState.PREPARING && isInLobbyBounds(player))
         {
             showInterface(player)
             return true

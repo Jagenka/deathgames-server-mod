@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isOp
@@ -27,12 +27,12 @@ object EnsureRightModeAndLocationTask : TimerTask
             // everyone needs to stay in arena, at all times
             keepInArenaBounds(player)
 
-            if (!DeathGames.running)
+            if (GameState.current == GameState.PREPARING)
             {
                 // This checks Survival OR Adventure mode
                 if (!player.gameMode.isSurvival)
                 {
-                    // Operators are allowed to be in Creative or Spectator and outside of lobby bounds.
+                    // Operators are allowed to be in Creative or Spectator and outside of lobby bounds. TODO later: explore mode acts differently
                     if (!player.isOp())
                     {
                         player.setGameMode(GameType.ADVENTURE)

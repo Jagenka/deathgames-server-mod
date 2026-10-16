@@ -1,6 +1,6 @@
 package de.jagenka.timer
 
-import de.jagenka.DeathGames.currentlyEnding
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.managers.SpawnManager
 
@@ -22,7 +22,7 @@ object ShuffleSpawnsTask : TimerTask
     {
         if (!Config.spawns.enableShuffle) return
 
-        if (currentlyEnding) return
+        if (GameState.current != GameState.RUNNING) return
 
         Timer.scheduleAt({ SpawnManager.shuffleSpawns() }, lastKillTime + shuffleKillDelay)
     }
