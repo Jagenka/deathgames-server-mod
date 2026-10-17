@@ -37,7 +37,7 @@ class GeneralConfigEntry(
     var locale: String = "en",
     var arenaBounds: BoundingBox = BoundingBox.fromCorners(BlockPos(-10, -10, -10), BlockPos(10, 10, 10)),
     var spectatorRadiusPadding: Int = 10,
-    var lobbyBounds: BoundingBox = BoundingBox.fromCorners(BlockPos(-10, 20, -10), BlockPos(10, 30, 10)),
+    var lobbyBounds: BoundingBox? = BoundingBox.fromCorners(BlockPos(-10, 20, -10), BlockPos(10, 30, 10)),
     var enabledTeams: List<DGTeam> = listOf(BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW)
 )
 
@@ -46,7 +46,7 @@ class SpawnsConfigEntry(
     var spawnPositions: List<DGSpawn> = listOf(DGSpawn(PositionAndRotation.of(Vec3.ZERO, 0f, 0f), defaultOwner = BLACK)),
     var platformRadius: Int = 4,
     var spectatorSpawn: PositionAndRotation = PositionAndRotation.of(Vec3(0.0, 5.0, 0.0), 0f, 0f),
-    var lobbySpawn: PositionAndRotation = PositionAndRotation.of(Vec3(0.0, 25.0, 0.0), 0f, 0f),
+    var lobbySpawn: PositionAndRotation? = PositionAndRotation.of(Vec3(0.0, 25.0, 0.0), 0f, 0f),
     var enableShuffle: Boolean = false,
     var shuffleInterval: Int = 2400,
     var shuffleDelayAfterKill: Int = 200,

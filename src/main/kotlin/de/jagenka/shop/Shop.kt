@@ -28,7 +28,7 @@ object Shop
     @JvmStatic
     fun showInterfaceIfInShop(player: ServerPlayer): Boolean
     {
-        if (GameState.current in listOf(GameState.STARTING, GameState.RUNNING) && player.isInShopBounds) // TODO for later: show interface also in preparing lobby?
+        if (GameState.current in listOf(GameState.PREPARING, GameState.STARTING, GameState.RUNNING) && player.isInShopBounds)
         {
             showInterface(player)
             return true

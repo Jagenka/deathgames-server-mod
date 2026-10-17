@@ -3,9 +3,11 @@ package de.jagenka.util
 import de.jagenka.gameplay.graplinghook.GrapplingHook
 import net.minecraft.core.BlockPos
 import net.minecraft.core.PositionAndRotation
+import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.Vec3
 
 /**
@@ -78,6 +80,9 @@ fun Vec3.getBlockPossBelow(): List<BlockPos>
 
     return result.map { it.below() }
 }
+
+fun BoundingBox.isNotInside(pos: Vec3i) = !this.isInside(pos)
+fun BoundingBox.isNotInside(x: Int, y: Int, z: Int) = !this.isInside(x, y, z)
 
 operator fun PositionAndRotation.component1(): Double = this.position().x
 operator fun PositionAndRotation.component2(): Double = this.position().y

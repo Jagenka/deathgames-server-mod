@@ -5,3 +5,6 @@
 - would be good: config versions and auto migration
 - horses
 - rework bonus spawning with schedules?
+- when no lobby - spawn randomly on map (fuck spawns) near shop, facing shop
+- when spawn platforms empty: random spawn near shop good? or further away from shop better?
+- when preparing: no auto tp out (? when no exit button ?), manual tp out allowed -> investigate ShopTask/ShopManager: officiallyInAShop

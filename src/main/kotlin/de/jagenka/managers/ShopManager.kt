@@ -145,6 +145,7 @@ object ShopManager
 
     /**
      * get tp position for a specific shop or a random one if index is missing or invalid
+     * TODO: return PositionAndRotation maybe
      */
     fun getSpawnInShop(level: BlockGetter, index: Int = Config.shopSettings.shopBounds.indices.random()): Vec3
     {

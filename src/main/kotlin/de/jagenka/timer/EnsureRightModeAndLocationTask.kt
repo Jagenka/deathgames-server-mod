@@ -4,6 +4,8 @@ import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isOp
+import de.jagenka.managers.SpawnManager
+import de.jagenka.util.isNotInside
 import de.jagenka.util.surroundingBlockPos
 import de.jagenka.util.teleportTo
 import de.jagenka.util.withRotation
@@ -41,8 +43,8 @@ object EnsureRightModeAndLocationTask : TimerTask
 
                 if (!player.isOp())
                 {
-                    //this keeps normies in lobby, when game is not running
-                    if (!Config.general.lobbyBounds.isInside(player.position().surroundingBlockPos()))
+                    // this keeps normies in lobby, when game is not running
+                    if (Config.general.lobbyBounds?.isInside(player.position().surroundingBlockPos()) == false)
                     {
                         player.teleportTo(Config.spawns.lobbySpawn)
                     }
@@ -53,6 +55,7 @@ object EnsureRightModeAndLocationTask : TimerTask
 
     /**
      * TP a player back to arena, if sufficiently outside.
+     * TODO: when GameState.PREPARING: adventure players also allowed to go to spectator padding radius? maybe also respawn if outside to prevent softlock
      */
     private fun keepInArenaBounds(player: ServerPlayer)
     {
@@ -89,6 +92,11 @@ object EnsureRightModeAndLocationTask : TimerTask
                 minZ.toDouble()
             ).withRotation(player.yRot, player.xRot)
         )
+
+        if (Config.general.arenaBounds.isNotInside(player.position().surroundingBlockPos()))
+        {
+            player.teleportTo(SpawnManager.findTpLocationsAround(player.level(), emptyList()).randomOrNull())
+        }
     }
 
     override fun reset()

@@ -81,6 +81,62 @@ object SpawnManager
         }
     }
 
+    /**
+     * finds random tp locations near one of the targets, or completely random in arena if no targets given
+     * @param targets may be empty, can be any number of targets, to which tp-ing near is wanted
+     * @return tp positions with rotation to tp to
+     */
+    fun findTpLocationsAround(level: BlockGetter, targets: Collection<Vec3>): List<PositionAndRotation>
+    {
+        val tries = 1000
+
+        // find potential spawn locations TODO: improve not getting impossible locations
+        return if (targets.isNotEmpty())
+        { // try spawning near a bonus platform
+            0.rangeUntil(tries).mapNotNull {
+                targets.randomOrNull()?.let { tpNearTarget ->
+                    val dist = Random.nextDouble(Config.spawns.minTpDistanceFromBonus, Config.spawns.maxTpDistanceFromBonus)
+                    val pitch = Random.nextDouble(-45.0, 45.0)
+                    val yaw = Random.nextDouble(-180.0, 180.0)
+
+                    //DeathGames.logger.info("$dist, $pitch, $yaw")
+
+                    val spawnTarget = BlockPos.containing(
+                        tpNearTarget.add(Vec3.directionFromRotation(pitch.toFloat(), yaw.toFloat()).normalize().scale(dist))
+                    )
+
+                    //DeathGames.logger.info("$target")
+
+                    val finalPos = findNearestSpawnLocationOnYAxis(level, spawnTarget)
+
+                    if (finalPos == null || Config.general.arenaBounds.isNotInside(finalPos)) return@mapNotNull null
+
+                    val rotation = finalPos.bottomCenter().vectorTo(
+                        tpNearTarget
+                    ).rotation()
+                    return@mapNotNull PositionAndRotation.of(finalPos.bottomCenter(), rotation.y, rotation.x)
+                }
+            }
+        } else // if no bonus platforms are scheduled, find random spots in arenaBounds TODO: should be obsolete if spawn near shop is preferred
+        {
+            val arenaBounds = Config.general.arenaBounds
+            0.rangeUntil(tries).mapNotNull {
+                val x = Random.nextInt(arenaBounds.minX(), arenaBounds.maxX() + 1)
+                val y = Random.nextInt(arenaBounds.minY(), arenaBounds.maxY() + 1)
+                val z = Random.nextInt(arenaBounds.minZ(), arenaBounds.maxZ() + 1)
+
+                val finalPos = findNearestSpawnLocationOnYAxis(level, BlockPos(x, y, z))
+
+                if (finalPos == null || Config.general.arenaBounds.isNotInside(finalPos)) return@mapNotNull null
+
+                val rotation = finalPos.bottomCenter().vectorTo(
+                    ShopManager.getSpawnInShop(level)
+                ).rotation()
+                return@mapNotNull PositionAndRotation.of(finalPos.bottomCenter(), rotation.y, rotation.x)
+            }
+        }
+    }
+
     fun getSpawnCoordinates(player: ServerPlayer): PositionAndRotation
     {
         // players without team must be spectators
@@ -90,67 +146,26 @@ object SpawnManager
             PlayerManager.getTeam(player)?.let { teamSpawns.getKeyForValue(it)?.positionAndRotation } == null // no spawn platform found for player, maybe because all captured
         )
         {
-            val tries = 1000
-
             val level = player.level()
-            val selectedPlatforms = BonusManager.getSelectedPlatforms()
 
-            // find potential spawn locations TODO: improve not getting impossible locations
-            val possibleTargets = if (selectedPlatforms.isNotEmpty())
-            { // try spawning near a bonus platform
-                0.rangeUntil(tries).mapNotNull {
-                    selectedPlatforms.randomOrNull()?.let { platform ->
-                        val dist = Random.nextDouble(Config.spawns.minTpDistanceFromBonus, Config.spawns.maxTpDistanceFromBonus)
-                        val pitch = Random.nextDouble(-45.0, 45.0)
-                        val yaw = Random.nextDouble(-180.0, 180.0)
-
-                        //DeathGames.logger.info("$dist, $pitch, $yaw")
-
-                        val target = BlockPos.containing(
-                            Vec3.atCenterOf(platform.pos.above())
-                                .add(Vec3.directionFromRotation(pitch.toFloat(), yaw.toFloat()).normalize().scale(dist))
-                        )
-
-                        //DeathGames.logger.info("$target")
-
-                        val finalPos = findNearestSpawnLocationOnYAxis(level, target)
-
-                        return@mapNotNull if (finalPos != null && Config.general.arenaBounds.isInside(finalPos)) finalPos else null
-                    }
+            val tpCloseToTargets = BonusManager.getSelectedPlatforms().map { Vec3.atCenterOf(it.pos.above()) }
+                .ifEmpty {
+                    listOf(ShopManager.getSpawnInShop(level))
                 }
-            } else // if no bonus platforms are scheduled, find random spots in arenaBounds
-            {
-                val arenaBounds = Config.general.arenaBounds
-                0.rangeUntil(tries).mapNotNull {
-                    val x = Random.nextInt(arenaBounds.minX(), arenaBounds.maxX() + 1)
-                    val y = Random.nextInt(arenaBounds.minY(), arenaBounds.maxY() + 1)
-                    val z = Random.nextInt(arenaBounds.minZ(), arenaBounds.maxZ() + 1)
-
-                    val finalPos = findNearestSpawnLocationOnYAxis(level, BlockPos(x, y, z))
-
-                    return@mapNotNull if (finalPos != null && finalPos.isLegalSpawnPosition(level)) finalPos else null
-                }
-            }
+            val potentialTpTargets = findTpLocationsAround(level, tpCloseToTargets)
 
             val (teamMembers, enemies) = PlayerManager.getOnlineParticipatingPlayers().partition { it.team == player.team }
 
-            val sortedResults = possibleTargets
-                .map { Vec3.atBottomCenterOf(it) }
-                .map { pos ->
+            val sortedResults = potentialTpTargets
+                .map { posAndRot ->
                     // when there are now enemies found, this position is perfect
-                    val enemyDist = enemies.minOfOrNull { it.position().distanceToSqr(pos) } ?: Double.MAX_VALUE
+                    val enemyDist = enemies.minOfOrNull { it.position().distanceToSqr(posAndRot.position()) } ?: Double.MAX_VALUE
                     // when no mates are found, just look an enemy distance
-                    val teamDist = teamMembers.minOfOrNull { it.position().distanceToSqr(pos) } ?: 0.0 // TODO: weigh this more?
-                    return@map pos to (enemyDist - teamDist)
+                    val teamDist = teamMembers.minOfOrNull { it.position().distanceToSqr(posAndRot.position()) } ?: 0.0 // TODO: weigh this more?
+                    return@map posAndRot to (enemyDist - teamDist)
                 }
                 .sortedByDescending { it.second }
-                .map { pair -> // first: tp position, second: viability score
-                    val rotation = pair.first.vectorTo(
-                        selectedPlatforms.minByOrNull { it.pos.center().distanceTo(pair.first) }?.pos?.above()?.center()
-                            ?: ShopManager.getSpawnInShop(level)
-                    ).rotation()
-                    return@map PositionAndRotation.of(pair.first, rotation.y, rotation.x)
-                }
+                .map { it.first }
 
             return sortedResults.firstOrNull() ?: spectatorSpawn
 
