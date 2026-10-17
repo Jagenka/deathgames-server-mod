@@ -177,7 +177,11 @@ object DeathGames : DedicatedServerModInitializer
 
         PlayerManager.getOnlinePlayers().forEach {
             it.closeContainer()
-            it.adjustSpawnLocation(it.level(), Config.spawns.lobbySpawn.position().surroundingBlockPos())
+            it.adjustSpawnLocation(
+                it.level(),
+                Config.spawns.lobbySpawn?.position()?.surroundingBlockPos()
+                    ?: Config.spawns.spectatorSpawn.position().surroundingBlockPos()
+            )
 
             if (Config.misc.startInShop)
             {

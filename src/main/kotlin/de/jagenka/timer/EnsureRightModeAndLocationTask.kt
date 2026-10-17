@@ -34,7 +34,7 @@ object EnsureRightModeAndLocationTask : TimerTask
                 // This checks Survival OR Adventure mode
                 if (!player.gameMode.isSurvival)
                 {
-                    // Operators are allowed to be in Creative or Spectator and outside of lobby bounds. TODO later: explore mode acts differently
+                    // Operators are allowed to be in Creative or Spectator and outside of lobby bounds.
                     if (!player.isOp())
                     {
                         player.setGameMode(GameType.ADVENTURE)
