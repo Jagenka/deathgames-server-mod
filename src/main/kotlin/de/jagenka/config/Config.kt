@@ -4,6 +4,7 @@ import com.charleskorn.kaml.SequenceStyle
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import de.jagenka.DeathGames
+import de.jagenka.GameState
 import de.jagenka.Util
 import de.jagenka.shop.ShopEntries
 import kotlinx.serialization.decodeFromString
@@ -80,6 +81,8 @@ object Config
 
             load()
         } ?: error("Failed loading DeathGames config - Server not loaded yet.")
+
+        GameState.current = if (general.enabled) GameState.PREPARING else GameState.DISABLED
 
         DeathGames.logger.info("Successfully loaded DeathGames config!")
     }

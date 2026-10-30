@@ -37,7 +37,7 @@ class GeneralConfigEntry(
     var locale: String = "en",
     var arenaBounds: BoundingBox = BoundingBox.fromCorners(BlockPos(-10, -10, -10), BlockPos(10, 10, 10)),
     var spectatorRadiusPadding: Int = 10,
-    var lobbyBounds: BoundingBox? = BoundingBox.fromCorners(BlockPos(-10, 20, -10), BlockPos(10, 30, 10)),
+    var lobbyBounds: BoundingBox? = null,
     var enabledTeams: List<DGTeam> = listOf(BLACK, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW)
 )
 

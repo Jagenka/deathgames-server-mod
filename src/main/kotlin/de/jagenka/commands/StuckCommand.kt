@@ -81,7 +81,7 @@ object StuckCommand
 
                 GameState.PREPARING ->
                 {
-                    val teleportDestination = Config.spawns.lobbySpawn
+                    val teleportDestination = Config.spawns.lobbySpawn // TODO: different, if no lobby exists
                     if (player.teleportTo(teleportDestination))
                     {
                         sendSuccess(it.source, "Unstuck!")

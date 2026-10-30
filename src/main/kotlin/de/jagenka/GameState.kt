@@ -35,6 +35,11 @@ enum class GameState
          * the (exactly) one state the mod is currently in
          */
         var current: GameState = DISABLED
+            set(value)
+            {
+                DeathGames.logger.info("game state updated to $value")
+                field = value
+            }
 
         val modEnabled: Boolean
             get() = current != DISABLED && Config.general.enabled

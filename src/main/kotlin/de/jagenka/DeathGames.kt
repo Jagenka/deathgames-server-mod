@@ -72,8 +72,6 @@ object DeathGames : DedicatedServerModInitializer
 
         StatsIO.loadStats()
 
-        GameState.current = if (Config.general.enabled) GameState.PREPARING else GameState.DISABLED
-
         if (isDebug) logger.info("CURRENTLY DEBUGGING")
         logger.info("DeathGames Mod initialized!")
     }

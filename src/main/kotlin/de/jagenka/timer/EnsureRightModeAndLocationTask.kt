@@ -24,6 +24,7 @@ object EnsureRightModeAndLocationTask : TimerTask
 
     override fun run()
     {
+        if (GameState.modDisabled) return
 
         PlayerManager.getOnlinePlayers().forEach { player ->
             // everyone needs to stay in arena, at all times
@@ -43,9 +44,12 @@ object EnsureRightModeAndLocationTask : TimerTask
 
                 if (!player.isOp())
                 {
+
                     // this keeps normies in lobby, when game is not running
-                    if (Config.general.lobbyBounds?.isInside(player.position().surroundingBlockPos()) == false)
+                    // do not teleport, if lobbyBounds is null, as no lobby exists
+                    if (Config.general.lobbyBounds?.isInside(player.blockPosition()) == false)
                     {
+                        //DeathGames.logger.info("lobby ${Config.general.lobbyBounds}, player ${player.blockPosition()}")
                         player.teleportTo(Config.spawns.lobbySpawn)
                     }
                 }
@@ -93,7 +97,8 @@ object EnsureRightModeAndLocationTask : TimerTask
             ).withRotation(player.yRot, player.xRot)
         )
 
-        if (Config.general.arenaBounds.isNotInside(player.position().surroundingBlockPos()))
+        // game state PREPARING, no lobby present, and not in arena: find tp location in arena
+        if (GameState.current != GameState.RUNNING && Config.general.lobbyBounds == null && Config.general.arenaBounds.isNotInside(player.position().surroundingBlockPos()))
         {
             player.teleportTo(SpawnManager.findTpLocationsAround(player.level(), emptyList()).randomOrNull())
         }
