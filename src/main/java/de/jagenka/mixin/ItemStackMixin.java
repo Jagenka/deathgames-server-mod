@@ -58,7 +58,9 @@ public class ItemStackMixin
         ItemStack stackInHand = player.getItemInHand(hand);
 
         // Grapple
-        if (player instanceof ServerPlayer serverPlayer && serverPlayer.getItemInHand(hand).getItem() == GrapplingHook.Companion.getItemItem())
+        if (player instanceof ServerPlayer serverPlayer &&
+                serverPlayer.getItemInHand(hand).getItem() == GrapplingHook.Companion.getItemItem() &&
+                !ShopManager.INSTANCE.isInShopBounds(serverPlayer))
         {
             ItemStack itemStackInHand = serverPlayer.getItemInHand(hand);
             CustomData customData = itemStackInHand.getComponents().get(DataComponents.CUSTOM_DATA);

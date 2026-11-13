@@ -1,5 +1,7 @@
 package de.jagenka.gameplay.graplinghook
 
+import de.jagenka.GameState
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -73,6 +75,14 @@ abstract class GrapplingHook
                 }
                 usableHooks.add(newHook)
                 return newHook
+            }
+        }
+
+        init
+        {
+            ServerTickEvents.START_SERVER_TICK.register { serverLevel ->
+                if (GameState.modDisabled) return@register
+                usableHooks.forEach { it.tick() }
             }
         }
     }

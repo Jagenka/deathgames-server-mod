@@ -1,7 +1,5 @@
 package de.jagenka.gameplay.graplinghook
 
-import de.jagenka.GameState
-import de.jagenka.managers.ShopManager.isInShopBounds
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
@@ -27,9 +25,6 @@ class BlackjackAndHookers(override val maxDistance: Double, override val cooldow
 
     override fun forceTheHooker(serverPlayer: ServerPlayer, itemStackInHand: ItemStack): Boolean
     {
-        if (GameState.current != GameState.RUNNING) return false
-        if (serverPlayer.isInShopBounds) return false
-
         determineMovementAndMove(serverPlayer, maxDistance)
 
         serverPlayer.cooldowns.addCooldown(itemStackInHand, cooldownSetting) // 1.21.3: now using specific ItemStack
