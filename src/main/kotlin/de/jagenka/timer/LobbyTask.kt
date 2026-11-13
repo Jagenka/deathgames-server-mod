@@ -4,8 +4,8 @@ import de.jagenka.GameState
 import de.jagenka.managers.DisplayManager
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isOp
-import de.jagenka.team.TeamSelectorUI
 import de.jagenka.util.I18n
+import de.jagenka.util.LobbyUtil
 import net.minecraft.network.chat.Component
 
 object LobbyTask : TimerTask
@@ -28,11 +28,11 @@ object LobbyTask : TimerTask
             {
                 player.inventory.clearContent()
             }
-            if (TeamSelectorUI.isInLobbyBounds(player))
+            if (LobbyUtil.isInLobbyBounds(player) != false) // also applies when lobby is null
             {
                 if (GameState.current == GameState.PREPARING)
                 {
-                    DisplayManager.sendMessageToHotbar(Component.literal(I18n.get("openTeamUI")))
+                    DisplayManager.sendMessageToHotbar(Component.literal(I18n.get("openTeamUI"))) // TODO: not when in shop when preparing
                 }
 
                 player.health = 20f //set max hearts

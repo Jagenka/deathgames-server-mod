@@ -7,5 +7,6 @@
 - when no lobby - spawn randomly on map (fuck spawns) near shop, facing shop
 - when preparing: no auto tp out (? when no exit button ?), manual tp out allowed -> investigate ShopTask/ShopManager: officiallyInAShop
 - ensure respawn effects in no-lobby lobbies
-- shop free when preparing + press f to shop
+- shop free when preparing + press f to shop + ensure exit item exists/auto tp out
 - show "game not running" when preparing
+- remove game state debug messages
