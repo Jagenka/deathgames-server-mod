@@ -3,17 +3,16 @@ package de.jagenka.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import de.jagenka.GameState
-import de.jagenka.config.Config
 import de.jagenka.managers.ShopManager
 import de.jagenka.managers.SpawnManager
 import de.jagenka.timer.InactivePlayersTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.inSeconds
 import de.jagenka.timer.seconds
+import de.jagenka.util.LobbyUtil
 import de.jagenka.util.sendFailure
 import de.jagenka.util.sendSuccess
 import de.jagenka.util.teleportTo
-import de.jagenka.util.withRotation
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.network.chat.Component
@@ -60,7 +59,7 @@ object StuckCommand
                     Timer.schedule(unstuckDelay) {
                         val teleportDestination = if (!InactivePlayersTask.hasShopClosed(player.name.string))
                         {
-                            ShopManager.getSpawnInShop(player.level()).withRotation(0f, 0f)
+                            ShopManager.getSpawnInShop(player.level())
                         } else
                         {
                             SpawnManager.getSpawnCoordinates(player)
@@ -81,8 +80,7 @@ object StuckCommand
 
                 GameState.PREPARING ->
                 {
-                    val teleportDestination = Config.spawns.lobbySpawn // TODO: different, if no lobby exists
-                    if (player.teleportTo(teleportDestination))
+                    if (LobbyUtil.teleportToLobby(player))
                     {
                         sendSuccess(it.source, "Unstuck!")
                     } else

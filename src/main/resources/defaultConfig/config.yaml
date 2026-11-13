@@ -11,7 +11,7 @@ general:
       y: 152
       z: 127
   spectatorRadiusPadding: 20 # (in blocks) how far out spectators are allowed to fly.
-  lobbyBounds: # cuboid corners of pre-game lobby. players (except operators, use /dg tp) will be kept inside while game is not running.
+  lobbyBounds: # cuboid corners of optional pre-game lobby. players (except operators, use /dg tp) will be kept inside while game is not running. can be null
     minCorner:
       x: -29
       y: 18
@@ -54,7 +54,7 @@ spawns:
       z: 0.5
     yRot: 0.0
     xRot: 0.0
-  lobbySpawn: # spawn point within lobby bounds
+  lobbySpawn: # spawn point within lobby bounds, will choose random position if null
     position:
       x: 0.5
       y: 25.0

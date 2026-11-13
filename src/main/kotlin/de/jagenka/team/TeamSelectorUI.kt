@@ -1,9 +1,8 @@
 package de.jagenka.team
 
 import de.jagenka.GameState
-import de.jagenka.config.Config
 import de.jagenka.util.I18n
-import de.jagenka.util.surroundingBlockPos
+import de.jagenka.util.LobbyUtil
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.MenuProvider
@@ -17,15 +16,12 @@ import net.minecraft.world.item.ItemStack
 
 object TeamSelectorUI
 {
-    val lobbyBounds
-        get() = Config.general.lobbyBounds
-
     var notReadySpamProtection = false
 
     @JvmStatic
     fun showInterfaceIfInLobby(player: ServerPlayer): Boolean
     {
-        if (GameState.current == GameState.PREPARING && isInLobbyBounds(player))
+        if (GameState.current == GameState.PREPARING && LobbyUtil.isInLobbyBounds(player) != false)
         {
             showInterface(player)
             return true
@@ -60,5 +56,5 @@ object TeamSelectorUI
         }
     }
 
-    fun isInLobbyBounds(player: ServerPlayer): Boolean = lobbyBounds?.isInside(player.position().surroundingBlockPos()) != false
+
 }

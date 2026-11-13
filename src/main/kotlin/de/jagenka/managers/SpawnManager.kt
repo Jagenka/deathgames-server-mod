@@ -130,7 +130,7 @@ object SpawnManager
                 if (finalPos == null || Config.general.arenaBounds.isNotInside(finalPos)) return@mapNotNull null
 
                 val rotation = finalPos.bottomCenter().vectorTo(
-                    ShopManager.getSpawnInShop(level)
+                    ShopManager.getSpawnInShop(level).position()
                 ).rotation()
                 return@mapNotNull PositionAndRotation.of(finalPos.bottomCenter(), rotation.y, rotation.x)
             }
@@ -150,7 +150,7 @@ object SpawnManager
 
             val tpCloseToTargets = BonusManager.getSelectedPlatforms().map { Vec3.atCenterOf(it.pos.above()) }
                 .ifEmpty {
-                    listOf(ShopManager.getSpawnInShop(level))
+                    listOf(ShopManager.getSpawnInShop(level).position())
                 }
             val potentialTpTargets = findTpLocationsAround(level, tpCloseToTargets)
 

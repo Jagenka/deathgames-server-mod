@@ -14,6 +14,7 @@ import de.jagenka.stats.StatsIO
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.util.I18n
+import de.jagenka.util.findTpDestinationInside
 import de.jagenka.util.surroundingBlockPos
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
@@ -178,6 +179,7 @@ object DeathGames : DedicatedServerModInitializer
             it.adjustSpawnLocation(
                 it.level(),
                 Config.spawns.lobbySpawn?.position()?.surroundingBlockPos()
+                    ?: Config.general.lobbyBounds?.findTpDestinationInside(it.level())?.position()?.surroundingBlockPos()
                     ?: Config.spawns.spectatorSpawn.position().surroundingBlockPos()
             )
 

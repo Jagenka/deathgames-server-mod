@@ -46,7 +46,7 @@ class SpawnsConfigEntry(
     var spawnPositions: List<DGSpawn> = listOf(DGSpawn(PositionAndRotation.of(Vec3.ZERO, 0f, 0f), defaultOwner = BLACK)),
     var platformRadius: Int = 4,
     var spectatorSpawn: PositionAndRotation = PositionAndRotation.of(Vec3(0.0, 5.0, 0.0), 0f, 0f),
-    var lobbySpawn: PositionAndRotation? = PositionAndRotation.of(Vec3(0.0, 25.0, 0.0), 0f, 0f),
+    var lobbySpawn: PositionAndRotation? = null,
     var enableShuffle: Boolean = false,
     var shuffleInterval: Int = 2400,
     var shuffleDelayAfterKill: Int = 200,

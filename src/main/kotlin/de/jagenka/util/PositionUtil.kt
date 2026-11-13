@@ -1,13 +1,16 @@
 package de.jagenka.util
 
 import de.jagenka.gameplay.graplinghook.GrapplingHook
+import de.jagenka.managers.SpawnManager
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.core.PositionAndRotation
 import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
+import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 
 /**
@@ -83,6 +86,25 @@ fun Vec3.getBlockPossBelow(): List<BlockPos>
 
 fun BoundingBox.isNotInside(pos: Vec3i) = !this.isInside(pos)
 fun BoundingBox.isNotInside(x: Int, y: Int, z: Int) = !this.isInside(x, y, z)
+
+fun BoundingBox.findTpDestinationInside(level: BlockGetter): PositionAndRotation
+{
+    val box = AABB.of(this)
+    var destination: Vec3? = null
+    val bottomCenter = box.bottomCenter
+
+    for (i in 0 until box.ysize.toInt())
+    {
+        val potential = bottomCenter.relative(Direction.UP, i.toDouble())
+        if (potential.getBlockPossBelow().any { SpawnManager.canBeTeleportedOnTop(level, it) })
+        {
+            destination = potential
+            break
+        }
+    }
+
+    return destination?.withRotation(0f, 0f) ?: bottomCenter.withRotation(0f, 0f) // default is shit, but i donut care
+}
 
 operator fun PositionAndRotation.component1(): Double = this.position().x
 operator fun PositionAndRotation.component2(): Double = this.position().y

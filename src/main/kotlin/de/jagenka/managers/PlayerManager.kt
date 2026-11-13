@@ -9,7 +9,7 @@ import de.jagenka.team.DGTeam
 import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
-import de.jagenka.util.teleportTo
+import de.jagenka.util.LobbyUtil
 import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket
 import net.minecraft.server.level.ServerPlayer
@@ -231,9 +231,9 @@ object PlayerManager
             Timer.schedule(1.seconds()) { recentlyRespawned.remove(playerName) }
 
             doRespawn(player)
-        } else
+        } else // GameState is PREPARING
         {
-            player.teleportTo(Config.spawns.lobbySpawn)
+            LobbyUtil.teleportToLobby(player)
         }
     }
 

@@ -7,14 +7,15 @@ import de.jagenka.timer.ScheduledTask
 import de.jagenka.timer.Timer
 import de.jagenka.timer.seconds
 import de.jagenka.timer.ticks
-import de.jagenka.util.*
-import net.minecraft.core.Direction
+import de.jagenka.util.I18n
+import de.jagenka.util.findTpDestinationInside
+import de.jagenka.util.surroundingBlockPos
+import de.jagenka.util.teleportTo
+import net.minecraft.core.PositionAndRotation
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.BlockGetter
-import net.minecraft.world.phys.AABB
-import net.minecraft.world.phys.Vec3
 
 object ShopManager
 {
@@ -60,7 +61,6 @@ object ShopManager
 
         val teleportLocation =
             getSpawnInShop(player.level(), chosenIndex)
-                .withRotation(0f, 0f)
 
         didEnterHow[playerName] = entryType
         inWhichShop[playerName] = chosenIndex
@@ -145,30 +145,15 @@ object ShopManager
 
     /**
      * get tp position for a specific shop or a random one if index is missing or invalid
-     * TODO: return PositionAndRotation maybe
      */
-    fun getSpawnInShop(level: BlockGetter, index: Int = Config.shopSettings.shopBounds.indices.random()): Vec3
+    fun getSpawnInShop(level: BlockGetter, index: Int = Config.shopSettings.shopBounds.indices.random()): PositionAndRotation
     {
         if (index !in Config.shopSettings.shopBounds.indices)
         {
-            return getSpawnInShop(level)
+            return getSpawnInShop(level) // this will not loop, because default index will not lead to this case
         }
 
-        val box = AABB.of(Config.shopSettings.shopBounds[index])
-        var destination: Vec3? = null
-        val bottomCenter = box.bottomCenter
-
-        for (i in 0 until box.ysize.toInt())
-        {
-            val potential = bottomCenter.relative(Direction.UP, i.toDouble())
-            if (potential.getBlockPossBelow().any { SpawnManager.canBeTeleportedOnTop(level, it) })
-            {
-                destination = potential
-                break
-            }
-        }
-
-        return destination ?: bottomCenter // default is shit, but i donut care
+        return Config.shopSettings.shopBounds[index].findTpDestinationInside(level)
     }
 
     val ServerPlayer.isOfficiallyInAShop: Boolean

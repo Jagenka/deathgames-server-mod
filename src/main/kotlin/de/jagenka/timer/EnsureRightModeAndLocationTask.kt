@@ -4,11 +4,7 @@ import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.managers.PlayerManager
 import de.jagenka.managers.PlayerManager.isOp
-import de.jagenka.managers.SpawnManager
-import de.jagenka.util.isNotInside
-import de.jagenka.util.surroundingBlockPos
-import de.jagenka.util.teleportTo
-import de.jagenka.util.withRotation
+import de.jagenka.util.*
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.GameType
 import net.minecraft.world.phys.Vec3
@@ -44,13 +40,11 @@ object EnsureRightModeAndLocationTask : TimerTask
 
                 if (!player.isOp())
                 {
-
                     // this keeps normies in lobby, when game is not running
                     // do not teleport, if lobbyBounds is null, as no lobby exists
-                    if (Config.general.lobbyBounds?.isInside(player.blockPosition()) == false)
+                    if (LobbyUtil.isInLobbyBounds(player) == false)
                     {
-                        //DeathGames.logger.info("lobby ${Config.general.lobbyBounds}, player ${player.blockPosition()}")
-                        player.teleportTo(Config.spawns.lobbySpawn)
+                        LobbyUtil.teleportToLobby(player)
                     }
                 }
             }
@@ -59,7 +53,6 @@ object EnsureRightModeAndLocationTask : TimerTask
 
     /**
      * TP a player back to arena, if sufficiently outside.
-     * TODO: when GameState.PREPARING: adventure players also allowed to go to spectator padding radius? maybe also respawn if outside to prevent softlock
      */
     private fun keepInArenaBounds(player: ServerPlayer)
     {
@@ -97,10 +90,10 @@ object EnsureRightModeAndLocationTask : TimerTask
             ).withRotation(player.yRot, player.xRot)
         )
 
-        // game state PREPARING, no lobby present, and not in arena: find tp location in arena
-        if (GameState.current != GameState.RUNNING && Config.general.lobbyBounds == null && Config.general.arenaBounds.isNotInside(player.position().surroundingBlockPos()))
+        // game state PREPARING, no lobby present, and not in *arena*: find tp location in arena near shops
+        if (GameState.current != GameState.RUNNING && LobbyUtil.isInLobbyBounds(player) == null && Config.general.arenaBounds.isNotInside(player.position().surroundingBlockPos()))
         {
-            player.teleportTo(SpawnManager.findTpLocationsAround(player.level(), emptyList()).randomOrNull())
+            LobbyUtil.teleportToLobby(player)
         }
     }
 

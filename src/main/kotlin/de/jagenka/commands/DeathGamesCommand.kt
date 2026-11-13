@@ -17,8 +17,8 @@ import de.jagenka.team.DGTeam
 import de.jagenka.team.ReadyCheck
 import de.jagenka.timer.Timer
 import de.jagenka.util.I18n
+import de.jagenka.util.LobbyUtil
 import de.jagenka.util.teleportTo
-import de.jagenka.util.withRotation
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.Commands.argument
@@ -188,7 +188,15 @@ object DeathGamesCommand
                     .then(
                         literal("lobby")
                             .executes {
-                                it.source.player?.teleportTo(Config.internalConfigEntry.spawns.lobbySpawn)
+                                it.source.player?.let { player ->
+                                    if (LobbyUtil.teleportToLobby(player))
+                                    {
+                                        return@executes 0
+                                    } else
+                                    {
+                                        return@executes -1
+                                    }
+                                }
                                 0
                             }
                     )
@@ -197,7 +205,6 @@ object DeathGamesCommand
                             .executes {
                                 it.source.player?.teleportTo(
                                     ShopManager.getSpawnInShop(it.source.player?.level() ?: return@executes -1)
-                                        .withRotation(0f, 0f)
                                 ) ?: return@executes -1
                                 0
                             }

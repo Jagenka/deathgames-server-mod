@@ -1,12 +1,11 @@
 - start in shop, but walk out? no countdown appears, get tp-ed anyway
-- lobby unnecessary? lobby in arena bounds?
 - BUG: mod disabled - set enable in file - dg reloadConfig - team selector doesn't work
 - more teams than spawns? -> use random spawn as fallback? needs to be tested to find errors.
 - would be good: config versions and auto migration
 - horses
 - rework bonus spawning with schedules?
 - when no lobby - spawn randomly on map (fuck spawns) near shop, facing shop
-- when spawn platforms empty: random spawn near shop good? or further away from shop better?
 - when preparing: no auto tp out (? when no exit button ?), manual tp out allowed -> investigate ShopTask/ShopManager: officiallyInAShop
-- investigate lobby spawn being null!!
 - ensure respawn effects in no-lobby lobbies
+- shop free when preparing + press f to shop
+- show "game not running" when preparing
