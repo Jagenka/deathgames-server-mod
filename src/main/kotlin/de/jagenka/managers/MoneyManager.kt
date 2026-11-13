@@ -1,5 +1,6 @@
 package de.jagenka.managers
 
+import de.jagenka.GameState
 import de.jagenka.config.Config
 import de.jagenka.floor
 import de.jagenka.managers.DisplayManager.sendPrivateMessage
@@ -21,9 +22,19 @@ object MoneyManager
     private val playerMoney = mutableMapOf<String, Int>().withDefault { 0 }
     private val teamMoney = mutableMapOf<DGTeam?, Int>().withDefault { 0 }
 
-    fun getMoney(playerName: String) = playerMoney.getValue(playerName)
-    fun getMoney(player: ServerPlayer) = getMoney(player.name.string)
-    fun getMoney(team: DGTeam?) = teamMoney.getValue(team)
+    fun getMoney(playerName: String): Int
+    {
+        return if (GameState.current == GameState.PREPARING)
+            111111 else
+            playerMoney.getValue(playerName)
+    }
+
+    fun getMoney(team: DGTeam?): Int
+    {
+        return if (GameState.current == GameState.PREPARING)
+            111111 else
+            teamMoney.getValue(team)
+    }
 
     fun initMoney()
     {
