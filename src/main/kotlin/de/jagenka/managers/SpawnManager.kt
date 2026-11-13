@@ -64,6 +64,16 @@ object SpawnManager
      */
     fun teleportPlayerToSpawn(player: ServerPlayer)
     {
+        if (GameState.current == GameState.PREPARING)
+        {
+            LobbyUtil.teleportToLobby(player)
+
+            player.removeAllEffects()
+            applyRespawnEffects(player)
+
+            return
+        }
+
         // handle position
         val spawnCoordinates = getSpawnCoordinates(player)
 
